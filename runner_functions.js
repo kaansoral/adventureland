@@ -59,11 +59,6 @@ function get_nearest_monster(args)
 	return target;
 }
 
-function target(element)
-{
-	parent.ctarget=element;
-}
-
 function use_hp_or_mp()
 {
 	if(new Date()<parent.next_pot) return;
