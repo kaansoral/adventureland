@@ -45,8 +45,10 @@ Sets the IFrame message, the one in the right bottom corner
 
 ####runner_functions.js
 There are more functions, examples in runner_functions.js and on the game's main CODE
-As the game progresses, the CODE feature will refine, you will be able to create/save your own code in-game, and hopefully much much more :)
+
+###Future Plans
+As the game progresses, the CODE feature will refine, you will be able to create/save your own code in-game, and hopefully much much more
 
 With the introduction of PVP, Trade, Events and similar stuff, the CODE capabilities should get pretty interesting
 
-I'm also planning to add Networking between characters, so one might create a small team of bot helpers, and stuff like that
+I'm also planning to add Networking between characters, so one might create a small team of bot helpers, or create a PVP team that consist entirely of bots
