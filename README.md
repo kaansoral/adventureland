@@ -1,5 +1,5 @@
 # adventureland
-CODE Documentation for Adventure Land MMORPG https://adventure.land
+CODE Documentation for Adventure Land MMORPG http://adventure.land
 
 ### Usage / Notes
 * You have to keep the browser focused
