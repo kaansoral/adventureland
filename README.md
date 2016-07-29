@@ -9,7 +9,7 @@ CODE Documentation for Adventure Land MMORPG http://adventure.land
 * CODE runs in an IFrame, feel free to interact with **parent**
 * You are free to inspect the client game code
 * You can freely emulate a regular player
-* Please don't use the hinder other players or the server
+* Please don't use the CODE to hinder other players or the server
 * You should be safe as long as the interval is 250ms
 
 ### Character / Players / Monsters
