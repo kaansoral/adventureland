@@ -1,8 +1,4 @@
-function get_character()
-{
-	return parent.character;
-}
-var character=get_character();
+var character=parent.character;
 
 function set_message(text)
 {
@@ -39,15 +35,15 @@ function attack(target)
 
 function move(x,y)
 {
-	var map=parent.map,move=parent.calculate_move(map.real_x,map.real_y,x,y);
-	map.speed=character.speed;
-	map.going_x=move.x;
-	map.going_y=move.y;
-	map.from_x=map.real_x;
-	map.from_y=map.real_y;
-	map.going=true;
-	parent.calculate_vxyc(map,character);
-	parent.socket.emit("move",{x:map.real_x,y:map.real_y,going_x:map.going_x,going_y:map.going_y});
+	var map=parent.map,move=parent.calculate_move(character.real_x,character.real_y,x,y);
+	character.from_x=character.real_x;
+	character.from_y=character.real_y;
+	character.going_x=move.x;
+	character.going_y=move.y;
+	character.moving=true;
+	parent.calculate_vxy(character);
+	// parent.console.log("engaged move "+character.angle);
+	parent.socket.emit("move",{x:character.real_x,y:character.real_y,going_x:character.going_x,going_y:character.going_y});
 }
 
 function get_nearest_monster(args)
