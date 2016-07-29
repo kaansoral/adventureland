@@ -1,8 +1,23 @@
 var character=parent.character;
 
+function get_socket()
+{
+	return parent.socket;
+}
+
+function get_map()
+{
+	return parent.G.maps[parent.current_map];
+}
+
 function set_message(text)
 {
 	$('#gg').html(text);
+}
+
+function get_target()
+{
+	return parent.target;
 }
 
 function get_targeted_monster()
@@ -44,6 +59,11 @@ function move(x,y)
 	parent.calculate_vxy(character);
 	// parent.console.log("engaged move "+character.angle);
 	parent.socket.emit("move",{x:character.real_x,y:character.real_y,going_x:character.going_x,going_y:character.going_y});
+}
+
+function show_json(e)
+{
+	parent.show_json(parent.game_stringify(e,2));
 }
 
 function get_nearest_monster(args)
