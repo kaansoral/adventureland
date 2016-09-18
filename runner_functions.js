@@ -18,7 +18,7 @@ function set_message(text)
 
 function get_target()
 {
-	return parent.target;
+	return parent.ctarget;
 }
 
 function get_targeted_monster()
@@ -46,7 +46,8 @@ function can_attack(target) // also works for priests/heal
 
 function attack(target)
 {
-	parent.monster_attack.call(target);
+	if(target.type=="character") parent.player_attack.call(target);
+	else parent.monster_attack.call(target);
 }
 
 function heal(target)
@@ -69,6 +70,17 @@ function upgrade(item_num,scroll_num) //number of the item and scroll on the sho
 	parent.u_item=item_num;
 	parent.u_scroll=scroll_num;
 	parent.upgrade();
+}
+
+function exchange(item_num)
+{
+	parent.e_item=item_num;
+	parent.exchange();
+}
+
+function say(message)
+{
+	parent.socket.emit("say",{message:message});
 }
 
 function move(x,y)
@@ -103,7 +115,7 @@ function get_nearest_monster(args)
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
-		if(current.type!="monster" || args.min_xp && current.xp<args.min_xp || args.max_att && current.attack>args.max_att) continue;
+		if(current.type!="monster" || args.min_xp && current.xp<args.min_xp || args.max_att && current.attack>args.max_att || current.dead) continue;
 		var c_dist=parent.distance(character,current);
 		if(c_dist<min_d) min_d=c_dist,target=current;
 	}
