@@ -40,7 +40,8 @@ function in_attack_range(target) // also works for priests/heal
 
 function can_attack(target) // also works for priests/heal
 {
-	if(in_attack_range(target) && new Date()>=parent.next_attack) return true;
+	// is_disabled function checks .rip and .stunned
+	if(!parent.is_disabled(character) && in_attack_range(target) && new Date()>=parent.next_attack) return true;
 	return false;
 }
 
@@ -85,6 +86,7 @@ function say(message)
 
 function move(x,y)
 {
+	if(!can_walk(character)) return;
 	var map=parent.map,move=parent.calculate_move(parent.M,character.real_x,character.real_y,x,y);
 	character.from_x=character.real_x;
 	character.from_y=character.real_y;
@@ -135,5 +137,8 @@ function use_hp_or_mp()
 function loot()
 {
 	for(id in parent.chests)
+	{
 		parent.socket.emit("open_chest",{id:id});
+		break; // this ensures only 1 thing is looted at very call, so when the inventory is full, things don't get spammy [22/09/16]
+	}
 }
