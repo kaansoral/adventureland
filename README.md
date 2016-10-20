@@ -4,11 +4,12 @@ CODE Documentation for Adventure Land MMORPG http://adventure.land
 ### Character / Players / Monsters
 
 * Properties
- * real_x (10x of the game's X)
- * real_y (10x of the game's Y)
- * hp / max_hp
- * mp / max_mp
- * xp / max_xp
+ * .real_x (10x of the game's X)
+ * .real_y (10x of the game's Y)
+ * .hp / .max_hp
+ * .mp / .max_mp
+ * .xp / .max_xp
+ * .party / .name / .rip / .afk / .code / .target / .id / .moving + more
 * show_json(character) to see all the properties
 
 ### Things to Inspect
