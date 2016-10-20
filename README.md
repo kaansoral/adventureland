@@ -31,7 +31,9 @@ Moves the character
 
 ####get_nearest_monster({max_att:100,min_xp:10,target:"Name",no_target:true})
 Return's the nearest monster, you might want to target that return value with `change_target`
+
 target: Picks monsters that only target that name
+
 no_target: Picks monster that aren't targeting anyone
 
 ####use_hp_or_mp()
@@ -42,6 +44,7 @@ Returns your current target
 
 ####get_target_of(entity)
 New, powerful feature, returns the target entity for both players and monsters
+
 Suggestion for Fun: Code your characters to target and attack what you are targeting, even if you don't engage a monster, you can make your characters (or side-characters) engage by just clicking :)
 
 ####change_target(target)
