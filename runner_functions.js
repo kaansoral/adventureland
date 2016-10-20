@@ -1,4 +1,5 @@
 //#NOTE: If you want to see a new function/feature, just request it at: https://github.com/kaansoral/adventureland/issues
+//#NOTICE: [19/10/16]: The CODE will receive many new features and improvements soon :)
 var character=parent.character;
 
 function get_socket()
@@ -16,6 +17,24 @@ function set_message(text)
 	$('#gg').html(text);
 }
 
+function game_log(message,color)
+{
+	if(!color) color="#51D2E1";
+	parent.add_log(message,color);
+}
+
+function get_target_of(entity) // .target is a Name for Monsters and `id` for Players - this function return whatever the entity in question is targeting
+{
+	if(!entity || !entity.target) return null;
+	if(character.id+''==entity.target+'' || character.name+''==entity.target+'') return character;
+	for(var id in parent.entities)
+	{
+		var e=parent.entities[id];
+		if(e.id+''==entity.target+'' || e.name+''==entity.target+'') return e;
+	}
+	return null;
+}
+
 function get_target()
 {
 	return parent.ctarget;
@@ -30,6 +49,7 @@ function get_targeted_monster()
 function change_target(target)
 {
 	parent.ctarget=target;
+	parent.send_target_logic();
 }
 
 function in_attack_range(target) // also works for priests/heal
@@ -66,11 +86,21 @@ function sell(num,quantity) //sell an item from character.items by it's order - 
 	parent.sell(num,quantity);
 }
 
-function upgrade(item_num,scroll_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
+function upgrade(item_num,scroll_num,offering_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
 	parent.u_item=item_num;
 	parent.u_scroll=scroll_num;
+	parent.u_offering=offering_num;
 	parent.upgrade();
+}
+
+function compound(item0,item1,item2,scroll_num,offering_num) // for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
+{
+	parent.c_items=[item0,item1,item2];
+	parent.c_last=3;
+	parent.c_scroll=scroll_num;
+	parent.c_offering=offering_num;
+	parent.compound();
 }
 
 function exchange(item_num)
@@ -79,9 +109,9 @@ function exchange(item_num)
 	parent.exchange();
 }
 
-function say(message)
+function say(message) // please use "say()" and not socket.emit("say") manually, thank you! :)
 {
-	parent.socket.emit("say",{message:message});
+	parent.socket.emit("say",{message:message,code:true});
 }
 
 function move(x,y)
@@ -113,11 +143,22 @@ function get_player(name) // returns the player by name, if the player is within
 
 function get_nearest_monster(args)
 {
+	//args:
+	// max_att - max attack
+	// min_xp - min XP
+	// target: Only return monsters that target this "name" or player object
+	// no_target: Only pick monsters that don't have any target
 	var min_d=999999,target=null;
+
+	if(!args) args={};
+	if(args && args.target && args.target.name) args.target=args.target.name;
+
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
 		if(current.type!="monster" || args.min_xp && current.xp<args.min_xp || args.max_att && current.attack>args.max_att || current.dead) continue;
+		if(args.target && current.target!=args.target) continue;
+		if(args.no_target && current.target && current.target!=character.name) continue;
 		var c_dist=parent.distance(character,current);
 		if(c_dist<min_d) min_d=c_dist,target=current;
 	}
@@ -141,4 +182,31 @@ function loot()
 		parent.socket.emit("open_chest",{id:id});
 		break; // this ensures only 1 thing is looted at very call, so when the inventory is full, things don't get spammy [22/09/16]
 	}
+}
+
+var PIXI=parent.PIXI; // for drawing stuff into the game
+var drawings=parent.drawings;
+
+//Documentation: https://pixijs.github.io/docs/PIXI.Graphics.html
+function draw_line(x,y,x2,y2,size,color)
+{
+	// keep in mind that drawings could significantly slow redraws, especially if you don't .destroy() them
+	if(!color) color=0x00E186;
+	if(!size) size=2;
+	e=new PIXI.Graphics();
+	e.lineStyle(size, color);
+	e.moveTo(x,y);
+	e.lineTo(x2,y2);
+	e.endFill();
+	parent.drawings.push(e); //for the game to keep track of your drawings
+	parent.map.addChild(e); //e.destroy() would remove it, if you draw too many things and leave them there, it will likely bring the game to a halt
+	return e;
+}
+
+function clear_drawings()
+{
+	drawings.forEach(function(e){
+		try{e.destroy()}catch(ex){}
+	});
+	drawings=parent.drawings=[];
 }
