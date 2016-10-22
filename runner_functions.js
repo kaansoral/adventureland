@@ -12,8 +12,9 @@ function get_map()
 	return parent.G.maps[parent.current_map];
 }
 
-function set_message(text)
+function set_message(text,color)
 {
+	if(color) text="<span style='color: "+color+"'>"+text+"</span>";
 	$('#gg').html(text);
 }
 
@@ -109,9 +110,9 @@ function exchange(item_num)
 	parent.exchange();
 }
 
-function say(message) // please use "say()" and not socket.emit("say") manually, thank you! :)
+function say(message) // please use responsibly, thank you! :)
 {
-	parent.socket.emit("say",{message:message,code:true});
+	parent.say(message,1);
 }
 
 function move(x,y)
@@ -184,6 +185,13 @@ function loot()
 	}
 }
 
+function handle_command(command,args) // command's are things like "/party" that are entered through Chat - args is a string
+{
+	// game_log("Command: /"+command+" Args: "+args);
+	// return true;
+	return -1;
+}
+
 var PIXI=parent.PIXI; // for drawing stuff into the game
 var drawings=parent.drawings;
 
@@ -191,8 +199,8 @@ var drawings=parent.drawings;
 function draw_line(x,y,x2,y2,size,color)
 {
 	// keep in mind that drawings could significantly slow redraws, especially if you don't .destroy() them
-	if(!color) color=0x00E186;
-	if(!size) size=2;
+	if(!color) color=0xF38D00;
+	if(!size) size=1;
 	e=new PIXI.Graphics();
 	e.lineStyle(size, color);
 	e.moveTo(x,y);
@@ -200,6 +208,19 @@ function draw_line(x,y,x2,y2,size,color)
 	e.endFill();
 	parent.drawings.push(e); //for the game to keep track of your drawings
 	parent.map.addChild(e); //e.destroy() would remove it, if you draw too many things and leave them there, it will likely bring the game to a halt
+	return e;
+}
+
+// Example: draw_circle(character.real_x,character.real_y,character.range) :) [22/10/16]
+function draw_circle(x,y,radius,size,color)
+{
+	if(!color) color=0x00F33E;
+	if(!size) size=1;
+	e=new PIXI.Graphics();
+	e.lineStyle(size, color);
+	e.drawCircle(x,y,radius);
+	parent.drawings.push(e);
+	parent.map.addChild(e);
 	return e;
 }
 
