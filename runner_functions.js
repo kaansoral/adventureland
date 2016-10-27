@@ -47,9 +47,15 @@ function get_targeted_monster()
 	return null;
 }
 
-function change_target(target)
+function change_target(target,public)
 {
 	parent.ctarget=target;
+	if(!public) //no need to send the target on default for CODE, some people are using change_target 5-6 times in an interval
+	{
+		// user change_target(target,true) from now on to send the target to the server explicitly [23/10/16]
+		if(target) parent.last_id_sent=target.id;
+		else parent.last_id_sent='';
+	}
 	parent.send_target_logic();
 }
 
@@ -87,6 +93,16 @@ function sell(num,quantity) //sell an item from character.items by it's order - 
 	parent.sell(num,quantity);
 }
 
+function equip(num)
+{
+	parent.socket.emit("equip",{num:num});
+}
+
+function trade(num,trade_slot,price) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
+{
+	parent.trade("trade"+trade_slot,num,price);
+}
+
 function upgrade(item_num,scroll_num,offering_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
 	parent.u_item=item_num;
@@ -118,7 +134,7 @@ function say(message) // please use responsibly, thank you! :)
 function move(x,y)
 {
 	if(!can_walk(character)) return;
-	var map=parent.map,move=parent.calculate_move(parent.M,character.real_x,character.real_y,x,y);
+	var map=parent.map,move=parent.calculate_move(parent.M,character.real_x,character.real_y,parseFloat(x)||0,parseFloat(y)||0);
 	character.from_x=character.real_x;
 	character.from_y=character.real_y;
 	character.going_x=move.x;
@@ -185,6 +201,21 @@ function loot()
 	}
 }
 
+function respawn()
+{
+	parent.socket.emit('respawn');
+}
+
+function handle_death()
+{
+	// When a character dies, character.rip is true, you can override handle_death and manually respawn
+	// IDEA: A Resident PVP-Dweller, with an evasive Code + irregular respawning
+	// respawn();
+	// return true;
+	// NOTE: Add `if(character.rip) {respawn(); return;}` to your main loop/interval too - At one point, respawn might receive a small cooldown
+	return -1;
+}
+
 function handle_command(command,args) // command's are things like "/party" that are entered through Chat - args is a string
 {
 	// game_log("Command: /"+command+" Args: "+args);
@@ -230,4 +261,17 @@ function clear_drawings()
 		try{e.destroy()}catch(ex){}
 	});
 	drawings=parent.drawings=[];
+}
+
+function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
+{
+	if(!onerror) onerror=function(){ game_log("load_code: Failed to load","#E13758"); }
+	var xhrObj = new XMLHttpRequest();
+	xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&timestamp="+(new Date().getTime()), false);
+	xhrObj.send('');
+	var library=document.createElement("script");
+	library.type="text/javascript";
+	library.text=xhrObj.responseText;
+	library.onerror=onerror;
+	document.getElementsByTagName("head")[0].appendChild(library);
 }
