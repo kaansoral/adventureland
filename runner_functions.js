@@ -1,6 +1,29 @@
 //#NOTE: If you want to see a new function/feature, just request it at: https://github.com/kaansoral/adventureland/issues
-//#NOTICE: [19/10/16]: The CODE will receive many new features and improvements soon :)
 var character=parent.character;
+var G=parent.G; // Game data
+var safeties=true;
+
+function item_properties(item) // example: item_properties(character.items[0])
+{
+	if(!item || !item.name) return {};
+	return calculate_item_properties(G.items[item.name],item);
+}
+
+function item_grade(item) // example: item_grade(character.items[0])
+{
+	// 0 Normal
+	// 1 High
+	// 2 Rare
+	if(!item || !item.name) return -1;
+	return calculate_item_grade(G.items[item.name],item);
+}
+
+function item_value(item) // example: item_value(character.items[0])
+{
+	if(!item || !item.name) return 0;
+	return calculate_item_value(item);
+}
+
 
 function get_socket()
 {
@@ -61,6 +84,7 @@ function change_target(target,public)
 
 function in_attack_range(target) // also works for priests/heal
 {
+	if(!target) return false;
 	if(parent.distance(character,target)<=character.range) return true;
 	return false;
 }
@@ -68,19 +92,26 @@ function in_attack_range(target) // also works for priests/heal
 function can_attack(target) // also works for priests/heal
 {
 	// is_disabled function checks .rip and .stunned
+	if(!target) return false;
 	if(!parent.is_disabled(character) && in_attack_range(target) && new Date()>=parent.next_attack) return true;
 	return false;
 }
 
 function attack(target)
 {
+	if(safeties && mssince(last_attack)<400) return;
+	if(!target) { game_log("Nothing to attack()","gray"); return; }
 	if(target.type=="character") parent.player_attack.call(target);
 	else parent.monster_attack.call(target);
+	last_attack=new Date();
 }
 
 function heal(target)
 {
+	if(safeties && mssince(last_attack)<400) return;
+	if(!target) { game_log("No one to heal()","gray"); return; }
 	parent.player_heal.call(target);
+	last_attack=new Date();
 }
 
 function buy(name,quantity) //item names can be spotted from show_json(character.items) - they can be bought only if an NPC sells them
@@ -96,6 +127,11 @@ function sell(num,quantity) //sell an item from character.items by it's order - 
 function equip(num)
 {
 	parent.socket.emit("equip",{num:num});
+}
+
+function use(num) // for example, if there is a potion at the first inventory slot, use(0) would use it
+{
+	equip(num);
 }
 
 function trade(num,trade_slot,price) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
@@ -184,21 +220,51 @@ function get_nearest_monster(args)
 
 function use_hp_or_mp()
 {
-	if(new Date()<parent.next_pot) return;
-	if(character.mp/character.max_mp<0.2) parent.use('mp'); 
-	else if(character.hp/character.max_hp<0.7) parent.use('hp');
-	else if(character.mp/character.max_mp<0.8) parent.use('mp');
-	else if(character.hp<character.max_hp) parent.use('hp');
-	else if(character.mp<character.max_mp) parent.use('mp');
+	if(safeties && mssince(last_potion)<600) return;
+	var used=false;
+	if(new Date()<parent.next_potion) return;
+	if(character.mp/character.max_mp<0.2) parent.use('mp'),used=true; 
+	else if(character.hp/character.max_hp<0.7) parent.use('hp'),used=true;
+	else if(character.mp/character.max_mp<0.8) parent.use('mp'),used=true;
+	else if(character.hp<character.max_hp) parent.use('hp'),used=true;
+	else if(character.mp<character.max_mp) parent.use('mp'),used=true;
+	if(used) last_potion=new Date();
 }
 
 function loot()
 {
+	var looted=0;
+	if(safeties && mssince(last_loot)<200) return;
+	last_loot=new Date();
 	for(id in parent.chests)
 	{
+		var chest=parent.chests[id];
+		if(safeties && (chest.items>character.esize || chest.last_loot && mssince(chest.last_loot)<1600)) continue;
+		chest.last_loot=last_loot;
 		parent.socket.emit("open_chest",{id:id});
-		break; // this ensures only 1 thing is looted at very call, so when the inventory is full, things don't get spammy [22/09/16]
+		looted++;
+		if(looted==2) break;
 	}
+}
+
+function send_party_invite(name) // name could be a player object, name, or id
+{
+	if(!name) return;
+	var id=null;
+	if(is_object(name)) id=name.id;
+	else
+	{
+		var player=get_player(name);
+		if(player) id=player.id;
+		else id=name;
+	}
+	if(id) parent.socket.emit('party',{event:'invite',id:id});
+	else game_log("Player not found.","gray");
+}
+
+function accept_party_invite(name)
+{
+	parent.socket.emit('party',{event:'accept',name:name});
 }
 
 function respawn()
@@ -221,6 +287,21 @@ function handle_command(command,args) // command's are things like "/party" that
 	// game_log("Command: /"+command+" Args: "+args);
 	// return true;
 	return -1;
+}
+
+function on_party_invite(name) // called by the inviter's name
+{
+	// accept_party_invite(name)
+}
+
+function on_destroy() // called just before the CODE is destroyed
+{
+	clear_drawings();
+}
+
+function on_draw() // the game calls this function at the best place in each game draw frame, so if you are playing the game at 60fps, this function gets called 60 times per second
+{
+	
 }
 
 var PIXI=parent.PIXI; // for drawing stuff into the game
@@ -275,3 +356,8 @@ function load_code(name,onerror) // onerror can be a function that will be execu
 	library.onerror=onerror;
 	document.getElementsByTagName("head")[0].appendChild(library);
 }
+
+//safety flags
+var last_loot=new Date();
+var last_attack=new Date();
+var last_potion=new Date();
