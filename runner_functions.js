@@ -82,6 +82,12 @@ function change_target(target,public)
 	parent.send_target_logic();
 }
 
+function can_move_to(x,y)
+{
+	if(is_object(x)) y=x.real_y,x=x.real_x;
+	return can_move({map:character.map,x:character.real_x,y:character.real_y,going_x:x,going_y:y});
+}
+
 function in_attack_range(target) // also works for priests/heal
 {
 	if(!target) return false;
@@ -96,6 +102,7 @@ function can_attack(target) // also works for priests/heal
 	if(!parent.is_disabled(character) && in_attack_range(target) && new Date()>=parent.next_attack) return true;
 	return false;
 }
+function can_heal(t){return can_attack(t);}
 
 function attack(target)
 {
@@ -201,6 +208,7 @@ function get_nearest_monster(args)
 	// min_xp - min XP
 	// target: Only return monsters that target this "name" or player object
 	// no_target: Only pick monsters that don't have any target
+	// path_check: Checks if the character can move to the target
 	var min_d=999999,target=null;
 
 	if(!args) args={};
@@ -212,6 +220,7 @@ function get_nearest_monster(args)
 		if(current.type!="monster" || args.min_xp && current.xp<args.min_xp || args.max_att && current.attack>args.max_att || current.dead) continue;
 		if(args.target && current.target!=args.target) continue;
 		if(args.no_target && current.target && current.target!=character.name) continue;
+		if(args.path_check && !can_move_to(current)) continue;
 		var c_dist=parent.distance(character,current);
 		if(c_dist<min_d) min_d=c_dist,target=current;
 	}
