@@ -3,6 +3,7 @@ var attack_mode=true
 setInterval(function(){
 
 	if(character.hp<400 || character.mp<300) use_hp_or_mp();
+	// Uses potions only when the above conditions are met
 	loot();
 
 	if(!attack_mode || character.moving) return;
@@ -11,6 +12,7 @@ setInterval(function(){
 	if(!target)
 	{
 		target=get_nearest_monster({min_xp:100,max_att:120,path_check:true,no_target:true});
+		// Ensures that your character can walk to the target (path_check) and the target isn't engaging with anyone else (no_target)
 		if(target) change_target(target);
 		else
 		{
