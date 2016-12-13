@@ -146,6 +146,11 @@ function trade(num,trade_slot,price) // where trade_slot is 1 to 16 - example, t
 	parent.trade("trade"+trade_slot,num,price);
 }
 
+function trade_buy(target,trade_slot) // target needs to be an actual player
+{
+	parent.trade_buy(trade_slot,target.id,target.slots[trade_slot].rid); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
+}
+
 function upgrade(item_num,scroll_num,offering_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
 	parent.u_item=item_num;
@@ -166,7 +171,7 @@ function compound(item0,item1,item2,scroll_num,offering_num) // for example -> c
 function exchange(item_num)
 {
 	parent.e_item=item_num;
-	parent.exchange();
+	parent.exchange(1);
 }
 
 function say(message) // please use responsibly, thank you! :)
@@ -256,7 +261,7 @@ function loot()
 	}
 }
 
-function send_party_invite(name) // name could be a player object, name, or id
+function send_party_invite(name,is_request) // name could be a player object, name, or id
 {
 	if(!name) return;
 	var id=null;
@@ -267,13 +272,22 @@ function send_party_invite(name) // name could be a player object, name, or id
 		if(player) id=player.id;
 		else id=name;
 	}
-	if(id) parent.socket.emit('party',{event:'invite',id:id});
+	if(id) parent.socket.emit('party',{event:is_request&&'request'||'invite',id:id});
 	else game_log("Player not found.","gray");
+}
+
+function send_party_request(name)
+{
+	send_party_invite(name,1);
 }
 
 function accept_party_invite(name)
 {
 	parent.socket.emit('party',{event:'accept',name:name});
+}
+function accept_party_request(name)
+{
+	parent.socket.emit('party',{event:'raccept',name:name});
 }
 
 function respawn()
@@ -285,9 +299,10 @@ function handle_death()
 {
 	// When a character dies, character.rip is true, you can override handle_death and manually respawn
 	// IDEA: A Resident PVP-Dweller, with an evasive Code + irregular respawning
-	// respawn();
+	// respawn current has a 12 second cooldown, best wait 15 seconds before respawning [24/11/16]
+	// setTimeout(respawn,15000);
 	// return true;
-	// NOTE: Add `if(character.rip) {respawn(); return;}` to your main loop/interval too - At one point, respawn might receive a small cooldown
+	// NOTE: Add `if(character.rip) {respawn(); return;}` to your main loop/interval too, just in case
 	return -1;
 }
 
@@ -298,9 +313,19 @@ function handle_command(command,args) // command's are things like "/party" that
 	return -1;
 }
 
+function on_combined_damage() // When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage
+{
+	// move(character.real_x+5,character.real_y);
+}
+
 function on_party_invite(name) // called by the inviter's name
 {
 	// accept_party_invite(name)
+}
+
+function on_party_request(name) // called by the inviter's name - request = someone requesting to join your existing party
+{
+	// accept_party_request(name)
 }
 
 function on_destroy() // called just before the CODE is destroyed
@@ -348,7 +373,7 @@ function draw_circle(x,y,radius,size,color)
 function clear_drawings()
 {
 	drawings.forEach(function(e){
-		try{e.destroy()}catch(ex){}
+		try{e.destroy({children:true})}catch(ex){}
 	});
 	drawings=parent.drawings=[];
 }
@@ -367,6 +392,6 @@ function load_code(name,onerror) // onerror can be a function that will be execu
 }
 
 //safety flags
-var last_loot=new Date();
-var last_attack=new Date();
-var last_potion=new Date();
+var last_loot=new Date(0);
+var last_attack=new Date(0);
+var last_potion=new Date(0);
