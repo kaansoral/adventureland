@@ -3,6 +3,19 @@ var character=parent.character;
 var G=parent.G; // Game data
 var safeties=true;
 
+function activate(num) // activates an item, likely a booster, in the num-th inventory slot
+{
+	parent.activate(num);
+}
+
+function shift(num,name) // shifts an item, likely a booster, in the num-th inventory slot
+{
+	// shift(0,'xpbooster')
+	// shift(0,'luckbooster')
+	// shift(0,'goldbooster')
+	parent.shift(num,name);
+}
+
 function item_properties(item) // example: item_properties(character.items[0])
 {
 	if(!item || !item.name) return {};
@@ -23,7 +36,6 @@ function item_value(item) // example: item_value(character.items[0])
 	if(!item || !item.name) return 0;
 	return calculate_item_value(item);
 }
-
 
 function get_socket()
 {
