@@ -16,6 +16,31 @@ function shift(num,name) // shifts an item, likely a booster, in the num-th inve
 	parent.shift(num,name);
 }
 
+function can_use(name) // work in progress, can be used to check cooldowns of class skills [02/02/17]
+{
+	return parent.can_use(name);
+}
+
+function use(name,target) // a multi-purpose use function, works for skills too
+{
+	if(isNaN(name)) // if name is not an integer, use the skill
+	{
+		if(!target) target=get_target();
+		parent.use_skill(name,target);
+	}
+	else
+	{
+		// for example, if there is a potion at the first inventory slot, use(0) would use it
+		equip(name);
+	}
+}
+
+function use_skill(name,target)
+{
+	if(!target) target=get_target();
+	parent.use_skill(name,target);
+}
+
 function item_properties(item) // example: item_properties(character.items[0])
 {
 	if(!item || !item.name) return {};
@@ -148,11 +173,6 @@ function equip(num)
 	parent.socket.emit("equip",{num:num});
 }
 
-function use(num) // for example, if there is a potion at the first inventory slot, use(0) would use it
-{
-	equip(num);
-}
-
 function trade(num,trade_slot,price) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
 {
 	parent.trade("trade"+trade_slot,num,price);
@@ -249,11 +269,11 @@ function use_hp_or_mp()
 	if(safeties && mssince(last_potion)<600) return;
 	var used=false;
 	if(new Date()<parent.next_potion) return;
-	if(character.mp/character.max_mp<0.2) parent.use('mp'),used=true; 
-	else if(character.hp/character.max_hp<0.7) parent.use('hp'),used=true;
-	else if(character.mp/character.max_mp<0.8) parent.use('mp'),used=true;
-	else if(character.hp<character.max_hp) parent.use('hp'),used=true;
-	else if(character.mp<character.max_mp) parent.use('mp'),used=true;
+	if(character.mp/character.max_mp<0.2) use('use_mp'),used=true; 
+	else if(character.hp/character.max_hp<0.7) use('use_hp'),used=true;
+	else if(character.mp/character.max_mp<0.8) use('use_mp'),used=true;
+	else if(character.hp<character.max_hp) use('use_hp'),used=true;
+	else if(character.mp<character.max_mp) use('use_mp'),used=true;
 	if(used) last_potion=new Date();
 }
 
@@ -276,7 +296,7 @@ function loot()
 function send_party_invite(name,is_request) // name could be a player object, name, or id
 {
 	if(!name) return;
-	var id=null;
+	var id=null,by="id";
 	if(is_object(name)) id=name.id;
 	else
 	{
@@ -325,6 +345,18 @@ function handle_command(command,args) // command's are things like "/party" that
 	return -1;
 }
 
+function send_cm(to,data)
+{
+	// to: Name or Array of Name's
+	// data: JSON object
+	parent.send_code_message(to,data);
+}
+
+function on_cm(name,data)
+{
+	game_log("Received a code message from: "+name);
+}
+
 function on_combined_damage() // When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage
 {
 	// move(character.real_x+5,character.real_y);
@@ -348,6 +380,18 @@ function on_destroy() // called just before the CODE is destroyed
 function on_draw() // the game calls this function at the best place in each game draw frame, so if you are playing the game at 60fps, this function gets called 60 times per second
 {
 	
+}
+
+function on_game_event(event)
+{
+	if(event.name=="pinkgoo")
+	{
+		// start searching for the "Love Goo" of the Valentine's Day event
+	}
+	if(event.name=="goblin")
+	{
+		// start searching for the "Sneaky Goblin"
+	}
 }
 
 var PIXI=parent.PIXI; // for drawing stuff into the game
