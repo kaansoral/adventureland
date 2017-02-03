@@ -22,6 +22,7 @@ Replace everything on CODE with these show_json's
 * `show_json(get_target())`
 * `show_json(parent.G.monsters)`
 * `show_json(parent.G.items)`
+* `show_json(parent.G.skills)`
 * `show_json(parent.G.npcs)`
 * `show_json(parent.M)`
 
