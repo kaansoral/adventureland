@@ -11,6 +11,7 @@ function locate_item(name)
 }
 
 setInterval(function(){
+	if(character.bank) return;
 	loops+=1;
 	if(!(loops%50)) // Every 50 loops, stock scrolls
 	{
