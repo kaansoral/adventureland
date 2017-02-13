@@ -87,11 +87,11 @@ function game_log(message,color)
 function get_target_of(entity) // .target is a Name for Monsters and `id` for Players - this function return whatever the entity in question is targeting
 {
 	if(!entity || !entity.target) return null;
-	if(character.id+''==entity.target+'' || character.name+''==entity.target+'') return character;
+	if(character.id==entity.target) return character;
 	for(var id in parent.entities)
 	{
 		var e=parent.entities[id];
-		if(e.id+''==entity.target+'' || e.name+''==entity.target+'') return e;
+		if(e.id==entity.target) return e;
 	}
 	return null;
 }
@@ -246,6 +246,7 @@ function get_nearest_monster(args)
 	// target: Only return monsters that target this "name" or player object
 	// no_target: Only pick monsters that don't have any target
 	// path_check: Checks if the character can move to the target
+	// type: Type of the monsters, for example "goo", can be referenced from `show_json(G.monsters)` [08/02/17]
 	var min_d=999999,target=null;
 
 	if(!args) args={};
@@ -254,10 +255,32 @@ function get_nearest_monster(args)
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
-		if(current.type!="monster" || args.min_xp && current.xp<args.min_xp || args.max_att && current.attack>args.max_att || current.dead) continue;
+		if(current.type!="monster" || current.dead) continue;
+		if(args.type && current.mtype!=args.type) continue;
+		if(args.min_xp && current.xp<args.min_xp) continue;
+		if(args.max_att && current.attack>args.max_att) continue;
 		if(args.target && current.target!=args.target) continue;
 		if(args.no_target && current.target && current.target!=character.name) continue;
 		if(args.path_check && !can_move_to(current)) continue;
+		var c_dist=parent.distance(character,current);
+		if(c_dist<min_d) min_d=c_dist,target=current;
+	}
+	return target;
+}
+
+function get_nearest_hostile(args) // mainly as an example [08/02/17]
+{
+	//args: no args yet
+	var min_d=999999,target=null;
+
+	if(!args) args={};
+
+	for(id in parent.entities)
+	{
+		var current=parent.entities[id];
+		if(current.type!="character" || current.rip || current.invincible) continue;
+		if(current.party && character.party==current.party) continue;
+		if(in_arr(current.owner,parent.friends)) continue;
 		var c_dist=parent.distance(character,current);
 		if(c_dist<min_d) min_d=c_dist,target=current;
 	}
@@ -295,17 +318,8 @@ function loot()
 
 function send_party_invite(name,is_request) // name could be a player object, name, or id
 {
-	if(!name) return;
-	var id=null,by="id";
-	if(is_object(name)) id=name.id;
-	else
-	{
-		var player=get_player(name);
-		if(player) id=player.id;
-		else id=name;
-	}
-	if(id) parent.socket.emit('party',{event:is_request&&'request'||'invite',id:id});
-	else game_log("Player not found.","gray");
+	if(is_object(name)) name=name.name;
+	parent.socket.emit('party',{event:is_request&&'request'||'invite',name:name});
 }
 
 function send_party_request(name)
@@ -445,6 +459,23 @@ function load_code(name,onerror) // onerror can be a function that will be execu
 	library.text=xhrObj.responseText;
 	library.onerror=onerror;
 	document.getElementsByTagName("head")[0].appendChild(library);
+}
+
+function smart_move(map,x,y,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
+{
+	if(is_object(map))
+	{
+		var t=map;
+		on_done=x;
+		x=t.x; y=t.y;
+	}
+
+	if(is_string(x))
+	{
+		on_done=y;
+		// #TODO: Implement
+	}
+
 }
 
 //safety flags
