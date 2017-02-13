@@ -37,9 +37,11 @@ setInterval(function(){
 				if(character.items[k].level!=character.items[i].level) continue;
 				if(!done) // to prevent combining multiple items in one loop
 				{
+					var offering=null;
+					// if(item.level==2) offering=locate_item("offering");
 					if(item_grade(item)==2) continue; // rare item
-					if(item_grade(item)==0) compound(i,j,k,locate_item("cscroll0"));
-					if(item_grade(item)==1) compound(i,j,k,locate_item("cscroll1"));
+					if(item_grade(item)==0) compound(i,j,k,locate_item("cscroll0"),offering);
+					if(item_grade(item)==1) compound(i,j,k,locate_item("cscroll1"),offering);
 					done=true;
 				}
 			}
