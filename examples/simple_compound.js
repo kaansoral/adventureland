@@ -10,13 +10,22 @@ function locate_item(name)
 	return -1;
 }
 
+function return_item(name)
+{
+	for(var i=0;i<42;i++)
+	{
+		if(character.items[i] && character.items[i].name==name) return character.items[i];
+	}
+	return -1;
+}
+
 setInterval(function(){
 	// if(character.bank) return;
 	loops+=1;
 	if(!(loops%50)) // Every 50 loops, stock scrolls
 	{
-		if(locate_item("cscroll0")==-1 || locate_item("cscroll0").q<200) buy("cscroll0",200);
-		if(locate_item("cscroll1")==-1 || locate_item("cscroll1").q<30) buy("cscroll1",30);
+		if(locate_item("cscroll0")==-1 || return_item("cscroll0").q<200) buy("cscroll0",200);
+		if(locate_item("cscroll1")==-1 || return_item("cscroll1").q<30) buy("cscroll1",30);
 	}
 	var done=false;
 	for(var i=0;i<42;i++)
