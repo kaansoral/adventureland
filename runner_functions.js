@@ -270,17 +270,18 @@ function get_nearest_monster(args)
 
 function get_nearest_hostile(args) // mainly as an example [08/02/17]
 {
-	//args: no args yet
 	var min_d=999999,target=null;
 
 	if(!args) args={};
+	if(args.friendship===undefined) args.friendship=true;
 
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
 		if(current.type!="character" || current.rip || current.invincible) continue;
 		if(current.party && character.party==current.party) continue;
-		if(in_arr(current.owner,parent.friends)) continue;
+		if(args.friendship && in_arr(current.owner,parent.friends)) continue;
+		if(args.exclude && in_arr(current.name,args.exclude)) continue; // get_nearest_hostile({exclude:["Wizard"]}); Thanks
 		var c_dist=parent.distance(character,current);
 		if(c_dist<min_d) min_d=c_dist,target=current;
 	}
@@ -369,6 +370,11 @@ function send_cm(to,data)
 function on_cm(name,data)
 {
 	game_log("Received a code message from: "+name);
+}
+
+function on_disappear(entity,data)
+{
+	// game_log("disappear: "+entity.id+" "+JSON.stringify(data));
 }
 
 function on_combined_damage() // When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage
@@ -461,19 +467,19 @@ function load_code(name,onerror) // onerror can be a function that will be execu
 	document.getElementsByTagName("head")[0].appendChild(library);
 }
 
-function smart_move(map,x,y,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
+function smart_move(destination,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
 {
-	if(is_object(map))
+	if("x" in destination)
 	{
-		var t=map;
-		on_done=x;
-		x=t.x; y=t.y;
-	}
 
-	if(is_string(x))
+	}
+	else if("to" in destination)
 	{
-		on_done=y;
-		// #TODO: Implement
+
+	}
+	else if("spawn" in destination)
+	{
+
 	}
 
 }
