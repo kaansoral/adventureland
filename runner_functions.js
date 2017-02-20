@@ -530,6 +530,9 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 		}
 		else if(destination.to=="upgrade" || destination.to=="compound") smart.map="main",smart.x=-204,smart.y=-129;
 		else if(destination.to=="exchange") smart.map="main",smart.x=-26,smart.y=-432;
+		else if(destination.to=="potions" && character.map=="halloween") smart.map="main",smart.x=149,smart.y=-182;
+		else if(destination.to=="potions" && in_arr(character.map,["winterland","winter_inn","winter_cave"])) smart.map="winter_inn",smart.x=160,smart.y=-173;
+		else if(destination.to=="potions") smart.map="main",smart.x=56,smart.y=-122;
 	}
 	if(!smart.map)
 	{
@@ -632,8 +635,8 @@ function bfs()
 	if(result===null)
 	{
 		game_log("Path not found!","#CF575F");
-		smart.on_done(false);
 		smart.moving=false;
+		smart.on_done(false);
 	}
 	else
 	{
@@ -681,8 +684,8 @@ function smart_move_logic()
 	{
 		if(!smart.plot.length)
 		{
-			smart.on_done(true);
 			smart.moving=false;
+			smart.on_done(true);
 			return;
 		}
 		var current=smart.plot[0];
