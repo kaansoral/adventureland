@@ -3,7 +3,7 @@ setInterval(function(){
 	use_hp_or_mp();
 	loot();
 
-	if(is_moving(character)) return;
+	if(is_moving(character) || character.rip) return;
 	//IDEA: Instead of returning when is_moving, if character.targets<2, farm nearby monsters if they are in_attack_range
 
 	var target=get_nearest_monster({type:"phoenix"});
@@ -30,3 +30,10 @@ setInterval(function(){
 	}
 
 },160);
+
+function handle_death()
+{
+	setTimeout(respawn,25000);
+	return true;
+	// This ensures you keep on farming, yet, to retain your XP, do enhance the logic for defense
+}
