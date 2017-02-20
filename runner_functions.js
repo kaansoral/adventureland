@@ -141,6 +141,13 @@ function can_attack(target) // also works for priests/heal
 }
 function can_heal(t){return can_attack(t);}
 
+function is_moving(entity)
+{
+	if(entity.me && smart.moving) return true;
+	if(entity.moving) return true;
+	return false;
+}
+
 function attack(target)
 {
 	if(safeties && mssince(last_attack)<400) return;
@@ -278,7 +285,7 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
-		if(current.type!="character" || current.rip || current.invincible) continue;
+		if(current.type!="character" || current.rip || current.invincible || current.npc) continue;
 		if(current.party && character.party==current.party) continue;
 		if(args.friendship && in_arr(current.owner,parent.friends)) continue;
 		if(args.exclude && in_arr(current.name,args.exclude)) continue; // get_nearest_hostile({exclude:["Wizard"]}); Thanks
@@ -467,24 +474,249 @@ function load_code(name,onerror) // onerror can be a function that will be execu
 	document.getElementsByTagName("head")[0].appendChild(library);
 }
 
+var smart={
+	moving:false,
+	map:"main",x:0,y:0,
+	on_done:function(){},
+	plot:null,
+	edge:20,
+	use_town:false,
+	prune:{
+		smooth:true,
+		map:true,
+	},
+	flags:{}
+};
+
 function smart_move(destination,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
 {
+	smart.map="";
 	if("x" in destination)
 	{
-
+		smart.map=destination.map||character.map;
+		smart.x=destination.x;
+		smart.y=destination.y;
 	}
-	else if("to" in destination)
+	else if("to" in destination || "map" in destination)
 	{
-
+		if(G.monsters[destination.to])
+		{
+			for(var name in G.maps)
+				(G.maps[name].monsters||[]).forEach(function(pack){
+					if(pack.type!=destination.to) return;
+					if(pack.boundaries) // boundaries: for phoenix, mvampire
+					{
+						pack.last=pack.last||0;
+						var boundary=pack.boundaries[pack.last%pack.boundaries.length];
+						pack.last++;
+						smart.map=boundary[0];
+						smart.x=(boundary[1]+boundary[3])/2;
+						smart.y=(boundary[2]+boundary[4])/2;
+					}
+					else if(pack.boundary)
+					{
+						var boundary=pack.boundary;
+						smart.map=name;
+						smart.x=(boundary[0]+boundary[2])/2;
+						smart.y=(boundary[1]+boundary[3])/2;
+					}
+				});
+		}
+		else if(G.maps[destination.to||destination.map])
+		{
+			smart.map=destination.to||destination.map;
+			smart.x=G.maps[smart.map].spawns[0][0];
+			smart.y=G.maps[smart.map].spawns[0][1];
+		}
+		else if(destination.to=="upgrade" || destination.to=="compound") smart.map="main",smart.x=-204,smart.y=-129;
+		else if(destination.to=="exchange") smart.map="main",smart.x=-26,smart.y=-432;
 	}
-	else if("spawn" in destination)
+	if(!smart.map)
 	{
-
+		game_log("Unrecognized","#CF5B5B");
+		return;
 	}
-
+	smart.moving=true;
+	smart.plot=[]; smart.flags={}; smart.searching=smart.found=false;
+	smart.on_done=on_done||function(){};
 }
+
+var queue=[],visited={},start=0,best=null;
+var moves=[[0,15],[0,-15],[15,0],[-15,0]];
+
+function plot(index)
+{
+	if(index==-1) return;
+	plot(queue[index].i); // Recursively back-tracks the path we came from
+	smart.plot.push(queue[index]);
+}
+
+function qpush(node)
+{
+	// If we haven't visited this location, adds the location to the queue
+	if(smart.prune.map && smart.flags.map && node.map!=smart.map) return;
+	if(visited[node.map+"-"+node.x+"-"+node.y]) return;
+	if(!node.i) node.i=start; // set the index, to aid the plot function
+	queue.push(node);
+	visited[node.map+"-"+node.x+"-"+node.y]=true;
+}
+
+function smooth_path()
+{
+	var i=0,j;
+	while(i<smart.plot.length)
+	{
+		// Assume the path ahead is [i] [i+1] [i+2] - This routine checks whether [i+1] could be skipped
+		// The resulting path is smooth rather than rectangular and bumpy
+		// Try adding "function smooth_path(){}" or "smart.prune.smooth=false;" to your Code
+		while(i+2<smart.plot.length && smart.plot[i].map==smart.plot[i+1].map && smart.plot[i].map==smart.plot[i+1].map &&
+			can_move({map:smart.plot[i].map,x:smart.plot[i].x,y:smart.plot[i].y,going_x:smart.plot[i+2].x,going_y:smart.plot[i+2].y}))
+				smart.plot.splice(i+1,1);
+		i++;
+	}
+}
+
+function bfs()
+{
+	var timer=new Date(),result=null,optimal=true;
+
+	while(start<queue.length)
+	{
+		var current=queue[start];
+		if(current.map==smart.map)
+		{
+			smart.flags.map=true;
+			if(abs(current.x-smart.x)+abs(current.y-smart.y)<smart.edge)
+			{
+				result=start;
+				break;
+			}
+			else if(best===null || abs(current.x-smart.x)+abs(current.y-smart.y)<abs(queue[best].x-smart.x)+abs(queue[best].y-smart.y))
+			{
+				best=start;
+			}
+		}
+		else if(current.map!=smart.map)
+		{
+			if(smart.prune.map && smart.flags.map) {start++; continue;}
+			G.maps[current.map].doors.forEach(function(door){
+				if(simple_distance({x:door[0]+door[2]/2,y:door[1]+door[2]},{x:current.x,y:current.y})<45)
+					qpush({map:door[4],x:G.maps[door[4]].spawns[door[5]||0][0],y:G.maps[door[4]].spawns[door[5]||0][1],transport:true,s:door[5]||0});
+			});
+			G.maps[current.map].npcs.forEach(function(npc){
+				if(npc.id=="transporter" && simple_distance({x:npc.position[0],y:npc.position[1]},{x:current.x,y:current.y})<75)
+				{
+					for(var place in G.npcs.transporter.places)
+					{
+						qpush({map:place,x:G.maps[place].spawns[G.npcs.transporter.places[place]][0],y:G.maps[place].spawns[G.npcs.transporter.places[place]][1],transport:true,s:G.npcs.transporter.places[place]});
+					}
+				}
+			});
+		}
+
+		if(smart.use_town) qpush({map:current.map,x:G.maps[current.map].spawns[0][0],y:G.maps[current.map].spawns[0][1],town:true}); // "town"
+
+		shuffle(moves);
+		moves.forEach(function(m){
+			var new_x=parseInt(current.x+m[0]),new_y=parseInt(current.y+m[1]);
+			// utilise can_move - game itself uses can_move too - smart_move is slow as can_move checks all the lines at each step
+			if(can_move({map:current.map,x:current.x,y:current.y,going_x:new_x,going_y:new_y}))
+				qpush({map:current.map,x:new_x,y:new_y});
+		});
+
+		start++;
+		if(mssince(timer)>(!parent.is_hidden()&&40||500)) return;
+	}
+	
+	if(result===null) result=best,optimal=false;
+	if(result===null)
+	{
+		game_log("Path not found!","#CF575F");
+		smart.on_done(false);
+		smart.moving=false;
+	}
+	else
+	{
+		plot(result);
+		smart.found=true;
+		if(smart.prune.smooth) smooth_path();
+		if(optimal) game_log("Path found!","#C882D1");
+		else game_log("Path found~","#C882D1");
+		// game_log(queue.length);
+		parent.d_text("Yes!",character,{color:"#58D685"});
+	}
+}
+
+function start_pathfinding()
+{
+	smart.searching=true;
+	queue=[],visited={},start=0,best=null;
+	qpush({x:character.real_x,y:character.real_y,map:character.map,i:-1});
+	game_log("Searching for a path...","#89D4A2");
+	bfs();
+}
+
+function continue_pathfinding()
+{
+	bfs();
+}
+
+function smart_move_logic()
+{
+	if(!smart.moving) return;
+	if(!smart.searching && !smart.found)
+	{
+		start_pathfinding();
+	}
+	else if(!smart.found)
+	{
+		if(Math.random()<0.1)
+		{
+			move(character.real_x+Math.random()*0.0002-0.0001,character.real_y+Math.random()*0.0002-0.0001);
+			parent.d_text(shuffle(["Hmm","...","???","Definitely left","No right!","Is it?","I can do this!","I think ...","What If","Should be","I'm Sure","Nope","Wait a min!","Oh my"])[0],character,{color:shuffle(["#68B3D1","#D06F99","#6ED5A3","#D2CF5A"])[0]});
+		}
+		continue_pathfinding();
+	}
+	else if(!character.moving && can_walk(character))
+	{
+		if(!smart.plot.length)
+		{
+			smart.on_done(true);
+			smart.moving=false;
+			return;
+		}
+		var current=smart.plot[0];
+		smart.plot.splice(0,1);
+		// game_log(JSON.stringify(current));
+		if(current.town)
+		{
+			use("town");
+		}
+		else if(current.door)
+		{
+			use("door",character.map,current.num);
+		}
+		else if(current.transport)
+		{
+			parent.socket.emit("transport",{to:current.map,s:current.s});
+			// use("transporter",current.map);
+		}
+		else if(character.map==current.map && can_move_to(current.x,current.y))
+		{
+			move(current.x,current.y);
+		}
+		else
+		{
+			game_log("Lost the path...","#CF5B5B");
+			smart_move(smart,smart.on_done);
+		}
+	}
+}
+
+setInterval(function(){smart_move_logic();},80);
 
 //safety flags
 var last_loot=new Date(0);
 var last_attack=new Date(0);
 var last_potion=new Date(0);
+var last_transport=new Date(0);
