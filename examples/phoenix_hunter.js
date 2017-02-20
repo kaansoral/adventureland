@@ -4,6 +4,7 @@ setInterval(function(){
 	loot();
 
 	if(is_moving(character)) return;
+	// IDEA: Instead of returning when is_moving, if character.targets<2, farm nearby monsters if they are in_attack_range
 
 	var target=get_nearest_monster({type:"phoenix"});
 	if(!target)
@@ -20,7 +21,6 @@ setInterval(function(){
 			character.real_x+(target.real_x-character.real_x)/2,
 			character.real_y+(target.real_y-character.real_y)/2
 			);
-		// Walk half the distance
 	}
 	else if(can_attack(target))
 	{
