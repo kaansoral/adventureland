@@ -148,6 +148,13 @@ function is_moving(entity)
 	return false;
 }
 
+function is_transporting(entity)
+{
+	if(entity.c.town) return true;
+	if(entity.me && parent.transporting) return true;
+	return false;
+}
+
 function attack(target)
 {
 	if(safeties && mssince(last_attack)<400) return;
@@ -229,7 +236,7 @@ function move(x,y)
 	character.moving=true;
 	parent.calculate_vxy(character);
 	// parent.console.log("engaged move "+character.angle);
-	parent.socket.emit("move",{x:character.real_x,y:character.real_y,going_x:character.going_x,going_y:character.going_y});
+	parent.socket.emit("move",{x:character.real_x,y:character.real_y,going_x:character.going_x,going_y:character.going_y,m:character.m});
 }
 
 function show_json(e) // renders the object as json inside the game
@@ -287,6 +294,7 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
 		var current=parent.entities[id];
 		if(current.type!="character" || current.rip || current.invincible || current.npc) continue;
 		if(current.party && character.party==current.party) continue;
+		if(current.guild && character.guild==current.guild) continue;
 		if(args.friendship && in_arr(current.owner,parent.friends)) continue;
 		if(args.exclude && in_arr(current.name,args.exclude)) continue; // get_nearest_hostile({exclude:["Wizard"]}); Thanks
 		var c_dist=parent.distance(character,current);
@@ -461,6 +469,23 @@ function clear_drawings()
 	drawings=parent.drawings=[];
 }
 
+var game={
+	last:0,
+	callbacks:[],
+	on:function(event,f){
+
+	},
+	once:function(event,f){
+
+	},
+	remove:function(num){
+
+	},
+	trigger:function(event,args){
+
+	},
+};
+
 function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
 {
 	if(!onerror) onerror=function(){ game_log("load_code: Failed to load","#E13758"); }
@@ -491,6 +516,7 @@ var smart={
 function smart_move(destination,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
 {
 	smart.map="";
+	if(is_string(destination)) destination={to:destination};
 	if("x" in destination)
 	{
 		smart.map=destination.map||character.map;
@@ -499,11 +525,12 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 	}
 	else if("to" in destination || "map" in destination)
 	{
+		if(destination.to=="town") destination.to="main";
 		if(G.monsters[destination.to])
 		{
 			for(var name in G.maps)
 				(G.maps[name].monsters||[]).forEach(function(pack){
-					if(pack.type!=destination.to) return;
+					if(pack.type!=destination.to || G.maps[name].ignore) return;
 					if(pack.boundaries) // boundaries: for phoenix, mvampire
 					{
 						pack.last=pack.last||0;
@@ -531,8 +558,9 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 		else if(destination.to=="upgrade" || destination.to=="compound") smart.map="main",smart.x=-204,smart.y=-129;
 		else if(destination.to=="exchange") smart.map="main",smart.x=-26,smart.y=-432;
 		else if(destination.to=="potions" && character.map=="halloween") smart.map="main",smart.x=149,smart.y=-182;
-		else if(destination.to=="potions" && in_arr(character.map,["winterland","winter_inn","winter_cave"])) smart.map="winter_inn",smart.x=160,smart.y=-173;
+		else if(destination.to=="potions" && in_arr(character.map,["winterland","winter_inn","winter_cave"])) smart.map="winter_inn",smart.x=-84,smart.y=-173;
 		else if(destination.to=="potions") smart.map="main",smart.x=56,smart.y=-122;
+		else if(destination.to=="scrolls") smart.map="main",smart.x=-465,smart.y=-71;
 	}
 	if(!smart.map)
 	{
@@ -541,7 +569,23 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 	}
 	smart.moving=true;
 	smart.plot=[]; smart.flags={}; smart.searching=smart.found=false;
-	smart.on_done=on_done||function(){};
+	if(destination.return)
+	{
+		var cx=character.real_x,cy=character.real_y,cmap=character.map;
+		smart.on_done=function(){
+			if(on_done) on_done();
+			smart_move({map:cmap,x:cx,y:cy});
+		}
+	}
+	else smart.on_done=on_done||function(){};
+	console.log(smart.map+" "+smart.x+" "+smart.y);
+}
+
+function stop()
+{
+	if(smart.moving) smart.on_done(false);
+	smart.moving=false;
+	move(character.real_x,character.real_y);
 }
 
 var queue=[],visited={},start=0,best=null;
@@ -603,7 +647,7 @@ function bfs()
 		{
 			if(smart.prune.map && smart.flags.map) {start++; continue;}
 			G.maps[current.map].doors.forEach(function(door){
-				if(simple_distance({x:door[0]+door[2]/2,y:door[1]+door[2]},{x:current.x,y:current.y})<45)
+				if(simple_distance({x:door[0]+door[2]/2,y:door[1]+door[3]/2},{x:current.x,y:current.y})<45)
 					qpush({map:door[4],x:G.maps[door[4]].spawns[door[5]||0][0],y:G.maps[door[4]].spawns[door[5]||0][1],transport:true,s:door[5]||0});
 			});
 			G.maps[current.map].npcs.forEach(function(npc){
@@ -680,7 +724,7 @@ function smart_move_logic()
 		}
 		continue_pathfinding();
 	}
-	else if(!character.moving && can_walk(character))
+	else if(!character.moving && can_walk(character) && !is_transporting(character))
 	{
 		if(!smart.plot.length)
 		{
@@ -695,10 +739,6 @@ function smart_move_logic()
 		{
 			use("town");
 		}
-		else if(current.door)
-		{
-			use("door",character.map,current.num);
-		}
 		else if(current.transport)
 		{
 			parent.socket.emit("transport",{to:current.map,s:current.s});
@@ -711,7 +751,7 @@ function smart_move_logic()
 		else
 		{
 			game_log("Lost the path...","#CF5B5B");
-			smart_move(smart,smart.on_done);
+			smart_move({map:smart.map,x:smart.x,y:smart.y},smart.on_done);
 		}
 	}
 }
