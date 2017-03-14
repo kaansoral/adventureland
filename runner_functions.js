@@ -332,6 +332,25 @@ function loot()
 	}
 }
 
+function send_gold(receiver,gold)
+{
+	if(!receiver) return game_log("No receiver sent to send_gold");
+	if(receiver.name) receiver=receiver.name;
+	parent.socket.emit("send",{name:receiver,gold:gold});
+}
+
+function send_item(receiver,num,quantity)
+{
+	if(!receiver) return game_log("No receiver sent to send_item");
+	if(receiver.name) receiver=receiver.name;
+	parent.socket.emit("send",{name:receiver,num:num,q:quantity||1});
+}
+
+function destroy_item(num) // num: 0 to 41
+{
+	parent.socket.emit("destroy",{num:num});
+}
+
 function send_party_invite(name,is_request) // name could be a player object, name, or id
 {
 	if(is_object(name)) name=name.name;
@@ -557,7 +576,7 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 		}
 		else if(destination.to=="upgrade" || destination.to=="compound") smart.map="main",smart.x=-204,smart.y=-129;
 		else if(destination.to=="exchange") smart.map="main",smart.x=-26,smart.y=-432;
-		else if(destination.to=="potions" && character.map=="halloween") smart.map="main",smart.x=149,smart.y=-182;
+		else if(destination.to=="potions" && character.map=="halloween") smart.map="halloween",smart.x=149,smart.y=-182;
 		else if(destination.to=="potions" && in_arr(character.map,["winterland","winter_inn","winter_cave"])) smart.map="winter_inn",smart.x=-84,smart.y=-173;
 		else if(destination.to=="potions") smart.map="main",smart.x=56,smart.y=-122;
 		else if(destination.to=="scrolls") smart.map="main",smart.x=-465,smart.y=-71;
