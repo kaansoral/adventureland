@@ -505,6 +505,31 @@ var game={
 	},
 };
 
+function preview_item(def,args)
+{
+	//PLANNED Improvements:
+	//- Importing a custom thumbnail
+	//- Drafting custom item abilities
+	// Email me or create an issue if you need these features (if you want to suggest new items) [20/03/17]
+	if(!args) args={};
+	var html="";
+	var styles="vertical-align: top; margin: 10px";
+	var name=def.id||args.id||"staff";
+	parent.prop_cache={}; // bust the item cache
+	if(def.compound || def.upgrade)
+	{
+		for(var level=0;level<=10;level++)
+			html+=parent.render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:level},sell:true,thumbnail:args.thumbnail});
+	}
+	else
+	{
+		html+=parent.render_item("html",{item:def,name:name,thumbnail:args.thumbnail});
+	}
+	html+="<div style='margin: 10px; border: 5px solid gray; padding: 4px'>"+parent.json_to_html(def)+"</div>";
+	parent.show_modal(html);
+	parent.prop_cache={};
+}
+
 function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
 {
 	if(!onerror) onerror=function(){ game_log("load_code: Failed to load","#E13758"); }
