@@ -1,4 +1,32 @@
-//#NOTE: If you want to see a new function/feature, just request it at: https://github.com/kaansoral/adventureland/issues
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: runner_functions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: runner_functions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//#NOTE: If you want to see a new function/feature, just request it at: https://github.com/kaansoral/adventureland/issues
 var character = parent.character;
 var G = parent.G; // Game data
 var safeties = true;
@@ -104,7 +132,7 @@ function get_map() {
  * @param {string} [color] the color in which the text should be displayed
  */
 function set_message(text, color) {
-    if (color) text = "<span style='color: " + color + "'>" + text + "</span>";
+    if (color) text = "&lt;span style='color: " + color + "'>" + text + "&lt;/span>";
     $('#gg').html(text);
 }
 /**
@@ -133,7 +161,7 @@ function get_target() {
 }
 
 function get_targeted_monster() {
-    if (parent.ctarget && !parent.ctarget.dead && parent.ctarget.type == 'monster') return parent.ctarget;
+    if (parent.ctarget &amp;&amp; !parent.ctarget.dead &amp;&amp; parent.ctarget.type == 'monster') return parent.ctarget;
     return null;
 }
 
@@ -156,7 +184,7 @@ function can_move_to(x, y) {
 function in_attack_range(target) // also works for priests/heal
 {
     if (!target) return false;
-    if (parent.distance(character, target) <= character.range) return true;
+    if (parent.distance(character, target) &lt;= character.range) return true;
     return false;
 }
 
@@ -164,7 +192,7 @@ function can_attack(target) // also works for priests/heal
 {
     // is_disabled function checks .rip and .stunned
     if (!target) return false;
-    if (!parent.is_disabled(character) && in_attack_range(target) && new Date() >= parent.next_attack) return true;
+    if (!parent.is_disabled(character) &amp;&amp; in_attack_range(target) &amp;&amp; new Date() >= parent.next_attack) return true;
     return false;
 }
 function can_heal(t) {
@@ -172,19 +200,19 @@ function can_heal(t) {
 }
 
 function is_moving(entity) {
-    if (entity.me && smart.moving) return true;
+    if (entity.me &amp;&amp; smart.moving) return true;
     if (entity.moving) return true;
     return false;
 }
 
 function is_transporting(entity) {
     if (entity.c.town) return true;
-    if (entity.me && parent.transporting) return true;
+    if (entity.me &amp;&amp; parent.transporting) return true;
     return false;
 }
 
 function attack(target) {
-    if (safeties && mssince(last_attack) < 400) return;
+    if (safeties &amp;&amp; mssince(last_attack) &lt; 400) return;
     if (!target) {
         game_log("Nothing to attack()", "gray");
         return;
@@ -195,7 +223,7 @@ function attack(target) {
 }
 
 function heal(target) {
-    if (safeties && mssince(last_attack) < 400) return;
+    if (safeties &amp;&amp; mssince(last_attack) &lt; 400) return;
     if (!target) {
         game_log("No one to heal()", "gray");
         return;
@@ -283,7 +311,7 @@ function get_player(name) // returns the player by name, if the player is within
 {
     var target = null, entities = parent.entities;
     if (name == character.name) target = character;
-    for (i in entities) if (entities[i].type == "character" && entities[i].name == name) target = entities[i];
+    for (i in entities) if (entities[i].type == "character" &amp;&amp; entities[i].name == name) target = entities[i];
     return target;
 }
 
@@ -298,19 +326,19 @@ function get_nearest_monster(args) {
     var min_d = 999999, target = null;
 
     if (!args) args = {};
-    if (args && args.target && args.target.name) args.target = args.target.name;
+    if (args &amp;&amp; args.target &amp;&amp; args.target.name) args.target = args.target.name;
 
     for (id in parent.entities) {
         var current = parent.entities[id];
         if (current.type != "monster" || current.dead) continue;
-        if (args.type && current.mtype != args.type) continue;
-        if (args.min_xp && current.xp < args.min_xp) continue;
-        if (args.max_att && current.attack > args.max_att) continue;
-        if (args.target && current.target != args.target) continue;
-        if (args.no_target && current.target && current.target != character.name) continue;
-        if (args.path_check && !can_move_to(current)) continue;
+        if (args.type &amp;&amp; current.mtype != args.type) continue;
+        if (args.min_xp &amp;&amp; current.xp &lt; args.min_xp) continue;
+        if (args.max_att &amp;&amp; current.attack > args.max_att) continue;
+        if (args.target &amp;&amp; current.target != args.target) continue;
+        if (args.no_target &amp;&amp; current.target &amp;&amp; current.target != character.name) continue;
+        if (args.path_check &amp;&amp; !can_move_to(current)) continue;
         var c_dist = parent.distance(character, current);
-        if (c_dist < min_d) min_d = c_dist, target = current;
+        if (c_dist &lt; min_d) min_d = c_dist, target = current;
     }
     return target;
 }
@@ -325,35 +353,35 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
     for (id in parent.entities) {
         var current = parent.entities[id];
         if (current.type != "character" || current.rip || current.invincible || current.npc) continue;
-        if (current.party && character.party == current.party) continue;
-        if (current.guild && character.guild == current.guild) continue;
-        if (args.friendship && in_arr(current.owner, parent.friends)) continue;
-        if (args.exclude && in_arr(current.name, args.exclude)) continue; // get_nearest_hostile({exclude:["Wizard"]}); Thanks
+        if (current.party &amp;&amp; character.party == current.party) continue;
+        if (current.guild &amp;&amp; character.guild == current.guild) continue;
+        if (args.friendship &amp;&amp; in_arr(current.owner, parent.friends)) continue;
+        if (args.exclude &amp;&amp; in_arr(current.name, args.exclude)) continue; // get_nearest_hostile({exclude:["Wizard"]}); Thanks
         var c_dist = parent.distance(character, current);
-        if (c_dist < min_d) min_d = c_dist, target = current;
+        if (c_dist &lt; min_d) min_d = c_dist, target = current;
     }
     return target;
 }
 
 function use_hp_or_mp() {
-    if (safeties && mssince(last_potion) < 600) return;
+    if (safeties &amp;&amp; mssince(last_potion) &lt; 600) return;
     var used = false;
-    if (new Date() < parent.next_potion) return;
-    if (character.mp / character.max_mp < 0.2) use('use_mp'), used = true;
-    else if (character.hp / character.max_hp < 0.7) use('use_hp'), used = true;
-    else if (character.mp / character.max_mp < 0.8) use('use_mp'), used = true;
-    else if (character.hp < character.max_hp) use('use_hp'), used = true;
-    else if (character.mp < character.max_mp) use('use_mp'), used = true;
+    if (new Date() &lt; parent.next_potion) return;
+    if (character.mp / character.max_mp &lt; 0.2) use('use_mp'), used = true;
+    else if (character.hp / character.max_hp &lt; 0.7) use('use_hp'), used = true;
+    else if (character.mp / character.max_mp &lt; 0.8) use('use_mp'), used = true;
+    else if (character.hp &lt; character.max_hp) use('use_hp'), used = true;
+    else if (character.mp &lt; character.max_mp) use('use_mp'), used = true;
     if (used) last_potion = new Date();
 }
 
 function loot() {
     var looted = 0;
-    if (safeties && mssince(last_loot) < 200) return;
+    if (safeties &amp;&amp; mssince(last_loot) &lt; 200) return;
     last_loot = new Date();
     for (id in parent.chests) {
         var chest = parent.chests[id];
-        if (safeties && (chest.items > character.esize || chest.last_loot && mssince(chest.last_loot) < 1600)) continue;
+        if (safeties &amp;&amp; (chest.items > character.esize || chest.last_loot &amp;&amp; mssince(chest.last_loot) &lt; 1600)) continue;
         chest.last_loot = last_loot;
         parent.socket.emit("open_chest", {id: id});
         looted++;
@@ -381,7 +409,7 @@ function destroy_item(num) // num: 0 to 41
 function send_party_invite(name, is_request) // name could be a player object, name, or id
 {
     if (is_object(name)) name = name.name;
-    parent.socket.emit('party', {event: is_request && 'request' || 'invite', name: name});
+    parent.socket.emit('party', {event: is_request &amp;&amp; 'request' || 'invite', name: name});
 }
 
 function send_party_request(name) {
@@ -532,7 +560,7 @@ function preview_item(def, args) {
     var name = def.id || args.id || "staff";
     parent.prop_cache = {}; // bust the item cache
     if (def.compound || def.upgrade) {
-        for (var level = 0; level <= 10; level++)
+        for (var level = 0; level &lt;= 10; level++)
             html += parent.render_item("html", {
                 item: def,
                 name: name,
@@ -545,7 +573,7 @@ function preview_item(def, args) {
     else {
         html += parent.render_item("html", {item: def, name: name, thumbnail: args.thumbnail});
     }
-    html += "<div style='margin: 10px; border: 5px solid gray; padding: 4px'>" + parent.json_to_html(def) + "</div>";
+    html += "&lt;div style='margin: 10px; border: 5px solid gray; padding: 4px'>" + parent.json_to_html(def) + "&lt;/div>";
     parent.show_modal(html);
     parent.prop_cache = {};
 }
@@ -556,7 +584,7 @@ function load_code(name, onerror) // onerror can be a function that will be exec
         game_log("load_code: Failed to load", "#E13758");
     }
     var xhrObj = new XMLHttpRequest();
-    xhrObj.open('GET', "/code.js?name=" + encodeURIComponent(name) + "&timestamp=" + (new Date().getTime()), false);
+    xhrObj.open('GET', "/code.js?name=" + encodeURIComponent(name) + "&amp;timestamp=" + (new Date().getTime()), false);
     xhrObj.send('');
     var library = document.createElement("script");
     library.type = "text/javascript";
@@ -619,8 +647,8 @@ function smart_move(destination, on_done) // despite the name, smart_move isn't 
         }
         else if (destination.to == "upgrade" || destination.to == "compound") smart.map = "main", smart.x = -204, smart.y = -129;
         else if (destination.to == "exchange") smart.map = "main", smart.x = -26, smart.y = -432;
-        else if (destination.to == "potions" && character.map == "halloween") smart.map = "halloween", smart.x = 149, smart.y = -182;
-        else if (destination.to == "potions" && in_arr(character.map, ["winterland", "winter_inn", "winter_cave"])) smart.map = "winter_inn", smart.x = -84, smart.y = -173;
+        else if (destination.to == "potions" &amp;&amp; character.map == "halloween") smart.map = "halloween", smart.x = 149, smart.y = -182;
+        else if (destination.to == "potions" &amp;&amp; in_arr(character.map, ["winterland", "winter_inn", "winter_cave"])) smart.map = "winter_inn", smart.x = -84, smart.y = -173;
         else if (destination.to == "potions") smart.map = "main", smart.x = 56, smart.y = -122;
         else if (destination.to == "scrolls") smart.map = "main", smart.x = -465, smart.y = -71;
     }
@@ -661,7 +689,7 @@ function plot(index) {
 
 function qpush(node) {
     // If we haven't visited this location, adds the location to the queue
-    if (smart.prune.map && smart.flags.map && node.map != smart.map) return;
+    if (smart.prune.map &amp;&amp; smart.flags.map &amp;&amp; node.map != smart.map) return;
     if (visited[node.map + "-" + node.x + "-" + node.y]) return;
     if (!node.i) node.i = start; // set the index, to aid the plot function
     queue.push(node);
@@ -670,11 +698,11 @@ function qpush(node) {
 
 function smooth_path() {
     var i = 0, j;
-    while (i < smart.plot.length) {
+    while (i &lt; smart.plot.length) {
         // Assume the path ahead is [i] [i+1] [i+2] - This routine checks whether [i+1] could be skipped
         // The resulting path is smooth rather than rectangular and bumpy
         // Try adding "function smooth_path(){}" or "smart.prune.smooth=false;" to your Code
-        while (i + 2 < smart.plot.length && smart.plot[i].map == smart.plot[i + 1].map && smart.plot[i].map == smart.plot[i + 1].map &&
+        while (i + 2 &lt; smart.plot.length &amp;&amp; smart.plot[i].map == smart.plot[i + 1].map &amp;&amp; smart.plot[i].map == smart.plot[i + 1].map &amp;&amp;
         can_move({
             map: smart.plot[i].map,
             x: smart.plot[i].x,
@@ -717,20 +745,20 @@ function astar() {
 function bfs() {
     var timer = new Date(), result = null, optimal = true;
 
-    while (start < queue.length) {
+    while (start &lt; queue.length) {
         var current = queue[start];
         if (current.map == smart.map) { //Is same MAP
             smart.flags.map = true;
-            if (abs(current.x - smart.x) + abs(current.y - smart.y) < smart.edge) {
+            if (abs(current.x - smart.x) + abs(current.y - smart.y) &lt; smart.edge) {
                 result = start;
                 break;
             }
-            else if (best === null || abs(current.x - smart.x) + abs(current.y - smart.y) < abs(queue[best].x - smart.x) + abs(queue[best].y - smart.y)) {
+            else if (best === null || abs(current.x - smart.x) + abs(current.y - smart.y) &lt; abs(queue[best].x - smart.x) + abs(queue[best].y - smart.y)) {
                 best = start;
             }
         }
         else if (current.map != smart.map) {
-            if (smart.prune.map && smart.flags.map) {
+            if (smart.prune.map &amp;&amp; smart.flags.map) {
                 start++;
                 continue;
             }
@@ -738,7 +766,7 @@ function bfs() {
                 if (simple_distance({x: door[0] + door[2] / 2, y: door[1] + door[3] / 2}, {
                         x: current.x,
                         y: current.y
-                    }) < 45)
+                    }) &lt; 45)
                     qpush({
                         map: door[4],
                         x: G.maps[door[4]].spawns[door[5] || 0][0],
@@ -748,10 +776,10 @@ function bfs() {
                     });
             });
             G.maps[current.map].npcs.forEach(function (npc) {
-                if (npc.id == "transporter" && simple_distance({x: npc.position[0], y: npc.position[1]}, {
+                if (npc.id == "transporter" &amp;&amp; simple_distance({x: npc.position[0], y: npc.position[1]}, {
                         x: current.x,
                         y: current.y
-                    }) < 75) {
+                    }) &lt; 75) {
                     for (var place in G.npcs.transporter.places) {
                         qpush({
                             map: place,
@@ -782,7 +810,7 @@ function bfs() {
         });
 
         start++;
-        if (mssince(timer) > (!parent.is_hidden() && 40 || 500)) return;
+        if (mssince(timer) > (!parent.is_hidden() &amp;&amp; 40 || 500)) return;
     }
 
     if (result === null) result = best, optimal = false;
@@ -816,13 +844,13 @@ function continue_pathfinding() {
 
 function smart_move_logic() {
     if (!smart.moving) return;
-    if (!smart.searching && !smart.found) {
+    if (!smart.searching &amp;&amp; !smart.found) {
         start_pathfinding();
     }
     else if (!smart.found) {
         continue_pathfinding();
     }
-    else if (!character.moving && can_walk(character) && !is_transporting(character)) {
+    else if (!character.moving &amp;&amp; can_walk(character) &amp;&amp; !is_transporting(character)) {
         if (!smart.plot.length) {
             smart.moving = false;
             smart.on_done(true);
@@ -838,7 +866,7 @@ function smart_move_logic() {
             parent.socket.emit("transport", {to: current.map, s: current.s});
             // use("transporter",current.map);
         }
-        else if (character.map == current.map && can_move_to(current.x, current.y)) {
+        else if (character.map == current.map &amp;&amp; can_move_to(current.x, current.y)) {
             move(current.x, current.y);
         }
         else {
@@ -857,3 +885,26 @@ var last_loot = new Date(0);
 var last_attack = new Date(0);
 var last_potion = new Date(0);
 var last_transport = new Date(0);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#activate">activate</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 24 2017 18:37:02 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
