@@ -488,6 +488,14 @@ function clear_drawings()
 	drawings=parent.drawings=[];
 }
 
+function auto_reload(value)
+{
+	// Configures the game to auto reload in case you disconnect due to rare network issues
+	if(value===false) parent.auto_reload="off";
+	else if(value=="auto") parent.auto_reload="auto"; // code or merchant stand
+	else parent.auto_reload="on"; // always reload
+}
+
 var game={
 	last:0,
 	callbacks:[],
@@ -574,7 +582,7 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 		{
 			for(var name in G.maps)
 				(G.maps[name].monsters||[]).forEach(function(pack){
-					if(pack.type!=destination.to || G.maps[name].ignore) return;
+					if(pack.type!=destination.to || G.maps[name].ignore || G.maps[name].instance) return;
 					if(pack.boundaries) // boundaries: for phoenix, mvampire
 					{
 						pack.last=pack.last||0;
