@@ -1,0 +1,19 @@
+{
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc"]
+  },
+  "source": {
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": [],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false
+  },
+  "opts": {
+    "destination" : "./docs/"
+  }
+}
+

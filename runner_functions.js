@@ -4,15 +4,16 @@ var G = parent.G; // Game data
 var safeties = true;
 
 /**
- * activates an item, likely a booster, in the num-th inventory slot
+ * Activates an item, likely a booster, in the num-th inventory slot
  * @param {number} num
  */
 function activate(num)
 {
     parent.activate(num);
 }
+
 /**
- * Shifts an item, likely a booster, in the num-th inventory slot
+ * Shifts an item, likely a booster, into the num-th inventory slot
  * @param {number} num Position of Inventory Slot starting from 0
  * @param {string} name name of the Item
  */
@@ -20,15 +21,21 @@ function shift(num, name)
 {
     parent.shift(num, name);
 }
-
+/**
+ * (WIP) Check if the cooldown of a class skill has passed
+ * @param name
+ * @returns {*}
+ */
 function can_use(name) // work in progress, can be used to check cooldowns of class skills [02/02/17]
 {
     return parent.can_use(name);
 }
+
 /**
- * if name is a number the character will try to equip the Item in the specified slot. If it is a string it will try to cast the skill with that name
- * @param {number|string} name skill name or item slot
- * @param {Entity} [target] target Entity when using skill
+ * if name parameter is a number, the character will try to equip the Item in the specified slot.
+ * Otherwise it will try to cast the skill with that name and Target
+ * @param {number|string} name - skill name or item slot
+ * @param {Monster} [target]   - target Entity when using skill
  */
 function use(name, target) // a multi-purpose use function, works for skills too
 {
@@ -42,42 +49,47 @@ function use(name, target) // a multi-purpose use function, works for skills too
         equip(name);
     }
 }
+
 /**
- * Will sue a skill on the speficied target
- * @param {string} name name of skill
- * @param {Entity} target target Entity
+ * Will use a skill on the specified target
+ * If no target is specified the current character target will be used
+ * @param {string} name         - name of skill
+ * @param {Monster} [target]    - target Entity
  */
 function use_skill(name, target) {
     if (!target) target = get_target();
     parent.use_skill(name, target);
 }
+
 /**
- *
- * @param item
- * @returns {ItemStats}
+ * Returns an object containing all the stat properties of an item
+ * @param item              - The Item in question
+ * @returns {ItemStats}     - An Object containing all stats and there number
  */
 function item_properties(item) // example: item_properties(character.items[0])
 {
     if (!item || !item.name) return {};
     return calculate_item_properties(G.items[item.name], item);
 }
+
 /**
- *
+ *  Returns the item Grade in Number format.
+ *  -1: Invalid Input
+ *  0 : Normal
+ *  1 : High
+ *  2 : Rare
  * @param item
- * @returns {*}
+ * @returns {number} - {-1:Something went wrong, 0:Normal, 1:High, 2:Rare}
  */
 function item_grade(item) // example: item_grade(character.items[0])
 {
-    // 0 Normal
-    // 1 High
-    // 2 Rare
     if (!item || !item.name) return -1;
     return calculate_item_grade(G.items[item.name], item);
 }
 /**
- *
+ * Returns
  * @param item
- * @returns {*}
+ * @returns {number}
  */
 function item_value(item) // example: item_value(character.items[0])
 {
@@ -93,7 +105,7 @@ function get_socket() {
 }
 /**
  * Returns current map the player is on
- * @returns {map} current map the player is on
+ * @returns {Map} current map the player is on
  */
 function get_map() {
     return parent.G.maps[parent.current_map];
@@ -116,7 +128,11 @@ function game_log(message, color) {
     if (!color) color = "#51D2E1";
     parent.add_log(message, color);
 }
-
+/**
+ * Returns Entity which the Entity is targeting
+ * @param {Monster} entity
+ * @returns {Monster}
+ */
 function get_target_of(entity) // .target is a Name for Monsters and `id` for Players - this function return whatever the entity in question is targeting
 {
     if (!entity || !entity.target) return null;
@@ -136,7 +152,11 @@ function get_targeted_monster() {
     if (parent.ctarget && !parent.ctarget.dead && parent.ctarget.type == 'monster') return parent.ctarget;
     return null;
 }
-
+/**
+ * Change the target entity
+ * @param {Monster} target
+ * @param {boolean} [send=false] - send change target to server
+ */
 function change_target(target, send) {
     parent.ctarget = target;
     if (!send) //no need to send the target on default for CODE, some people are using change_target 5-6 times in an interval
@@ -148,35 +168,72 @@ function change_target(target, send) {
     parent.send_target_logic();
 }
 
+/**
+ *
+ * @param {Monster} x
+ * @param y
+ * @returns {*}
+ */
 function can_move_to(x, y) {
-    if (is_object(x)) y = x.real_y, x = x.real_x;
-    return can_move({map: character.map, x: character.real_x, y: character.real_y, going_x: x, going_y: y});
+    if (is_object(x)){
+        x = x.real_x;
+        y = x.real_y;
+    }
+    return can_move({
+        map: character.map,
+        x: character.real_x,
+        y: character.real_y,
+        going_x: x,
+        going_y: y
+    });
 }
 
+/**
+ *
+ * @param target
+ * @returns {boolean}
+ */
 function in_attack_range(target) // also works for priests/heal
 {
     if (!target) return false;
-    if (parent.distance(character, target) <= character.range) return true;
-    return false;
+    return (parent.distance(character, target) <= character.range);
 }
 
+/**
+ * Checks if the character is able to attack the target
+ * @param target - the Entity for which to check
+ * @returns {boolean}
+ */
 function can_attack(target) // also works for priests/heal
 {
     // is_disabled function checks .rip and .stunned
     if (!target) return false;
-    if (!parent.is_disabled(character) && in_attack_range(target) && new Date() >= parent.next_attack) return true;
-    return false;
-}
-function can_heal(t) {
-    return can_attack(t);
+    return (!parent.is_disabled(character) && in_attack_range(target) && new Date() >= parent.next_attack);
 }
 
+/**
+ * Same as can_attack
+ * @param {Monster} target - the Entity for which to check
+ * @returns boolean
+ */
+function can_heal(target) {
+    return can_attack(target);
+}
+/**
+ *
+ * @param entity
+ * @returns {boolean}
+ */
 function is_moving(entity) {
     if (entity.me && smart.moving) return true;
     if (entity.moving) return true;
     return false;
 }
-
+/**
+ *
+ * @param entity
+ * @returns {boolean}
+ */
 function is_transporting(entity) {
     if (entity.c.town) return true;
     if (entity.me && parent.transporting) return true;
@@ -254,17 +311,20 @@ function say(message) // please use responsibly, thank you! :)
 {
     parent.say(message, 1);
 }
-
+/**
+ *
+ * @param x
+ * @param y
+ */
 function move(x, y) {
     if (!can_walk(character)) return;
-    var map = parent.map, move = parent.calculate_move(parent.M, character.real_x, character.real_y, parseFloat(x) || 0, parseFloat(y) || 0);
+    var move = parent.calculate_move(parent.M, character.real_x, character.real_y, parseFloat(x) || 0, parseFloat(y) || 0);
     character.from_x = character.real_x;
     character.from_y = character.real_y;
     character.going_x = move.x;
     character.going_y = move.y;
     character.moving = true;
     parent.calculate_vxy(character);
-    // parent.console.log("engaged move "+character.angle);
     parent.socket.emit("move", {
         x: character.real_x,
         y: character.real_y,
@@ -286,7 +346,16 @@ function get_player(name) // returns the player by name, if the player is within
     for (i in entities) if (entities[i].type == "character" && entities[i].name == name) target = entities[i];
     return target;
 }
-
+/**
+ *
+ * @param {Object} args
+ * @param {string} args.type the monster type of a {@link Monster}
+ * @param {number} args.min_xp
+ * @param {number} args.max_att
+ * @param {boolean} args.no_target
+ * @param {boolean} args.path_check
+ * @returns {*}
+ */
 function get_nearest_monster(args) {
     //args:
     // max_att - max attack
@@ -687,15 +756,6 @@ function smooth_path() {
     }
 }
 
-var star = {
-
-    open: [],
-    closed: [],
-    moving: false,
-    on_done: function () {
-    },
-
-}
 var smart = {
     moving: false,
     map: "main", x: 0, y: 0,
@@ -710,9 +770,6 @@ var smart = {
     },
     flags: {}
 };
-function astar() {
-
-}
 
 function bfs() {
     var timer = new Date(), result = null, optimal = true;
