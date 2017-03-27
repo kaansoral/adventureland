@@ -131,7 +131,7 @@ function game_log(message, color) {
 /**
  * Returns Entity which the Entity is targeting
  * @param {Monster} entity
- * @returns {Monster}
+ * @returns {Monster|null}
  */
 function get_target_of(entity) // .target is a Name for Monsters and `id` for Players - this function return whatever the entity in question is targeting
 {
@@ -170,22 +170,14 @@ function change_target(target, send) {
 
 /**
  *
- * @param {Monster} x
+ * @param {Monster|OtherCharacter} x
  * @param y
  * @returns {*}
  */
-function can_move_to(x, y) {
-    if (is_object(x)){
-        x = x.real_x;
-        y = x.real_y;
-    }
-    return can_move({
-        map: character.map,
-        x: character.real_x,
-        y: character.real_y,
-        going_x: x,
-        going_y: y
-    });
+function can_move_to(x,y)
+{
+    if(is_object(x)) y=x.real_y,x=x.real_x;
+    return can_move({map:character.map,x:character.real_x,y:character.real_y,going_x:x,going_y:y});
 }
 
 /**
@@ -230,7 +222,7 @@ function is_moving(entity) {
     return false;
 }
 /**
- *
+ * Is the entity using the town teleportation skill
  * @param entity
  * @returns {boolean}
  */
@@ -239,7 +231,10 @@ function is_transporting(entity) {
     if (entity.me && parent.transporting) return true;
     return false;
 }
-
+/**
+ * Tries to attack the target
+ * @param {OtherCharacter|Monster} target - Target to attack
+ */
 function attack(target) {
     if (safeties && mssince(last_attack) < 400) return;
     if (!target) {
@@ -250,7 +245,10 @@ function attack(target) {
     else parent.monster_attack.call(target);
     last_attack = new Date();
 }
-
+/**
+ * Tries to heal the targeted Character
+ * @param {OtherCharacter} target
+ */
 function heal(target) {
     if (safeties && mssince(last_attack) < 400) return;
     if (!target) {
@@ -260,17 +258,28 @@ function heal(target) {
     parent.player_heal.call(target);
     last_attack = new Date();
 }
-
+/**
+ * Buys items from NPC. The NPC has to be near enough to be able to buy from him.
+ * @param name      - Name of the Item
+ * @param quantity  - Quantity
+ */
 function buy(name, quantity) //item names can be spotted from show_json(character.items) - they can be bought only if an NPC sells them
 {
     parent.buy(name, quantity);
 }
-
+/**
+ * Sell the Item in the num-th inventory slot starting from 0.
+ * @param num       - Inventory slot
+ * @param quantity  - Quantity
+ */
 function sell(num, quantity) //sell an item from character.items by it's order - 0 to N-1
 {
     parent.sell(num, quantity);
 }
-
+/**
+ * Equips the Item in the num-th inventory Slot starting from 0.
+ * @param num
+ */
 function equip(num) {
     parent.socket.emit("equip", {num: num});
 }
@@ -279,7 +288,11 @@ function trade(num, trade_slot, price) // where trade_slot is 1 to 16 - example,
 {
     parent.trade("trade" + trade_slot, num, price);
 }
-
+/**
+ *
+ * @param {OtherCharacter} target
+ * @param trade_slot
+ */
 function trade_buy(target, trade_slot) // target needs to be an actual player
 {
     parent.trade_buy(trade_slot, target.id, target.slots[trade_slot].rid); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
@@ -306,11 +319,16 @@ function exchange(item_num) {
     parent.e_item = item_num;
     parent.exchange(1);
 }
-
+/**
+ * Acts as if the player had typed the message into the chat and then send it.
+ * This also allows for the use of commands.
+ * @param message   - The message
+ */
 function say(message) // please use responsibly, thank you! :)
 {
     parent.say(message, 1);
 }
+
 /**
  *
  * @param x
@@ -333,12 +351,19 @@ function move(x, y) {
         m: character.m
     });
 }
-
+/**
+ * A debug Command which opens a Window and show the json representation of the Object.
+ * @param {Object} e
+ */
 function show_json(e) // renders the object as json inside the game
 {
     parent.show_json(parent.game_stringify(e, 2));
 }
-
+/**
+ *
+ * @param name                  - The name of the character
+ * @returns {OtherCharacter}
+ */
 function get_player(name) // returns the player by name, if the player is within the vision area
 {
     var target = null, entities = parent.entities;
@@ -349,7 +374,7 @@ function get_player(name) // returns the player by name, if the player is within
 /**
  *
  * @param {Object} args
- * @param {string} args.type the monster type of a {@link Monster}
+ * @param {string} args.type the monster type of {@link Monster}
  * @param {number} args.min_xp
  * @param {number} args.max_att
  * @param {boolean} args.no_target
@@ -403,7 +428,11 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
     }
     return target;
 }
-
+/**
+ * Uses a simple algorithm to decide weather to use a mana or health potion.
+ * Tries to max out the health and mana.
+ * This function should not be called in fast running loops or otherwise it will use a high amount of potions.
+ */
 function use_hp_or_mp() {
     if (safeties && mssince(last_potion) < 600) return;
     var used = false;
@@ -415,7 +444,9 @@ function use_hp_or_mp() {
     else if (character.mp < character.max_mp) use('use_mp'), used = true;
     if (used) last_potion = new Date();
 }
-
+/**
+ * Looks for chests and tries to open them
+ */
 function loot() {
     var looted = 0;
     if (safeties && mssince(last_loot) < 200) return;
@@ -430,29 +461,52 @@ function loot() {
     }
 }
 
+/**
+ * Send gold to another player
+ * @param {OtherCharacter|string} receiver - Either a character name or a OtherCharacter Object
+ * @param {number} gold
+ */
 function send_gold(receiver, gold) {
     if (!receiver) return game_log("No receiver sent to send_gold");
     if (receiver.name) receiver = receiver.name;
     parent.socket.emit("send", {name: receiver, gold: gold});
 }
 
+/**
+ * Send item to another player
+ * @param {OtherCharacter|string} receiver - Either a character name or a OtherCharacter Object
+ * @param {number} num                     - Inventory slot starting from 0
+ * @param {number} [quantity=1]                - Quantity
+ */
 function send_item(receiver, num, quantity) {
     if (!receiver) return game_log("No receiver sent to send_item");
     if (receiver.name) receiver = receiver.name;
     parent.socket.emit("send", {name: receiver, num: num, q: quantity || 1});
 }
 
+/**
+ * Destorys an item in the num-th Inventory slot
+ * @param num
+ */
 function destroy_item(num) // num: 0 to 41
 {
     parent.socket.emit("destroy", {num: num});
 }
 
+/**
+ * Sens a party Invite to another character
+ * @param {OtherCharacter|string} name   - name ca be a player object, a player name, or an id
+ * @param {boolean} is_request           - Is requesting to be invited
+ */
 function send_party_invite(name, is_request) // name could be a player object, name, or id
 {
     if (is_object(name)) name = name.name;
     parent.socket.emit('party', {event: is_request && 'request' || 'invite', name: name});
 }
-
+/**
+ * Request to be invited into a party
+ * @param {OtherCharacter|string} name   - name ca be a player object, a player name, or an id
+ */
 function send_party_request(name) {
     send_party_invite(name, 1);
 }

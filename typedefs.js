@@ -122,7 +122,7 @@
  * @property {string}  in                - current map name
  * @property {number}  cid               -
  * @property {Array}   slots             -
- * @property {CharacterStats} stats     - dex,int,vit,str
+ * @property {CharacterStats} stats      - dex,int,vit,str
  * @property {number}  goldm             - Gold modifier
  * @property {number}  luckm             - Luck modifier
  * @property {number}  xpm               - Experience modifier
@@ -132,25 +132,49 @@
  * @property {string}  ipass             - Authentication token from game server
  * @property {Array.<string>}  friends   - List of Player Ids which whom the player is friends with
  * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
- * @property {Array.<Consumables|Gear>} items
- * @property {CharacterSlots} slots
+ * @property {Array.<Consumables|Gear>} items   -
+ * @property {CharacterSlots} slots      -
+ * @property {string} skin               - Character skin
+ * @property {string} guild              - Character guild (Currently unimplemented)
+ * @property {number} isize              - Inventory size
+ * @property {number} esize              - Empty Inventory slots
+ * @property {boolean} me                - Is this character me
+ * @property {ChannelingConditions} c    - Channelling conditions
+ * @property {StatusConditions} s        - Status conditions
+ */
+
+/**
+ * @typedef {Object} ChannelingConditions
+ * @property {boolean} town          - Using the town teleportation skill
+ */
+
+/**
+ * @typedef {Object} StatusConditions //TODO: describe how status effect affect the character
+ * @property {boolean} stunned       -
+ * @property {boolean} cursed        -
+ * @property {boolean} poisoned      -
+ * @property {boolean} poisonous     -
+ * @property {boolean} charging      -
+ * @property {boolean} invis         -
+ * @property {boolean} invincible    -
+ * @property {boolean} mute          -
  */
 
 /**
  * @typedef {Object} Consumables
- * @property {string} name
+ * @property {string} name              - Item name
  * @property {number} q                 - quantity
  */
 
 /**
  * @typedef {Object} Gear
- * @property {string} name
+ * @property {string} name              - Item name
  * @property {number} level             - level of item
  * @property {string} [stat_type]       - stat type
  */
 
 /**
- * @typedef {Object} CharacterStats
+ * @typedef {Object} CharacterStats //TODO: describe how character stats effect affect the character
  * @property {number}  dex
  * @property {number}  int
  * @property {number}  vit
@@ -175,6 +199,30 @@
  * @property {Gear} cape
  * @property {Gear} mainhand
  * @property {Gear} helmet
+ */
+
+/**
+ * @typedef {Object} Map
+ * @property {string} name  - A Human readable name
+ * @property {number} on_death
+ * @property {Array.<Object>} monsters
+ * @property {Object} compound
+ * @property {Object} data
+ * @property {Array.<Array>} doors
+ * @property {number} drop_norm
+ * @property {Object} exchange
+ * @property {Object} items
+ * @property {string} key
+ * @property {Array.<Object>} merchants
+ * @property {Array.<Object>} monsters
+ * @property {Array.<Object>} npcs
+ * @property {Array.<Array>} quirks
+ * @property {Object} ref
+ * @property {Array.<number>} u_mid
+ * @property {Array.<number>} c_mid
+ * @property {Array.<Array>} spawns
+ * @property {Object} transporter
+ * @property {Object} upgrade
  */
 
 /**
