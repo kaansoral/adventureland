@@ -226,7 +226,7 @@
  */
 
 /**
- * @typedef  {Object}  OtherCharacter
+ * @typedef  {Object}  Player
  * @description Characters extend the Entity Object, so every attribute from Entity is available. Some of the Character attributes are only accessible when you are controlling the character.
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
@@ -242,7 +242,6 @@
  * @property {number|undefined}  from_y  - the last movement starting y position of the character
  * @property {number|undefined}  going_x - the last target x position of the character
  * @property {number|undefined}  going_y - the last target y position of the character
- *
  * @property {string}  type             - the type of the Entity always character
  * @property {number}  level            - character level
  * @property {string}  owner            - character owner //TODO need clarification

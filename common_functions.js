@@ -675,7 +675,7 @@ function recalculate_move(a) {
     a.going_y = move.y
 }
 function can_move(f) {
-    var e = G.maps[f.map].data || {};
+    var data = G.maps[f.map].data || {};
     var starX = f.x,
         startY = f.y,
         endX = f.going_x,
@@ -690,24 +690,24 @@ function can_move(f) {
         }) < 10) {
         return true
     }
-    for (var c = 0; c < (e.x_lines || []).length; c++) {
-        var j = e.x_lines[c];
-        if (!(starX <= j[0] && j[0] <= endX || endX <= j[0] && j[0] <= starX)) {
+    for (var c = 0; c < (data.x_lines || []).length; c++) {
+        var xline = data.x_lines[c];
+        if (!(starX <= xline[0] && xline[0] <= endX || endX <= xline[0] && xline[0] <= starX)) {
             continue
         }
-        d = startY + (endY - startY) * (j[0] - starX) / (endX - starX + EPS);
-        if (!(j[1] <= d && d <= j[2])) {
+        d = startY + (endY - startY) * (xline[0] - starX) / (endX - starX + EPS);
+        if (!(xline[1] <= d && d <= xline[2])) {
             continue
         }
         return false
     }
-    for (var c = 0; c < (e.y_lines || []).length; c++) {
-        var j = e.y_lines[c];
-        if (!(startY <= j[0] && j[0] <= endY || endY <= j[0] && j[0] <= startY)) {
+    for (var c = 0; c < (data.y_lines || []).length; c++) {
+        var yline = data.y_lines[c];
+        if (!(startY <= yline[0] && yline[0] <= endY || endY <= yline[0] && yline[0] <= startY)) {
             continue
         }
-        d = starX + (endX - starX) * (j[0] - startY) / (endY - startY + EPS);
-        if (!(j[1] <= d && d <= j[2])) {
+        d = starX + (endX - starX) * (yline[0] - startY) / (endY - startY + EPES);
+        if (!(yline[1] <= d && d <= yline[2])) {
             continue
         }
         return false

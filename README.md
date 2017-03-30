@@ -1,8 +1,15 @@
-# adventureland
+# Adventureland Documentation
 CODE Documentation for Adventure Land MMORPG http://adventure.land
+Currently maintained by NexusNull.
+This Documentation is currently unofficial and unfinished.
+The Source code is property of Kaan Soral or.
 
 ### Character / Players / Monsters
+##Character
+    [a Link](https://fansana.github.io/adventureland/)
+##Players
 
+###Monsters
 * Properties
  * .real_x (10x of the game's X)
  * .real_y (10x of the game's Y)

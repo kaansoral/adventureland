@@ -790,6 +790,7 @@ function free_children(b) {
         b.children[a].parent = null
     }
 }
+
 function remove_sprite(a) {
     try {
         a.parent.removeChild(a)
