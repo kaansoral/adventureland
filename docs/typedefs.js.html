@@ -29,52 +29,6 @@
             <pre class="prettyprint source linenums"><code>/**
  * Created by nexus on 24/03/17.
  */
-/**
- * @typedef {Object} ItemStats
- * @property {number} apiercing
- * @property {number} armor
- * @property {number} attack
- * @property {number} attr0
- * @property {number} attr1
- * @property {number} crit
- * @property {number} dex
- * @property {number} dreturn
- * @property {number} evasion
- * @property {number} gold
- * @property {number} hp
- * @property {number} int
- * @property {number} level
- * @property {number} lifesteal
- * @property {number} mp
- * @property {number} range
- * @property {number} reflection
- * @property {number} resistance
- * @property {number} rpiercing
- * @property {number} speed
- * @property {number} stat
- * @property {number} str
- * @property {number} vit
- */
-
-/**
- * @typedef {Object} Monster
- * @description All Monster are of type Entity, characters are also entitys but have more attributes
- * @property {number}  hp                - health points
- * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
- * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
- * @property {number}  real_x            - x position on map
- * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- */
-
 
 /*
  Undocumented values of the Player character
@@ -108,68 +62,7 @@
  "move_num": 28238731,
  */
 
-/**
- * @class Character
- * @extends PIXI.Sprite
- * @description Characters extend the Entity Object, so every attribute from Entity is available. Some of the Character attributes are only accessible when you are controlling the character.
- * @property {number}  hp                - health points
- * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
- * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
- * @property {number}  real_x            - x position on map
- * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- * @property {number}  level             - character level
- * @property {string}  owner             - character owner //TODO need clarification
- * @property {number}  mp_cost           - mana cost for basic attack
- * @property {number}  range             - range for basic attack
- * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
- * @property {number}  attack            - roughly estimated amount of damage
- * @property {boolean} afk               - is the character afk
- * @property {Array}   items             -
- * @property {number}  gold              - the amount of gold the character carrying
- * @property {boolean} moving            - is character moving
- * @property {boolean} afk               - player is afk
- * @property {boolean} rip               - is the character dead
- * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
- * @property {string}  target            - EntityId
- * @property {string}  type              - the type of the Entity
- * @property {string}  ctype             - class of the character
- * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
- * @property {number}  speed             - walking speed
- * @property {number}  armor             - character armor
- * @property {string}  id                -
- * @property {string}  in                - current map name
- * @property {number}  cid               -
- * @property {Array}   slots             -
- * @property {CharacterStats} stats      - dex,int,vit,str
- * @property {number}  goldm             - Gold modifier
- * @property {number}  luckm             - Luck modifier
- * @property {number}  xpm               - Experience modifier
- * @property {string}  map               - current map name
- * @property {number}  cash              - number of shells
- * @property {number}  targets           - How many Entities are targeting this character
- * @property {string}  ipass             - Authentication token from game server
- * @property {Array.&lt;string>}  friends   - List of Player Ids which whom the player is friends with
- * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
- * @property {Array.&lt;Consumables|Gear>} items   -
- * @property {CharacterSlots} slots      -
- * @property {string} skin               - Character skin
- * @property {string} guild              - Character guild (Currently unimplemented)
- * @property {number} isize              - Inventory size
- * @property {number} esize              - Empty Inventory slots
- * @property {boolean} me                - Is this character me
- * @property {ChannelingConditions} c    - Channelling conditions
- * @property {StatusConditions} s        - Status conditions
- */
+
 
 /**
  * @typedef {Object} ChannelingConditions
@@ -254,7 +147,8 @@
  */
 
 /**
- * @typedef  {Object}  Player
+ * @class Character
+ * @extends PIXI.Sprite
  * @description Characters extend the Entity Object, so every attribute from Entity is available. Some of the Character attributes are only accessible when you are controlling the character.
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
@@ -270,21 +164,131 @@
  * @property {number|undefined}  from_y  - the last movement starting y position of the character
  * @property {number|undefined}  going_x - the last target x position of the character
  * @property {number|undefined}  going_y - the last target y position of the character
- * @property {string}  type             - the type of the Entity always character
- * @property {number}  level            - character level
- * @property {string}  owner            - character owner //TODO need clarification
- * @property {number}  range            - range for basic attack
- * @property {number}  resistance       - the character damage resistance
- * @property {number}  ref_speed        - walking speed
- * @property {number}  attack           - roughly estimated amount of damage
- * @property {boolean} afk              - is the character afk
- * @property {boolean} moving           - is character moving
- * @property {boolean} afk              - player is afk
- * @property {boolean} rip              - is the character dead
- * @property {number|undefined} code    - the code id the character is running (0 or undefined means he isn't running code)
- * @property {string}  target           - EntityId
- * @property {string}  type             - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
- * @property {string}  ctype            - class of the character
+ * @property {number}  level             - character level
+ * @property {string}  owner             - character owner //TODO need clarification
+ * @property {number}  mp_cost           - mana cost for basic attack
+ * @property {number}  range             - range for basic attack
+ * @property {number}  resistance        - the character damage resistance
+ * @property {number}  ref_speed         - walking speed
+ * @property {number}  attack            - roughly estimated amount of damage
+ * @property {boolean} afk               - is the character afk
+ * @property {Array}   items             -
+ * @property {number}  gold              - the amount of gold the character carrying
+ * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - player is afk
+ * @property {boolean} rip               - is the character dead
+ * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {string}  target            - EntityId
+ * @property {string}  type              - the type of the Entity
+ * @property {string}  ctype             - class of the character
+ * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
+ * @property {number}  speed             - walking speed
+ * @property {number}  armor             - character armor
+ * @property {string}  id                -
+ * @property {string}  in                - current map name
+ * @property {number}  cid               -
+ * @property {Array}   slots             -
+ * @property {CharacterStats} stats      - dex,int,vit,str
+ * @property {number}  goldm             - Gold modifier
+ * @property {number}  luckm             - Luck modifier
+ * @property {number}  xpm               - Experience modifier
+ * @property {string}  map               - current map name
+ * @property {number}  cash              - number of shells
+ * @property {number}  targets           - How many Entities are targeting this character
+ * @property {string}  ipass             - Authentication token from game server
+ * @property {Array.&lt;string>}  friends   - List of Player Ids which whom the player is friends with
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
+ * @property {Array.&lt;Consumables|Gear>} items   -
+ * @property {CharacterSlots} slots      -
+ * @property {string} skin               - Character skin
+ * @property {string} guild              - Character guild (Currently unimplemented)
+ * @property {number} isize              - Inventory size
+ * @property {number} esize              - Empty Inventory slots
+ * @property {boolean} me                - Is this character me
+ * @property {ChannelingConditions} c    - Channelling conditions
+ * @property {StatusConditions} s        - Status conditions
+ */
+
+/**
+ * @class Monster
+ * @extends PIXI.Sprite
+ * @description All Monsters have these properties
+ * @property {number}  hp                - health points
+ * @property {number}  max_hp            - maximum health points
+ * @property {number}  mp                - mana points
+ * @property {number}  max_hp            - maximum mana points
+ * @property {number}  xp                - current experience points
+ * @property {number}  max_xp            - total experience points needed for next level
+ * @property {string}  name              - entity name (for monsters it is null)
+ * @property {number}  angle             - angle the character is looking at.
+ * @property {number}  real_x            - x position on map
+ * @property {number}  real_y            - y position on map
+ * @property {number|undefined}  from_x  - the last movement starting x position of the character
+ * @property {number|undefined}  from_y  - the last movement starting y position of the character
+ * @property {number|undefined}  going_x - the last target x position of the character
+ * @property {number|undefined}  going_y - the last target y position of the character
+ */
+
+/**
+ * @class Player
+ * @extends PIXI.Sprite
+ * @description All players have these properties
+ * @property {number}  hp                - health points
+ * @property {number}  max_hp            - maximum health points
+ * @property {number}  mp                - mana points
+ * @property {number}  max_hp            - maximum mana points
+ * @property {number}  xp                - current experience points
+ * @property {number}  max_xp            - total experience points needed for next level
+ * @property {string}  name              - entity name (for monsters it is null)
+ * @property {number}  angle             - angle the character is looking at.
+ * @property {number}  real_x            - x position on map
+ * @property {number}  real_y            - y position on map
+ * @property {number|undefined}  from_x  - the last movement starting x position of the character
+ * @property {number|undefined}  from_y  - the last movement starting y position of the character
+ * @property {number|undefined}  going_x - the last target x position of the character
+ * @property {number|undefined}  going_y - the last target y position of the character
+ * @property {string}  type              - the type of the Entity always character
+ * @property {number}  level             - character level
+ * @property {string}  owner             - player owner //TODO need clarification
+ * @property {number}  range             - range for basic attack
+ * @property {number}  resistance        - the character damage resistance
+ * @property {number}  ref_speed         - walking speed
+ * @property {number}  attack            - roughly estimated amount of damage
+ * @property {boolean} afk               - is the character afk
+ * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - player is afk
+ * @property {boolean} rip               - is the character dead
+ * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {string}  target            - EntityId
+ * @property {string}  type              - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
+ * @property {string}  ctype             - class of the character
+ */
+
+/**
+ * @typedef {Object} ItemStats
+ * @property {number} apiercing
+ * @property {number} armor
+ * @property {number} attack
+ * @property {number} attr0
+ * @property {number} attr1
+ * @property {number} crit
+ * @property {number} dex
+ * @property {number} dreturn
+ * @property {number} evasion
+ * @property {number} gold
+ * @property {number} hp
+ * @property {number} int
+ * @property {number} level
+ * @property {number} lifesteal
+ * @property {number} mp
+ * @property {number} range
+ * @property {number} reflection
+ * @property {number} resistance
+ * @property {number} rpiercing
+ * @property {number} speed
+ * @property {number} stat
+ * @property {number} str
+ * @property {number} vit
  */
 
 /**
@@ -334,13 +338,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li></ul><h3>Global</h3><ul><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 30 2017 13:29:10 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 31 2017 19:07:26 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

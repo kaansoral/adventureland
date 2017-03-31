@@ -1,12 +1,12 @@
 # Adventure Land Documentation
 CODE Documentation for Adventure Land MMORPG [Adventure Land](http://adventure.land) .
-Currently created by Patric Wellershaus.
+Currently created by NexusNull.
 This Documentation is currently unofficial and unfinished.
 The Source code is property of Kaan Soral.
 
-### [Character](https://fansana.github.io/adventureland/Character.html)
+### [Player](https://fansana.github.io/adventureland/Player.html)
 
-### [Players](https://fansana.github.io/adventureland/Player.html)
+### [Character](https://fansana.github.io/adventureland/Character.html)
 
 ### [Monster](https://fansana.github.io/adventureland/Monster.html)
 * Properties
@@ -23,7 +23,7 @@ to display those information's use
 ```javascript
     show_json(parent.G);
 ```
-Here is a list of all current children of G and an explanation to them.
+Here is a list of some children of G and an explanation to them.
 
 * `G.version`
     - Stores the current Game version

@@ -1,147 +1,6 @@
 /**
  * Created by nexus on 24/03/17.
  */
-/**
- * @typedef {Object} ItemStats
- * @property {number} apiercing
- * @property {number} armor
- * @property {number} attack
- * @property {number} attr0
- * @property {number} attr1
- * @property {number} crit
- * @property {number} dex
- * @property {number} dreturn
- * @property {number} evasion
- * @property {number} gold
- * @property {number} hp
- * @property {number} int
- * @property {number} level
- * @property {number} lifesteal
- * @property {number} mp
- * @property {number} range
- * @property {number} reflection
- * @property {number} resistance
- * @property {number} rpiercing
- * @property {number} speed
- * @property {number} stat
- * @property {number} str
- * @property {number} vit
- */
-
-/**
- * @typedef {Object} Monster
- * @description All Monster are of type Entity, characters are also entitys but have more attributes
- * @property {number}  hp                - health points
- * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
- * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
- * @property {number}  real_x            - x position on map
- * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- */
-
-
-/*
- Undocumented values of the Player character
- "tempDisplayObjectParent": null,
- "vertexTrimmedData": null,
- "cskin": "12",
- "skin": "franger",
- "stype": "full",
- "updates": 12688,
- "s": {}
- "c": {}
- "guild": "",
- "isize": 42,
- "esize": 23,
- "m": 0,
- "g8": true,
- "walking": null,
- "me": 1,
- "awidth": 26,
- "aheight": 34,
- "vision": [700, 500],
- "glow8": true,
- "last_targets": 0,
- "rtexture": false,
- "displayFlag": 2,
- "vx": 0,
- "vy": 0,
- "ms_walk": "2017-03-25T21:01:14.967Z",
- "last_stop": "2017-03-25T21:01:15.100Z",
- "last_walking": 10,
- "move_num": 28238731,
- */
-
-/**
- * @class Character
- * @extends PIXI.Sprite
- * @description Characters extend the Entity Object, so every attribute from Entity is available. Some of the Character attributes are only accessible when you are controlling the character.
- * @property {number}  hp                - health points
- * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
- * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
- * @property {number}  real_x            - x position on map
- * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- * @property {number}  level             - character level
- * @property {string}  owner             - character owner //TODO need clarification
- * @property {number}  mp_cost           - mana cost for basic attack
- * @property {number}  range             - range for basic attack
- * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
- * @property {number}  attack            - roughly estimated amount of damage
- * @property {boolean} afk               - is the character afk
- * @property {Array}   items             -
- * @property {number}  gold              - the amount of gold the character carrying
- * @property {boolean} moving            - is character moving
- * @property {boolean} afk               - player is afk
- * @property {boolean} rip               - is the character dead
- * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
- * @property {string}  target            - EntityId
- * @property {string}  type              - the type of the Entity
- * @property {string}  ctype             - class of the character
- * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
- * @property {number}  speed             - walking speed
- * @property {number}  armor             - character armor
- * @property {string}  id                -
- * @property {string}  in                - current map name
- * @property {number}  cid               -
- * @property {Array}   slots             -
- * @property {CharacterStats} stats      - dex,int,vit,str
- * @property {number}  goldm             - Gold modifier
- * @property {number}  luckm             - Luck modifier
- * @property {number}  xpm               - Experience modifier
- * @property {string}  map               - current map name
- * @property {number}  cash              - number of shells
- * @property {number}  targets           - How many Entities are targeting this character
- * @property {string}  ipass             - Authentication token from game server
- * @property {Array.<string>}  friends   - List of Player Ids which whom the player is friends with
- * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
- * @property {Array.<Consumables|Gear>} items   -
- * @property {CharacterSlots} slots      -
- * @property {string} skin               - Character skin
- * @property {string} guild              - Character guild (Currently unimplemented)
- * @property {number} isize              - Inventory size
- * @property {number} esize              - Empty Inventory slots
- * @property {boolean} me                - Is this character me
- * @property {ChannelingConditions} c    - Channelling conditions
- * @property {StatusConditions} s        - Status conditions
- */
 
 /**
  * @typedef {Object} ChannelingConditions
@@ -226,7 +85,8 @@
  */
 
 /**
- * @typedef  {Object}  Player
+ * @class Character
+ * @extends PIXI.Sprite
  * @description Characters extend the Entity Object, so every attribute from Entity is available. Some of the Character attributes are only accessible when you are controlling the character.
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
@@ -242,21 +102,131 @@
  * @property {number|undefined}  from_y  - the last movement starting y position of the character
  * @property {number|undefined}  going_x - the last target x position of the character
  * @property {number|undefined}  going_y - the last target y position of the character
- * @property {string}  type             - the type of the Entity always character
- * @property {number}  level            - character level
- * @property {string}  owner            - character owner //TODO need clarification
- * @property {number}  range            - range for basic attack
- * @property {number}  resistance       - the character damage resistance
- * @property {number}  ref_speed        - walking speed
- * @property {number}  attack           - roughly estimated amount of damage
- * @property {boolean} afk              - is the character afk
- * @property {boolean} moving           - is character moving
- * @property {boolean} afk              - player is afk
- * @property {boolean} rip              - is the character dead
- * @property {number|undefined} code    - the code id the character is running (0 or undefined means he isn't running code)
- * @property {string}  target           - EntityId
- * @property {string}  type             - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
- * @property {string}  ctype            - class of the character
+ * @property {number}  level             - character level
+ * @property {string}  owner             - character owner //TODO need clarification
+ * @property {number}  mp_cost           - mana cost for basic attack
+ * @property {number}  range             - range for basic attack
+ * @property {number}  resistance        - the character damage resistance
+ * @property {number}  ref_speed         - walking speed
+ * @property {number}  attack            - roughly estimated amount of damage
+ * @property {boolean} afk               - is the character afk
+ * @property {Array}   items             -
+ * @property {number}  gold              - the amount of gold the character carrying
+ * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - player is afk
+ * @property {boolean} rip               - is the character dead
+ * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {string}  target            - EntityId
+ * @property {string}  type              - the type of the Entity
+ * @property {string}  ctype             - class of the character
+ * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
+ * @property {number}  speed             - walking speed
+ * @property {number}  armor             - character armor
+ * @property {string}  id                -
+ * @property {string}  in                - current map name
+ * @property {number}  cid               -
+ * @property {Array}   slots             -
+ * @property {CharacterStats} stats      - dex,int,vit,str
+ * @property {number}  goldm             - Gold modifier
+ * @property {number}  luckm             - Luck modifier
+ * @property {number}  xpm               - Experience modifier
+ * @property {string}  map               - current map name
+ * @property {number}  cash              - number of shells
+ * @property {number}  targets           - How many Entities are targeting this character
+ * @property {string}  ipass             - Authentication token from game server
+ * @property {Array.<string>}  friends   - List of Player Ids which whom the player is friends with
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
+ * @property {Array.<Consumables|Gear>} items   -
+ * @property {CharacterSlots} slots      -
+ * @property {string} skin               - Character skin
+ * @property {string} guild              - Character guild (Currently unimplemented)
+ * @property {number} isize              - Inventory size
+ * @property {number} esize              - Empty Inventory slots
+ * @property {boolean} me                - Is this character me
+ * @property {ChannelingConditions} c    - Channelling conditions
+ * @property {StatusConditions} s        - Status conditions
+ */
+
+/**
+ * @class Monster
+ * @extends PIXI.Sprite
+ * @description All Monsters have these properties
+ * @property {number}  hp                - health points
+ * @property {number}  max_hp            - maximum health points
+ * @property {number}  mp                - mana points
+ * @property {number}  max_hp            - maximum mana points
+ * @property {number}  xp                - current experience points
+ * @property {number}  max_xp            - total experience points needed for next level
+ * @property {string}  name              - entity name (for monsters it is null)
+ * @property {number}  angle             - angle the character is looking at.
+ * @property {number}  real_x            - x position on map
+ * @property {number}  real_y            - y position on map
+ * @property {number|undefined}  from_x  - the last movement starting x position of the character
+ * @property {number|undefined}  from_y  - the last movement starting y position of the character
+ * @property {number|undefined}  going_x - the last target x position of the character
+ * @property {number|undefined}  going_y - the last target y position of the character
+ */
+
+/**
+ * @class Player
+ * @extends PIXI.Sprite
+ * @description All players have these properties
+ * @property {number}  hp                - health points
+ * @property {number}  max_hp            - maximum health points
+ * @property {number}  mp                - mana points
+ * @property {number}  max_hp            - maximum mana points
+ * @property {number}  xp                - current experience points
+ * @property {number}  max_xp            - total experience points needed for next level
+ * @property {string}  name              - entity name (for monsters it is null)
+ * @property {number}  angle             - angle the character is looking at.
+ * @property {number}  real_x            - x position on map
+ * @property {number}  real_y            - y position on map
+ * @property {number|undefined}  from_x  - the last movement starting x position of the character
+ * @property {number|undefined}  from_y  - the last movement starting y position of the character
+ * @property {number|undefined}  going_x - the last target x position of the character
+ * @property {number|undefined}  going_y - the last target y position of the character
+ * @property {string}  type              - the type of the Entity always character
+ * @property {number}  level             - character level
+ * @property {string}  owner             - player owner //TODO need clarification
+ * @property {number}  range             - range for basic attack
+ * @property {number}  resistance        - the character damage resistance
+ * @property {number}  ref_speed         - walking speed
+ * @property {number}  attack            - roughly estimated amount of damage
+ * @property {boolean} afk               - is the character afk
+ * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - player is afk
+ * @property {boolean} rip               - is the character dead
+ * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {string}  target            - EntityId
+ * @property {string}  type              - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
+ * @property {string}  ctype             - class of the character
+ */
+
+/**
+ * @typedef {Object} ItemStats
+ * @property {number} apiercing
+ * @property {number} armor
+ * @property {number} attack
+ * @property {number} attr0
+ * @property {number} attr1
+ * @property {number} crit
+ * @property {number} dex
+ * @property {number} dreturn
+ * @property {number} evasion
+ * @property {number} gold
+ * @property {number} hp
+ * @property {number} int
+ * @property {number} level
+ * @property {number} lifesteal
+ * @property {number} mp
+ * @property {number} range
+ * @property {number} reflection
+ * @property {number} resistance
+ * @property {number} rpiercing
+ * @property {number} speed
+ * @property {number} stat
+ * @property {number} str
+ * @property {number} vit
  */
 
 /**
