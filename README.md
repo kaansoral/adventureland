@@ -19,7 +19,7 @@ The Source code is property of Kaan Soral.
 
 ### Game Info
 A lot of useful information is stored inside of *parent.G*
-To display those Information use 
+to display those information's use 
 ```javascript
     show_json(parent.G);
 ```
