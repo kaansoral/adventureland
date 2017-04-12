@@ -157,7 +157,7 @@
 
         <tr>
             
-                <td class="name"><code>max_hp</code></td>
+                <td class="name"><code>max_mp</code></td>
             
 
             <td class="type">
@@ -203,29 +203,6 @@
 
         <tr>
             
-                <td class="name"><code>max_xp</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">total experience points needed for next level</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>name</code></td>
             
 
@@ -242,7 +219,7 @@
 
             
 
-            <td class="description last">entity name (for monsters it is null)</td>
+            <td class="description last">player Name</td>
         </tr>
 
     
@@ -265,7 +242,7 @@
 
             
 
-            <td class="description last">angle the character is looking at.</td>
+            <td class="description last">angle the player is looking at.</td>
         </tr>
 
     
@@ -337,7 +314,7 @@
 
             
 
-            <td class="description last">the last movement starting x position of the character</td>
+            <td class="description last">the last movement starting x position of the player</td>
         </tr>
 
     
@@ -363,7 +340,7 @@
 
             
 
-            <td class="description last">the last movement starting y position of the character</td>
+            <td class="description last">the last movement starting y position of the player</td>
         </tr>
 
     
@@ -389,7 +366,7 @@
 
             
 
-            <td class="description last">the last target x position of the character</td>
+            <td class="description last">the last target x position of the player</td>
         </tr>
 
     
@@ -415,7 +392,7 @@
 
             
 
-            <td class="description last">the last target y position of the character</td>
+            <td class="description last">the last target y position of the player</td>
         </tr>
 
     
@@ -438,7 +415,7 @@
 
             
 
-            <td class="description last">the type of the Entity always character</td>
+            <td class="description last">the type of the Entity, for a player this is always "character"</td>
         </tr>
 
     
@@ -461,7 +438,7 @@
 
             
 
-            <td class="description last">character level</td>
+            <td class="description last">player level</td>
         </tr>
 
     
@@ -484,7 +461,7 @@
 
             
 
-            <td class="description last">player owner //TODO need clarification</td>
+            <td class="description last">a number that identifies the account that the player belongs to.</td>
         </tr>
 
     
@@ -530,14 +507,14 @@
 
             
 
-            <td class="description last">the character damage resistance</td>
+            <td class="description last">damage resistance</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>ref_speed</code></td>
+                <td class="name"><code>armor</code></td>
             
 
             <td class="type">
@@ -553,7 +530,7 @@
 
             
 
-            <td class="description last">walking speed</td>
+            <td class="description last">character armor</td>
         </tr>
 
     
@@ -599,7 +576,7 @@
 
             
 
-            <td class="description last">is the character afk</td>
+            <td class="description last">is the player afk</td>
         </tr>
 
     
@@ -622,7 +599,7 @@
 
             
 
-            <td class="description last">is character moving</td>
+            <td class="description last">is player moving</td>
         </tr>
 
     
@@ -668,7 +645,7 @@
 
             
 
-            <td class="description last">is the character dead</td>
+            <td class="description last">is the player dead</td>
         </tr>
 
     
@@ -694,7 +671,7 @@
 
             
 
-            <td class="description last">the code id the character is running (0 or undefined means he isn't running code)</td>
+            <td class="description last">the code id the player is running (0 or undefined means he isn't running code)</td>
         </tr>
 
     
@@ -724,29 +701,6 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the type of the Entity (This is equal to "character" for OtherCharacter and Character)</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>ctype</code></td>
             
 
@@ -763,7 +717,168 @@
 
             
 
-            <td class="description last">class of the character</td>
+            <td class="description last">In what class is the play e.g. "mage"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Character skin</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frequency</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>speed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">walking speed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">player name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>in</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">On which map the player is</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>slots</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#CharacterSlots">CharacterSlots</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains all the items that the character is wearing</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Direction in shich the character is looking (0:down,1:left,2:right;3:up)</td>
         </tr>
 
     
@@ -802,7 +917,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="typedefs.js.html">typedefs.js</a>, <a href="typedefs.js.html#line204">line 204</a>
+        <a href="typedefs.js.html">typedefs.js</a>, <a href="typedefs.js.html#line175">line 175</a>
     </li></ul></dd>
     
 
@@ -869,13 +984,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#accept_party_invite">accept_party_invite</a></li><li><a href="global.html#accept_party_request">accept_party_request</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#bfs">bfs</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#clear_drawings">clear_drawings</a></li><li><a href="global.html#compound">compound</a></li><li><a href="global.html#continue_pathfinding">continue_pathfinding</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#draw_circle">draw_circle</a></li><li><a href="global.html#draw_line">draw_line</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_hostile">get_nearest_hostile</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#handle_command">handle_command</a></li><li><a href="global.html#handle_death">handle_death</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#load_code">load_code</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#on_cm">on_cm</a></li><li><a href="global.html#on_combined_damage">on_combined_damage</a></li><li><a href="global.html#on_destroy">on_destroy</a></li><li><a href="global.html#on_disappear">on_disappear</a></li><li><a href="global.html#on_draw">on_draw</a></li><li><a href="global.html#on_party_invite">on_party_invite</a></li><li><a href="global.html#on_party_request">on_party_request</a></li><li><a href="global.html#respawn">respawn</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_cm">send_cm</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#smart_move">smart_move</a></li><li><a href="global.html#smart_move_logic">smart_move_logic</a></li><li><a href="global.html#smooth_path">smooth_path</a></li><li><a href="global.html#start_pathfinding">start_pathfinding</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#upgrade">upgrade</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 31 2017 19:07:26 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Apr 12 2017 19:55:46 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

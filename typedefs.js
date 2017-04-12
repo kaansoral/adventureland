@@ -107,7 +107,6 @@
  * @property {number}  mp_cost           - mana cost for basic attack
  * @property {number}  range             - range for basic attack
  * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
  * @property {number}  attack            - roughly estimated amount of damage
  * @property {boolean} afk               - is the character afk
  * @property {Array}   items             -
@@ -122,10 +121,9 @@
  * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
  * @property {number}  speed             - walking speed
  * @property {number}  armor             - character armor
- * @property {string}  id                -
+ * @property {string}  id                - character Name
  * @property {string}  in                - current map name
  * @property {number}  cid               -
- * @property {Array}   slots             -
  * @property {CharacterStats} stats      - dex,int,vit,str
  * @property {number}  goldm             - Gold modifier
  * @property {number}  luckm             - Luck modifier
@@ -133,11 +131,11 @@
  * @property {string}  map               - current map name
  * @property {number}  cash              - number of shells
  * @property {number}  targets           - How many Entities are targeting this character
- * @property {string}  ipass             - Authentication token from game server
+ * @property {string}  ipass             - Authentication token from game server (keep this secret)
  * @property {Array.<string>}  friends   - List of Player Ids which whom the player is friends with
  * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
- * @property {Array.<Consumables|Gear>} items   -
- * @property {CharacterSlots} slots      -
+ * @property {Array.<Consumables|Gear|undefined>} items   - Either a Consumable e.g. a potion or a type of Gear. If the slot is empty the
+ * @property {CharacterSlots} slots      - Contains all the items that the character is wearing
  * @property {string} skin               - Character skin
  * @property {string} guild              - Character guild (Currently unimplemented)
  * @property {number} isize              - Inventory size
@@ -153,18 +151,25 @@
  * @description All Monsters have these properties
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
  * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
  * @property {string}  name              - entity name (for monsters it is null)
  * @property {number}  angle             - angle the character is looking at.
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
  * @property {number}  real_x            - x position on map
  * @property {number}  real_y            - y position on map
+ * @property {string}  id                - the Monster id, All Monsters in entities are listed by there id.
+ * @property {string}  in                - the Map name on which map the monster is
  * @property {number|undefined}  from_x  - the last movement starting x position of the character
  * @property {number|undefined}  from_y  - the last movement starting y position of the character
  * @property {number|undefined}  going_x - the last target x position of the character
  * @property {number|undefined}  going_y - the last target y position of the character
+ * @property {boolean} dead              - Is the monster dead
+ * @property {Date} died                 - When did the Monster die
+ * @property {number} attack             - The Average attack damage the monster does
+ * @property {number} speed              - The Normal walking speed of the monster. After aggroing
+ * @property {ChannelingConditions} c    - Channelling conditions
+ * @property {StatusConditions} s        - Status conditions
+ *
  */
 
 /**
@@ -174,32 +179,37 @@
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
  * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
+ * @property {number}  max_mp            - maximum mana points
  * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
+ * @property {string}  name              - player Name
+ * @property {number}  angle             - angle the player is looking at.
  * @property {number}  real_x            - x position on map
  * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- * @property {string}  type              - the type of the Entity always character
- * @property {number}  level             - character level
- * @property {string}  owner             - player owner //TODO need clarification
+ * @property {number|undefined}  from_x  - the last movement starting x position of the player
+ * @property {number|undefined}  from_y  - the last movement starting y position of the player
+ * @property {number|undefined}  going_x - the last target x position of the player
+ * @property {number|undefined}  going_y - the last target y position of the player
+ * @property {string}  type              - the type of the Entity, for a player this is always "character"
+ * @property {number}  level             - player level
+ * @property {string}  owner             - a number that identifies the account that the player belongs to.
  * @property {number}  range             - range for basic attack
- * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
+ * @property {number}  resistance        - damage resistance
+ * @property {number}  armor             - character armor
  * @property {number}  attack            - roughly estimated amount of damage
- * @property {boolean} afk               - is the character afk
- * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - is the player afk
+ * @property {boolean} moving            - is player moving
  * @property {boolean} afk               - player is afk
- * @property {boolean} rip               - is the character dead
- * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {boolean} rip               - is the player dead
+ * @property {number|undefined} code     - the code id the player is running (0 or undefined means he isn't running code)
  * @property {string}  target            - EntityId
- * @property {string}  type              - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
- * @property {string}  ctype             - class of the character
+ * @property {string}  ctype             - In what class is the play e.g. "mage"
+ * @property {string} skin               - Character skin
+ * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
+ * @property {number}  speed             - walking speed
+ * @property {string}  id                - player name
+ * @property {string}  in                - On which map the player is
+ * @property {CharacterSlots} slots      - Contains all the items that the character is wearing
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
  */
 
 /**

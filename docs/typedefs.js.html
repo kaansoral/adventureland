@@ -30,40 +30,6 @@
  * Created by nexus on 24/03/17.
  */
 
-/*
- Undocumented values of the Player character
- "tempDisplayObjectParent": null,
- "vertexTrimmedData": null,
- "cskin": "12",
- "skin": "franger",
- "stype": "full",
- "updates": 12688,
- "s": {}
- "c": {}
- "guild": "",
- "isize": 42,
- "esize": 23,
- "m": 0,
- "g8": true,
- "walking": null,
- "me": 1,
- "awidth": 26,
- "aheight": 34,
- "vision": [700, 500],
- "glow8": true,
- "last_targets": 0,
- "rtexture": false,
- "displayFlag": 2,
- "vx": 0,
- "vy": 0,
- "ms_walk": "2017-03-25T21:01:14.967Z",
- "last_stop": "2017-03-25T21:01:15.100Z",
- "last_walking": 10,
- "move_num": 28238731,
- */
-
-
-
 /**
  * @typedef {Object} ChannelingConditions
  * @property {boolean} town          - Using the town teleportation skill
@@ -169,7 +135,6 @@
  * @property {number}  mp_cost           - mana cost for basic attack
  * @property {number}  range             - range for basic attack
  * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
  * @property {number}  attack            - roughly estimated amount of damage
  * @property {boolean} afk               - is the character afk
  * @property {Array}   items             -
@@ -184,10 +149,9 @@
  * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
  * @property {number}  speed             - walking speed
  * @property {number}  armor             - character armor
- * @property {string}  id                -
+ * @property {string}  id                - character Name
  * @property {string}  in                - current map name
  * @property {number}  cid               -
- * @property {Array}   slots             -
  * @property {CharacterStats} stats      - dex,int,vit,str
  * @property {number}  goldm             - Gold modifier
  * @property {number}  luckm             - Luck modifier
@@ -195,11 +159,11 @@
  * @property {string}  map               - current map name
  * @property {number}  cash              - number of shells
  * @property {number}  targets           - How many Entities are targeting this character
- * @property {string}  ipass             - Authentication token from game server
+ * @property {string}  ipass             - Authentication token from game server (keep this secret)
  * @property {Array.&lt;string>}  friends   - List of Player Ids which whom the player is friends with
  * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
- * @property {Array.&lt;Consumables|Gear>} items   -
- * @property {CharacterSlots} slots      -
+ * @property {Array.&lt;Consumables|Gear|undefined>} items   - Either a Consumable e.g. a potion or a type of Gear. If the slot is empty the
+ * @property {CharacterSlots} slots      - Contains all the items that the character is wearing
  * @property {string} skin               - Character skin
  * @property {string} guild              - Character guild (Currently unimplemented)
  * @property {number} isize              - Inventory size
@@ -215,18 +179,25 @@
  * @description All Monsters have these properties
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
- * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
  * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
  * @property {string}  name              - entity name (for monsters it is null)
  * @property {number}  angle             - angle the character is looking at.
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
  * @property {number}  real_x            - x position on map
  * @property {number}  real_y            - y position on map
+ * @property {string}  id                - the Monster id, All Monsters in entities are listed by there id.
+ * @property {string}  in                - the Map name on which map the monster is
  * @property {number|undefined}  from_x  - the last movement starting x position of the character
  * @property {number|undefined}  from_y  - the last movement starting y position of the character
  * @property {number|undefined}  going_x - the last target x position of the character
  * @property {number|undefined}  going_y - the last target y position of the character
+ * @property {boolean} dead              - Is the monster dead
+ * @property {Date} died                 - When did the Monster die
+ * @property {number} attack             - The Average attack damage the monster does
+ * @property {number} speed              - The Normal walking speed of the monster. After aggroing
+ * @property {ChannelingConditions} c    - Channelling conditions
+ * @property {StatusConditions} s        - Status conditions
+ *
  */
 
 /**
@@ -236,32 +207,37 @@
  * @property {number}  hp                - health points
  * @property {number}  max_hp            - maximum health points
  * @property {number}  mp                - mana points
- * @property {number}  max_hp            - maximum mana points
+ * @property {number}  max_mp            - maximum mana points
  * @property {number}  xp                - current experience points
- * @property {number}  max_xp            - total experience points needed for next level
- * @property {string}  name              - entity name (for monsters it is null)
- * @property {number}  angle             - angle the character is looking at.
+ * @property {string}  name              - player Name
+ * @property {number}  angle             - angle the player is looking at.
  * @property {number}  real_x            - x position on map
  * @property {number}  real_y            - y position on map
- * @property {number|undefined}  from_x  - the last movement starting x position of the character
- * @property {number|undefined}  from_y  - the last movement starting y position of the character
- * @property {number|undefined}  going_x - the last target x position of the character
- * @property {number|undefined}  going_y - the last target y position of the character
- * @property {string}  type              - the type of the Entity always character
- * @property {number}  level             - character level
- * @property {string}  owner             - player owner //TODO need clarification
+ * @property {number|undefined}  from_x  - the last movement starting x position of the player
+ * @property {number|undefined}  from_y  - the last movement starting y position of the player
+ * @property {number|undefined}  going_x - the last target x position of the player
+ * @property {number|undefined}  going_y - the last target y position of the player
+ * @property {string}  type              - the type of the Entity, for a player this is always "character"
+ * @property {number}  level             - player level
+ * @property {string}  owner             - a number that identifies the account that the player belongs to.
  * @property {number}  range             - range for basic attack
- * @property {number}  resistance        - the character damage resistance
- * @property {number}  ref_speed         - walking speed
+ * @property {number}  resistance        - damage resistance
+ * @property {number}  armor             - character armor
  * @property {number}  attack            - roughly estimated amount of damage
- * @property {boolean} afk               - is the character afk
- * @property {boolean} moving            - is character moving
+ * @property {boolean} afk               - is the player afk
+ * @property {boolean} moving            - is player moving
  * @property {boolean} afk               - player is afk
- * @property {boolean} rip               - is the character dead
- * @property {number|undefined} code     - the code id the character is running (0 or undefined means he isn't running code)
+ * @property {boolean} rip               - is the player dead
+ * @property {number|undefined} code     - the code id the player is running (0 or undefined means he isn't running code)
  * @property {string}  target            - EntityId
- * @property {string}  type              - the type of the Entity (This is equal to "character" for OtherCharacter and Character)
- * @property {string}  ctype             - class of the character
+ * @property {string}  ctype             - In what class is the play e.g. "mage"
+ * @property {string} skin               - Character skin
+ * @property {number}  frequency         - frequency in which the character attacks. A frequency of 1 means every second where as 0.5 means every 2 seconds.
+ * @property {number}  speed             - walking speed
+ * @property {string}  id                - player name
+ * @property {string}  in                - On which map the player is
+ * @property {CharacterSlots} slots      - Contains all the items that the character is wearing
+ * @property {number} direction          - Direction in shich the character is looking (0:down,1:left,2:right;3:up)
  */
 
 /**
@@ -338,13 +314,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#accept_party_invite">accept_party_invite</a></li><li><a href="global.html#accept_party_request">accept_party_request</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#bfs">bfs</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#clear_drawings">clear_drawings</a></li><li><a href="global.html#compound">compound</a></li><li><a href="global.html#continue_pathfinding">continue_pathfinding</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#draw_circle">draw_circle</a></li><li><a href="global.html#draw_line">draw_line</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_hostile">get_nearest_hostile</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#handle_command">handle_command</a></li><li><a href="global.html#handle_death">handle_death</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#load_code">load_code</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#on_cm">on_cm</a></li><li><a href="global.html#on_combined_damage">on_combined_damage</a></li><li><a href="global.html#on_destroy">on_destroy</a></li><li><a href="global.html#on_disappear">on_disappear</a></li><li><a href="global.html#on_draw">on_draw</a></li><li><a href="global.html#on_party_invite">on_party_invite</a></li><li><a href="global.html#on_party_request">on_party_request</a></li><li><a href="global.html#respawn">respawn</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_cm">send_cm</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#smart_move">smart_move</a></li><li><a href="global.html#smart_move_logic">smart_move_logic</a></li><li><a href="global.html#smooth_path">smooth_path</a></li><li><a href="global.html#start_pathfinding">start_pathfinding</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#upgrade">upgrade</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 31 2017 19:07:26 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Apr 12 2017 19:55:46 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

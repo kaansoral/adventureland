@@ -1,14 +1,31 @@
 # Adventure Land Documentation
 CODE Documentation for Adventure Land MMORPG [Adventure Land](http://adventure.land) .
-Currently created by NexusNull.
-This Documentation is currently unofficial and unfinished.
+Currently maintained by NexusNull.
+This Documentation is currently unofficial and unfinished if you find mistakes kindly point them out so I can fix them.
 The Source code is property of Kaan Soral.
 
 ### [Player](https://fansana.github.io/adventureland/Player.html)
+^ Click for detailed Info
+* Properties
+ * .real_x (10x of the game's X)
+ * .real_y (10x of the game's Y)
+ * .hp / .max_hp
+ * .mp / .max_mp
+ * .xp / .max_xp
+ * .party / .name / .rip / .afk / .code / .target / .id / .moving + more
 
 ### [Character](https://fansana.github.io/adventureland/Character.html)
+^ Click for detailed Info
+* Properties
+ * .real_x (10x of the game's X)
+ * .real_y (10x of the game's Y)
+ * .hp / .max_hp
+ * .mp / .max_mp
+ * .xp / .max_xp
+ * .party / .name / .rip / .afk / .code / .target / .id / .moving + more
 
-### [Monster](https://fansana.github.io/adventureland/Monster.html)
+### [Monster](https://fansana.github.io/adventureland/Monster.html) (Incomplete)
+^ Click for detailed Info
 * Properties
  * .real_x (10x of the game's X)
  * .real_y (10x of the game's Y)
@@ -43,6 +60,8 @@ Here is a list of some children of G and an explanation to them.
     - Contains a information about all npcs.
 
 ### Provided Functions
+
+A more thoroughgoing list can be found [here](https://fansana.github.io/adventureland/index.html). 
 
 #### move(character.real_x,character.real_y)
 Moves the character

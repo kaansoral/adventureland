@@ -1,7 +1,7 @@
 setInterval(function(){
 
 	use_hp_or_mp();
-	loot();
+	lootGold();
 
 	if(is_moving(character)) return;
 	

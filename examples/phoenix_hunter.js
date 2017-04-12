@@ -1,7 +1,7 @@
 setInterval(function(){
 
 	use_hp_or_mp();
-	loot();
+	lootGold();
 
 	if(is_moving(character) || character.rip) return;
 	//IDEA: Instead of returning when is_moving, if character.targets<2, farm nearby monsters if they are in_attack_range

@@ -4,7 +4,7 @@ setInterval(function(){
 
 	if(character.hp<400 || character.mp<300) use_hp_or_mp();
 	// Uses potions only when the above conditions are met
-	loot();
+	lootGold();
 
 	if(!attack_mode || character.moving) return;
 
