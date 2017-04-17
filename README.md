@@ -1,8 +1,8 @@
 # Adventure Land Documentation
 CODE Documentation for Adventure Land MMORPG [Adventure Land](http://adventure.land) .
 Currently maintained by NexusNull.
-This Documentation is currently unofficial and unfinished if you find mistakes kindly point them out so I can fix them.
-The Source code is property of Kaan Soral.
+This documentation is currently unofficial and unfinished if you find mistakes kindly point them out so I can fix them.
+The source code is property of Kaan Soral.
 
 ### [Player](https://fansana.github.io/adventureland/Player.html)
 ^ Click for detailed Info
@@ -35,8 +35,8 @@ The Source code is property of Kaan Soral.
  * .party / .name / .rip / .afk / .code / .target / .id / .moving + more
 
 ### Game Info
-A lot of useful information is stored inside of *parent.G*
-to display those information's use 
+A very useful information is stored inside of *parent.G* to display it
+
 ```javascript
     show_json(parent.G);
 ```
@@ -45,7 +45,7 @@ Here is a list of some children of G and an explanation to them.
 * `G.version`
     - Stores the current Game version
 * `G.character.items`
-    - Stores all items in the game and there Attributes
+    - Stores all items in the game and there attributes
 * `G.levels`
     - Stores the xp needed to get from one level to the next
 * `G.classes`
@@ -53,21 +53,21 @@ Here is a list of some children of G and an explanation to them.
 * `G.maps`
     - Contains every game map
 * `G.monsters`
-    - List of every monster and there attributes
+    - List of every monster and there attributes, like health experience 
 * `G.skills`
     - List of all player skills
 * `G.npcs`
-    - Contains a information about all npcs.
+    - Contains a information about all traders 
 
 ### Provided Functions
 
 A more thoroughgoing list can be found [here](https://fansana.github.io/adventureland/index.html). 
 
-#### move(character.real_x,character.real_y)
-Moves the character
+#### move( xCoordinates , yCoordinates )
+This will make the character start walking to into the direction of the passed coordinates
 
 #### get_nearest_monster({max_att:100,min_xp:10,target:"Name",no_target:true})
-Return's the nearest monster, you might want to target that return value with `change_target`
+Returns the nearest monster, you might want to target that return value with `change_target`
 
 target: Picks monsters that only target that name
 
@@ -80,7 +80,7 @@ Uses a very basic logic to either use hp or mp pot
 Returns your current target
 
 #### get_target_of(entity)
-New, powerful feature, returns the target entity for both players and monsters
+Returns the target entity for both players and monsters
 
 Suggestion for Fun: Code your characters to target and attack what you are targeting, even if you don't engage a monster, you can make your characters (or side-characters) engage by just clicking :)
 
@@ -88,22 +88,22 @@ Suggestion for Fun: Code your characters to target and attack what you are targe
 Targets the player or monster
 
 #### loot()
-Loots the chests on the map
+Tries to loot the chests on the map. If there are multiple it will only try to open 2.
 
 #### attack(target)
-Attacks the target
+Attacks the target.
 
 #### heal(target)
-Heals the target
+Heals the target, the target has to be a the character or a player.
 
 #### game_log(message,color)
 Adds a message to game's right log
 
 #### show_json(character.items)
-Renders the argument as json, to inspect, learn, use
+Renders the argument as json, to inspect, learn and use.
 
 #### set_message("Code Active")
-Sets the IFrame message, the one in the right bottom corner
+Sets the IFrame message, the one in the right bottom corner.
 
 #### runner_functions.js
 There are more functions, examples in runner_functions.js and on the game's main CODE

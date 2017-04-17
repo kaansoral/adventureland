@@ -4,6 +4,7 @@
     "dictionaries": ["jsdoc"]
   },
   "source": {
+    "include": ["README.md"],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"
   },

@@ -14,7 +14,8 @@ function activate(num)
 
 /**
  * Shifts an item, likely a booster, in the num-th inventory slot to s pecific mode
- * shift(0,'goldbooster'); would set the booster to gold mode
+ * shift(0,'goldbooster'); would set the booster int the first inventory slot to gold mode
+ * Other modes are "xpbooster" and "luckbooster"
  * @param {number} num   - Position of Inventory Slot starting from 0
  * @param {string} name  - name of the Item
  */
@@ -89,7 +90,7 @@ function item_grade(item) // example: item_grade(character.items[0])
     return calculate_item_grade(G.items[item.name], item);
 }
 /**
- * Returns
+ * Returns how much the item is worth in gold
  * @param {Gear|Consumables} item
  * @returns {number} - How the item is worth in gold when sold to an npc
  */
@@ -99,7 +100,7 @@ function item_value(item) // example: item_value(character.items[0])
     return calculate_item_value(item);
 }
 /**
- * Return Socket.IO socket
+ * Return Socket.IO socket, this is the Object which the game uses to communicate with the server
  * @returns {socket}
  */
 function get_socket() {
@@ -114,6 +115,7 @@ function get_map() {
 }
 /**
  * When CODE is active uses a window in the bottom right hand corner to display a status messages
+ * The window is pretty small so keep it short.
  * @param {string} text the text that should be displayed
  * @param {string} [color] the color in which the text should be displayed
  */
@@ -146,16 +148,26 @@ function get_target_of(entity) // .target is a Name for Monsters and `id` for Pl
     return null;
 }
 
+/**
+ * Returns the current target Entity of the character without checks
+ * @returns {Monster|Player|null} - Returns the current target Entity of the character
+ */
 function get_target() {
     return parent.ctarget;
 }
 
+/**
+ * Returns the current target Entity of the character but with additional checks.
+ * This prevents the targeting of already dead targets or players
+ * @returns {Monster|null} - Returns the current target Entity of the character
+ */
 function get_targeted_monster() {
     if (parent.ctarget && !parent.ctarget.dead && parent.ctarget.type == 'monster') return parent.ctarget;
     return null;
 }
+
 /**
- * Change the target entity
+ * Change the targeted entity
  * @param {Monster} target
  * @param {boolean} [send=false] - send change target to server
  */
@@ -171,10 +183,11 @@ function change_target(target, send) {
 }
 
 /**
- *
+ * Checks if there is a clear path to the coordinates or the entity.
+ * For an entity you don't have to supply the second argument
  * @param {Monster|Player|number} x
- * @param {number} y
- * @returns {*}
+ * @param {number} [y]
+ * @returns {boolean}
  */
 function can_move_to(x,y)
 {
@@ -183,8 +196,8 @@ function can_move_to(x,y)
 }
 
 /**
- *
- * @param {Player|Character} target
+ * Checks if the Entity is in attack range
+ * @param {Player|Monster} target
  * @returns {boolean}
  */
 function in_attack_range(target) // also works for priests/heal
@@ -206,13 +219,15 @@ function can_attack(target) // also works for priests/heal
 }
 
 /**
- * Same as can_attack
- * @param {Monster} target - the Entity for which to check
+ * Checks if the character is able to heal the target
+ * Same as can_attack but with a more intuitive name
+ * @param {Monster|Player} target - the Entity for which to check
  * @returns {boolean}
  */
 function can_heal(target) {
     return can_attack(target);
 }
+
 /**
  *
  * @param {Player|Character|Monster} entity
@@ -223,6 +238,7 @@ function is_moving(entity) {
     if (entity.moving) return true;
     return false;
 }
+
 /**
  * Is the entity using the town teleportation skill
  * @param entity
@@ -233,6 +249,7 @@ function is_transporting(entity) {
     if (entity.me && parent.transporting) return true;
     return false;
 }
+
 /**
  * Tries to attack the target
  * @param {Player|Monster} target - Target to attack
@@ -247,6 +264,7 @@ function attack(target) {
     else parent.monster_attack.call(target);
     last_attack = new Date();
 }
+
 /**
  * Tries to heal the targeted Character
  * @param {Player} target
@@ -293,17 +311,18 @@ function trade(num, trade_slot, price) // where trade_slot is 1 to 16 - example,
 /**
  *
  * @param {Player} target
- * @param trade_slot
+ * @param {number} trade_slot
  */
 function trade_buy(target, trade_slot) // target needs to be an actual player
 {
     parent.trade_buy(trade_slot, target.id, target.slots[trade_slot].rid); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
 }
+
 /**
  *
- * @param  item_num
- * @param scroll_num
- * @param offering_num
+ * @param {number} item_num
+ * @param {number} scroll_num
+ * @param {number} [offering_num]
  */
 function upgrade(item_num, scroll_num, offering_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
@@ -314,6 +333,7 @@ function upgrade(item_num, scroll_num, offering_num) //number of the item and sc
 }
 /**
  * Uses the upgrade npc to combine jewelery
+ * Combining works by taking 3 jewelery items of the same type and a scroll
  * for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
  * @param {number} item0 - Item one
  * @param {number} item1 - Item two
@@ -582,9 +602,9 @@ function handle_command(command, args) // command's are things like "/party" tha
     return -1;
 }
 /**
- * (Not implemented yet)
- * @param to
- * @param data
+ * Send CODE messages to the characters, of course it only works if both characters have CODE active.
+ * @param {Array|string} to - Either an Array of names or just a name
+ * @param {Object} data     - The data to be sent in object form
  */
 function send_cm(to, data) {
     // to: Name or Array of Name's
@@ -592,9 +612,9 @@ function send_cm(to, data) {
     parent.send_code_message(to, data);
 }
 /**
- * (Not implemented yet)
+ *
  * @param {string} name - Sender of Code Message
- * @param {Object} data - Data
+ * @param {Object} data - An Object containing the information send
  */
 function on_cm(name, data) {
     game_log("Received a code message from: " + name);
@@ -608,7 +628,8 @@ function on_disappear(entity, data) {
     // game_log("disappear: "+entity.id+" "+JSON.stringify(data));
 }
 /**
- * When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage
+ * When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage.
+ * Override this function in CODE to react to it
  */
 function on_combined_damage()
 {

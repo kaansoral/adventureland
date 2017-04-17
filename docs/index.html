@@ -42,6 +42,112 @@
 
 
 
+    <section>
+        <article><h1>Adventure Land Documentation</h1><p>CODE Documentation for Adventure Land MMORPG <a href="http://adventure.land">Adventure Land</a> .
+Currently maintained by NexusNull.
+This documentation is currently unofficial and unfinished if you find mistakes kindly point them out so I can fix them.
+The source code is property of Kaan Soral.</p>
+<h3><a href="https://fansana.github.io/adventureland/Player.html">Player</a></h3><p>^ Click for detailed Info</p>
+<ul>
+<li>Properties<ul>
+<li>.real_x (10x of the game's X)</li>
+<li>.real_y (10x of the game's Y)</li>
+<li>.hp / .max_hp</li>
+<li>.mp / .max_mp</li>
+<li>.xp / .max_xp</li>
+<li>.party / .name / .rip / .afk / .code / .target / .id / .moving + more</li>
+</ul>
+</li>
+</ul>
+<h3><a href="https://fansana.github.io/adventureland/Character.html">Character</a></h3><p>^ Click for detailed Info</p>
+<ul>
+<li>Properties<ul>
+<li>.real_x (10x of the game's X)</li>
+<li>.real_y (10x of the game's Y)</li>
+<li>.hp / .max_hp</li>
+<li>.mp / .max_mp</li>
+<li>.xp / .max_xp</li>
+<li>.party / .name / .rip / .afk / .code / .target / .id / .moving + more</li>
+</ul>
+</li>
+</ul>
+<h3><a href="https://fansana.github.io/adventureland/Monster.html">Monster</a> (Incomplete)</h3><p>^ Click for detailed Info</p>
+<ul>
+<li>Properties<ul>
+<li>.real_x (10x of the game's X)</li>
+<li>.real_y (10x of the game's Y)</li>
+<li>.hp / .max_hp</li>
+<li>.mp / .max_mp</li>
+<li>.xp / .max_xp</li>
+<li>.party / .name / .rip / .afk / .code / .target / .id / .moving + more</li>
+</ul>
+</li>
+</ul>
+<h3>Game Info</h3><p>A very useful information is stored inside of <em>parent.G</em> to display it</p>
+<pre class="prettyprint source lang-javascript"><code>    show_json(parent.G);</code></pre><p>Here is a list of some children of G and an explanation to them.</p>
+<ul>
+<li><code>G.version</code><ul>
+<li>Stores the current Game version</li>
+</ul>
+</li>
+<li><code>G.character.items</code><ul>
+<li>Stores all items in the game and there attributes</li>
+</ul>
+</li>
+<li><code>G.levels</code><ul>
+<li>Stores the xp needed to get from one level to the next</li>
+</ul>
+</li>
+<li><code>G.classes</code><ul>
+<li>Stores information about each player class</li>
+</ul>
+</li>
+<li><code>G.maps</code><ul>
+<li>Contains every game map</li>
+</ul>
+</li>
+<li><code>G.monsters</code><ul>
+<li>List of every monster and there attributes, like health experience </li>
+</ul>
+</li>
+<li><code>G.skills</code><ul>
+<li>List of all player skills</li>
+</ul>
+</li>
+<li><code>G.npcs</code><ul>
+<li>Contains a information about all traders </li>
+</ul>
+</li>
+</ul>
+<h3>Provided Functions</h3><p>A more thoroughgoing list can be found <a href="https://fansana.github.io/adventureland/index.html">here</a>. </p>
+<h4>move( xCoordinates , yCoordinates )</h4><p>This will make the character start walking to into the direction of the passed coordinates</p>
+<h4>get_nearest_monster({max_att:100,min_xp:10,target:&quot;Name&quot;,no_target:true})</h4><p>Returns the nearest monster, you might want to target that return value with <code>change_target</code></p>
+<p>target: Picks monsters that only target that name</p>
+<p>no_target: Picks monster that aren't targeting anyone</p>
+<h4>use_hp_or_mp()</h4><p>Uses a very basic logic to either use hp or mp pot</p>
+<h4>get_target()</h4><p>Returns your current target</p>
+<h4>get_target_of(entity)</h4><p>Returns the target entity for both players and monsters</p>
+<p>Suggestion for Fun: Code your characters to target and attack what you are targeting, even if you don't engage a monster, you can make your characters (or side-characters) engage by just clicking :)</p>
+<h4>change_target(target)</h4><p>Targets the player or monster</p>
+<h4>loot()</h4><p>Tries to loot the chests on the map. If there are multiple it will only try to open 2.</p>
+<h4>attack(target)</h4><p>Attacks the target.</p>
+<h4>heal(target)</h4><p>Heals the target, the target has to be a the character or a player.</p>
+<h4>game_log(message,color)</h4><p>Adds a message to game's right log</p>
+<h4>show_json(character.items)</h4><p>Renders the argument as json, to inspect, learn and use.</p>
+<h4>set_message(&quot;Code Active&quot;)</h4><p>Sets the IFrame message, the one in the right bottom corner.</p>
+<h4>runner_functions.js</h4><p>There are more functions, examples in runner_functions.js and on the game's main CODE</p>
+<h3>Future Plans for Adventure land</h3><p>As the game progresses, the CODE feature will refine, you will be able to create/save your own code in-game, and hopefully much much more</p>
+<p>With the introduction of PVP, Trade, Events and similar stuff, the CODE capabilities should get pretty interesting</p>
+<p>I'm also planning to add Networking between characters, so one might create a small team of bot helpers, or create a PVP team that consist entirely of bots</p>
+<h3>Usage / Notes</h3><p>Using CODE in Adventure land requires that the browser tab is focused, otherwise browser commonly slow down the javascript execution.
+A good solution to this problem is to open a separate Window where to run the game in.
+Follow the rules of the Game to avoid unnecessary punishment.
+Also try not to overload the server with too many actions, running the code in an 1/4 second Interval is good practice.
+Keep in mind that CODE is currently an early prototype and may change at any time.
+If you have questions create an <a href="https://github.com/Fansana/adventureland/issues/new">issue</a> on github or ask on <a href="https://discord.gg/hTpwYFJ">Discord</a>.
+Most importantly have fun programming.</p></article>
+    </section>
+
 
 
 
@@ -50,13 +156,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#accept_party_invite">accept_party_invite</a></li><li><a href="global.html#accept_party_request">accept_party_request</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#bfs">bfs</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#clear_drawings">clear_drawings</a></li><li><a href="global.html#compound">compound</a></li><li><a href="global.html#continue_pathfinding">continue_pathfinding</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#draw_circle">draw_circle</a></li><li><a href="global.html#draw_line">draw_line</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_hostile">get_nearest_hostile</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#handle_command">handle_command</a></li><li><a href="global.html#handle_death">handle_death</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#load_code">load_code</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#on_cm">on_cm</a></li><li><a href="global.html#on_combined_damage">on_combined_damage</a></li><li><a href="global.html#on_destroy">on_destroy</a></li><li><a href="global.html#on_disappear">on_disappear</a></li><li><a href="global.html#on_draw">on_draw</a></li><li><a href="global.html#on_party_invite">on_party_invite</a></li><li><a href="global.html#on_party_request">on_party_request</a></li><li><a href="global.html#respawn">respawn</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_cm">send_cm</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#smart_move">smart_move</a></li><li><a href="global.html#smart_move_logic">smart_move_logic</a></li><li><a href="global.html#smooth_path">smooth_path</a></li><li><a href="global.html#start_pathfinding">start_pathfinding</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#upgrade">upgrade</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Monster.html">Monster</a></li><li><a href="PIXI.Sprite.html">Sprite</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#accept_party_invite">accept_party_invite</a></li><li><a href="global.html#accept_party_request">accept_party_request</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#attack">attack</a></li><li><a href="global.html#bfs">bfs</a></li><li><a href="global.html#buy">buy</a></li><li><a href="global.html#can_attack">can_attack</a></li><li><a href="global.html#can_heal">can_heal</a></li><li><a href="global.html#can_move_to">can_move_to</a></li><li><a href="global.html#can_use">can_use</a></li><li><a href="global.html#change_target">change_target</a></li><li><a href="global.html#clear_drawings">clear_drawings</a></li><li><a href="global.html#compound">compound</a></li><li><a href="global.html#continue_pathfinding">continue_pathfinding</a></li><li><a href="global.html#destroy_item">destroy_item</a></li><li><a href="global.html#draw_circle">draw_circle</a></li><li><a href="global.html#draw_line">draw_line</a></li><li><a href="global.html#equip">equip</a></li><li><a href="global.html#game_log">game_log</a></li><li><a href="global.html#get_map">get_map</a></li><li><a href="global.html#get_nearest_hostile">get_nearest_hostile</a></li><li><a href="global.html#get_nearest_monster">get_nearest_monster</a></li><li><a href="global.html#get_player">get_player</a></li><li><a href="global.html#get_socket">get_socket</a></li><li><a href="global.html#get_target">get_target</a></li><li><a href="global.html#get_target_of">get_target_of</a></li><li><a href="global.html#get_targeted_monster">get_targeted_monster</a></li><li><a href="global.html#handle_command">handle_command</a></li><li><a href="global.html#handle_death">handle_death</a></li><li><a href="global.html#heal">heal</a></li><li><a href="global.html#in_attack_range">in_attack_range</a></li><li><a href="global.html#is_moving">is_moving</a></li><li><a href="global.html#is_transporting">is_transporting</a></li><li><a href="global.html#item_grade">item_grade</a></li><li><a href="global.html#item_properties">item_properties</a></li><li><a href="global.html#item_value">item_value</a></li><li><a href="global.html#load_code">load_code</a></li><li><a href="global.html#loot">loot</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#mssince">mssince</a></li><li><a href="global.html#on_cm">on_cm</a></li><li><a href="global.html#on_combined_damage">on_combined_damage</a></li><li><a href="global.html#on_destroy">on_destroy</a></li><li><a href="global.html#on_disappear">on_disappear</a></li><li><a href="global.html#on_draw">on_draw</a></li><li><a href="global.html#on_party_invite">on_party_invite</a></li><li><a href="global.html#on_party_request">on_party_request</a></li><li><a href="global.html#respawn">respawn</a></li><li><a href="global.html#say">say</a></li><li><a href="global.html#sell">sell</a></li><li><a href="global.html#send_cm">send_cm</a></li><li><a href="global.html#send_gold">send_gold</a></li><li><a href="global.html#send_item">send_item</a></li><li><a href="global.html#send_party_invite">send_party_invite</a></li><li><a href="global.html#send_party_request">send_party_request</a></li><li><a href="global.html#set_message">set_message</a></li><li><a href="global.html#shift">shift</a></li><li><a href="global.html#show_json">show_json</a></li><li><a href="global.html#smart_move">smart_move</a></li><li><a href="global.html#smart_move_logic">smart_move_logic</a></li><li><a href="global.html#smooth_path">smooth_path</a></li><li><a href="global.html#start_pathfinding">start_pathfinding</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#trade_buy">trade_buy</a></li><li><a href="global.html#upgrade">upgrade</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#use_hp_or_mp">use_hp_or_mp</a></li><li><a href="global.html#use_skill">use_skill</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Apr 12 2017 19:55:46 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Apr 17 2017 02:23:38 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
