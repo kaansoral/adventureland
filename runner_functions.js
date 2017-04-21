@@ -3,6 +3,22 @@ var character=parent.character;
 var G=parent.G; // Game data
 var safeties=true;
 
+function is_npc(entity)
+{
+	if(entity && (entity.npc || entity.type=="npc")) return true;
+}
+
+function is_monster(entity)
+{
+	if(entity && entity.type=="monster") return true;
+}
+
+function is_player(entity)
+{
+	if(entity && entity.type=="character" && !entity.npc) return true;
+}
+function is_character(e){return is_player(e);}
+
 function activate(num) // activates an item, likely a booster, in the num-th inventory slot
 {
 	parent.activate(num);
@@ -43,7 +59,7 @@ function use_skill(name,target)
 
 function item_properties(item) // example: item_properties(character.items[0])
 {
-	if(!item || !item.name) return {};
+	if(!item || !item.name) return null;
 	return calculate_item_properties(G.items[item.name],item);
 }
 
@@ -139,7 +155,12 @@ function can_attack(target) // also works for priests/heal
 	if(!parent.is_disabled(character) && in_attack_range(target) && new Date()>=parent.next_attack) return true;
 	return false;
 }
-function can_heal(t){return can_attack(t);}
+
+function can_heal(t)
+{
+	if(is_monster(t)) return false;
+	return can_attack(t);
+}
 
 function is_moving(entity)
 {
@@ -187,6 +208,11 @@ function equip(num)
 	parent.socket.emit("equip",{num:num});
 }
 
+function unequip(slot) // show_json(character.slots) => to see slot options
+{
+	parent.socket.emit("unequip",{slot:slot});
+}
+
 function trade(num,trade_slot,price) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
 {
 	parent.trade("trade"+trade_slot,num,price);
@@ -212,6 +238,14 @@ function compound(item0,item1,item2,scroll_num,offering_num) // for example -> c
 	parent.c_scroll=scroll_num;
 	parent.c_offering=offering_num;
 	parent.compound();
+}
+
+function craft(i0,i1,i2,i3,i4,i5,i6,i7,i8)
+// for example -> craft(null,0,null,null,1,null,null,2,null)
+// sends 3 items to be crafted, the 0th, 1st, 2nd items in your inventory, and it places them all in the middle column of crafting
+{
+	parent.cr_items=[i0,i1,i2,i3,i4,i5,i6,i7,i8];
+	parent.craft();
 }
 
 function exchange(item_num)
