@@ -1,11 +1,14 @@
 # adventureland
 CODE Documentation for Adventure Land MMORPG http://adventure.land
 
+
+[NexusNull's Unofficial But Awesome Documentation](https://fansana.github.io/adventureland/index.html) [Functions](https://fansana.github.io/adventureland/global.html)
+
 ### Character / Players / Monsters
 
 * Properties
- * .real_x (10x of the game's X)
- * .real_y (10x of the game's Y)
+ * .real_x
+ * .real_y
  * .hp / .max_hp
  * .mp / .max_mp
  * .xp / .max_xp
