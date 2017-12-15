@@ -2,7 +2,8 @@ var attack_mode=true
 
 function happy_holidays()
 {
-	if(!G.maps.main.xmas_tree) return;
+	if(!G.maps.main.xmas_tree) return; // If this happens, the event is over
+	if(character.s.xmas) return; // If you already have the buff, no need to get re-buffed
 	G.maps.main.xmas_tree.return=true;
 	// If first argument of "smart_move" includes "return"
 	// You are placed back to your original point
@@ -12,7 +13,7 @@ function happy_holidays()
 		say("Happy Holidays!");
 	});
 }
-setInterval(happy_holidays,59*60*1000); // Every 59 minutes
+setInterval(happy_holidays,60*1000); // Check every minute
 happy_holidays(); // Execute once before the first interval is up
 
 setInterval(function(){
