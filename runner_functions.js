@@ -18,16 +18,23 @@ game={
 
 //#NOTE: Most new features are experimental - for #feedback + suggestions: https://discord.gg/X4MpntA [05/01/18]
 
-function start_character(name)
+function start_character(name,code_slot_or_name)
 {
 	// Loads a character in [CODE] mode
-	parent.start_character_runner(name)
+	parent.start_character_runner(name,code_slot_or_name)
 }
 
 function command_character(name,code_snippet)
 {
 	// Commands the character in [CODE] mode
 	parent.character_code_eval(name,code_snippet)
+}
+
+function get_active_characters()
+{
+	// States: "self", "starting","loading", "active", "code"
+	// Example: {"Me":"self","Protector":"loading"}
+	return parent.get_active_characters()
 }
 
 function is_pvp()
@@ -308,6 +315,11 @@ function exchange(item_num)
 function say(message) // please use responsibly, thank you! :)
 {
 	parent.say(message,1);
+}
+
+function pm(name,message) // please use MORE responsibly, thank you! :)
+{
+	parent.private_say(name,message,0)
 }
 
 function move(x,y)
