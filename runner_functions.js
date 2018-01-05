@@ -3,6 +3,38 @@ var character=parent.character;
 var G=parent.G; // Game data
 var safeties=true;
 
+server={
+	mode:parent.gameplay, // "normal", "hardcore", "test"
+	pvp:parent.is_pvp, // true for PVP servers, use is_pvp() for maps
+	region:parent.server_region, // "EU", "US", "ASIA"
+	id:parent.server_identifier, // "I", "II", "PVP", "TEST"
+}
+
+game={
+	platform:parent.is_electron&&"electron"||"web", // "electron" for Steam, Mac clients, "web" for https://adventure.land
+	graphics:!parent.no_graphics, // if game.graphics is false, don't draw stuff to the game in your Code
+	html:!parent.no_html, // if game.html is false, this character is loaded in [CODE] mode
+}
+
+//#NOTE: Most new features are experimental - for #feedback + suggestions: https://discord.gg/X4MpntA [05/01/18]
+
+function start_character(name)
+{
+	// Loads a character in [CODE] mode
+	parent.start_character_runner(name)
+}
+
+function command_character(name,code_snippet)
+{
+	// Commands the character in [CODE] mode
+	parent.character_code_eval(name,code_snippet)
+}
+
+function is_pvp()
+{
+	return G.maps[character.map].pvp || server.is_pvp;
+}
+
 function is_npc(entity)
 {
 	if(entity && (entity.npc || entity.type=="npc")) return true;
@@ -78,6 +110,16 @@ function item_value(item) // example: item_value(character.items[0])
 	return calculate_item_value(item);
 }
 
+function is_paused()
+{
+	return parent.paused;
+}
+
+function pause() // Pauses the Graphics
+{
+	parent.pause();
+}
+
 function get_socket()
 {
 	return parent.socket;
@@ -91,7 +133,9 @@ function get_map()
 function set_message(text,color)
 {
 	if(color) text="<span style='color: "+color+"'>"+text+"</span>";
-	$('#gg').html(text);
+
+	if(!game.html) parent.set_status(text);
+	else $('#gg').html(text);
 }
 
 function game_log(message,color)
@@ -114,7 +158,8 @@ function get_target_of(entity) // .target is a Name for Monsters and `id` for Pl
 
 function get_target()
 {
-	return parent.ctarget;
+	if(parent.ctarget && !parent.ctarget.dead) return parent.ctarget;
+	return null;
 }
 
 function get_targeted_monster()
@@ -139,6 +184,12 @@ function can_move_to(x,y)
 {
 	if(is_object(x)) y=x.real_y,x=x.real_x;
 	return can_move({map:character.map,x:character.real_x,y:character.real_y,going_x:x,going_y:y});
+}
+
+function xmove(x,y)
+{
+    if(can_move_to(x,y)) move(x,y);
+    else smart_move({x:x,y:y});
 }
 
 function in_attack_range(target) // also works for priests/heal
@@ -321,7 +372,7 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
 	var min_d=999999,target=null;
 
 	if(!args) args={};
-	if(args.friendship===undefined) args.friendship=true;
+	if(args.friendship===undefined && character.owner) args.friendship=true;
 
 	for(id in parent.entities)
 	{
@@ -463,6 +514,7 @@ function on_party_request(name) // called by the inviter's name - request = some
 function on_destroy() // called just before the CODE is destroyed
 {
 	clear_drawings();
+	clear_buttons();
 }
 
 function on_draw() // the game calls this function at the best place in each game draw frame, so if you are playing the game at 60fps, this function gets called 60 times per second
@@ -484,6 +536,7 @@ function on_game_event(event)
 
 var PIXI=parent.PIXI; // for drawing stuff into the game
 var drawings=parent.drawings;
+var buttons=parent.code_buttons;
 
 //Documentation: https://pixijs.github.io/docs/PIXI.Graphics.html
 function draw_line(x,y,x2,y2,size,color)
@@ -522,6 +575,50 @@ function clear_drawings()
 	drawings=parent.drawings=[];
 }
 
+function add_top_button(id,value,fn)
+{
+	if(!buttons[id])
+	{
+		buttons[id]={value:value,fn:function(){},place:"top"};
+		parent.$(".codebuttons").append("<div class='gamebutton codebutton"+id+"' data-id='"+id+"' onclick='code_button_click(this)'>BUTTON</div> ")
+	}
+	if(fn) set_button_onclick(id,fn)
+	if(value) set_button_value(id,value);
+}
+
+function add_bottom_button(id,value,fn)
+{
+	if(!buttons[id])
+	{
+		buttons[id]={value:value,fn:function(){},place:"bottom"};
+		parent.$(".codebbuttons").append("<div class='gamebutton gamebutton-small codebutton"+id+"' data-id='"+id+"' onclick='code_button_click(this)'>BUTTON</div> ")
+	}
+	if(fn) set_button_onclick(id,fn)
+	if(value) set_button_value(id,value);
+}
+
+function set_button_value(id,value)
+{
+	parent.$(".codebutton"+id).html(value);
+}
+
+function set_button_color(id,color)
+{
+	parent.$(".codebutton"+id).css("border-color",color);
+}
+
+function set_button_onclick(id,fn)
+{
+	buttons[id].fn=fn;
+}
+
+function clear_buttons()
+{
+	parent.$('.codebuttons').html("");
+	parent.$('.codebbuttons').html("");
+	buttons=parent.code_buttons={};
+}
+
 function auto_reload(value)
 {
 	// Configures the game to auto reload in case you disconnect due to rare network issues
@@ -530,22 +627,51 @@ function auto_reload(value)
 	else parent.auto_reload="on"; // always reload
 }
 
-var game={
-	last:0,
-	callbacks:[],
-	on:function(event,f){
-
-	},
-	once:function(event,f){
-
-	},
-	remove:function(num){
-
-	},
-	trigger:function(event,args){
-
-	},
+game.listeners=[];
+game.on=function(event,f){
+	var def={f:f,id:randomStr(30),event:event};
+	game.listeners.push(def);
+	return def.id;
 };
+game.once=function(event,f){
+	var def={f:f,id:randomStr(30),event:event,once:true};
+	game.listeners.push(def);
+	return def.id;
+};
+game.remove=function(id){
+	for(var i=0;i<game.listeners.length;i++)
+	{
+		if(game.listeners[i].id==id)
+		{
+			game.listeners.splice(i,1);
+			break;
+		}
+	}
+};
+game.trigger=function(event,args){
+	var to_delete=[];
+	for(var i=0;i<game.listeners.length;i++)
+	{
+		var l=game.listeners[i];
+		if(l.event==event || l.event=="all")
+		{
+			try{
+				l.f(args,event);
+			}
+			catch(e)
+			{
+				game_log("Listener Exception ("+l.event+") "+e,code_color);
+			}
+			if(l.once || l.f && l.f.delete) to_delete.push(l.id);
+		}
+	}
+	// game_log(to_delete);
+};
+
+function trigger_event(name,data)
+{
+	game.trigger(name,data);
+}
 
 function preview_item(def,args)
 {
@@ -843,6 +969,36 @@ function smart_move_logic()
 }
 
 setInterval(function(){smart_move_logic();},80);
+
+function doneify(fn,s_event,f_event)
+{
+	return function(a,b,c,d,e,f){
+		var rxd=randomStr(30);
+		parent.rxd=rxd;
+		fn(a,b,c,d,e,f);
+		return {done:function(callback){
+			game.once(s_event,function(event){
+				if(event.rxd==rxd)
+				{
+					callback(true,event);
+					this.delete=true; // remove the .on listener
+					parent.rxd=null;
+				}
+				// else game_log("rxd_mismatch");
+			});
+			game.once(f_event,function(event){
+				if(event.rxd==rxd)
+				{
+					callback(false,event);
+					this.delete=true; // remove the .on listener
+					parent.rxd=null;
+				}
+				// else game_log("rxd_mismatch");
+			});
+		}};
+	};
+}
+buy=doneify(buy,"buy_success","buy_fail");
 
 //safety flags
 var last_loot=new Date(0);
