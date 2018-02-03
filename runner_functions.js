@@ -24,6 +24,11 @@ function start_character(name,code_slot_or_name)
 	parent.start_character_runner(name,code_slot_or_name)
 }
 
+function stop_character(name)
+{
+	parent.stop_character_runner(name)
+}
+
 function command_character(name,code_snippet)
 {
 	// Commands the character in [CODE] mode
@@ -142,7 +147,16 @@ function set_message(text,color)
 	if(color) text="<span style='color: "+color+"'>"+text+"</span>";
 
 	if(!game.html) parent.set_status(text);
-	else $('#gg').html(text);
+	else
+	{
+		current_message=text;
+		// $('#gg').html(text); // added the code_draw function for performance [15/01/18]
+		// also visit set_status on functions.js for a challenge (note to self)
+		// Last note for now: There's probably a browser/chrome bug
+		// If you move the cursor into the iframe once - each set_message breaks the cursor
+		// Whether code_draw is used or not
+		// That's why iframe's have "pointer-events: none;"s now
+	}
 }
 
 function game_log(message,color)
@@ -413,7 +427,8 @@ function use_hp_or_mp()
 	if(used) last_potion=new Date();
 }
 
-function loot()
+// loot(true) allows code characters to make their commanders' loot instead, extremely useful [14/01/18]
+function loot(commander)
 {
 	var looted=0;
 	if(safeties && mssince(last_loot)<200) return;
@@ -423,7 +438,8 @@ function loot()
 		var chest=parent.chests[id];
 		if(safeties && (chest.items>character.esize || chest.last_loot && mssince(chest.last_loot)<1600)) continue;
 		chest.last_loot=last_loot;
-		parent.socket.emit("open_chest",{id:id});
+		if(commander) parent.parent.socket.emit("open_chest",{id:id});
+		else parent.socket.emit("open_chest",{id:id});
 		looted++;
 		if(looted==2) break;
 	}
@@ -640,6 +656,11 @@ function auto_reload(value)
 }
 
 game.listeners=[];
+game.all=function(f){
+	var def={f:f,id:randomStr(30),event:"all"};
+	game.listeners.push(def);
+	return def.id;
+};
 game.on=function(event,f){
 	var def={f:f,id:randomStr(30),event:event};
 	game.listeners.push(def);
@@ -668,7 +689,8 @@ game.trigger=function(event,args){
 		if(l.event==event || l.event=="all")
 		{
 			try{
-				l.f(args,event);
+				if(l.event=="all") l.f(event,args)
+				else l.f(args,event);
 			}
 			catch(e)
 			{
@@ -1017,3 +1039,12 @@ var last_loot=new Date(0);
 var last_attack=new Date(0);
 var last_potion=new Date(0);
 var last_transport=new Date(0);
+
+var last_message="",current_message="";
+function code_draw()
+{
+	if(last_message!=current_message) $("#gg").html(current_message),last_message=current_message;
+	requestAnimationFrame(code_draw);
+}
+
+code_draw();
