@@ -57,6 +57,11 @@ function get_active_characters()
 	return parent.get_active_characters()
 }
 
+function change_server(region,name) // change_server("EU","I") or change_server("ASIA","PVP") or change_server("US","III")
+{
+	parent.window.location.href="/character/"+character.name+"/in/"+region+"/"+name+"/";
+}
+
 function is_pvp()
 {
 	return G.maps[character.map].pvp || server.is_pvp;
@@ -118,9 +123,65 @@ function use_skill(name,target)
 	parent.use_skill(name,target);
 }
 
-function transport(map,spawn)
+function bank_deposit(gold)
 {
-	parent.socket.emit("transport",{to:map,s:spawn});
+	if(!character.bank) return game_log("Not inside the bank");
+	parent.socket.emit("bank",{operation:"deposit",amount:gold});
+}
+
+function bank_withdraw(gold)
+{
+	if(!character.bank) return game_log("Not inside the bank");
+	parent.socket.emit("bank",{operation:"withdraw",amount:gold});
+}
+
+function bank_store(num,pack,pack_slot)
+{
+	// bank_store(0) - Stores the first item in inventory in the first/best spot in bank
+	// parent.socket.emit("bank",{operation:"swap",pack:pack,str:num,inv:num});
+	// Above call can be used manually to pull items, swap items and so on - str is from 0 to 41, it's the storage slot #
+	// parent.socket.emit("bank",{operation:"swap",pack:pack,str:num,inv:-1}); <- this call would pull an item to the first inventory slot available
+	// pack is one of ["items0","items1","items2","items3","items4","items5","items6","items7"]
+	if(!character.bank) return game_log("Not inside the bank");
+	if(!character.items[num]) return game_log("No item in that spot");
+	if(!pack_slot) pack_slot=-1; // the server interprets -1 as first slot available
+	if(!pack)
+	{
+		var cp=undefined,cs=undefined;
+		bank_packs.forEach(function(cpack){
+			if(!character.bank[cpack]) return;
+			for(var i=0;i<42;i++)
+			{
+				if(pack) return;
+				if(can_stack(character.bank[cpack][i],character.items[num])) // the item we want to store and this bank item can stack - best case scenario
+				{
+					pack=cpack;
+				}
+				if(!character.bank[cpack][i] && !cp)
+				{
+					cp=cpack;
+				}
+			}
+		});
+		if(!pack && !cp) return game_log("Bank is full!");
+		if(!pack) pack=cp;
+	}
+	parent.socket.emit("bank",{operation:"swap",pack:pack,str:-1,inv:num});
+}
+
+function swap(a,b) // inventory move/swap
+{
+	parent.socket.emit("imove",{a:a,b:b});
+}
+
+function quantity(name)
+{
+	var q=0;
+	for(var i=0;i<character.items.length;i++)
+	{
+		if(character.items[i] && character.items[i].name==name) q+=character.items[i].q||1;
+	}
+	return q;
 }
 
 function item_properties(item) // example: item_properties(character.items[0])
@@ -142,6 +203,11 @@ function item_value(item) // example: item_value(character.items[0])
 {
 	if(!item || !item.name) return 0;
 	return calculate_item_value(item);
+}
+
+function transport(map,spawn)
+{
+	parent.socket.emit("transport",{to:map,s:spawn});
 }
 
 function is_paused()
@@ -820,6 +886,18 @@ function reset_mappings()
 	set_skillbar(parent.skillbar);
 }
 
+function pset(name,value)
+{
+	// on Web, window.localStorage is used, on Steam/Mac, the electron-store package is used for persistent storage
+	return parent.storage_set(name,value);
+}
+
+function pget(name)
+{
+	// on Web, window.localStorage is used, on Steam/Mac, the electron-store package is used for persistent storage
+	return parent.storage_get(name);
+}
+
 function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
 {
 	if(!onerror) onerror=function(){ game_log("load_code: Failed to load","#E13758"); }
@@ -928,9 +1006,13 @@ function stop(action)
 	{
 		parent.socket.emit("stop",{action:"invis"});
 	}
-	else if(action=="teleport")
+	else if(action=="teleport" || action=="town")
 	{
-		parent.socket.emit("stop",{action:"teleport"});
+		parent.socket.emit("stop",{action:"town"});
+	}
+	else if(action=="revival")
+	{
+		parent.socket.emit("stop",{action:"revival"});
 	}
 }
 
@@ -1127,7 +1209,9 @@ function eval_s(code) // this is how snippets are eval'ed if they include "outpu
 
 function performance_trick()
 {
+	// Needed for browsers only, Steam/Mac versions of the game always deliver high JS performance [03/02/19]
 	parent.performance_trick(); // Just plays an empty sound file, so browsers don't throttle JS, only way to prevent it, interesting cheat [05/07/18]
+	// Lately Chrome has been screwing things up with every update, mostly it's bugs and performance issues, but this time, the way Audio is played has been changed, so, once the game refreshes itself, the tabs need to be manually focused once for performance_trick() to become effective, as Audio can no longer automatically play [21/10/18]
 }
 
 function doneify(fn,s_event,f_event)
