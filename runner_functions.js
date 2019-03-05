@@ -29,7 +29,8 @@ game={
 	platform:parent.is_electron&&"electron"||"web", // "electron" for Steam, Mac clients, "web" for https://adventure.land
 	graphics:!parent.no_graphics, // if game.graphics is false, don't draw stuff to the game in your Code
 	html:!parent.no_html, // if game.html is false, this character is loaded in [CODE] mode
-}
+};
+character.bot=parent.is_bot;
 
 //#NOTE: Most new features are experimental - for #feedback + suggestions: https://discord.gg/X4MpntA [05/01/18]
 
@@ -64,7 +65,7 @@ function change_server(region,name) // change_server("EU","I") or change_server(
 
 function is_pvp()
 {
-	return G.maps[character.map].pvp || server.is_pvp;
+	return G.maps[character.map].pvp || server.pvp;
 }
 
 function is_npc(entity)
@@ -419,6 +420,12 @@ function craft(i0,i1,i2,i3,i4,i5,i6,i7,i8)
 	parent.craft();
 }
 
+function dismantle(item_num)
+{
+	parent.ds_item=item_num;
+	parent.dismantle();
+}
+
 function exchange(item_num)
 {
 	parent.e_item=item_num;
@@ -448,7 +455,8 @@ function cruise(speed)
 
 function show_json(e) // renders the object as json inside the game
 {
-	parent.show_json(parent.game_stringify(e,2));
+	if(character.bot) parent.parent.show_json(parent.game_stringify(e,'\t'));
+	else parent.show_json(parent.game_stringify(e,'\t'));
 }
 
 function get_player(name) // returns the player by name, if the player is within the vision area
@@ -575,11 +583,25 @@ function send_party_request(name)
 
 function accept_party_invite(name)
 {
+	parent.$(".pin"+name).remove();
 	parent.socket.emit('party',{event:'accept',name:name});
 }
+
 function accept_party_request(name)
 {
+	parent.$(".pin"+name).remove();
 	parent.socket.emit('party',{event:'raccept',name:name});
+}
+
+function leave_party()
+{
+	parent.socket.emit("party",{event:"leave"});
+}
+
+function accept_magiport(name)
+{
+	parent.$(".mpin"+name).remove();
+	parent.socket.emit('magiport',{name:name});
 }
 
 function unfriend(name) // instead of a name, an owner id also works, this is currently the only way to unfriend someone [20/08/18]
@@ -640,6 +662,18 @@ function on_party_invite(name) // called by the inviter's name
 function on_party_request(name) // called by the inviter's name - request = someone requesting to join your existing party
 {
 	// accept_party_request(name)
+}
+
+function on_magiport(name) // called by the mage's name in PVE servers, in PVP servers magiport either succeeds or fails without consent
+{
+	// accept_magiport(name)
+}
+
+function on_map_click(x,y)
+{
+	// if true is returned, the default move is cancelled
+	// xmove(x,y);
+	// return true;
 }
 
 function on_destroy() // called just before the CODE is destroyed
@@ -752,13 +786,37 @@ function clear_buttons()
 	buttons=parent.code_buttons={};
 }
 
-function auto_reload(value)
-{
-	// Configures the game to auto reload in case you disconnect due to rare network issues
-	if(value===false) parent.auto_reload="off";
-	else if(value=="auto") parent.auto_reload="auto"; // code or merchant stand
-	else parent.auto_reload="on"; // always reload
-}
+character.listeners=[];
+character.all=function(f){
+	var def={f:f,id:randomStr(30),event:"all"};
+	character.listeners.push(def);
+	return def.id;
+};
+character.on=function(event,f){
+	var def={f:f,id:randomStr(30),event:event};
+	character.listeners.push(def);
+	return def.id;
+};
+character.trigger=function(event,args){
+	var to_delete=[];
+	for(var i=0;i<character.listeners.length;i++)
+	{
+		var l=character.listeners[i];
+		if(l.event==event || l.event=="all")
+		{
+			try{
+				if(l.event=="all") l.f(event,args)
+				else l.f(args,event);
+			}
+			catch(e)
+			{
+				game_log("Listener Exception ("+l.event+") "+e,code_color);
+			}
+			if(l.once || l.f && l.f.delete) to_delete.push(l.id);
+		}
+	}
+	// game_log(to_delete);
+};
 
 game.listeners=[];
 game.all=function(f){
@@ -806,6 +864,11 @@ game.trigger=function(event,args){
 	}
 	// game_log(to_delete);
 };
+
+function trigger_character_event(name,data)
+{
+	character.trigger(name,data);
+}
 
 function trigger_event(name,data)
 {
