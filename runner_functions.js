@@ -175,6 +175,15 @@ function swap(a,b) // inventory move/swap
 	parent.socket.emit("imove",{a:a,b:b});
 }
 
+function locate_item(name)
+{
+	for(var i=0;i<character.items.length;i++)
+	{
+		if(character.items[i] && character.items[i].name==name) return i;
+	}
+	return -1;
+}
+
 function quantity(name)
 {
 	var q=0;
@@ -356,12 +365,12 @@ function heal(target)
 
 function buy(name,quantity) //item names can be spotted from show_json(character.items) - they can be bought only if an NPC sells them
 {
-	parent.buy(name,quantity);
+	return parent.buy(name,quantity); // returns a Promise
 }
 
 function buy_with_gold(name,quantity)
 {
-	parent.buy_with_gold(name,quantity);
+	return parent.buy_with_gold(name,quantity); // returns a Promise
 }
 
 function buy_with_shells(name,quantity)
@@ -395,12 +404,12 @@ function trade_buy(target,trade_slot) // target needs to be an actual player
 	parent.trade_buy(trade_slot,target.id,target.slots[trade_slot].rid); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
 }
 
-function upgrade(item_num,scroll_num,offering_num) //number of the item and scroll on the show_json(character.items) array - 0 to N-1
+function upgrade(item_num,scroll_num,offering_num) // number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
 	parent.u_item=item_num;
 	parent.u_scroll=scroll_num;
 	parent.u_offering=offering_num;
-	parent.upgrade();
+	return parent.upgrade("code"); // returns a Promise
 }
 
 function compound(item0,item1,item2,scroll_num,offering_num) // for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
@@ -480,12 +489,13 @@ function get_nearest_monster(args)
 
 	if(!args) args={};
 	if(args && args.target && args.target.name) args.target=args.target.name;
-	if(args && args.type=="monster") game_log("You used monster.type, which is always 'monster', use monster.mtype instead");
+	if(args && args.type=="monster") game_log("get_nearest_monster: you used monster.type, which is always 'monster', use monster.mtype instead");
+	if(args && args.mtype) game_log("get_nearest_monster: you used 'mtype', you should use 'type'");
 
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
-		if(current.type!="monster" || current.dead) continue;
+		if(current.type!="monster" || !current.visible || current.dead) continue;
 		if(args.type && current.mtype!=args.type) continue;
 		if(args.min_xp && current.xp<args.min_xp) continue;
 		if(args.max_att && current.attack>args.max_att) continue;
@@ -508,7 +518,7 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
 	for(id in parent.entities)
 	{
 		var current=parent.entities[id];
-		if(current.type!="character" || current.rip || current.invincible || current.npc) continue;
+		if(current.type!="character" || !current.visible || current.rip || current.invincible || current.npc) continue;
 		if(current.party && character.party==current.party) continue;
 		if(current.guild && character.guild==current.guild) continue;
 		if(args.friendship && in_arr(current.owner,parent.friends)) continue;
@@ -614,17 +624,6 @@ function respawn()
 	parent.socket.emit('respawn');
 }
 
-function handle_death()
-{
-	// When a character dies, character.rip is true, you can override handle_death and manually respawn
-	// IDEA: A Resident PVP-Dweller, with an evasive Code + irregular respawning
-	// respawn current has a 12 second cooldown, best wait 15 seconds before respawning [24/11/16]
-	// setTimeout(respawn,15000);
-	// return true;
-	// NOTE: Add `if(character.rip) {respawn(); return;}` to your main loop/interval too, just in case
-	return -1;
-}
-
 function handle_command(command,args) // command's are things like "/party" that are entered through Chat - args is a string
 {
 	// game_log("Command: /"+command+" Args: "+args);
@@ -637,11 +636,6 @@ function send_cm(to,data)
 	// to: Name or Array of Name's
 	// data: JSON object
 	parent.send_code_message(to,data);
-}
-
-function on_cm(name,data)
-{
-	game_log("Received a code message from: "+name);
 }
 
 function on_disappear(entity,data)
@@ -810,7 +804,7 @@ character.trigger=function(event,args){
 			}
 			catch(e)
 			{
-				game_log("Listener Exception ("+l.event+") "+e,code_color);
+				game_log("Listener Exception ("+l.event+") "+e,colors.code_error);
 			}
 			if(l.once || l.f && l.f.delete) to_delete.push(l.id);
 		}
@@ -857,7 +851,7 @@ game.trigger=function(event,args){
 			}
 			catch(e)
 			{
-				game_log("Listener Exception ("+l.event+") "+e,code_color);
+				game_log("Listener Exception ("+l.event+") "+e,colors.code_error);
 			}
 			if(l.once || l.f && l.f.delete) to_delete.push(l.id);
 		}
@@ -963,7 +957,7 @@ function pget(name)
 
 function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
 {
-	if(!onerror) onerror=function(){ game_log("load_code: Failed to load","#E13758"); }
+	if(!onerror) onerror=function(){ game_log("load_code: Failed to load",colors.code_error); }
 	var xhrObj = new XMLHttpRequest();
 	xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&timestamp="+(new Date().getTime()), false);
 	xhrObj.send('');
@@ -979,7 +973,9 @@ var smart={
 	map:"main",x:0,y:0,
 	on_done:function(){},
 	plot:null,
-	edge:20,
+	edge:20, // getting 20px close to the target is enough
+	baby_edge:80, // start treading lightly when 60px close to the target or starting point
+	try_exact_spot: false,
 	use_town:false,
 	prune:{
 		smooth:true,
@@ -1081,6 +1077,8 @@ function stop(action)
 
 var queue=[],visited={},start=0,best=null;
 var moves=[[0,15],[0,-15],[15,0],[-15,0]];
+var baby_steps=[[0,5],[0,-5],[5,0],[-5,0]];
+// baby_steps is a new logic, used just around the target or starting point, to get out of tough spots [08/03/19]
 
 function plot(index)
 {
@@ -1122,11 +1120,16 @@ function bfs()
 	while(start<queue.length)
 	{
 		var current=queue[start];
+		// game_log(current.x+" "+current.y);
 		var map=G.maps[current.map];
+		var c_moves=moves;
 		if(current.map==smart.map)
 		{
+			var c_dist=abs(current.x-smart.x)+abs(current.y-smart.y);
+			var s_dist=abs(current.x-smart.start_x)+abs(current.y-smart.start_y);
 			smart.flags.map=true;
-			if(abs(current.x-smart.x)+abs(current.y-smart.y)<smart.edge)
+			if(c_dist<smart.baby_edge || s_dist<smart.baby_edge) c_moves=baby_steps;
+			if(c_dist<smart.edge)
 			{
 				result=start;
 				break;
@@ -1157,9 +1160,10 @@ function bfs()
 
 		if(smart.use_town) qpush({map:current.map,x:map.spawns[0][0],y:map.spawns[0][1],town:true}); // "town"
 
-		shuffle(moves);
-		moves.forEach(function(m){
-			var new_x=parseInt(current.x+m[0]),new_y=parseInt(current.y+m[1]);
+		shuffle(c_moves);
+		c_moves.forEach(function(m){
+			var new_x=current.x+m[0],new_y=current.y+m[1];
+			// game_log(new_x+" "+new_y);
 			// utilise can_move - game itself uses can_move too - smart_move is slow as can_move checks all the lines at each step
 			if(can_move({map:current.map,x:current.x,y:current.y,going_x:new_x,going_y:new_y,base:character.base}))
 				qpush({map:current.map,x:new_x,y:new_y});
@@ -1179,6 +1183,15 @@ function bfs()
 	else
 	{
 		plot(result);
+		if(1) // [08/03/19] - to attempt and move to the actual coordinates
+		{
+			var last=smart.plot[smart.plot.length-1]; if(!last) last={map:character.map,x:character.real_x,y:character.real_y};
+			if(smart.x!=last.x || smart.y!=last.y)
+			{
+				smart.try_exact_spot=true;
+				smart.plot.push({map:last.map,x:smart.x,y:smart.y});
+			}
+		}
 		smart.found=true;
 		if(smart.prune.smooth) smooth_path();
 		if(optimal) game_log("Path found!","#C882D1");
@@ -1190,7 +1203,10 @@ function bfs()
 
 function start_pathfinding()
 {
+	smart.try_exact_spot=false;
 	smart.searching=true;
+	smart.start_x=character.real_x;
+	smart.start_y=character.real_y;
 	queue=[],visited={},start=0,best=null;
 	qpush({x:character.real_x,y:character.real_y,map:character.map,i:-1});
 	game_log("Searching for a path...","#89D4A2");
@@ -1238,8 +1254,9 @@ function smart_move_logic()
 			parent.socket.emit("transport",{to:current.map,s:current.s});
 			// use("transporter",current.map);
 		}
-		else if(character.map==current.map && can_move_to(current.x,current.y))
+		else if(character.map==current.map && (smart.try_exact_spot && !smart.plot.length || can_move_to(current.x,current.y))) 
 		{
+			// game_log("S "+current.x+" "+current.y);
 			move(current.x,current.y);
 		}
 		else
@@ -1276,36 +1293,6 @@ function performance_trick()
 	parent.performance_trick(); // Just plays an empty sound file, so browsers don't throttle JS, only way to prevent it, interesting cheat [05/07/18]
 	// Lately Chrome has been screwing things up with every update, mostly it's bugs and performance issues, but this time, the way Audio is played has been changed, so, once the game refreshes itself, the tabs need to be manually focused once for performance_trick() to become effective, as Audio can no longer automatically play [21/10/18]
 }
-
-function doneify(fn,s_event,f_event)
-{
-	return function(a,b,c,d,e,f){
-		var rxd=randomStr(30);
-		parent.rxd=rxd;
-		fn(a,b,c,d,e,f);
-		return {done:function(callback){
-			game.once(s_event,function(event){
-				if(event.rxd==rxd)
-				{
-					callback(true,event);
-					this.delete=true; // remove the .on listener
-					parent.rxd=null;
-				}
-				// else game_log("rxd_mismatch");
-			});
-			game.once(f_event,function(event){
-				if(event.rxd==rxd)
-				{
-					callback(false,event);
-					this.delete=true; // remove the .on listener
-					parent.rxd=null;
-				}
-				// else game_log("rxd_mismatch");
-			});
-		}};
-	};
-}
-buy=doneify(buy,"buy_success","buy_fail");
 
 //safety flags
 var last_loot=new Date(0);
