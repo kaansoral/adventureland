@@ -2,7 +2,7 @@
 CODE Documentation for Adventure Land MMORPG http://adventure.land
 
 
-[NexusNull's Unofficial But Awesome Documentation](https://nexusnull.github.io/adventureland/index.html) [Functions](https://nexusnull.github.io/adventureland/index.html)
+<!--- [NexusNull's Unofficial But Awesome Documentation](https://nexusnull.github.io/adventureland/index.html) [Functions](https://nexusnull.github.io/adventureland/index.html) -->
 
 ### Character / Players / Monsters
 
