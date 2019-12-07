@@ -2,14 +2,14 @@ var attack_mode=true
 
 function happy_holidays()
 {
-	if(!G.maps.main.ref.xmas_tree) return; // If this happens, the event is over
-	if(character.s.xmas2) return; // If you already have the buff, no need to get re-buffed
-	G.maps.main.ref.xmas_tree.return=true;
+	if(!G.maps.main.ref.newyear_tree) return; // If this happens, the event is over
+	if(character.s.holidayspirit) return; // If you already have the buff, no need to get re-buffed
+	G.maps.main.ref.newyear_tree.return=true;
 	// If first argument of "smart_move" includes "return"
 	// You are placed back to your original point
-	smart_move(G.maps.main.ref.xmas_tree,function(){
+	smart_move(G.maps.main.ref.newyear_tree,function(){
 		// This executes when we reach our destination
-		parent.socket.emit("interaction",{type:"xmas_tree"});
+		parent.socket.emit("interaction",{type:"newyear_tree"});
 		say("Happy Holidays!");
 	});
 }
