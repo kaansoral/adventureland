@@ -119,11 +119,17 @@ function use(name,target) // a multi-purpose use function, works for skills too
 	}
 }
 
-function use_skill(name,target)
+function use_skill(name,target,extra_arg)
 {
-	// for blink: use_skill("blink",[x,y])
+	// target: object or string (character name or monster ID)
+	// for "blink": use_skill("blink",[x,y])
+	// for "3shot", "5shot" target can be an array of objects or strings (name or ID)
+	// example: use_skill("3shot",[target1,target2,target3])
+	// extra_arg is currently for use_skill("throw",target,inventory_num) and use_skill("energize",target,optional_mp)
 	if(!target) target=get_target();
-	parent.use_skill(name,target);
+	parent.use_skill(name,target,extra_arg);
+	// Returns a Promise
+	// For "3shot", "5shot", "cburst" returns an array of Promise's - one for each target
 }
 
 function reduce_cooldown(name,ms)
@@ -271,8 +277,9 @@ function set_message(text,color)
 	}
 }
 
-function game_log(message,color)
+function game_log(message,color,x)
 {
+	if(game.platform=="electron" && !x) return safe_log(message,color);
 	if(!color) color="#51D2E1";
 	if(character.bot) parent.parent.add_log(character.name+": "+message,color);
 	else parent.add_log(message,color);
@@ -282,6 +289,23 @@ function log(message,color)
 {
 	if(is_object(message)) message=JSON.stringify(message);
 	game_log(message,color);
+}
+
+function safe_log(message,color)
+{
+	// If the logged message/object is from an untrusted source, this function must be used
+	// For example if you: character.on("cm",function(data){log(data)});
+	// Someone can: send_cm("You","<script>alert('All your items are now mine!')</script>");
+	if(is_object(message)) message=JSON.stringify(message);
+	game_log(html_escape(message),color,true);
+}
+
+function get_focus()
+{
+	// focus is a secondary target that appears on top of the actual target
+	// it was added to let you view other characters around and still target separately
+	if(parent.xtarget && parent.xtarget.visible) return parent.xtarget;
+	return null;
 }
 
 function get_target_of(entity) // .target is a Name for Monsters and `id` for Players - this function return whatever the entity in question is targeting
@@ -298,7 +322,7 @@ function get_target_of(entity) // .target is a Name for Monsters and `id` for Pl
 
 function get_target()
 {
-	if(parent.ctarget && !parent.ctarget.dead) return parent.ctarget;
+	if(parent.ctarget && parent.ctarget.visible) return parent.ctarget;
 	return null;
 }
 
@@ -332,18 +356,31 @@ function xmove(x,y)
     else smart_move({x:x,y:y});
 }
 
-function in_attack_range(target) // also works for priests/heal
+function is_in_range(target,skill)
 {
-	if(!target) return false;
-	if(parent.distance(character,target)<=character.range) return true;
+	// Valid usages: is_in_range(target), is_in_range(target,"attack"), is_in_range(target,"heal"), is_in_range(target,"mentalburst")
+	if(!target || !target.visible) return false;
+	// When a target leaves your viewpoint, .visible becomes false and the object reference is never updated again
+	var range_multiplier=1,range_bonus=0;
+	if(G.skills[skill] && G.skills[skill].range_multiplier) range_multiplier=G.skills[skill].range_multiplier;
+	if(G.skills[skill] && G.skills[skill].range_bonus) range_bonus=G.skills[skill].range_bonus;
+	if(distance(character,target)<=character.range*range_multiplier+range_bonus) return true;
 	return false;
 }
 
-function can_attack(target) // also works for priests/heal
+function is_on_cooldown(skill)
 {
+	if(parent.next_skill[skill] && new Date()<parent.next_skill[skill]) return true;
+	return false;
+}
+
+function can_attack(target)
+{
+	// better to use is_on_cooldown("attack") just for cooldown checks
+	// also works for "heal" as G.skills.heal shares the "attack" cooldown
 	// is_disabled function checks .rip and .stunned
 	if(!target) return false;
-	if(!parent.is_disabled(character) && in_attack_range(target) && new Date()>=parent.next_skill.attack) return true;
+	if(!parent.is_disabled(character) && is_in_range(target) && new Date()>=parent.next_skill.attack) return true;
 	return false;
 }
 
@@ -440,7 +477,7 @@ function upgrade(item_num,scroll_num,offering_num) // number of the item and scr
 
 function compound(item0,item1,item2,scroll_num,offering_num) // for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
 {
-	parent.compound(item0,item1,item2,scroll_num,offering_num,"code");
+	return parent.compound(item0,item1,item2,scroll_num,offering_num,"code"); // returns a Promise
 }
 
 function craft(i0,i1,i2,i3,i4,i5,i6,i7,i8)
@@ -605,9 +642,12 @@ function use_hp_or_mp()
 	if(used) last_potion=new Date();
 }
 
-function loot(commander)
+function loot(id_or_arg)
 {
+	// loot(id) loots a specific chest
 	// loot(true) allows code characters to make their commanders' loot instead, extremely useful [14/01/18]
+	// after recent looting changes, loot(true) isn't too useful any more [08/12/19]
+	if(id_or_arg && id_or_arg!==true) return parent.parent.open_chest(id_or_arg);
 	var looted=0;
 	if(safeties && mssince(last_loot)<min(300,character.ping*3)) return;
 	last_loot=new Date();
@@ -616,12 +656,19 @@ function loot(commander)
 		var chest=parent.chests[id];
 		if(safeties && (chest.items>character.esize || chest.last_loot && mssince(chest.last_loot)<1600)) continue;
 		chest.last_loot=last_loot;
-		if(commander) parent.parent.open_chest(id);
+		if(id_or_arg==true) parent.parent.open_chest(id);
 		else parent.open_chest(id);
 		// parent.socket.emit("open_chest",{id:id}); old version [02/07/18]
 		looted++;
 		if(looted==2) break;
 	}
+}
+
+function get_chests()
+{
+	// parent.chests is an object, each key is a chest ID
+	// you can: for(var id in get_chests()) loot(id);
+	return parent.chests;
 }
 
 function send_gold(receiver,gold)
@@ -638,7 +685,7 @@ function send_item(receiver,num,quantity)
 	parent.socket.emit("send",{name:receiver,num:num,q:quantity||1});
 }
 
-function destroy_item(num) // num: 0 to 41
+function destroy(num) // num: 0 to 41
 {
 	parent.socket.emit("destroy",{num:num});
 }
@@ -656,13 +703,13 @@ function send_party_request(name)
 
 function accept_party_invite(name)
 {
-	parent.$(".pin"+name).remove();
+	parent.remove_chat("pin"+name);
 	parent.socket.emit('party',{event:'accept',name:name});
 }
 
 function accept_party_request(name)
 {
-	parent.$(".pin"+name).remove();
+	parent.remove_chat("rq"+name);
 	parent.socket.emit('party',{event:'raccept',name:name});
 }
 
@@ -673,7 +720,7 @@ function leave_party()
 
 function accept_magiport(name)
 {
-	parent.$(".mpin"+name).remove();
+	parent.remove_chat("mp"+name);
 	parent.socket.emit('magiport',{name:name});
 }
 
@@ -743,18 +790,6 @@ function on_destroy() // called just before the CODE is destroyed
 function on_draw() // the game calls this function at the best place in each game draw frame, so if you are playing the game at 60fps, this function gets called 60 times per second
 {
 
-}
-
-function on_game_event(event)
-{
-	if(event.name=="pinkgoo")
-	{
-		// start searching for the "Love Goo" of the Valentine's Day event
-	}
-	if(event.name=="goblin")
-	{
-		// start searching for the "Sneaky Goblin"
-	}
 }
 
 var PIXI=parent.PIXI; // for drawing stuff into the game
@@ -1023,45 +1058,35 @@ function reset_mappings()
 	delete activity.cm[character.name];
 	localStorage.setItem("activity",JSON.stringify(activity));
 
-
-var processed_activity=false,processed_activity_change=false;
 setInterval(function(){
-	var activity=localStorage.getItem("activity");
-	processed_activity_change=false;
-	processed_activity=activity=activity&&JSON.parse(activity)||{};beat={};
+	var activity=localStorage.getItem("activity"),activities=[],beat={},change=false;
+	activity=activity&&JSON.parse(activity)||{};
 	if(!activity.heartbeat) activity.heartbeat={};
 	if(!activity.heartbeat[character.name] || mssince(new Date(activity.heartbeat[character.name]))>200)
-		activity.heartbeat[character.name]=(new Date()).toString(),processed_activity_change=true;
+		activity.heartbeat[character.name]=(new Date()).toString(),change=true;
 	if(!activity.cm) activity.cm={};
 	if(activity.cm[character.name] && activity.cm[character.name].length)
 	{
-		activity.cm[character.name].forEach(function(cm){
-			character.trigger("cm",{name:cm[0],message:cm[1],local:true});
-		});
+		activities=activity.cm[character.name];
 		delete activity.cm[character.name];
-		processed_activity_change=true;
+		change=true;
 	}
-	if(processed_activity_change)
+	if(change)
 		localStorage.setItem("activity",JSON.stringify(activity));
-	processed_activity=false;
+	activities.forEach(function(cm){
+		character.trigger("cm",{name:cm[0],message:cm[1],local:true});
+	});
 },10);
 
 function send_local_cm(name,data)
 {
-	var activity=processed_activity;
-	if(!processed_activity)
-	{
-		activity=localStorage.getItem("activity");
-		activity=activity&&JSON.parse(activity)||{};
-	}
+	var activity=localStorage.getItem("activity");
+	activity=activity&&JSON.parse(activity)||{};
 	if(!activity.heartbeat) activity.heartbeat={};
 	if(!activity.cm) activity.cm={};
 	if(!activity.cm[name]) activity.cm[name]=[];
 	activity.cm[name].push([character.name,data]);
-	if(!processed_activity)
-		localStorage.setItem("activity",JSON.stringify(activity));
-	else
-		processed_activity_change=true;
+	localStorage.setItem("activity",JSON.stringify(activity));
 }
 
 function is_character_local(name)
@@ -1075,14 +1100,38 @@ function is_character_local(name)
 
 function pset(name,value)
 {
+	// persistent set function for string values
 	// on Web, window.localStorage is used, on Steam/Mac, the electron-store package is used for persistent storage
 	return parent.storage_set(name,value);
 }
 
 function pget(name)
 {
+	// persistent get function for string values
 	// on Web, window.localStorage is used, on Steam/Mac, the electron-store package is used for persistent storage
 	return parent.storage_get(name);
+}
+
+function set(name,value)
+{
+	// persistent set function that works for serializable objects
+	try{
+		window.localStorage.setItem("cstore_"+name,JSON.stringify(value));
+		return true;
+	}catch(e){
+		game_log("set() call failed for: "+name+" reason: "+e,colors.code_error);
+		return false;
+	}
+}
+
+function get(name)
+{
+	// persistent get function that works for serializable objects
+	try{
+		return JSON.parse(window.localStorage.getItem("cstore_"+name));
+	}catch(e){
+		return null;
+	}
 }
 
 function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
@@ -1173,7 +1222,7 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 	}
 	if(!smart.map)
 	{
-		game_log("Unrecognized","#CF5B5B");
+		game_log("Unrecognized location","#CF5B5B");
 		return;
 	}
 	smart.moving=true;
@@ -1453,11 +1502,12 @@ var last_loot=new Date(0);
 var last_potion=new Date(0);
 
 var last_message="",current_message="";
-if(!window.requestAnimationFrame) window.requestAnimationFrame=function(a){ setTimeout(a,16); }; // jsdom patch [18/04/19]
 function code_draw()
 {
+	var t;
 	if(last_message!=current_message) $("#gg").html(current_message),last_message=current_message;
-	requestAnimationFrame(code_draw);
+	if(!game.graphics) t=setTimeout(code_draw,16); // jsdom patch [18/04/19]
+	else requestAnimationFrame(code_draw);
 }
 
 code_draw();
