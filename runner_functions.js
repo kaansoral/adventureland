@@ -33,6 +33,7 @@ game={
 	html:!parent.no_html, // if game.html is false, this character is loaded in [CODE] mode
 };
 character.bot=parent.is_bot;
+character.cli=parent.is_cli;
 
 //#NOTE: Most new features are experimental - for #feedback + suggestions: https://discord.gg/X4MpntA [05/01/18]
 
@@ -99,26 +100,6 @@ function shift(num,name) // shifts an item, likely a booster, in the num-th inve
 	parent.shift(num,name);
 }
 
-function can_use(name)
-{
-	if(G.skills[name] && G.skills[name].class && !in_arr(character.ctype,G.skills[name].class)) return false; // checks the class
-	return parent.can_use(name); // checks the cooldown
-}
-
-function use(name,target) // a multi-purpose use function, works for skills too
-{
-	if(isNaN(name)) // if name is not an integer, use the skill
-	{
-		if(!target) target=get_target();
-		parent.use_skill(name,target);
-	}
-	else
-	{
-		// for example, if there is a potion at the first inventory slot, use(0) would use it
-		equip(name);
-	}
-}
-
 function use_skill(name,target,extra_arg)
 {
 	// target: object or string (character name or monster ID)
@@ -169,21 +150,17 @@ function bank_store(num,pack,pack_slot)
 	if(!pack)
 	{
 		var cp=undefined,cs=undefined;
-		bank_packs.forEach(function(cpack){
-			if(!character.bank[cpack]) return;
+		for(var cpack in bank_packs)
+		{
+			if(pack || bank_packs[cpack][0]!=character.map || !character.bank[cpack]) continue;
 			for(var i=0;i<42;i++)
 			{
-				if(pack) return;
 				if(can_stack(character.bank[cpack][i],character.items[num])) // the item we want to store and this bank item can stack - best case scenario
-				{
 					pack=cpack;
-				}
 				if(!character.bank[cpack][i] && !cp)
-				{
 					cp=cpack;
-				}
 			}
-		});
+		}
 		if(!pack && !cp) return game_log("Bank is full!");
 		if(!pack) pack=cp;
 	}
@@ -332,15 +309,17 @@ function get_targeted_monster()
 	return null;
 }
 
-function change_target(target,public)
+function change_target(target)
 {
 	parent.ctarget=target;
-	if(!public) //no need to send the target on default for CODE, some people are using change_target 5-6 times in an interval
-	{
-		// user change_target(target,true) from now on to send the target to the server explicitly [23/10/16]
-		if(target) parent.last_id_sent=target.id;
-		else parent.last_id_sent='';
-	}
+	parent.send_target_logic();
+}
+
+function change_target_privately(target)
+{
+	parent.ctarget=target;
+	if(target) parent.last_id_sent=target.id; // Marks the id as sent, so it doesn't actually get sent
+	else parent.last_id_sent='';
 	parent.send_target_logic();
 }
 
@@ -352,8 +331,8 @@ function can_move_to(x,y)
 
 function xmove(x,y)
 {
-    if(can_move_to(x,y)) move(x,y);
-    else smart_move({x:x,y:y});
+    if(can_move_to(x,y)) return move(x,y);
+    else return smart_move({x:x,y:y});
 }
 
 function is_in_range(target,skill)
@@ -449,6 +428,11 @@ function sell(num,quantity) //sell an item from character.items by it's order - 
 	parent.sell(num,quantity);
 }
 
+function consume(num) // consumes or uses an inventory item
+{
+	parent.socket.emit("equip",{num:num,consume:true});
+}
+
 function equip(num,slot) // slot is optional
 {
 	parent.socket.emit("equip",{num:num,slot:slot});
@@ -518,8 +502,8 @@ function pm(name,message) // please use responsibly, thank you! :)
 
 function move(x,y)
 {
-	if(!can_walk(character)) return;
-	parent.move(x,y);
+	if(!can_walk(character)) return rejecting_promise({reason:"unable"});
+	return parent.move(x,y,true);
 }
 
 function cruise(speed)
@@ -531,6 +515,27 @@ function show_json(e) // renders the object as json inside the game
 {
 	if(character.bot) parent.parent.show_json(parent.game_stringify(e,'\t'));
 	else parent.show_json(parent.game_stringify(e,'\t'));
+}
+
+function get_servers()
+{
+	// returns an array of server data
+	// best to inspect the format with show_json(get_servers())
+	return parent.X.servers;
+}
+
+function get_characters()
+{
+	// returns an infrequently updated array of your characters
+	// best to inspect the format with show_json(get_characters())
+	return parent.X.characters;
+}
+
+function get_party()
+{
+	// returns an infrequently updated object
+	// best to inspect the format with show_json(get_party())
+	return parent.party;
 }
 
 function get_monster(id)
@@ -685,6 +690,14 @@ function send_item(receiver,num,quantity)
 	parent.socket.emit("send",{name:receiver,num:num,q:quantity||1});
 }
 
+function send_cx(receiver,cx)
+{
+	// Sends cosmetics to one of your own characters
+	if(!receiver) return game_log("No receiver sent to send_cx");
+	if(receiver.name) receiver=receiver.name;
+	parent.socket.emit("send",{name:receiver,cx:cx});
+}
+
 function destroy(num) // num: 0 to 41
 {
 	parent.socket.emit("destroy",{num:num});
@@ -716,6 +729,11 @@ function accept_party_request(name)
 function leave_party()
 {
 	parent.socket.emit("party",{event:"leave"});
+}
+
+function kick_party_member(name)
+{
+	parent.socket.emit('party',{event:'kick',name:name});
 }
 
 function accept_magiport(name)
@@ -1052,41 +1070,57 @@ function reset_mappings()
 
 
 // delete previous/stale messages
-	var activity=localStorage.getItem("activity");
-	activity=activity&&JSON.parse(activity)||{};
-	if(!activity.cm) activity.cm={};
-	delete activity.cm[character.name];
-	localStorage.setItem("activity",JSON.stringify(activity));
+for (var key in localStorage)
+{
+	if(key.startsWith("cm_"+character.name+"_"))
+	{
+		var data=localStorage.getItem(key);
+		localStorage.removeItem(key);
+		game_log("Removed a stale code message from: "+JSON.parse(data)[0],"gray");
+	}
+}
 
 setInterval(function(){
-	var activity=localStorage.getItem("activity"),activities=[],beat={},change=false;
+	var activity=localStorage.getItem("activity"),messages=[];
 	activity=activity&&JSON.parse(activity)||{};
 	if(!activity.heartbeat) activity.heartbeat={};
+	if(activity.cm) delete activity.cm;
 	if(!activity.heartbeat[character.name] || mssince(new Date(activity.heartbeat[character.name]))>200)
-		activity.heartbeat[character.name]=(new Date()).toString(),change=true;
-	if(!activity.cm) activity.cm={};
-	if(activity.cm[character.name] && activity.cm[character.name].length)
 	{
-		activities=activity.cm[character.name];
-		delete activity.cm[character.name];
-		change=true;
-	}
-	if(change)
+		activity.heartbeat[character.name]=(new Date()).toString();
 		localStorage.setItem("activity",JSON.stringify(activity));
-	activities.forEach(function(cm){
-		character.trigger("cm",{name:cm[0],message:cm[1],local:true});
+	}
+
+	for (var key in localStorage)
+	{
+		if(key.startsWith("cm_"+character.name+"_"))
+		{
+			var data=localStorage.getItem(key);
+			localStorage.removeItem(key);
+			data=JSON.parse(data);
+			data[2]=new Date(data[2]);
+			messages.push(data);
+		}
+	}
+
+	messages.sort(function(a,b){
+		if(!(a[2]-b[2]))
+			return a[3]-b[3];
+		else
+			return a[2]-b[2];
+	});
+
+	if(messages.length) console.log(messages);
+
+	messages.forEach(function(cm){
+		character.trigger("cm",{name:cm[0],message:cm[1],date:cm[2],local:true});
 	});
 },10);
 
+var local_m_num=0;
 function send_local_cm(name,data)
 {
-	var activity=localStorage.getItem("activity");
-	activity=activity&&JSON.parse(activity)||{};
-	if(!activity.heartbeat) activity.heartbeat={};
-	if(!activity.cm) activity.cm={};
-	if(!activity.cm[name]) activity.cm[name]=[];
-	activity.cm[name].push([character.name,data]);
-	localStorage.setItem("activity",JSON.stringify(activity));
+	localStorage.setItem("cm_"+name+"_"+randomStr(20),JSON.stringify([character.name,data,new Date(),++local_m_num]));
 }
 
 function is_character_local(name)
@@ -1134,17 +1168,50 @@ function get(name)
 	}
 }
 
-function load_code(name,onerror) // onerror can be a function that will be executed if load_code fails
+function load_code(name,onerror)
 {
-	if(!onerror) onerror=function(){ game_log("load_code: Failed to load",colors.code_error); }
-	var xhrObj = new XMLHttpRequest();
-	xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&timestamp="+(new Date().getTime()), false);
-	xhrObj.send('');
+	// load_code executes the code at top-level in a synchronized manner
+	// each function/variable becomes directly available
+	// onerror can be a function that will be executed if load_code fails
+
+	var code=parent.get_code_file(name); // works on Electron, returns the local file
+
+	if(code===null)
+	{
+		var xhrObj = new XMLHttpRequest();
+		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&timestamp="+(new Date().getTime()), false);
+		xhrObj.send('');
+		code=xhrObj.responseText;
+	}
+
 	var library=document.createElement("script");
 	library.type="text/javascript";
-	library.text=xhrObj.responseText;
-	library.onerror=onerror;
+	library.text=code;
+	library.onerror=onerror||function(){ game_log("load_code: Failed to load",colors.code_error); };
 	document.getElementsByTagName("head")[0].appendChild(library);
+}
+
+function require_code(name)
+{
+	// require_code executes code inside it's own scope in a synchronized manner
+	// functions returns the exports dictionary, emulating a require
+
+	var code=parent.get_code_file(name);
+
+	if(code===null)
+	{
+		var xhrObj = new XMLHttpRequest();
+		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&xrequire=1&timestamp="+(new Date().getTime()), false);
+		xhrObj.send('');
+		code=xhrObj.responseText;
+	}
+	
+	var module={exports:{}};
+	var exports=module.exports;
+
+	eval(code);
+
+	return module.exports;
 }
 
 var smart={
@@ -1163,8 +1230,11 @@ var smart={
 	flags:{}
 };
 
-function smart_move(destination,on_done) // despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
+function smart_move(destination,on_done)
 {
+	// despite the name, smart_move isn't very smart or efficient, it's up to the players to implement a better movement method [05/02/17]
+	// on_done function is an old callback function for compatibility, smart_move also returns a Promise [25/03/20]
+	if(smart.moving) smart.on_done(false,"interrupted");
 	smart.map="";
 	if(is_string(destination)) destination={to:destination};
 	if(is_number(destination)) destination={x:destination,y:on_done},on_done=null;
@@ -1223,29 +1293,36 @@ function smart_move(destination,on_done) // despite the name, smart_move isn't v
 	if(!smart.map)
 	{
 		game_log("Unrecognized location","#CF5B5B");
-		return;
+		return rejecting_promise({reason:"invalid"});
 	}
 	smart.moving=true;
 	smart.plot=[]; smart.flags={}; smart.searching=smart.found=false;
 	if(destination.return)
 	{
 		var cx=character.real_x,cy=character.real_y,cmap=character.map;
-		smart.on_done=function(){
-			if(on_done) on_done();
+		smart.on_done=function(done,reason){
+			if(on_done) on_done(done);
 			smart_move({map:cmap,x:cx,y:cy});
+			if(done) resolve_deferreds("smart_move",{success:true});
+			else reject_deferreds("smart_move",{reason:reason});
 		}
 	}
-	else smart.on_done=on_done||function(){};
-	console.log(smart.map+" "+smart.x+" "+smart.y);
+	else smart.on_done=function(done,reason){
+		if(on_done) on_done(done);
+		if(done) resolve_deferreds("smart_move",{success:true});
+		else reject_deferreds("smart_move",{reason:reason});
+	};
+	console.log("smart_move: "+smart.map+" "+smart.x+" "+smart.y);
+	return push_deferred("smart_move");
 }
 
-function stop(action)
+function stop(action,second)
 {
-	if(!action || action=="move")
+	if(!action || action=="move" || action=="smart")
 	{
-		if(smart.moving) smart.on_done(false);
+		if(smart.moving) smart.on_done(second||false,"interrupted");
 		smart.moving=false;
-		move(character.real_x,character.real_y);
+		if(action!="smart") move(character.real_x,character.real_y);
 	}
 	else if(action=="invis")
 	{
@@ -1330,7 +1407,7 @@ function bfs()
 			if(smart.prune.map && smart.flags.map) {start++; continue;}
 			map.doors.forEach(function(door){
 				// if(simple_distance({x:map.spawns[door[6]][0],y:map.spawns[door[6]][1]},{x:current.x,y:current.y})<30)
-				if(smart.map!="bank" && door[4]=="bank") return; // manually patch the bank shortcut
+				if(smart.map!="bank" && door[4]=="bank" && !G.maps[current.map].mount || door[8]=="complicated") return; // manually patch the bank shortcut
 				if(is_door_close(current.map,door,current.x,current.y) && can_use_door(current.map,door,current.x,current.y))
 					qlist.push({map:door[4],x:G.maps[door[4]].spawns[door[5]||0][0],y:G.maps[door[4]].spawns[door[5]||0][1],transport:true,s:door[5]||0});
 			});
@@ -1361,12 +1438,12 @@ function bfs()
 		if(mssince(timer)>(!parent.is_hidden()&&40||500)) return;
 	}
 	
-	if(result===null) result=best,optimal=false;
 	if(result===null)
 	{
+		result=best,optimal=false;
 		game_log("Path not found!","#CF575F");
 		smart.moving=false;
-		smart.on_done(false);
+		smart.on_done(false,"failed");
 	}
 	else
 	{
@@ -1396,9 +1473,31 @@ function start_pathfinding()
 	smart.start_x=character.real_x;
 	smart.start_y=character.real_y;
 	queue=[],visited={},start=0,best=null;
-	qpush({x:character.real_x,y:character.real_y,map:character.map,i:-1});
-	game_log("Searching for a path...","#89D4A2");
-	bfs();
+	if(character.cli)
+	{
+		parent.CLI_OUT.push({"type":"smart_move",G:G,start_x:smart.start_x,start_y:smart.start_y,start_map:character.map,x:smart.x,y:smart.y,map:smart.map});
+	}
+	else
+	{
+		qpush({x:character.real_x,y:character.real_y,map:character.map,i:-1});
+		game_log("Searching for a path...","#89D4A2");
+		bfs();
+	}
+}
+
+function cli_smart_move_result(data)
+{
+	if(data.found)
+	{
+		smart.found=true;
+		smart.plot=data.plot;
+	}
+	else
+	{
+		game_log("CLI: Path not found!","#CF575F");
+		smart.moving=false;
+		smart.on_done(false,"failed");
+	}
 }
 
 function continue_pathfinding()
@@ -1413,6 +1512,7 @@ function smart_move_logic()
 	{
 		start_pathfinding();
 	}
+	else if(!smart.found && character.cli) { /* Just wait */ }
 	else if(!smart.found)
 	{
 		if(Math.random()<0.1)
