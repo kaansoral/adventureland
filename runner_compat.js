@@ -18,13 +18,60 @@ function handle_death()
 	// NOTE: Add `if(character.rip) {respawn(); return;}` to your main loop/interval too, just in case
 }
 
+function can_use(name)
+{
+	if(G.skills[name] && G.skills[name].class && !in_arr(character.ctype,G.skills[name].class)) return false; // checks the class
+	return parent.can_use(name); // checks the cooldown
+}
+
+function use(name,target) // a multi-purpose use function, works for skills too
+{
+	if(isNaN(name)) // if name is not an integer, use the skill
+	{
+		if(!target) target=get_target();
+		parent.use_skill(name,target);
+	}
+	else
+	{
+		// for example, if there is a potion at the first inventory slot, use(0) would use it
+		equip(name);
+	}
+}
+
 function on_cm(name,data)
 {
 	game_log("Received a code message from: "+name);
 }
 
+function on_combined_damage() // When multiple characters stay in the same spot, they receive combined damage, this function gets called whenever a monster deals combined damage
+{
+	// move(character.real_x+5,character.real_y);
+}
+
+function on_game_event(event)
+{
+	if(event.name=="pinkgoo")
+	{
+		// start searching for the "Love Goo" of the Valentine's Day event
+	}
+	if(event.name=="goblin")
+	{
+		// start searching for the "Sneaky Goblin"
+	}
+}
+
+function in_attack_range(target) // also works for priests/heal
+{
+	if(!target) return false;
+	if(parent.distance(character,target)<=character.range) return true;
+	return false;
+}
+
+function destroy_item(i){destroy(i)}
+
+character.on("stacked",function(){ on_combined_damage(); });
 character.on("death",function(){ handle_death(); });
-character.on("cm",function(data){ on_cm(data.name,data.message) });
+character.one("cm",function(data){ on_cm(data.name,data.message) });
 
 // [06/03/19]: doneify aimed to add a completion callback to every function
 // such as buy("shoes").done(function(success_flag,data){})
