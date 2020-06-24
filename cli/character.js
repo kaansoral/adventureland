@@ -5,8 +5,7 @@ if(!workerData) // for chrome://inspect with "node --expose-gc --inspect charact
 		"name":"Wizard",
 		"region":"EU",
 		"server":"I",
-		"code":"PhoenixHunter",
-		// "code":"Performance Tests",
+		"code":"cli_tests",
 		"auth":"5818821692620800-gjxqztPovvpiaKTGnjEtT",
 	};
 	parentPort={postMessage:function(){},on:function(){}};
@@ -18,7 +17,7 @@ if(!workerData) // for chrome://inspect with "node --expose-gc --inspect charact
 console.log(workerData.name);
 global.gc();
 
-var jsdom,request;
+var jsdom,request,localstorager,localStorage=null;
 try{
 	jsdom=require("jsdom");
 }catch(e){
@@ -32,11 +31,17 @@ try{
 	console.log("You need to run: npm install request");
 	process.exit();
 }
+try{
+	localstorager=require('node-localstorage').LocalStorage;
+	localStorage=new localstorager("./storage");
+}catch(e){
+	console.log("You need to run: npm install node-localstorage for functioning localStorage support!");
+}
 
-var base_url="http://adventure.land";
+var base_url="https://adventure.land";
 
 var url=base_url+"/character/"+workerData.name+"/in/EU/I/?no_html=bot&is_bot=1&is_cli=1&code="+workerData.code+"&auth="+workerData.auth;
-var dom=false;
+var dom=false,code_active=false;
 
 request(url, (error, response, body) => {
 	var virtualConsole=new jsdom.VirtualConsole();
@@ -53,6 +58,8 @@ request(url, (error, response, body) => {
 	}
 	dom=new JSDOM(body,options);
 	dom.name=workerData.name;
+	if(localStorage && !dom.window.ls_emulation) dom.window.ls_emulation=localStorage;
+	dom.window.cli_require=require;
 	//console.log(dom.window.document.body.innerHTML);
 });
 
@@ -78,13 +85,11 @@ setInterval(function(){
 		else parentPort.postMessage(m);
 	});
 	dom.window.CLI_OUT=[];
+	if(!code_active && dom.window.code_active) code_active=true,parentPort.postMessage({"type":"code_active"});
 },10);
 
 parentPort.on("message",function(data){
-	if(data.type=="smart_move")
-	{
-		dom.window.CLI_IN.push(data);
-	}
+	dom.window.CLI_IN.push(data);
 });
 
 setInterval(function(){
