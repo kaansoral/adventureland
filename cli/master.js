@@ -5,33 +5,23 @@ const { Worker, SHARE_ENV } = require('worker_threads');
 // for global.gc();
 var G=null;
 var fs=require("fs");
-eval(""+fs.readFileSync("common_functions.js")); // Manually copy/paste common_functions.js from libraries/ to this directory
+eval(""+fs.readFileSync("../../js/common_functions.js")); // Manually copy/paste common_functions.js from libraries/ to this directory
 eval(""+fs.readFileSync("functions.js"));
 
 var auth="5818821692620800-gjxqztPovvpiaKTGnjEtT"; // show_json(parent.Cookies.get("auth"))
 var characters=[
 	{
-		"name":"Wizard",
+		"name":"GG",
 		"region":"EU",
 		"server":"I",
-		"code":"PhoenixHunter",
-		//"code":"Performance Tests",
-		"run":false,
+		"code":"local_cm_receiver",
 	},
-	// {
-	// 	"name":"Fun",
-	// 	"region":"EU",
-	// 	"server":"I",
-	// 	"code":"Phoenix Hunter",
-	// 	"run":false,
-	// },
-	// {
-	// 	"name":"Healer",
-	// 	"region":"EU",
-	// 	"server":"I",
-	// 	"code":"Phoenix Hunter",
-	// 	"run":false,
-	// }
+	{
+		"name":"MERC",
+		"region":"EU",
+		"server":"I",
+		"code":"local_cm_sender",
+	},
 ];
 
 function run_character(workerData)
@@ -40,7 +30,7 @@ function run_character(workerData)
 	const worker = new Worker('./character.js', { workerData:workerData, env: SHARE_ENV, execArgv:["expose-gc","inspect"]});
 	worker.on('message',function(data){
 		if(data.type=="update")
-			this.character.last_update=new Date();
+			worker.info.last_update=new Date();
 		else if(data.type=="smart_move")
 		{
 			G=data.G;
@@ -58,15 +48,32 @@ function run_character(workerData)
 			console.log(smart.plot);
 			worker.postMessage({type:"smart_move",found:smart.found,plot:smart.plot});
 		}
+		else if(data.type=="cm")
+		{
+			var sent=false;
+			characters.forEach(function(char_info){
+				if(char_info.run && char_info.name==data['to'])
+				{
+					char_info.worker.postMessage(data);
+					sent=true;
+				}
+			});
+			if(!sent) console.log("[UNSENT CM] TO: "+data['to']);
+		}
+		else if(data.type=="code_active")
+		{
+			worker.info.code_active=true;
+			worker.postMessage({type:"hello","from":"master.js"});
+		}
 		else if(data.type=="kill") process.exit();
 	});
 	worker.on('error',function(data){
-		console.log("[MASTER] "+this.character.name+" error: "+data);
+		console.log("[MASTER] "+worker.info.name+" error: "+data);
 	});
 	worker.on('exit',function(code){
 		if (code !== 0)
-			console.log("[MASTER] "+this.character.name+" stopped with code: "+code);
-		worker.character.run=false;
+			console.log("[MASTER] "+worker.info.name+" stopped with code: "+code);
+		worker.info.run=false;
 	});
 	return worker;
 }
@@ -75,28 +82,30 @@ setInterval(function(){
 
 	var current=new Date(),delay=false;
 
-	characters.forEach(function(character){
-		if(character.run && (current-character.last_update)>40000)
+	characters.forEach(function(info){
+		if(info.run && (current-info.last_update)>40000)
 		{
-			console.log("[MASTER] Reloading "+character.name);
-			character.run=false;
-			character.worker.terminate();
+			console.log("[MASTER] Reloading "+info.name);
+			info.run=false;
+			info.code_active=false;
+			info.worker.terminate();
 			delay=true;
 		}
 	});
 
 	if(delay) return; // worker.on('exit') needs to fire first
 
-	characters.forEach(function(character){
-		if(!character.run)
+	characters.forEach(function(info){
+		if(!info.run)
 		{
-			if(!character.auth) character.auth=auth;
-			character.run=true;
-			character.last_update=new Date();
-			delete character.worker;
-			var workerData={}; Object.assign(workerData,character);
-			character.worker=run_character(workerData);
-			character.worker.character=character;
+			if(!info.auth) info.auth=auth;
+			info.run=true;
+			info.code_active=false;
+			info.last_update=new Date();
+			delete info.worker;
+			var workerData={}; Object.assign(workerData,info);
+			info.worker=run_character(info);
+			info.worker.info=info;
 		}
 	});
 
