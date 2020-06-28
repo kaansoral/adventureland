@@ -40,7 +40,7 @@ try{
 
 var base_url="https://adventure.land";
 
-var url=base_url+"/character/"+workerData.name+"/in/EU/I/?no_html=bot&is_bot=1&is_cli=1&code="+workerData.code+"&auth="+workerData.auth;
+var url=base_url+"/character/"+workerData.name+"/in/"+workerData.region+"/"+workerData.server+"/?no_html=bot&is_bot=1&is_cli=1&code="+workerData.code+"&auth="+workerData.auth;
 var dom=false,code_active=false;
 
 request(url, (error, response, body) => {
