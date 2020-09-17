@@ -448,7 +448,7 @@ function unequip(slot) // show_json(character.slots) => to see slot options
  *
  * @param {number} [num=0] Inventory slot containing merchant stand.
  */
-function open_merchant(num)
+function open_stand(num)
 {
 	num = num || 0;
 	if(!character.items[num]) return;
@@ -462,7 +462,7 @@ function open_merchant(num)
 /**
  * Close Merchant stand.
  */
-function close_merchant()
+function close_stand()
 {
 	parent.close_merchant();
 }
