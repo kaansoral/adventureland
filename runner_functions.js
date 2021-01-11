@@ -443,6 +443,30 @@ function unequip(slot) // show_json(character.slots) => to see slot options
 	parent.socket.emit("unequip",{slot:slot});
 }
 
+/**
+ * Open Merchant stand.
+ *
+ * @param {number} [num=0] Inventory slot containing merchant stand.
+ */
+function open_stand(num)
+{
+	num = num || 0;
+	if(!character.items[num]) return;
+	if(G.items[character.items[num].name].type !== "stand") {
+		parent.d_text("CAN'T OPEN", character);
+		return;
+	}
+	parent.open_merchant(num);
+}
+
+/**
+ * Close Merchant stand.
+ */
+function close_stand()
+{
+	parent.close_merchant();
+}
+
 function trade(num,trade_slot,price,quantity) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
 {
 	if(!is_string(trade_slot) || !trade_slot.startsWith("trade")) trade_slot="trade"+trade_slot;
