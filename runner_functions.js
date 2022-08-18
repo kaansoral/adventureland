@@ -37,10 +37,27 @@ character.bot=parent.is_bot;
 
 //#NOTE: Most new features are experimental - for #feedback + suggestions: https://discord.gg/X4MpntA [05/01/18]
 
+// #MODES
+
+function mode_resolve_all()
+{
+	// Never reject a Promise
+	// Successful results have {success:true}
+	// Failes results have {failed:true}
+	parent.parent.RESOLVE_ALL=parent.RESOLVE_ALL=RESOLVE_ALL=true;
+}
+
+/**
+ * Loads a character in [CODE] mode
+ * Character is loaded inside an iframe
+ * The Code of the character is inside another iframe within that iframe
+ * @param  {string} name - Name of your character
+ * @param  {string} code_slot_or_name - Code slot name
+ * @returns {Promise}
+ */
 function start_character(name,code_slot_or_name)
 {
-	// Loads a character in [CODE] mode
-	parent.start_character_runner(name,code_slot_or_name)
+	return parent.start_character_runner(name,code_slot_or_name)
 }
 
 function stop_character(name)
@@ -87,6 +104,39 @@ function is_character(entity)
 }
 function is_player(e){return is_character(e);} // backwards-compatibility
 
+function interact(name)
+{
+	if(name=="monsterhunt")
+	{
+		parent.socket.emit("monsterhunt");
+		return parent.push_deferred("monsterhunt"); // {started:true} / {completed:true} / {failed:true}
+	}
+}
+
+function enter(place)
+{
+	// Possible places: "duelland" / "crypt" / "winter_instance"
+	parent.socket.emit('enter',{place:place});
+	return parent.push_deferred("enter");
+}
+
+function join(event)
+{
+	// show_json(G.events);
+	return parent.join(event);
+}
+
+function use_nearest_door()
+{
+	for(var i=0;i<(G.maps[character.map].doors||[]).length;i++)
+	{
+		var door=G.maps[character.map].doors[i];
+		if(simple_distance(character,{map:character.map,x:door[0],y:door[1]})<100) // Server range is currently 112
+			return transport(door[4],door[5]); // map and spawn
+	}
+	return rejecting_promise({reason:"distance"});
+}
+
 function activate(num) // activates an item, likely a booster, in the num-th inventory slot
 {
 	parent.activate(num);
@@ -108,7 +158,7 @@ function use_skill(name,target,extra_arg)
 	// example: use_skill("3shot",[target1,target2,target3])
 	// extra_arg is currently for use_skill("throw",target,inventory_num) and use_skill("energize",target,optional_mp)
 	if(!target) target=get_target();
-	parent.use_skill(name,target,extra_arg);
+	return parent.use_skill(name,target,extra_arg);
 	// Returns a Promise
 	// For "3shot", "5shot", "cburst" returns an array of Promise's - one for each target
 }
@@ -178,6 +228,7 @@ function bank_retrieve(pack,pack_num,num)
 function swap(a,b) // inventory move/swap
 {
 	parent.socket.emit("imove",{a:a,b:b});
+	return parent.push_deferred("imove");
 }
 
 function locate_item(name)
@@ -202,7 +253,7 @@ function quantity(name)
 function item_properties(item) // example: item_properties(character.items[0])
 {
 	if(!item || !item.name) return null;
-	return calculate_item_properties(G.items[item.name],item);
+	return calculate_item_properties(item);
 }
 
 function item_grade(item) // example: item_grade(character.items[0])
@@ -220,9 +271,36 @@ function item_value(item) // example: item_value(character.items[0])
 	return calculate_item_value(item);
 }
 
-function transport(map,spawn)
+async function transport(map,spawn)
 {
-	parent.socket.emit("transport",{to:map,s:spawn});
+	// For "bank" - the response is {success:false,in_progress:true}
+	// You have to wait the entry through character.on("new_map",function(data){});
+	parent.socket.emit('transport',{to:map,s:spawn});
+	var call=await parent.push_deferred("transport");
+	if(!call.in_progress) return call;
+	for(var i=0;i<20000;i++) // 20 seconds
+	{
+		if(character.map==map) return {success:true};
+		await sleep(1);
+	}
+	return {failed:true,reason:"timeout"};
+}
+
+async function town()
+{
+	parent.socket.emit('town');
+	var call=await parent.push_deferred("town");
+	if(call.failed) return call;
+	while(character.c.town)
+		await sleep(2);
+	return {success:true}
+}
+
+function leave()
+{
+	// To leave "cyberland" / "jail" etc.
+	parent.socket.emit('leave');
+	return parent.push_deferred("leave");
 }
 
 function is_paused()
@@ -308,6 +386,7 @@ function get_target_of(entity) // .target is a Name for Monsters and `id` for Pl
 function get_target()
 {
 	if(parent.ctarget && parent.ctarget.visible) return parent.ctarget;
+	if(parent.xtarget && parent.xtarget.visible) return parent.xtarget;
 	return null;
 }
 
@@ -439,23 +518,51 @@ function buy_with_shells(name,quantity)
 
 function sell(num,quantity) //sell an item from character.items by it's order - 0 to N-1
 {
-	parent.sell(num,quantity);
+	return parent.sell(num,quantity);
 }
 
 function consume(num) // consumes or uses an inventory item
 {
 	parent.socket.emit("equip",{num:num,consume:true});
+	return parent.push_deferred("equip");
 }
 
 function equip(num,slot) // slot is optional
 {
-	if(num<0) game_log("Can't equip "+num);
-	else parent.socket.emit("equip",{num:num,slot:slot});
+	if(num<0)
+	{
+		game_log("Can't equip "+num);
+		return rejecting_promise({reason:"invalid"});
+	}
+	else
+	{
+		parent.socket.emit("equip",{num:num,slot:slot});
+		return parent.push_deferred("equip");
+	}
 }
 
 function unequip(slot) // show_json(character.slots) => to see slot options
 {
 	parent.socket.emit("unequip",{slot:slot});
+	return parent.push_deferred("unequip");
+}
+
+function lock_item(num)
+{
+	// Lock an item to prevent loss
+	return parent.lock_item(num);
+}
+
+function seal_item(num)
+{
+	// Seal an item so it can't be unlocked for 2 days
+	return parent.seal_item(num)
+}
+
+function unlock_item(num)
+{
+	// Unlock an item, returns {hours:47,success:false,in_progress:true} if it was sealed
+	return parent.unlock_item(num);
 }
 
 function trade(num,trade_slot,price,quantity) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
@@ -481,14 +588,14 @@ function trade_sell(target,trade_slot,quantity)
 	parent.trade_sell(trade_slot,target.id,target.slots[trade_slot].rid,quantity||1); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
 }
 
-function upgrade(item_num,scroll_num,offering_num) // number of the item and scroll on the show_json(character.items) array - 0 to N-1
+function upgrade(item_num,scroll_num,offering_num,only_calculate) // number of the item and scroll on the show_json(character.items) array - 0 to N-1
 {
-	return parent.upgrade(item_num,scroll_num,offering_num,"code"); // returns a Promise
+	return parent.upgrade(item_num,scroll_num,offering_num,"code",only_calculate); // returns a Promise
 }
 
-function compound(item0,item1,item2,scroll_num,offering_num) // for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
+function compound(item0,item1,item2,scroll_num,offering_num,only_calculate) // for example -> compound(0,1,2,6) -> 3 items in the first 3 slots, scroll at the 6th spot
 {
-	return parent.compound(item0,item1,item2,scroll_num,offering_num,"code"); // returns a Promise
+	return parent.compound(item0,item1,item2,scroll_num,offering_num,"code",only_calculate); // returns a Promise
 }
 
 function craft(i0,i1,i2,i3,i4,i5,i6,i7,i8)
@@ -496,7 +603,7 @@ function craft(i0,i1,i2,i3,i4,i5,i6,i7,i8)
 // sends 3 items to be crafted, the 0th, 1st, 2nd items in your inventory, and it places them all in the middle column of crafting
 {
 	parent.cr_items=[i0,i1,i2,i3,i4,i5,i6,i7,i8];
-	parent.craft();
+	return parent.craft();
 }
 
 function auto_craft(name)
@@ -508,28 +615,40 @@ function auto_craft(name)
 function dismantle(item_num)
 {
 	parent.ds_item=item_num;
-	parent.dismantle();
+	return parent.dismantle();
 }
 
-function exchange(item_num)
+async function exchange(item_num)
 {
 	parent.e_item=item_num;
-	parent.exchange(1);
+	var call=await parent.exchange(1),num=undefined,name=undefined;
+	if(!call.in_progress) return call;
+	if(character.q.exchange) num=character.q.exchange.num;
+	while(character.q.exchange)
+		await sleep(1);
+	if(character.items[num]) name=character.items[num].name;
+	return {success:true,reward:name}
+}
+
+function exchange_buy(token,name)
+{
+	// Example: exchange_buy('funtoken','confetti')
+	return parent.exchange_buy(token,name);
 }
 
 function say(message) // please use MORE responsibly, thank you! :)
 {
-	parent.say(message,safeties);
+	return parent.say(message,safeties);
 }
 
 function party_say(message)
 {
-	parent.party_say(message,safeties);
+	return parent.party_say(message,safeties);
 }
 
 function pm(name,message)
 {
-	parent.private_say(name,message,safeties);
+	return parent.private_say(name,message,safeties);
 }
 
 function move(x,y)
@@ -542,6 +661,15 @@ function cruise(speed)
 {
 	// to revert, just cruise(500) - since it just sets an upper cap for speed
 	parent.socket.emit("cruise",speed);
+	return parent.push_deferred("cruise");
+}
+
+function equip_cx(slot,cx_name)
+{
+	// Equipped: show_json(character.cx)
+	// Available: show_json(character.acx)
+	parent.socket.emit("cx",{slot:slot,name:cx_name});
+	return parent.push_deferred("cx");
 }
 
 function show_json(e) // renders the object as json inside the game
@@ -669,16 +797,19 @@ function get_nearest_hostile(args) // mainly as an example [08/02/17]
 
 function use_hp_or_mp()
 {
-	if(safeties && mssince(last_potion)<min(200,character.ping*3)) return;
+	if(safeties && mssince(last_potion)<min(200,character.ping*3)) return resolving_promise({reason:"safeties",success:false,used:false});
 	var used=true;
-	if(is_on_cooldown("use_hp")) return;
-	if(character.mp/character.max_mp<0.2) use_skill('use_mp'); 
-	else if(character.hp/character.max_hp<0.7) use_skill('use_hp');
-	else if(character.mp/character.max_mp<0.8) use_skill('use_mp');
-	else if(character.hp<character.max_hp) use_skill('use_hp');
-	else if(character.mp<character.max_mp) use_skill('use_mp');
+	if(is_on_cooldown("use_hp")) return rejecting_promise({reason:"cooldown"});
+	if(character.mp/character.max_mp<0.2) return use_skill('use_mp'); 
+	else if(character.hp/character.max_hp<0.7) return use_skill('use_hp');
+	else if(character.mp/character.max_mp<0.8) return use_skill('use_mp');
+	else if(character.hp<character.max_hp) return use_skill('use_hp');
+	else if(character.mp<character.max_mp) return use_skill('use_mp');
 	else used=false;
-	if(used) last_potion=new Date();
+	if(used)
+		last_potion=new Date();
+	else
+		return resolving_promise({reason:"full",success:false,used:false});
 }
 
 function loot(id_or_arg)
@@ -687,20 +818,21 @@ function loot(id_or_arg)
 	// loot(true) allows code characters to make their commanders' loot instead, extremely useful [14/01/18]
 	// after recent looting changes, loot(true) isn't too useful any more [08/12/19]
 	if(id_or_arg && id_or_arg!==true) return parent.parent.open_chest(id_or_arg);
-	var looted=0;
-	if(safeties && mssince(last_loot)<min(300,character.ping*3)) return;
+	var looted=0,last=null;
+	if(safeties && mssince(last_loot)<min(300,character.ping*3)) return rejecting_promise({reason:"safety"});
 	last_loot=new Date();
 	for(var id in parent.chests)
 	{
 		var chest=parent.chests[id];
 		if(safeties && (chest.items>character.esize || chest.last_loot && mssince(chest.last_loot)<1600)) continue;
 		chest.last_loot=last_loot;
-		if(id_or_arg==true) parent.parent.open_chest(id);
-		else parent.open_chest(id);
-		// parent.socket.emit("open_chest",{id:id}); old version [02/07/18]
+		if(id_or_arg===true) last=parent.parent.open_chest(id);
+		else last=parent.open_chest(id);
 		looted++;
 		if(looted==2) break;
 	}
+	if(!last) return resolving_promise({reason:"nothing_to_loot"});
+	return last;
 }
 
 function get_chests()
@@ -730,35 +862,51 @@ function close_stand()
 
 function send_gold(receiver,gold)
 {
-	if(!receiver) return game_log("No receiver sent to send_gold");
+	if(!receiver)
+	{
+		game_log("No receiver sent to send_gold");
+		return rejecting_promise({reason:"no_target"});
+	}
 	if(receiver.name) receiver=receiver.name;
 	parent.socket.emit("send",{name:receiver,gold:gold});
+	return parent.push_deferred("send");
 }
 
 function send_item(receiver,num,quantity)
 {
-	if(!receiver) return game_log("No receiver sent to send_item");
+	if(!receiver)
+	{
+		game_log("No receiver sent to send_item");
+		return rejecting_promise({reason:"no_target"});
+	}
 	if(receiver.name) receiver=receiver.name;
 	parent.socket.emit("send",{name:receiver,num:num,q:quantity||1});
+	return parent.push_deferred("send");
 }
 
 function send_cx(receiver,cx)
 {
 	// Sends cosmetics to one of your own characters
-	if(!receiver) return game_log("No receiver sent to send_cx");
+	if(!receiver)
+	{
+		game_log("No receiver sent to send_cx");
+		return rejecting_promise({reason:"no_target"});
+	}
 	if(receiver.name) receiver=receiver.name;
 	parent.socket.emit("send",{name:receiver,cx:cx});
+	return parent.push_deferred("send");
 }
 
 function send_mail(to,subject,message,item)
 {
 	item=item&&true||false; // 0th slot is sent
-	parent.socket.emit('mail',{to:to,subject:subject,message:message,item:item})
+	parent.socket.emit('mail',{to:to,subject:subject,message:message,item:item});
+	return parent.push_deferred("mail");
 }
 
 function destroy(num) // num: 0 to 41
 {
-	parent.socket.emit("destroy",{num:num});
+	return parent.poof(num);
 }
 
 function send_party_invite(name,is_request) // name could be a player object, name, or id
@@ -808,6 +956,7 @@ function unfriend(name) // instead of a name, an owner id also works, this is cu
 function respawn()
 {
 	parent.socket.emit('respawn');
+	return parent.push_deferred("respawn");
 }
 
 function handle_command(command,args) // command's are things like "/party" that are entered through Chat - args is a string
@@ -817,18 +966,32 @@ function handle_command(command,args) // command's are things like "/party" that
 	return -1;
 }
 
-function send_cm(to,message)
+async function send_cm(to,message)
 {
 	// to: Name or Array of Name's
 	// message: JSON object
 	// Receive with: character.on("cm",function(m){ m.name; m.message; });
-	var to_server=[];
+	var to_server=[],locals=[],data={locals:[],receivers:[]};
 	if(!is_array(to)) to=[to];
 	to.forEach(function(name){
-		if(is_character_local(name)) send_local_cm(name,message);
+		if(is_character_local(name)) send_local_cm(name,message),locals.push(name);
 		else to_server.push(name);
 	})
-	if(to_server.length) parent.send_code_message(to_server,message); // message over the server - has a high call cost / character.cc
+	if(to_server.length)
+		data=await send_server_cm(to_server,message); // message over the server - has a high call cost / character.cc
+	locals.forEach(function(name){
+		data.locals.push(name);
+		data.receivers.push(name);
+	})
+	return data;
+}
+
+function send_server_cm(to,message)
+{
+	// to: Name or Array of Name's
+	// message: JSON object
+	// returns a Promise with {receivers:[]}
+	return parent.send_code_message(to,message);
 }
 
 function on_disappear(entity,data)
@@ -1238,18 +1401,18 @@ function get(name)
 	}
 }
 
-function load_code(name,onerror)
+function load_code(name_or_slot,onerror)
 {
 	// load_code executes the code at top-level in a synchronized manner
 	// each function/variable becomes directly available
 	// onerror can be a function that will be executed if load_code fails
 
-	var code=parent.get_code_file(name); // works on Electron, returns the local file
+	var code=parent.get_code_file(name_or_slot); // works on Electron, returns the local file
 
 	if(code===null)
 	{
 		var xhrObj = new XMLHttpRequest();
-		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&timestamp="+(new Date().getTime()), false);
+		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name_or_slot)+"&timestamp="+(new Date().getTime()), false);
 		xhrObj.send('');
 		code=xhrObj.responseText;
 	}
@@ -1261,17 +1424,17 @@ function load_code(name,onerror)
 	document.getElementsByTagName("head")[0].appendChild(library);
 }
 
-function require_code(name)
+function require_code(name_or_slot)
 {
 	// require_code executes code inside it's own scope in a synchronized manner
 	// functions returns the exports dictionary, emulating a require
 
-	var code=parent.get_code_file(name);
+	var code=parent.get_code_file(name_or_slot);
 
 	if(code===null)
 	{
 		var xhrObj = new XMLHttpRequest();
-		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name)+"&xrequire=1&timestamp="+(new Date().getTime()), false);
+		xhrObj.open('GET',"/code.js?name="+encodeURIComponent(name_or_slot)+"&xrequire=1&timestamp="+(new Date().getTime()), false);
 		xhrObj.send('');
 		code=xhrObj.responseText;
 	}
@@ -1287,7 +1450,7 @@ function require_code(name)
 function upload_code(slot_number,slot_name,code_string)
 {
 	// Some players use the code slots to persist data across platforms, but please use it sparingly :) [04/08/20]
-	return api_call("save_code",{code:code_string,slot:slot_number,name:slot_name,auto:true,electron:true},{promise:true});
+	return parent.api_call("save_code",{code:code_string,slot:slot_number,name:slot_name,auto:true,electron:true},{promise:true});
 }
 
 var active_code_slot=parent.code_slot||"";
@@ -1342,7 +1505,14 @@ function smart_move(destination,on_done)
 	else if("to" in destination || "map" in destination)
 	{
 		if(destination.to=="town") destination.to="main";
-		if(G.monsters[destination.to])
+		if(G.events[destination.to] && parent.S[destination.to] && G.events[destination.to].join)
+		{
+			join(destination.to);
+			smart.moving=false;
+			smart.on_done(true);
+			return;
+		}
+		else if(G.monsters[destination.to])
 		{
 			var locations=[],theone;
 			for(var name in G.maps)
@@ -1369,9 +1539,29 @@ function smart_move(destination,on_done)
 		}
 		else if(G.maps[destination.to||destination.map])
 		{
-			smart.map=destination.to||destination.map;
-			smart.x=G.maps[smart.map].spawns[0][0];
-			smart.y=G.maps[smart.map].spawns[0][1];
+			if(G.maps[destination.to||destination.map].event)
+			{
+				if(parent.S[G.maps[destination.to||destination.map].event])
+				{
+					join(G.maps[destination.to||destination.map].event);
+					smart.moving=false;
+					smart.on_done(true);
+					return;
+				}
+				else
+				{
+					game_log("Path not found!","#CF575F");
+					smart.moving=false;
+					smart.on_done(false,"failed");
+					return;
+				}
+			}
+			else
+			{
+				smart.map=destination.to||destination.map;
+				smart.x=G.maps[smart.map].spawns[0][0];
+				smart.y=G.maps[smart.map].spawns[0][1];
+			}
 		}
 		else if(destination.to=="upgrade" || destination.to=="compound") smart.map="main",smart.x=-204,smart.y=-129;
 		else if(destination.to=="exchange") smart.map="main",smart.x=-26,smart.y=-432;
@@ -1417,7 +1607,8 @@ function stop(action,second)
 	{
 		if(smart.moving) smart.on_done(second||false,"interrupted");
 		smart.moving=false;
-		if(action!="smart") move(character.real_x,character.real_y);
+		if(action!="smart") return move(character.real_x,character.real_y);
+		return resolving_promise({success:true});
 	}
 	else if(action=="invis")
 	{
@@ -1431,6 +1622,7 @@ function stop(action,second)
 	{
 		parent.socket.emit("stop",{action:"revival"});
 	}
+	return push_deferred("stop");
 }
 
 var queue=[],visited={},start=0,best=null;
@@ -1486,7 +1678,7 @@ function bfs()
 			var c_dist=abs(current.x-smart.x)+abs(current.y-smart.y);
 			var s_dist=abs(current.x-smart.start_x)+abs(current.y-smart.start_y);
 			smart.flags.map=true;
-			if(c_dist<smart.baby_edge || s_dist<smart.baby_edge) c_moves=baby_steps;
+			if(c_dist<smart.baby_edge || s_dist<smart.baby_edge || map.small_steps) c_moves=baby_steps;
 			if(c_dist<smart.edge)
 			{
 				result=start;
@@ -1635,6 +1827,7 @@ function smart_move_logic()
 		else if(current.transport)
 		{
 			parent.socket.emit("transport",{to:current.map,s:current.s});
+			parent.push_deferred("transport")
 			// use("transporter",current.map);
 		}
 		else if(character.map==current.map && (smart.try_exact_spot && !smart.plot.length || can_move_to(current.x,current.y))) 
