@@ -57,25 +57,25 @@ function mode_resolve_all()
  */
 function start_character(name,code_slot_or_name)
 {
-	return parent.start_character_runner(name,code_slot_or_name)
+	return parent.start_character_runner(name,code_slot_or_name);
 }
 
 function stop_character(name)
 {
-	parent.stop_character_runner(name)
+	parent.stop_character_runner(name);
 }
 
 function command_character(name,code_snippet)
 {
 	// Commands the character in [CODE] mode
-	parent.character_code_eval(name,code_snippet)
+	parent.character_code_eval(name,code_snippet);
 }
 
 function get_active_characters()
 {
 	// States: "self", "starting","loading", "active", "code"
 	// Example: {"Me":"self","Protector":"loading"}
-	return parent.get_active_characters()
+	return parent.get_active_characters();
 }
 
 function change_server(region,name) // change_server("EU","I") or change_server("ASIA","PVP") or change_server("US","III")
@@ -83,7 +83,7 @@ function change_server(region,name) // change_server("EU","I") or change_server(
 	parent.window.location.href="/character/"+character.name+"/in/"+region+"/"+name+"/";
 }
 
-function is_pvp()
+function is_in_pvp()
 {
 	return G.maps[character.map].pvp || server.pvp;
 }
@@ -102,7 +102,6 @@ function is_character(entity)
 {
 	if(entity && entity.type=="character" && !entity.npc) return true;
 }
-function is_player(e){return is_character(e);} // backwards-compatibility
 
 function interact(name)
 {
@@ -113,10 +112,10 @@ function interact(name)
 	}
 }
 
-function enter(place)
+function enter(place,name)
 {
 	// Possible places: "duelland" / "crypt" / "winter_instance"
-	parent.socket.emit('enter',{place:place});
+	parent.socket.emit('enter',{place:place,name:name});
 	return parent.push_deferred("enter");
 }
 
@@ -139,7 +138,7 @@ function use_nearest_door()
 
 function activate(num) // activates an item, likely a booster, in the num-th inventory slot
 {
-	parent.activate(num);
+	return parent.activate(num);
 }
 
 function shift(num,name) // shifts an item, likely a booster, in the num-th inventory slot
@@ -147,7 +146,7 @@ function shift(num,name) // shifts an item, likely a booster, in the num-th inve
 	// shift(0,'xpbooster')
 	// shift(0,'luckbooster')
 	// shift(0,'goldbooster')
-	parent.shift(num,name);
+	return parent.shift(num,name);
 }
 
 function use_skill(name,target,extra_arg)
@@ -177,14 +176,16 @@ function reduce_cooldown(name,ms)
 
 function bank_deposit(gold)
 {
-	if(!character.bank) return game_log("Not inside the bank");
+	if(!character.bank) return rejecting_promise({reason:"not_in_bank"});
 	parent.socket.emit("bank",{operation:"deposit",amount:gold});
+	return parent.push_deferred("bank");
 }
 
 function bank_withdraw(gold)
 {
-	if(!character.bank) return game_log("Not inside the bank");
+	if(!character.bank) return rejecting_promise({reason:"not_in_bank"});
 	parent.socket.emit("bank",{operation:"withdraw",amount:gold});
+	return parent.push_deferred("bank");
 }
 
 function bank_store(num,pack,pack_num)
@@ -192,8 +193,8 @@ function bank_store(num,pack,pack_num)
 	// bank_store(0) - Stores the first item in inventory in the first/best spot in bank
 	// bank_store(41,"items0",41) -> stores the last item on the last spot of bank's "items0"
 	// pack is one of "items0","items1","items2",...
-	if(!character.bank) return game_log("Not inside the bank");
-	if(!character.items[num]) return game_log("No item in that spot");
+	if(!character.bank) return rejecting_promise({reason:"not_in_bank"});
+	if(!character.items[num]) return rejecting_promise({reason:"no_item"});
 	if(pack_num===undefined) pack_num=-1; // the server interprets -1 as first slot available
 	if(!pack)
 	{
@@ -209,20 +210,29 @@ function bank_store(num,pack,pack_num)
 					cp=cpack;
 			}
 		}
-		if(!pack && !cp) return game_log("Bank is full!");
+		if(!pack && !cp) return rejecting_promise({reason:"bank_full"});
 		if(!pack) pack=cp;
 	}
 	parent.socket.emit("bank",{operation:"swap",pack:pack,str:pack_num,inv:num});
+	return parent.push_deferred("bank");
 }
 
 function bank_retrieve(pack,pack_num,num)
 {
 	// bank_retrieve("items0",0) -> retrieves the first item from bank's "items0"
 	// bank_retrieve("items0",0,12) -> you can optionally specify where to retrieve the item in inventory
-	if(!character.bank) return game_log("Not inside the bank");
-	if(!character.bank[pack] || !character.bank[pack][pack_num]) return game_log("No item in that spot");
+	if(!character.bank) return rejecting_promise({reason:"not_in_bank"});
+	if(!character.bank[pack] || !character.bank[pack][pack_num]) return rejecting_promise({reason:"no_item"});
 	if(num===undefined) num=-1; // the server interprets -1 as first slot available
 	parent.socket.emit("bank",{operation:"swap",pack:pack,str:pack_num,inv:num});
+	return parent.push_deferred("bank");
+}
+
+function bank_swap(pack,a,b)
+{
+	// bank_swap("items0",0,1) -> swaps the first 2 items
+	parent.socket.emit("bank",{operation:"move",pack:pack,a:a,b:b});
+	return parent.push_deferred("bank");
 }
 
 function swap(a,b) // inventory move/swap
@@ -399,7 +409,7 @@ function get_targeted_monster()
 function change_target(target)
 {
 	parent.ctarget=target;
-	parent.send_target_logic();
+	return parent.send_target_logic();
 }
 
 function change_target_privately(target)
@@ -407,7 +417,7 @@ function change_target_privately(target)
 	parent.ctarget=target;
 	if(target) parent.last_id_sent=target.id; // Marks the id as sent, so it doesn't actually get sent
 	else parent.last_id_sent='';
-	parent.send_target_logic();
+	return parent.send_target_logic();
 }
 
 function can_move_to(x,y)
@@ -513,7 +523,8 @@ function buy_with_gold(name,quantity)
 
 function buy_with_shells(name,quantity)
 {
-	parent.buy_with_shells(name,quantity);
+	// returns {success:false,in_progress:true}
+	return parent.buy_with_shells(name,quantity);
 }
 
 function sell(num,quantity) //sell an item from character.items by it's order - 0 to N-1
@@ -565,10 +576,12 @@ function unlock_item(num)
 	return parent.unlock_item(num);
 }
 
-function trade(num,trade_slot,price,quantity) // where trade_slot is 1 to 16 - example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
+function trade(num,trade_slot,price,quantity) 
 {
+	// where trade_slot is 1 to 16
+	// example, trade(0,4,1000) puts the first item in inventory to the 4th trade slot for 1000 gold [27/10/16]
 	if(!is_string(trade_slot) || !trade_slot.startsWith("trade")) trade_slot="trade"+trade_slot;
-	parent.trade(trade_slot,num,price,quantity||1);
+	return parent.trade(trade_slot,num,price,quantity||1);
 }
 
 function trade_buy(target,trade_slot,quantity)
@@ -576,7 +589,7 @@ function trade_buy(target,trade_slot,quantity)
 	// buys the item from a target by slot name
 	// target needs to be an actual player object
 	// quantity is optional
-	parent.trade_buy(trade_slot,target.id,target.slots[trade_slot].rid,quantity||1); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
+	return parent.trade_buy(trade_slot,target.id,target.slots[trade_slot].rid,quantity||1); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
 }
 
 function trade_sell(target,trade_slot,quantity)
@@ -585,7 +598,27 @@ function trade_sell(target,trade_slot,quantity)
 	// server automatically checks/picks the item from your inventory to sell
 	// target needs to be an actual player object
 	// quantity is optional
-	parent.trade_sell(trade_slot,target.id,target.slots[trade_slot].rid,quantity||1); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
+	return parent.trade_sell(trade_slot,target.id,target.slots[trade_slot].rid,quantity||1); // the .rid changes when the item in the slot changes, it prevents swap-based frauds [22/11/16]
+}
+
+function wishlist(trade_slot,name,price,level,quantity)
+{
+	// where trade_slot is 1 to 16
+	// example: trade(0,"staff",10000000,9) Wishlists an +9 Staff for 10,000,000
+	if(!is_string(trade_slot) || !trade_slot.startsWith("trade")) trade_slot="trade"+trade_slot;
+	return parent.wishlist(trade_slot,name,price,quantity||1,level);
+}
+
+function giveaway(slot,num,q,minutes)
+{
+	// example: giveaway("trade1",0,12,20) - Gives away 12X of Inventory[0] at "trade1" with a 20 minutes cooldown
+	return parent.giveaway(slot,num,q,minutes)
+}
+
+function join_giveaway(name,slot,rid)
+{
+	// example: join_giveaway("CharacterName","trade1",get_player("CharacterName").slots.trade1.rid);
+	return parent.join_giveaway(slot,name,rid);
 }
 
 function upgrade(item_num,scroll_num,offering_num,only_calculate) // number of the item and scroll on the show_json(character.items) array - 0 to N-1
@@ -799,7 +832,7 @@ function use_hp_or_mp()
 {
 	if(safeties && mssince(last_potion)<min(200,character.ping*3)) return resolving_promise({reason:"safeties",success:false,used:false});
 	var used=true;
-	if(is_on_cooldown("use_hp")) return rejecting_promise({reason:"cooldown"});
+	if(is_on_cooldown("use_hp")) return resolving_promise({success:false,reason:"cooldown"});
 	if(character.mp/character.max_mp<0.2) return use_skill('use_mp'); 
 	else if(character.hp/character.max_hp<0.7) return use_skill('use_hp');
 	else if(character.mp/character.max_mp<0.8) return use_skill('use_mp');
@@ -819,7 +852,7 @@ function loot(id_or_arg)
 	// after recent looting changes, loot(true) isn't too useful any more [08/12/19]
 	if(id_or_arg && id_or_arg!==true) return parent.parent.open_chest(id_or_arg);
 	var looted=0,last=null;
-	if(safeties && mssince(last_loot)<min(300,character.ping*3)) return rejecting_promise({reason:"safety"});
+	if(safeties && mssince(last_loot)<min(300,character.ping*3)) return resolving_promise({success:false,reason:"safety"});
 	last_loot=new Date();
 	for(var id in parent.chests)
 	{
@@ -852,12 +885,12 @@ function open_stand(num)
 			if(character.items[i] && G.items[character.items[i].name].stand)
 				num=i;
 	}
-	parent.open_merchant(num);
+	return parent.open_merchant(num);
 }
 
 function close_stand()
 {
-	parent.close_merchant();
+	return parent.close_merchant();
 }
 
 function send_gold(receiver,gold)
@@ -899,6 +932,7 @@ function send_cx(receiver,cx)
 
 function send_mail(to,subject,message,item)
 {
+	// returns {success:false,in_progress:true}
 	item=item&&true||false; // 0th slot is sent
 	parent.socket.emit('mail',{to:to,subject:subject,message:message,item:item});
 	return parent.push_deferred("mail");
@@ -906,57 +940,72 @@ function send_mail(to,subject,message,item)
 
 function destroy(num) // num: 0 to 41
 {
-	return parent.poof(num);
+	parent.p_item=num;
+	return parent.poof(1);
 }
 
 function send_party_invite(name,is_request) // name could be a player object, name, or id
 {
 	if(is_object(name)) name=name.name;
 	parent.socket.emit('party',{event:is_request&&'request'||'invite',name:name});
+	return parent.push_deferred("party");
 }
 
 function send_party_request(name)
 {
 	send_party_invite(name,1);
+	return parent.push_deferred("party");
 }
 
 function accept_party_invite(name)
 {
 	parent.remove_chat("pin"+name);
 	parent.socket.emit('party',{event:'accept',name:name});
+	return parent.push_deferred("party");
 }
 
 function accept_party_request(name)
 {
 	parent.remove_chat("rq"+name);
 	parent.socket.emit('party',{event:'raccept',name:name});
+	return parent.push_deferred("party");
 }
 
 function leave_party()
 {
 	parent.socket.emit("party",{event:"leave"});
+	return parent.push_deferred("party");
 }
 
 function kick_party_member(name)
 {
 	parent.socket.emit('party',{event:'kick',name:name});
+	return parent.push_deferred("party");
 }
 
 function accept_magiport(name)
 {
 	parent.remove_chat("mp"+name);
 	parent.socket.emit('magiport',{name:name});
+	return parent.push_deferred("magiport");
 }
 
 function unfriend(name) // instead of a name, an owner id also works, this is currently the only way to unfriend someone [20/08/18]
 {
 	parent.socket.emit('friend',{event:'unfriend',name:name});
+	return parent.push_deferred("friend");
 }
 
 function respawn()
 {
 	parent.socket.emit('respawn');
 	return parent.push_deferred("respawn");
+}
+
+function set_home()
+{
+	parent.socket.emit('set_home');
+	return parent.push_deferred("set_home");
 }
 
 function handle_command(command,args) // command's are things like "/party" that are entered through Chat - args is a string
