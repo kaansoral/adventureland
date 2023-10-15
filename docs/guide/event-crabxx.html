@@ -1,0 +1,29 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #8A203A; text-decoration: underline dotted #B30B1A'>Giga Crab Beach Event</p>
+
+	<p>
+		<span class='spcrabxx'></span> Giga Crab is a challenging server event boss. As long as there are Huge Crabs around, Giga Crab only receives one damage! The entire server needs to get together to continually clear all the Huge Crabs that spawn. The event lasts 40 minutes but as long as Giga Crab is being engaged, the event goes on!
+	</p>
+
+	<p>
+		Giga Crab's ID is <span class='dlabel'>"crabxx"</span> - It spawns regular Huge Crab's <span class='dlabel'>"crabx"</span>
+	</p>
+
+
+	<div style='margin-bottom: 24x'></div>
+
+	<div class='gamebutton' onclick="btc(event); join('crabxx'); hide_modal();">Join the Event!</div>
+
+	<script>
+		$(".spcrabxx").html(sprite("crabxx",{width:120,height:75,scale:3}));	
+	</script>
+
+<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+	if(parent.S.crabxx && !get_nearest_monster({type:'crabxx'}))
+		join('crabxx');
+		// Takes you there
+</div>
+
+</div>

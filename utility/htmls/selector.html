@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html,body{
+				background:black;
+			}
+			body{
+				overflow-y: scroll;
+			}
+		</style>
+		<script>
+			var mode="alert";
+			function clicked(x,y)
+			{
+				if(mode=="alert") alert(x+","+y);
+				else
+				{
+					$(".element"+x+y).attr("class","clickable element"+x+y+" rotate"+mode);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="toprightcorner">
+			<div style="margin-right: 24px">
+				<div class="gamebutton clickable" onclick="mode=2">2</div>
+				<div class="gamebutton clickable" onclick="mode=4">4</div>
+				<div class="gamebutton clickable" onclick="mode=6">6</div>
+				<div class="gamebutton clickable" onclick="mode='alert'">Alert</div>
+				<div style="margin-bottom: 5px"></div>
+				<div class="gamebutton clickable" onclick="mode=8">8</div>
+				<div class="gamebutton clickable" onclick="mode=10">10</div>
+				<div class="gamebutton clickable" onclick="mode=12">12</div>
+				<div class="gamebutton clickable" onclick="mode=14">14</div>
+			</div>
+		</div>
+		<div style='color: white; background-color: black; padding: 2px; font-size: 0px'>
+			{% for y in ys %}
+				<div>
+					{% for x in xs%}
+						<div style='display:inline-block; border: 2px solid gray; margin: 2px; height: {{size*scale+6}}px; width: {{size*scale+6}}px; overflow: hidden'
+							class="clickable element{{x}}{{y}}" onclick="clicked({{x}},{{y}})">
+							<div style="margin-left: 3px; margin-top: 3px; width: {{size*scale}}px; height: {{size*scale}}px; overflow: hidden">
+								<img style='width: {{width*scale}}px; height: {{height*scale}}px; margin-left: -{{x*size*scale}}px; margin-top: -{{y*size*scale}}px;' src='{{file}}' />
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+	</body>
+</html>

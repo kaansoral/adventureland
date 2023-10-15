@@ -1,0 +1,81 @@
+<div style='width: 600px; display: inline-block' class="{%if inside=='payments'%}modal imodal{%endif%}">		
+	<div style="/*margin-top: 5px; */text-align: left">
+		<div class="inline-block vtop">
+			<div class="gamebutton block mb5" onclick="$('.pui').hide(); $('.mainpui').show(); set_pamount(10)">$10 <span style='color: gray'>for</span><br />800 <span style='/*color: #6ECF28*/'>SHELLS</span>
+			</div>
+			<div class="gamebutton block mb5" onclick="$('.pui').hide(); $('.mainpui').show(); set_pamount(25)">$25 <span style='color: gray'>[<span style='color: #2E6DB4'>+8%</span>]</span><br />2,160 <span style='/*color: #6ECF28*/'>SHELLS</span></div> {# 2000 #}
+			<div class="gamebutton block mb5" onclick="$('.pui').hide(); $('.mainpui').show(); set_pamount(100)">$100 <span style='color: gray'>[<span style='color: #F3C300'>+16%</span>]</span><br />9,280 <span style='/*color: #6ECF28*/'>SHELLS</span></div> {# 8000 #}
+			<div class="gamebutton block mb5" onclick="$('.pui').hide(); $('.mainpui').show(); set_pamount(500)">$500 <span style='color: gray'>[<span style='color: #DF0024'>+24%</span>]</span><br />49,600 <span style='/*color: #6ECF28*/'>SHELLS</span></div>  {# 40000 #}
+			<div class="gamebutton block mb5" onclick="$('.pui').hide(); $('.aboutpui').show()" style="color: #5DAC40/*#43C7D1*/">About<br />SHELLS</div>
+			{#<div class="gamebutton block" onclick="$('.pui').hide(); $('.alternativepui').show()">Alternative<br />Payments</div>#}
+			{% if 0 and user %}
+				<div class="gamebutton block" onclick="setTimeout(function(){ if(inside!='payments')hide_modal(); show_sroffers() },20);" style="color: #D1769E">
+				{#Alternative<br />OPTIONS#}
+					<span style="color: #009cde">Paypal</span><br />
+					<span style="color: #E49514">Mobile</span><br />
+					<span style="color: #52D2E6">Rewards</span><br />
+				</div>
+			{% endif %}
+		</div>
+		<div class="inline-block vtop" style="width: 392px">
+			<div style="padding: 20px; background: black; font-size: 32px; border: 4px solid gray; width: 388px" class="pui mainpui">
+				{#<div>Credit Card</div>#}
+				<div>Owner: <input type="text" class="ccinput stripe-name" placeholder="Name Surname" style="width: 280px" autocomplete="cc-name"/></div>
+				<div>Number: <input type="text" class="ccinput stripe-number" placeholder="4444 4444 4444 4444" onchange="$(this).payment('formatCardNumber');" style="width: 270px" autocomplete="cc-number"/></div>
+				<div>
+					<div class="inline-block vtop">
+						Expiry: <input type="text" class="ccinput stripe-month" placeholder="08" style="width: 30px" autocomplete="cc-exp-month"/> {{'/'}} <input type="text" class="ccinput ccsmall stripe-year" placeholder="18" style="width: 30px" autocomplete="cc-exp-year"/>
+					</div>
+					<div class="inline-block vtop" style="margin-left: 10px">
+						CVC: <input type="text" class="ccinput ccsmall2 stripe-cvc" placeholder="123" style="width: 40px" autocomplete="cc-csc"/>
+					</div>
+				</div>
+				<div class="ccpostcode hidden">
+					Postcode: <input type="text" class="ccinput" placeholder="Optional" style="width: 200px"/>
+				</div>
+				{% if not user %}
+					<div style="border: 4px solid gray; text-align: center; padding: 6px 0px 6px 0px; margin-top: 12px" class="pbutton">
+						Please Login First!
+					</div>
+				{% else %}
+					<div style="border: 4px solid gray; text-align: center; padding: 6px 0px 6px 0px; margin-top: 12px" class="clickable pbutton" onclick="stripe_pay()">
+						Pay $25
+					</div>
+				{% endif %}
+			</div>
+			<div class="pui mainpui" style="border: 4px solid gray; padding: 12px; background: black; font-size: 24px; color: gray; text-align: left; margin-top: 5px; width: 404px">
+				Adventure Land uses <a href="https://stripe.com/about" target="_blank" style="color: #CFCFCF; text-decoration: none" onclick="stpr(event)">Stripe</a> to handle payments, the leader in payments processing. Your credit card information never touches Adventure Land's servers.
+				<div id="plog"></div>
+			</div>
+			{% if extra_shells %}
+				<div class="pui mainpui" style="border: 4px solid gray; padding: 12px; background: black; font-size: 36px; color: gray; text-align: left; margin-top: 5px; width: 404px; color: white">
+					<span style='color: #B2161C'>Holiday Season Bonus:</span> <span style='color: #008E3A'>{{extra_shells}}%</span> Extra Shells with Every Purchase!
+					{#<span style='color: #7C89A7'>Cyber Days Bonus:</span> <span style='color: #008E3A'>{{extra_shells}}%</span> Extra Shells with Every Purchase!#}
+				</div>
+			{% endif %}
+			<div class="hidden pui aboutpui" style="border: 4px solid gray; padding: 12px; background: black; font-size: 24px; color: white; text-align: left; width: 400px">
+				<div class="mb5">
+					SHELLS are Adventure Land's rare, purchasable currency. Unlike many other games, you can find SHELLS in-game too. They drop from gems and monsters. They are rare.
+				</div>
+				<div class="mb5">
+					This creates equal opportunities for all players. You can only purchase non-essentials with SHELLS, like cosmetics and extra bank storage, to ensure the game is not pay-to-win.
+				</div>
+				<div style="color: #BDD8B0;">
+					You can support Adventure Land's development by buying SHELLS and hopefully enjoy the game more, faster, to your hearts desire!
+				</div>
+			</div>
+			<div style="padding: 20px; background: black; font-size: 32px; border: 4px solid gray; width: 388px; text-align: center"
+				class="pui alternativepui clickable hidden" onclick="show_ppayments()">
+				Alternative Payments
+			</div>
+			<div style="padding: 20px; background: black; font-size: 32px; border: 4px solid gray; width: 388px; margin-top: 5px; text-align: center"
+				class="pui alternativepui clickable hidden" onclick="show_poffers()">
+				Offers
+			</div>
+			<div class="pui alternativepui hidden"
+				style="border: 4px solid gray; padding: 12px; background: black; font-size: 24px; color: gray; text-align: left; margin-top: 5px; width: 404px">
+				Adventure Land uses <a href="https://www.paymentwall.com/en/about-us" target="_blank" style="color: #CFCFCF; text-decoration: none">Paymentwall</a> for alternative payments and offers. There are various localised payment methods, and offers to receive free SHELLS.
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,51 @@
+<div id="keymapguide" style="display:none">
+	<div style="font-size: 24px; color: #F4F4F4">
+		<div class="gamebutton gamebutton-large" style="border-color: #32A3B0">Skillbar and Keymap</div> <div class="mb5"></div>
+
+		<div class="gamebutton gamebutton-small mr5 mt5 mb5">Skillbar and Configuration</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> Skillbar is the small vertical bar you see on the right side of the screen, above the game logs. You can configure your skillbar through Code. Changes you make are saved and persisted for your Character, on your system locally.</div>
+		<div class="mr5 mt10 mb5" style="border-color: #32A3B0; font-size: 0px">
+			<span class='skb1'></span>
+			<span class='skb2'></span>
+			<span class='skb3'></span>
+			<span class='skb4'></span>
+			<span class='skb5'></span>
+			<span class='skbX'></span>
+			<span class='skbY'></span>
+		</div>
+		<div class="gray mb5 mt5"><span class='label'>set_skillbar("1","2","3","4","5","X","Y");</span></div>
+		<div class="gray mb5"><span class='label'>set_skillbar(["1","2","3","4","5","X","Y"]);</span></div>
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5">Keymap and Configuration</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> Keymap is for mapping keypresses to skills, abilities and actions. Similar to the skillbar, you can change your keymap from Code, and the changes are persisted locally.</div>
+		<div class="gray mb5 mt10"><span class='label'>map_key("1","use_hp");</span></div>
+		<div class="gray mb5"><span class='label'>map_key("2","snippet","say('Woohoo')");</span></div>
+		<div class="gray mb5"><span class='label'>map_key("X","supershot");</span></div>
+		<div class="gray mb5"><span class='label'>unmap_key("X");</span></div>
+		<div class="gray mb5"><span class='label clickable'  onclick="show_snippet('reset_mappings()')">reset_mappings();</span> &lt;- DEFAULTS THINGS</div>
+		<div class="gray mb5 mt5 clickable" onclick="show_json(G.skills)"><span class='label'>show_json(G.skills);</span> &lt;- CLICK TO RUN!</div>
+
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5">Mappable Keys</div>
+		<div class="mr5 mt10 mb5 skbkeys">
+		</div>
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5 clickable" onclick="show_snippet()">Snippets</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> Snippets are small code pieces that are either evaluated inside your own Code, or on a blank runner if your Code isn't running.</div>
+		<div class="gray mb5 mt10 clickable" onclick="show_snippet(snip_wl_code)"><span class='label'>map_key("Q","snippet","smart_move('winterland')");</span> &lt;- CLICK TO TEST!</div>
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5">Mapping Items</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> Items can be mapped manually to keys, or by dragging and dropping an item to a key slot. Pressing that key, activates, uses or equips the item.</div>
+		<div class="gray mb5 mt10"><span class='label'>map_key("SPACE",{"name":"stand0","type":"item"});</span></div>
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5">Map New Keys</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> You can map to unmapped keys by including the `keycode` argument in your mappings. You can learn keycodes from: <a href="http://keycode.info" class='eexternal' target="_blank" style="color: #469ECF; text-decoration: none">keycode.info</a></div>
+		<div class="gray mb5 mt10"><span class='label'>map_key("DOT",{"name":"pure_eval","code":"ping()",keycode:190});</span></div>
+
+		<div class="gamebutton gamebutton-small mr5 mt10 mb5 clickable" onclick="show_snippet()">Advanced Usages</div>
+		<div class="gray"><span style="color: #F4F4F4">&gt;</span> You can override game's default keymappings, add new functionalities to keypresses using the "pure_eval" skill, unlike "snippet", "pure_eval" runs Javascript code inside the game window, so be careful using "pure_eval". You can change any rendered icon to one of your choosing. Ps. There's a list of icons in: G.skills.snippet.skins</div>
+		<div class="gray mb5 mt10 clickable" onclick="show_snippet(snip_esc_code)"><span class='label'>//Example code that overrides ESC</span></div>
+
+	</div>
+	<div class="oncreate" onclick="keymap_modal_logic();"></div>
+</div>

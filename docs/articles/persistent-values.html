@@ -1,0 +1,59 @@
+<p>Your Code and Javascript variables all reset when you refresh the game. Let's say you were in the middle of a very important action but your character got disconnected, or the game and servers started updating, what happens then? How do you continue what you were doing? How will your character remember what to do? This article will explain how! :)</p>
+
+<p>To solve this problem, you'll need a persistent storage solution, like saving a file somewhere. Luckily, browsers and our game clients have a service called <span class='dlabel'>"localStorage".</span> The game functions <span class='rlabel' onclick="render_function_reference($(this).html())">get</span> and <span class='rlabel' onclick="render_function_reference($(this).html())">set</span> uses this local storage and they are very easy to use!</p>
+
+<div class='code'>
+set("test",{a:42,b:true}); // set function can store objects too
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<div class='code'>
+log(get("test").a); // logs 42 - even after the game is refreshed
+</div>
+
+<p>Here's an example usage that makes your character move from Goo's to Tiny Crab's, even after the game is refreshed:</p>
+
+<div class='code'>
+var action=null; // Local variable action
+
+setInterval(function(){
+	
+	// Since we always set "flag" and action to the same value, if they mismatch, it must mean the game was refreshed
+	if(get("flag")!=action)
+	{
+		game_log("Variable action doesn't match the stored flag therefore the game was refreshed!");
+		if(get("flag")=="crab")
+		{
+			game_log("Continuing the move to crabs!");
+			action="crab";
+			smart_move("crab");
+		}
+		else if(get("flag")=="goo")
+		{
+			game_log("Continuing the move to goos!");
+			action="goo";
+			smart_move("goo");
+		}
+		set("flag",action);
+	}
+	else if(smart.moving)
+	{
+		// Do nothing, we are moving!
+	}
+	else if(action=="goo")
+	{
+		// Arrived at goo's, back to crab's now
+		action="crab";
+		smart_move("crab");
+		set("flag",action);
+	}
+	else
+	{
+		// Either arrived at crab's, or this is our first action!
+		action="goo";
+		smart_move("goo");
+		set("flag",action);
+	}
+
+},100);
+</div>

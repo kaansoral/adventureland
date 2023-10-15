@@ -1,0 +1,40 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #404086; text-decoration: underline dotted #F1832F'>Halloween on Adventure Land</p>
+
+	<p>
+		<div style='float:left; margin-right: 10px'><span class='spexchange'></span> <span class='eitem1'></span> <span class='eitem2'></span> </div> During the Halloween season, all monsters drop candies that you can exchange for random items from Xyn! <br />
+	</p>
+
+	<p>
+		<span class='spmrgreen'></span> <span class='spmrpumpkin'></span> Participate in the co-op bossfights for the drops and the Halloween buff.
+	</p>
+	<p>
+		<span class='spgreenjr'></span> <span class='spjr'></span> Try to catch and defeat the junior bosses whenever they spawn and be careful about the elusive Slenderman!
+	</p>
+
+	<p>
+		There are so so many items special for Halloween that are hard to get any other time!
+		<div style='margin-top:-10px'> <span class='hitems'></span>
+	</p>
+
+<div style='margin-bottom: 24x'></div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.candy0.skin},{name:"candy0",q:0}));
+		$(".eitem2").html(item_container({skin:G.items.candy1.skin},{name:"candy1",q:0}));
+
+		["spookyamulet","gbow","lantern","broom","sbelt","cxjar","skullamulet","hdagger","ololipop","glolipop","vblood","talkingskull","jacko","gphelmet","pumpkinspice","swirlipop","greenbomb","oozingterror","pmaceofthedead","phelmet"].forEach(function(i){
+			$(".hitems").append(item_container({skin:G.items[i].skin},{name:[i],q:0}));
+		})
+
+		
+		$(".spexchange").html(sprite("magic",{width:42}));
+
+		$(".spmrgreen").html(sprite("mrgreen"));
+		$(".spmrpumpkin").html(sprite("mrpumpkin"));
+
+		$(".spgreenjr").html(sprite("greenjr"));
+		$(".spjr").html(sprite("jr"));
+	</script>
+</div>

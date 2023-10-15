@@ -1,0 +1,35 @@
+<!-- <a class="gamebutton" href="/logs" target="_blank">Development Diary</a> -->
+{% if buttons=="essentials" %}
+	<a class="gamebutton" href="/docs" style="border-color: #d6d135" target="_blank">Docs</a>
+	<a class="gamebutton eexternal" href="https://discord.gg/44yUVeU" target="_blank" style="border-color: #32A3B0">Discord!</a>
+{% endif %}
+{% if buttons=="musts" %}
+	{# <div class="gamebutton" onclick="btc(event); show_terms()">Terms</div>
+	<div class="gamebutton" onclick="btc(event); show_privacy()">Privacy</div>#}
+	<div class="gamebutton" onclick="btc(event); show_ttp()" style="border-color: #D46E33">Terms+</div>
+{% endif %}
+
+{% if buttons=="social" %}
+	<a class="gamebutton eexternal" href="https://github.com/kaansoral/adventureland" target="_blank">Github</a>
+	<a class="gamebutton eexternal" href="https://www.reddit.com/r/adventureland" target="_blank">Reddit</a>
+{% endif %}
+{% if 0 %}
+	<a class="gamebutton" href="https://www.facebook.com/adventurelandmmo" target="_blank">Facebook</a>
+	<a class="gamebutton" href="https://twitter.com/CodeMMORPG" target="_blank">Twitter</a>
+{% endif %}
+{% if buttons=="music" %}
+	{% if servers %}
+		<span id='observeui' class='hidden'><div class="gamebutton" onclick="btc(event); show_commander()" style='border-color:#E13758'>Command</div></span>
+		<div class="gamebutton" onclick="btc(event); show_settings()">Settings</div>
+		{#
+			<div class="gamebutton musicoffi {%if domain.music_on %}hidden{% endif %}" onclick="btc(event); sound_on()">Music: <span style='color: gray'>OFF</span></div>
+		<div class="gamebutton musiconi {%if not domain.music_on %}hidden{% endif %}" onclick="btc(event); sound_off()">Music: <span style='color: #539A3F'>ON</span></div>
+		<div class="gamebutton sfxoffi {% if domain.sfx_on %}hidden{% endif %}"
+		onclick="btc(event); sfx_on();">SFX: <span style='color: gray'>OFF</span></div>
+			<div class="gamebutton sfxoni {% if not domain.sfx_on %}hidden{% endif %}"
+		onclick="btc(event); sfx_off();">SFX: <span style='color: #539A3F'>ON</span></div>
+		#}
+	{% else %}
+		<a class="gamebutton" href="/" style="border-color: #46B465">Reload</a>
+	{% endif %}
+{% endif %}

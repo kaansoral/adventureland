@@ -1,0 +1,144 @@
+<p>Your original character is <span class="clabel">parent.character</span></p>
+
+<p>In Code, there's a <span class="clabel">character</span> object that mimics and extends your character object, you can notice the difference if you <span class="xlabel" onclick="code_eval($(this).html())">show_json(character)</span> <span class="xlabel" onclick="code_eval($(this).html())">show_json(character.slots)</span> and <span class="xlabel" onclick="code_eval($(this).html())">show_json(parent.character)</span></p>
+
+<div class='code'>
+{
+	"name": "CharacterName",
+	"type": "character",
+	"ctype": "warrior", // One of G.classes
+	"hp": 2000,
+	"max_hp": 2500,
+	"mp": 360,
+	"max_mp": 960,
+	"level": 72,
+	"xp": 978000, // Your current XP
+	"max_xp": 420000000, // max_xp is G.levels[character.level]
+	"str": 206,
+	"int": 46,
+	"dex": 46,
+	"vit": 57,
+	"for": 10, // 10 Fortitude, 10% PVP Damage Reduction
+	"attack": 720,
+	"frequency": 1.2, // attacks/second
+	"speed": 95, // run speed, pixels/second
+	"range": 40, // attack range in pixels
+	"xrange": 25, // extra range allowance - increases 5/second - max 25
+	"armor": 420,
+	"resistance": 260,
+	"mp_cost": 24,
+	"evasion": 2.5, // 2.5%
+	"miss": 0, // % of attacks you miss
+	"reflection": 0, // magical attack reflection
+	"lifesteal": 10, // 10%
+	"manasteal": 0.25, // 0.25%
+	"rpiercing": 0, // resistance piercing
+	"apiercing": 0, // armor piercing
+	"crit": 0, // % chance to hit 2X
+	"dreturn": 0, // damage return
+	"courage": 2, // max amount of physical targets before getting scared
+	"mcourage": 2, // max amount of magical targets before getting scared
+	"pcourage": 2, // max amount of pure targets before getting scared
+	"fear": 0, // courage excess
+	"tax": 0.02, // 2%
+	"gold": 1200000000,
+	"cash": 200, // Shells
+	"xpm": 1, // XP multiplier
+	"luckm": 1, // Luck multiplier
+	"goldm": 1.25, // +25% Gold
+	"targets": 2, // Number of monsters who target you
+	"rip": false, // If true, you are dead
+	"afk": false, // When you move your mouse, becomes true
+	"visible": true, // Indicates whether a character is visible or not
+	"code": true, // true when a character is running Code
+	"citizen": false, // true for moving NPC's
+	"ping": 64.5, // average round-trip between character and server in milliseconds
+	"cc": 12.5, // Call Code Cost
+	"moving": false,
+	"target": "1233", // ID of the monster you are targeting
+					 // or the name of the character you are targeting
+	"focus": "CharacterName", // Secondary, manual focus/target
+	"in": "main", // Which instance your character is in
+				 // If you are in a dungeon, it's a unique ID, otherwise it's the map you are in
+	"map": "main", // The map your character is in
+	"x": 12.5, // Your actual parent.character has "real_x", "real_y" values
+	"y": 40,   // character object in Code mimics these values into "x" and "y
+	"vision": [700,500], // Your vision, it's a 1400X1000 rectangle
+	"owner": "5818821692620800", // Owner ID - Available If a character isn't private, "" otherwise
+	"me": 1, // Set for your character
+	"guild": "XYZ",
+	"stand": false, // Merchant stand type
+	"age": 123, // age in days
+	"skin": "mwarrior", // Your base skin
+	"cx": ["santahat"], // Cosmetics
+	"slots": {
+		"mainhand": {"name":"blade","level":9},
+		"offhand": null,
+		"helmet": null,
+		"chest": {"name":"coat","level":8,"stat_type":"str"},
+		"pants": null,
+		"shoes": null,
+		"gloves": null,
+		"cape": null,
+		"belt": {"name":"hpbelt","level":4},
+		"ring1": null,
+		"ring2": null,
+		"earring1": null,
+		"earring2": null,
+		"amulet": null,
+		"orb": null,
+		"elixir": {"name":"eggnog","expires":"expires":"2053-02-19T07:00:59.459Z"}
+	},
+	"isize": 42, // Inventory size
+	"esize": 40, // Empty slots
+	"items": [
+		// character.items.length is usually 42, but could be lower, empty spaces are null
+		{"name":"gloves","level":0},
+		null,
+		{"name": "shadowstone","q":999}, // "q" is for the quantity of the item
+	],
+	"party": "LeaderName",
+	"pdps": 12345.6789, // Approximated dps used for the party share % 
+	"s": {
+		// Conditions or Buffs
+		// G.conditions has stat information on most conditions
+		// If a condition isn't present, it will likely not be in "s"
+		// "ms" is milliseconds left
+		"cursed": {"ms":400},
+		"mluck": {"ms":120000,"f":"MerchantName"},
+		"citizen0aura": {"ms":12000,"name":"Citizen's Aura","skin":"citizensaura","luck":100},
+		// ^ an example of a dynamically generated status that's not on G.conditions
+		"invis": false,
+		"invincible": false,
+		// you are invincible when you first enter a PVP area
+		"poisoned": false,
+		"poisonous": false,
+		"stunned": false,
+	},
+	"c": {
+		// Channeling actions
+		// stop("town"), stop("revival") can be used to stop them
+		"town": {"ms":3000}, // Set when "town" portal is in progress
+		"revival": {ms:8000,f:"PriestName"}, // Set when revival is in progress
+	},
+	"q": {
+		// Progressed actions
+		"upgrade": {"ms":2000,"len":2000,"num":5}, // Item at inventory position #5 is being upgraded
+		"compound": {"ms":8000,"len":10000,"num":0}, // Item at inventory position #0 is being compounded
+		"exchange": {"ms":3000,name:"gem0","num":12}, // A "gem0" exchange is in progress
+	},
+	"friends": [ // Owner ID's of your friends
+		"6237651870941184",
+		"5605361818009600"
+	],
+	// Following attributes can be referenced when "moving" is true
+	"vx": 95, // Speed on the X-axis
+	"vy": 0, // Speed on the Y-axis
+	"from_x": 12.5,
+	"from_y": 40,
+	"going_x": 525.5,
+	"going_y": 40,
+}
+</div>
+
+<p>Nearby Characters, Monsters and Citizens are in the <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">parent.entities</span> dictionary. You can check how the Code function <span class='rlabel' onclick="render_function_reference($(this).html())">get_nearest_hostile</span> parses this data.</p>

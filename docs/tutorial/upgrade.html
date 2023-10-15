@@ -1,0 +1,40 @@
+<p>You can upgrade weapons and armor with upgrade scrolls, after each level the items become stronger, yet the chances become lower and lower. If the upgrade fails, the item is lost!</p>
+
+<p>When you are first starting, the most effective item is your weapon, so start by getting your weapon to +7. Then buy NPC gear and get each of them to +7 too. <span class='elabel' onclick="code_eval('smart_move(&quot;scrolls&quot;)')">Travel to the NPCs</span></p>
+<span class='spbasics'></span> <span class="eitembow"></span> <span class="eitemblade"></span> <span class="eitemstaff"></span> <span class="eitemhelmet"></span> <span class="eitemcoat"></span> <span class="eitemgloves"></span> <span class="eitempants"></span> <span class="eitemshoes"></span>
+
+<p>You'll just need gold to buy the gear and scrolls, so leave your character with Code open so your character farms gold.</p>
+
+{% for task in tutorial_data("upgrade").tasks %}
+	{% if loop.first %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+	<p style='margin-top: 16px; margin-bottom: 16px; line-height: 16px'><span style='font-size: 80px; color:#4A4A4A;' class='tuttask tuttask{{task}}'>o</span> <span style='vertical-align:text-top; color: #DC4C6E'>{{task_name(task)}}</span> <span style='vertical-align:text-top; color:#85C76B; display:none' class='tuttaskd tuttaskd{{task}}'>DONE</span></p>
+	{% if task == "buyscrolls" %}
+		<p>First you need to buy scrolls from the NPC in Town. Basic scrolls are 1,000 gold each.</p>
+		<span class='spscrolls'></span> <span class="eitemscroll0"></span>
+	{% elif task == "upgrade" %}
+		<p>Visit Cue in town to upgrade a weapon from +0 to +1. After +7, you'll need to use more expensive High Upgrade Scroll's.</p>
+		<p style='line-height: 48px'><span class="eitembow0"></span> + <span class="eitemscroll0"></span> => <span class="eitembow1"></span></p>
+		<div>
+			<div style='padding: 0px; border: 4px solid #2B5B89; display: inline-block; font-size: 0px'><img src="http://lh3.googleusercontent.com/h7ttABnKxQz0ca0p6jnq1DG5iNLw4Pac5Z1Bo800cRpxP2b9k-SQqY7yuYRVPLRIvCAvVBe3s2_EBUBR1TF3XptKR5jewcY8r9B1Xvr_dkKZ3ZE=s0" style='height: 198px'/></div>
+			<div style='padding: 0px; border: 4px solid #2B5B89; display: inline-block; font-size: 0px'><img src="http://lh3.googleusercontent.com/qhSgjFF4Qp94CeS-Dc62PgZU9LANN68x6GCrBdPVvVrQYOlHSGEpNb8sP926OLbtKesfQA8Elc9Ycgm5l1SO-4yvV7dxpNMc7cvJCPKvTGdZCw=s0" style='height: 198px'/></div>
+		</div>
+	{% elif task == "addstats" %}
+		<p><span class="eitemdexscroll"></span> <span class="eitemintscroll"></span> <span class="eitemstrscroll"></span> Use one of these scrolls to add stats to your upgraded armor. Your main stats increase your damage and attributes.</p>
+		<p style='line-height: 48px'><span class="eitempants"></span> + <span class="eitemdexscroll"></span> => <span class="eitempants"></span></p>
+	{% endif %}
+	<div style='margin-bottom: 16px'></div>
+	{% if not loop.last %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+{% endfor %}
+
+<script>
+	$(".spbasics").html(sprite(G.npcs.basics.skin));
+	$(".spscrolls").html(sprite(G.npcs.scrolls.skin,{width:58}));
+	["bow","blade","staff","shoes","pants","helmet","gloves","coat"].forEach(function(e){
+		$(".eitem"+e).html(item_container({skin:G.items[e].skin},{name:e,level:7}));
+	});
+	["scroll0","dexscroll","intscroll","strscroll"].forEach(function(e){
+		$(".eitem"+e).html(item_container({skin:G.items[e].skin}));
+	});
+	$(".eitembow0").html(item_container({skin:G.items['bow'].skin},{name:'bow',level:0}));
+	$(".eitembow1").html(item_container({skin:G.items['bow'].skin},{name:'bow',level:1}));
+</script>

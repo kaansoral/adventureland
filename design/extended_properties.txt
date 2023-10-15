@@ -1,0 +1,29 @@
+New Properties
+mpower: 		Magic Power 		+5%		(Like Damage Output, but just for magical damage)
+shock:			Delayed Magic Crit	+5%
+shockdamage:	Shock Damage		+50%
+stresistance:	Status Resistance	+10% 	(10% lower debuff duration)
+pnresistance: 	Poison Resistance 	+20% 	(20% chance to resist, 20% less duration)
+fzresistance: 	Cold Resistance 	+20%	(20% chance to resist, 20% less affliction)
+firesistance:	Fire Resistance 	+20%	(20% chance to resist, 20% less damage)
+phresistance: 	Impact Resistance 	+10%	(Resist Stuns, future physical moves)
+bmresistance:	Black Magic R.		+20%	(Resist Curse, Stone etc.)
+cuteness: 		/bmresistance		(Minor amounts)		Aggro Reduction
+awesomeness:	/phresistance
+charisma:		/-firesistance
+bling:			/-stresistance
+
+
+Special Armor Scrolls [Flat]
+Gold Digger: 		+2% Gold
+Armory:				10 Armor
+Reflector:			+2% Reflection
+Healio:				+20% Healing Received
+Evasion Piercer:	+10% Evasion Piercing
+
+
+Special Weapon Scrolls
+Humanoid Hunter:	+5% Damage to Humanoids
+Desert Dweller:		+8% Damage in Desertland
+Armor Piercer:		40 Armor Piercing
+Resistance Piercer:	40 Resistance Piercing

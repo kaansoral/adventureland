@@ -1,0 +1,26 @@
+queue:
+# maximum 100 queues
+- name: default
+  rate: 1/s
+  bucket_size: 1
+  max_concurrent_requests: 1
+  # retry_parameters:
+  #   task_retry_limit: 6
+  #   min_backoff_seconds: 2
+  #   max_doublings: 3
+
+#TODO: #IMPORTANT: Previously "task_retry_limit: 1" was the only config, caused tasks to fail silently, test this again with cronworker*'s in future [09/04/14]
+
+# - name: jobs0
+#   mode: pull
+#   retry_parameters:
+#     task_retry_limit: 10
+
+- name: important
+  rate: 1/s
+  bucket_size: 1
+  max_concurrent_requests: 1
+  # retry_parameters:
+  #   task_retry_limit: 6
+  #   min_backoff_seconds: 1
+  #   max_doublings: 2

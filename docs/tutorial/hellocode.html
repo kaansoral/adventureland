@@ -1,0 +1,29 @@
+<p>JavaScript is a very very practical language. You don't have to know much about it to use it. It's a scripting language, meaning that you can also run things dynamically.</p>
+
+{% for task in tutorial_data("hellocode").tasks %}
+	{% if loop.first %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+	<p style='margin-top: 16px; margin-bottom: 16px; line-height: 16px'><span style='font-size: 80px; color:#4A4A4A;' class='tuttask tuttask{{task}}'>o</span> <span style='vertical-align:text-top; color: #DC4C6E'>{{task_name(task)}}</span> <span style='vertical-align:text-top; color:#85C76B; display:none' class='tuttaskd tuttaskd{{task}}'>DONE</span></p>
+	{% if task == "engage" %}
+		Just open the Code, and click Engage! at the bottom right corner. Without any modifications to the default code. You won't even feel it's working, it will just use potions if you are down.
+		<div class='mb15'></div>
+		<div class='gamebutton gamebutton-small' style='color: rgb(228, 139, 58);'>Engage!</div>
+		<div class='mb15'></div>
+		<span class='hlabel'>Hint:</span> If your keyboard is English, the |\ key is a shortcut to quickly engage/disengage code.
+	{% elif task == "x" %}
+		Javascript is very flexible, so you can run snippets any time. If your code is already running, they are executed in the same environment. So you can dynamically affect things within your running Code too!
+		<div class='mb15'></div>
+		For this exercise tho, we are doing something simple, just a basic code to make your character move up.
+		<div class='mb15'></div>
+<div class='code'>
+move( character.x , character.y - 10 );
+</div>
+		<div class='mb15'></div>
+		Press X at the top right corner of the screen, copy paste the <span class='rlabel' onclick="render_function_reference($(this).html())">move</span> command from above, and just press EXECUTE!
+		<div class='mb15'></div>
+		<div class='gamebutton'>X</div> and <div class='gamebutton'>EXECUTE</div>
+		<div class='mb15'></div>
+		<span class='hlabel'>Hint:</span> If your keyboard is English, the ,< key is a shortcut to quickly open the Snippet interface.
+	{% endif %}
+	<div style='margin-bottom: 16px'></div>
+	{% if not loop.last %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+{% endfor %}

@@ -1,0 +1,254 @@
+<div id="pagewrapper">
+	<script>var chartype="",gendertype="",thelooks=0;</script>
+	<div id="pagewrapped" class="loginorselection hidewithmodals">
+		<div class="menu">
+			{% include "htmls/contents/selection_characters.html"%}
+		</div>
+		<div class="newcharacter onback-hide hidden">
+			{#<div class="whiteheader mb4 clickable" onclick="$('.charactername').focus()" style='margin-left: -6px'>&gt; Name</div>#}
+			<div style='margin-top: 10px'></div>
+			<input class="selectioninput charactername mb5 mt5" type="text" placeholder='Character Name'></input>
+			<div style='margin-top: 5px'></div>
+			{#<div class="whiteheader mt5" style='margin-left: -6px'>&gt; Class</div>#}
+			<div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='warrior'; load_class_info()" style="color: #F07F2F">Warrior</div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='paladin'; load_class_info()" style="color: #A3B4B9">Paladin</div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='mage'; load_class_info()" style="color: #3E6EED">Mage</div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='priest'; load_class_info()" style="color: #EB4D82">Priest</div>
+			</div>
+			<div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='rogue'; load_class_info()" style="color: #44B75C">Rogue</div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='ranger'; load_class_info()" style="color: #8A512B">Ranger</div>
+				<div class="textbutton chartype" onclick="pcs(); $('.chartype').removeClass('selected'); $(this).addClass('selected'); chartype='merchant'; load_class_info()" style="color: #7F7F7F">Merchant</div>
+			</div>
+			{#
+			<div class="whiteheader mt5" style='margin-left: -6px'>&gt; Gender</div>
+			<div>
+				<div class="textbutton gendertype inline-block" onclick="pcs(); $('.gendertype').removeClass('selected'); $(this).addClass('selected'); gendertype='male'; load_class_info()" style="color: #43A1C6">Male</div>
+				{% if "unknown" in domain.gender_types %}
+					<div class="textbutton gendertype inline-block" onclick="pcs(); $('.gendertype').removeClass('selected'); $(this).addClass('selected'); gendertype='unknown';">Unknown</div>
+				{% endif %}
+				<div class="textbutton gendertype inline-block" onclick="pcs(); $('.gendertype').removeClass('selected'); $(this).addClass('selected'); gendertype='female'; load_class_info()" style="color: #C06C9B">Female</div>
+			</div>
+			#}
+			{#<div class="whiteheader mt5" style='margin-left: -6px'>&gt; Looks</div>#}
+			<div style='margin-top: 5px'></div>
+			<div>
+				<div class="textbutton lookstype inline-block" onclick="pcs(); $('.lookstype').removeClass('selected'); $(this).addClass('selected'); thelooks=0; load_class_info()" style="color: #DF0024"><span style='color: gray'>Opt.</span> A</div>
+				<div class="textbutton lookstype inline-block" onclick="pcs(); $('.lookstype').removeClass('selected'); $(this).addClass('selected'); thelooks=1; load_class_info()" style="color: #F3C300"><span style='color: gray'>Opt.</span> B</div>
+				{#<div style='margin-top: -5px'></div>#}
+				<div class="textbutton lookstype inline-block" onclick="pcs(); $('.lookstype').removeClass('selected'); $(this).addClass('selected'); thelooks=2; load_class_info()" style="color: #00AC9F"><span style='color: gray'>Opt.</span> C</div>
+				<div class="textbutton lookstype inline-block" onclick="pcs(); $('.lookstype').removeClass('selected'); $(this).addClass('selected'); thelooks=3; load_class_info()" style="color: #2E6DB4"><span style='color: gray'>Opt.</span> D</div>
+			</div>
+			<div style='margin-top: 10px'></div>
+			<div class="gamebutton mt5" style="width: 64px; padding: 5px 25px 5px 25px" onclick="if(bc(this)) return; api_call('create_character',{name:$('.charactername').val(),char:chartype,look:thelooks},{disable:$(this)});">Create</div>
+			{% if user.info.slots <= user.info.characters|length %}
+				<div style="color: #5DAC40; margin-top: 4px">[Cost: 200 SHELLS]</div>
+				<div style="color: gray">You've reached the free limit of 8 characters</div>
+			{% endif %}
+			<div style='margin-top: 10px'></div>
+		</div>
+		<div class="accountui onback-hide hidden">
+			<div class="textbutton mt5" style='color:#75B38C'>{{user.info.email}}</div>
+			{% if not user.info.dont_send_emails %}<div class="textbutton mt5" onclick="if(bc(this)) return; api_call('settings',{setting:'email',value:''})"><span style="color:#50BFE1">@</span> Emails: ON</div>
+			{%else %}<div class="textbutton mt5" onclick="if(bc(this)) return; api_call('settings',{setting:'email',value:'1'})"><span style="color:#50BFE1">@</span> Emails: OFF</div>
+			{% endif %}
+			<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.accountui').hide(); $('.passwordui').show(); resize();"><span style="color:#578ADF">&gt;</span> Change Password</div>
+			<div class="textbutton mt5" onclick="if(bc(this)) return; $('.accountui').hide(); $('.emailcui').show(); resize();"><span style="color:#DF6B81">*</span> {% if not user.info.verified%}Re-Verify Email{%else%}Change Email{% endif %}</div>
+			<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; api_call('logout_everywhere',{},{success:function(){window.location=window.location;},disable:$(this)})"><span style="color:#DE813A">&gt;</span> Logout Everywhere</div>
+			<div style="color: gray; margin-top: 6px">Ps. You can always email hello@adventure.land for account issues</div>
+		</div>
+		<div class="emailcui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; New Email</div>
+			<input class="selectioninput nemail" value="{{user.info.email}}"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('change_email',{email:$('.nemail').val()},{disable:$(this)});">
+				<span style="color:green">&gt;</span> Change Email</div>
+			<div style="color: gray; margin-top: 6px">Ps. Changing the email re-sends the verification email</div>
+			<div style="color: gray; margin-top: 6px">Ps 2. You can only do this operation once every 18 hours</div>
+			<div style="color: #C87282; margin-top: 6px">Ps 3. Please check the spam folder and mark them as not spam :]</div>
+		</div>
+		<div class="passwordui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Existing Password</div>
+			<input class="selectioninput epass" type="password"></input>
+			<div class="whiteheader mb2">&gt; New Password</div>
+			<input class="selectioninput newpass1" type="password"></input>
+			<div class="whiteheader mb2">&gt; Repeat New Password</div>
+			<input class="selectioninput newpass2" type="password"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('change_password',{epass:$('.epass').val(),newpass1:$('.newpass1').val(),newpass2:$('.newpass2').val()},{disable:$(this)});">
+				<span style="color:green">&gt;</span> Change</div>
+		</div>
+		<div class="sortui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; List</div>
+			<textarea class="selectioninput scharacters" style='width: 320px; height: 160px'>{% for c in user.info.characters%}{{c.name}}{%if not loop.last%},{%endif%}{%endfor%}</textarea>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('sort_characters',{characters:$('.scharacters').val()},{disable:$(this)});">
+				<span style="color:green">&gt;</span> Sort Characters</div>
+				<div style="color: gray; margin-top: 6px">Ps. The name of your first character becomes your player name</div>
+		</div>
+		<div class="renameui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Character Name</div>
+			<input class="selectioninput renamen" type="text"></input>
+			<div class="whiteheader mb2">&gt; New Name</div>
+			<input class="selectioninput rnnamen" type="text"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('quote_name',{name:$('.renamen').val(),nname:$('.rnnamen').val()},{disable:$(this)});">
+				<span style="color:green">$</span> Quote</div>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('rename_character',{name:$('.renamen').val(),nname:$('.rnnamen').val()},{disable:$(this)});">
+				<span style="color:gray">%</span> Rename Character</div>
+				<div style="color: red; margin-top: 6px">Warning: <span style="color:gray">Use the Quote function to learn about the cost</span></div>
+		</div>
+		<div class="transferui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Character Name</div>
+			<input class="selectioninput tcname"></input>
+			<div class="whiteheader mb2">&gt; Receiver Owner ID</div>
+			<input class="selectioninput tcowner"></input>
+			<div class="whiteheader mb2">&gt; Receiver Transfer Auth</div>
+			<input class="selectioninput tcauth"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('transfer_character',{name:$('.tcname').val(),id:$('.tcowner').val(),auth:$('.tcauth').val()},{disable:$(this)});">
+				<span style="color:green">&gt;</span> Transfer</div>
+				<div style="color: #5DAC40; margin-top: 4px">[Cost: 500 SHELLS]</div>
+			<div style="color: gray; margin-top: 6px" class='yesselect'>Owner ID: {{user.k()}}</div>
+			<div style="color: gray; margin-top: 6px" class='yesselect'>Transfer Auth: {% if user.info.transfer_auth %}{{user.info.transfer_auth}}{%else%}[Sort Once to Receive]{%endif%}</div>
+		</div>
+		<div class="editui onback-hide hidden">
+			<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.editui').hide(); $('.freeui').show(); resize();"><span style="color:#47BC75">&amp;</span> Stop Code</div>
+			<div class="textbutton mt5" onclick="if(bc(this)) return; $('.editui').hide(); $('.sortui').show(); resize();"><span style="color:orange">#</span> Sort Characters{# <span style="color: gray">[Soon]</span>#}</div>
+			<div class="textbutton mt5" onclick="if(bc(this)) return; $('.editui').hide(); $('.renameui').show(); resize();"><span style="color:#8C8C95">%</span> Rename a Character</div>
+			<div class="textbutton mt5" onclick="if(bc(this)) return; $('.editui').hide(); $('.transferui').show(); resize();"><span style="color:green">$</span> Transfer a Character</div>
+			<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.editui').hide(); $('.deleteui').show(); resize();"><span style="color:red">X</span> Delete a Character</div>
+			<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.editui').hide(); $('.privacyui').show(); resize();"><span style="color:#63ABE4">*</span> Toggle Privacy</div>
+		</div>
+		{% if user.info.map_editor %}
+			<div class="mapui onback-hide hidden">
+				<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.mapui').hide(); $('.cmapui').show(); resize();"><span style="color:#47BC75">&amp;</span> Copy a Map</div>
+				<div class="textbutton mt5 mb5" onclick="if(bc(this)) return; $('.mapui').hide(); $('.dmapui').show(); resize();"><span style="color:red">X</span> Delete a Map</div>
+			</div>
+			<div class="cmapui onback-hide hidden">
+				<div class="whiteheader mb2">&gt; From</div>
+				<input class="selectioninput cmapf" type="text" value="jayson_ALMap2"></input>
+				<div class="whiteheader mb2">&gt; To</div>
+				<input class="selectioninput cmapt" type="text" value="test"></input>
+				<div class="textbutton mt5"
+					onclick="if(bc(this)) return; api_call('copy_map',{f:$('.cmapf').val(),t:$('.cmapt').val()},{disable:$(this)});">
+					<span style="color:green">&gt;</span> Copy</div>
+			</div>
+			<div class="dmapui onback-hide hidden">
+				<div class="whiteheader mb2">&gt; Map Name</div>
+				<input class="selectioninput dmapn" type="text" value="jayson_ALMap2"></input>
+				<div class="textbutton mt5"
+					onclick="if(bc(this)) return; api_call('delete_map',{n:$('.dmapn').val()},{disable:$(this)});">
+					<span style="color:red">&gt;</span> Delete</div>
+			</div>
+		{% endif %}
+		<div class="recruitui onback-hide hidden">
+			<div style="font-size: 24px; margin-top: 5px">
+				<div style='/*text-align:left;*/ margin-bottom:10px; padding: 10px'>
+					<div style='margin-bottom:5px'><span style="color:orange">#</span> When new players sign up after visiting one of your links, they are internally registered as your recruits.</div>
+					<span style="color:green">$</span> You'll receive 10% from all the SHELLS they find or purchase, and 200 SHELLS when they create their first character!
+				</div>
+				<div class="yesselect">
+					<div style="margin-bottom: 3px; color: #CA645D;"><a href="{{domain.pref_url}}/player/{{user.name}}" target="_blank" class="cancela">{{domain.pref_url}}/player/{{user.name}}</a></div>
+					{% for c in characters %}
+						<div style="margin-bottom: 3px; color: #7CD06C;"><a href="{{domain.pref_url}}/character/{{c.info.name}}" target="_blank" class="cancela">{{domain.pref_url}}/character/{{c.info.name}}</a></div>
+					{% endfor %}
+					<div style="margin-bottom: 3px; color: #80ADCC;"><a href="{{domain.pref_url}}/r/{{user.k()}}" target="_blank" class="cancela">{{domain.pref_url}}/r/{{user.k()}}</a></div>
+					<div style="color: gray; font-size: 16px; color: #B7C6D5; width: 240px; margin-top: 10px; margin-bottom: 8px; display: inline-block">Ps. Trackers are both IP and Cookie based. Works when a players visits your link on Web, and Sign Up on Steam or Mac.</div>
+				</div>
+				<div style="color: gray">You've recruited {{user.info.referred or 0}} so far.</div>
+				<div style="color: gray">Received {{user.info.rcash or 0}} SHELLS!</div>
+				<div class='mt5'><span style="color:#4A8CF5">%</span> If you've invited a friend through word of mouth, you can get the bonus manually by sending an email to hello@adventure.land with your friend's account email and character name within 2 weeks!</div>
+			</div>
+		</div>
+		<div class="privacyui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Name</div>
+			<input class="selectioninput pcharactername" type="text"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; api_call('edit_character',{operation:'toggle_privacy',name:$('.pcharactername').val()},{disable:$(this)});">
+				<span style="color:#63ABE4">*</span> Toggle</div>
+		</div>
+		<div class="deleteui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Name</div>
+			<input class="selectioninput dcharactername" type="text"></input>
+			<div class="whiteheader mb2">&gt; Repeat</div>
+			<input class="selectioninput dcharactername2" type="text"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; if($('.dcharactername').val()==$('.dcharactername2').val()) api_call('delete_character',{name:$('.dcharactername').val()},{disable:$(this)});">
+				<span style="color:red">X</span> Delete</div>
+		</div>
+		<div class="freeui onback-hide hidden">
+			<div class="whiteheader mb2">&gt; Name</div>
+			<input class="selectioninput fcharactername" type="text"></input>
+			<div class="textbutton mt5"
+				onclick="if(bc(this)) return; free_character($('.fcharactername').val());">
+				<span style="color:red">&amp;</span> Stop Code</div>
+			<div style="color: gray; font-size: 24px">
+				Note: If you introduced an infinite loop in your Code, it will freeze your character the moment it runs. This routine just stops a characters code. For more deeper issues, email hello@adventure.land
+			</div>
+		</div>
+	</div>
+</div>
+<div id="topui" class="menu">
+	<div class="largeborder" style="padding-left: 15px; padding-right: 15px;">
+		<div class="textbutton" onclick="pcs(); $('.menu').hide(); $('.accountui').show(); resize()">&gt; Email and Account{% if not user.info.verified%} <span style="color: #E25268">[VRFY]</span>{%endif%}</div>
+		<!-- {% if domain.recording_mode%}hello@adventure.land{%else%}{{user.info.email}}{%endif%} -->
+		<div class="mt5 textbutton" onclick="pcs(); $('.menu').hide(); $('.editui').show(); resize()">&gt; Character Ops</div>
+		{% if user.info.map_editor and not domain.recording_mode %}
+			<div class="mt5 textbutton" onclick="pcs(); $('.menu').hide(); $('.mapui').show(); resize()">&gt; Edit Maps</div>
+		{% endif %}
+		{% if user.info.sales %}
+			<div class="mt5 textbutton">&gt; Sales Bonus: <span style='color:#37983B'>${{user.info.sales_bonus or 0}}</span></div>
+		{% endif %}
+		<div class="mt5 textbutton" onclick="pcs(); $('.menu').hide(); $('.recruitui').show(); resize()">&gt; Share and Recruit <span style="color: gray">[</span>{% if not user.info.referred %}<span style="color: #E25268">0</span>{% else %}<span style="color: #7DC677">{{user.info.referred}}</span>{% endif %}<span style="color: gray">]</span></div> <!--  <span style="color: #FC395C">LIVE!</span> -->
+		{%if domain.electron %} <!-- user.info.characters|length>1 and -->
+			<a class="textbutton mt5" style="display: block" href="/" target="_blank">&gt; New Game Window</a>
+		{% endif %}
+		{%if domain.electron %}
+			<div class="mt5 textbutton" onclick="pcs(); electron_dev_tools();">&gt; Open Inspector</div>
+		{% endif %}
+		{% if domain.newcomer_ui %}
+			<div class="mt5 textbutton" onclick="pcs(); $('.menu').hide(); $('.freeui').show(); resize()">&gt; Stop Code</div>
+		{%endif%}
+		<div class="mt5 textbutton logout" onclick="if(bc(this)) return; api_call('logout',{},{success:function(){window.location=window.location;},disable:$(this)})">&gt; Logout</div>
+	</div>
+	<div class="largeborder" style="padding-left: 15px; padding-right: 15px; margin-top: 8px; font-size: 24px;">
+		<div style='border-bottom: 2px dashed gray; color: #E7E7E7; display: inline-block; margin-bottom: 6px'>In Game</div>
+		<div class="enableclicks">&gt; 1st Character: <span class="characterr1">{% if domain|get_online_character(1) %}<span style="color: green">{{(domain|get_online_character(1)).name}}</span>{% else %}<span style="color: orange">Offline</span>{% endif %}</span></div>
+		<div class="enableclicks">&gt; 2nd Character: <span class="characterr2">{% if domain|get_online_character(2) %}<span style="color: green">{{(domain|get_online_character(2)).name}}</span>{% else %}<span style="color: orange">Offline</span>{% endif %}</span></div>
+		<div class="enableclicks">&gt; 3rd Character: <span class="characterr3">{% if domain|get_online_character(3) %}<span style="color: green">{{(domain|get_online_character(3)).name}}</span>{% else %}<span style="color: orange">Offline</span>{% endif %}</span></div>
+		<div class="enableclicks">&gt; Merchant: <span class="characterrmerchant">{% if domain|get_online_character("merchant") %}<span style="color: green">{{(domain|get_online_character("merchant")).name}}</span>{% else %}<span style="color: orange">Offline</span>{% endif %}</span></div>
+	</div>
+</div>
+<div class="menu disableclicks" style="position: fixed; top: 0px; right: 0px; z-index: 201"> <!-- .disableclicks as .menu overlays character selection -->
+	{% set buttons="music"%} {% include "htmls/contents/section_buttons.html" %}
+	{% set buttons="essentials"%} {% include "htmls/contents/section_buttons.html" %}
+	{% set buttons="musts"%} {% include "htmls/contents/section_buttons.html" %}
+	<div id="progressui" class="gamebutton loading" style="width: 40px; text-align: center" onclick='loader_click();'>0%</div>
+	{% if servers %}
+		<div style="clear:both"></div>
+		<div style="border: 5px solid gray; background: black; margin-top: 10px; font-size: 24px; padding: 10px 10px 10px 10px; max-height: 208px; overflow-y: scroll; text-align: left; width: 340px; float: right">
+			<div style='border-bottom: 2px dashed gray; color: #E7E7E7; display: inline-block; margin-bottom: 6px'>Servers</div>
+			{% for server in servers %}
+				<div class="clickable enableclicks" onclick="server_addr='{{domain.https and server.ip or server.actual_ip}}'; server_port='{{server.port}}'; init_socket();">&gt; {{server.region=="EU"and"Europas" or server.region=="US"and"Americas" or "Eastlands"}} {% if server.gameplay!="hardcore" and server.gameplay!="dungeon" %}{{server.name}}{% endif %}{% if server.gameplay=="hardcore" %} <span style='color: #DC3529'>xHARDCORE</span>{% elif server.gameplay=="dungeon" %} <span style='color: #72396E'>DUNGEON</span>{% endif%}{% if server.info.players %} <span style='color:#85C76B'>[{{server.info.players+domain.boost}}]</span>{% endif %}{% if user.admin%} <span style='color: gray'>[{{server.info.observers}}]</span>{%endif%}{% if server.gameplay=="hardcore" %}{% elif server.gameplay=="dungeon" %}{% elif server.info.pvp %} <span style='color: #5DE376'>+LUCK</span> <span style='color: #4B9DDE'>+XP</span> <span style='color: gold'>+GOLD</span>{% endif %}</div>
+			{% endfor %}
+			<div class='disconnected hidden' style='color: red'>X Disconnected.</div>
+		</div>
+	{% endif %}
+</div>
+<div id="backbutton" class="hidden newcharacter accountui editui mapui cmapui dmapui recruitui deleteui freeui privacyui passwordui emailcui sortui renameui transferui onback-hide">
+	<div class="gamebutton onbackbutton" onclick="pcs(); $('.onback-hide').hide(); $('.menu').show(); resize();">&lt; Back</div>
+</div>
+{% include "htmls/contents/selection_features.html" %}
+<script>
+	// setTimeout(function(){ $("#features").html($("#features").html()) },0); /* just in case */
+	{% if domain.section=="email" %}
+		$(function(){
+			$('.menu').hide(); $('.accountui').show(); resize();
+		});
+	{% endif %}
+	on_load_progress();
+	inside="selection";
+</script>

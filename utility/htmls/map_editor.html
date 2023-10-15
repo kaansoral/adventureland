@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/game.js?v={{domain.v}}"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<script src="/js/pixi/{{domain.pixi_version}}/pixi.min.js"></script>
+		<style>
+			html{
+				background:black;
+			}
+		</style>
+		<script>
+			var map_data={{(map.info.data and map.info.data|to_json or '{tiles:[],placements:[]}')|safe}},tilesets={{tilesets|safe}};
+			{% include "utility/htmls/map_editor.js" %}
+			$(function(){
+				width=$(window).width();
+				height=$(window).height();
+				scale=2;
+				map=null;
+				rtexture=null,rmap=null; //RenderTexture and the Sprite
+				// PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+				if(location.search.indexOf("force_canvas")!=-1) renderer = new PIXI.CanvasRenderer(width,height,{antialias: false, transparent: false, resolution:window.devicePixelRatio, autoResize:true});
+				else if(location.search.indexOf("force_webgl")!=-1) renderer = new PIXI.WebGLRenderer(width,height,{antialias: false, transparent: false, resolution:window.devicePixelRatio, autoResize:true});
+				else renderer = new PIXI.autoDetectRenderer(width,height,{antialias: false, transparent: false, resolution:window.devicePixelRatio, autoResize:true});
+				document.body.appendChild(renderer.view);
+				stage = new PIXI.Container();
+				stage2=null;
+				// G={}; // game info
+				D={}; FC={}; T={}; map_name=null;
+				C=PIXI.utils.BaseTextureCache;
+				loader=PIXI.loader;
+				if(location.search.indexOf("map")!=-1)
+				{
+					map_name=location.search.split("map=")[1];
+					console.log("Map: "+map_name);
+					for(name in G.sprites)
+					{
+						var s_def=G.sprites[name];
+						if(s_def.skip) continue;
+						loader.add(s_def.file);
+					}
+				}
+				{% for set,inf in tilesets.items() %}
+					loader.add('{{inf.file}}');
+				{% endfor %}
+				loader.load(function (loader, resources) {
+
+					for(file in PIXI.utils.BaseTextureCache)
+						PIXI.utils.BaseTextureCache[file].scaleMode=PIXI.SCALE_MODES.NEAREST;
+
+					if(map_name)
+					{
+						for(name in G.sprites)
+						{
+							var s_def=G.sprites[name];
+							if(s_def.skip) continue;
+							var row_num=4,s_type="full";
+							if(s_def.type=="animation") row_num=1,s_type="animation";
+							var matrix=s_def.matrix;
+							var width=C[s_def.file].width/(s_def.columns*3);
+							var height=C[s_def.file].height/(s_def.rows*row_num);
+							for(var i=0;i<matrix.length;i++)
+								for(var j=0;j<matrix[i].length;j++)
+								{
+									if(!matrix[i][j]) continue;
+									FC[matrix[i][j]]=s_def.file;
+									D[matrix[i][j]]=[j*3*width,i*row_num*height,width,height];
+									T[matrix[i][j]]=s_type;
+								}
+						}
+					}
+
+					redraw_map();
+					
+					draw();
+				});
+				function draw() {
+					frames+=1;
+					put_fps_counter();
+
+					var mmap=$(".tilesetmove.active").length&&window.tileset||rmap||map,step=12; //$(".tilesetmove.active").length&&window.tileset  --  or last_move=="map2" <- doesn't work yet
+					if(mmap==window.tileset) step=ceil(12/tileset_scale);
+
+					if(left_pressed<right_pressed) mmap.x-=step;
+					if(left_pressed>right_pressed) mmap.x+=step;
+					if(up_pressed<down_pressed) mmap.y-=step;
+					if(up_pressed>down_pressed) mmap.y+=step;
+
+					if($(".tilesetmove.active").length) cache_set();
+
+					renderer.render(stage);
+					if(stage2) renderer2.render(stage2);
+					requestAnimationFrame(draw);
+				}
+				keyboard_logic();
+			});
+
+			var fps_counter=null,frames=0,last_count=null,last_frame,fps=0;
+			function put_fps_counter()
+			{
+				if(!last_count) last_count=new Date(),last_frame=frames,frequency=500;
+				if(mssince(last_count)>=frequency) last_count=new Date(),fps=(frames-last_frame)*(1000.0/frequency),last_frame=frames;
+				if(fps_counter) { fps_counter.text=""+round(fps); return; stage.removeChild(fps_counter); fps_counter.destroy(); }
+				fps_counter = new PIXI.Text(""+round(fps),{fontFamily:"sans-serif",fontSize:32,fill:"green"});
+				fps_counter.position.set($(window).width()-45,$(window).height()-40);
+				stage.addChild(fps_counter);
+			}
+		</script>
+	</head>
+	<body>
+		<style>
+			.gamebutton{
+				pointer-events: auto;
+			}
+			input{
+				font-family: 'Pixel';
+				text-align: center;
+				font-size: 24px;
+				line-height: 24px;
+				height: 16px;
+				min-width: 27px;
+			}
+		</style>
+		<div id="entitymodal" style="display:none">
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_group()">Dynamic Regular <span class='gray'>[No Animations]</span> <span class='ggreen'>[Multi Tiles]</span> <span class='gyellow'>{Roofs, Signs, Furniture}</span></div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_animation()">Dynamic Animation <span class='ggreen'>[Blends with Characters]</span> <span class='gray'>[Single Tile]</span> <span class='gyellow'>{Smokes, Floating, Animating Objects}</span></div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_animation('simple')">Simple Animation <span class='gray'>[Over Map] [Under Characters] [Single Tile]</span> <span class='gyellow'>{Waterfalls, Alien Flowers}</span></div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_animation('night')">Add Night Animation <span class='gray'>[Blends with Characters]</span></div>
+		</div>
+		<div id="zonemodal" style="display:none">
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_rectangle();">Rectangle [Spawn, Door, Area]</div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_polygon();">Polygon [Special Spawn, Area]</div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_point('spawn');">Spawn [Point with Distance Check]</div>
+			<div class="gamebutton gamebutton-large block mb5" onclick="startstop_point();">Normal Point</div>
+		</div>
+		<div id="bottomleftcorner">
+			<div class="gamebutton clickable mt5" onclick="save()">Save</div>
+			<div class="gamebutton clickable underbutton mt5" onclick="toggle_under_mode();">Under</div>
+			<div class="gamebutton clickable areabutton mbutton mt5" onclick="toggle_area_mode();">Area</div>
+			<div class="gamebutton clickable linebutton mbutton mt5" onclick="toggle_line_mode();">Line</div>
+			<div class="gamebutton clickable entitybutton mt5" onclick="startstop_entity();">Add Entity</div>
+			<div class="gamebutton clickable animinfo hidden mt5">FRAMES <input class="frames" type="text" value="7" style="width: 20px"/><div class='px4'></div> INTERVAL <input class="interval" type="text" value="40" style="width: 20px"/><div class='px4'></div> DELAY <input class='delay' type="text" value="0" style="width: 20px"/></div>
+			<div class="gamebutton clickable zoffset hidden mt5">Z.OFFSET <input class='zoffsetval' type="text" value="0" onchange="redraw_map()" style="width: 20px"/></div>
+			<div class="gamebutton clickable zonebutton mt5" onclick="startstop_zone();">Add Zone</div>
+			<div class="gamebutton clickable idbutton hidden mt5">ID <input type="text" class='idbuttonid' value="gg" style="width: 64px"/></div>
+			{#<div class="gamebutton clickable mt5">SCALE <input type="text" onchange="rescale_map(parseFloat($(this).val()))" value="2" style="width: 24px"/></div>#}
+			<div class="gamebutton largerfont mt5" onclick="map_zoom(-1)"><div class='px1'></div>-</div>
+			<div class="gamebutton largerfont mt5" onclick="map_zoom(1)"><div class='px1'></div>+</div>
+			<div class="gamebutton clickable mt5">STEP <input type="text" onchange="step_x=step_y=parseInt($(this).val())" value="8" style="width: 20px"/></div>
+			<div class="gamebutton clickable mt5">SIZE_X <input type="text" onchange="size_x=parseInt($(this).val()); redraw_map()" value="16" style="width: 20px"/></div>
+			<div class="gamebutton clickable mt5">SIZE_Y <input type="text" onchange="size_y=parseInt($(this).val()); redraw_map()" value="16" style="width: 20px"/></div>
+			<div class="gamebutton clickable linesbutton mt5" onclick="toggle_lines();">Info: ON</div>
+			<div class="gamebutton clickable alertbutton mbutton largerfont mt5" onclick="toggle_alert_mode();"><div class='px2'></div>±</div>
+			<div class="gamebutton clickable mt5" onclick="show_json(map_data);">JSON</div>
+			{% if resort %}
+				<div class="gamebutton clickable mt5" onclick="show_upload_modal();">UPLOAD</div>
+			{% endif %}
+			<div class="gamebutton clickable mt5" style="border-color: #E13758"onclick="show_modal($('#infomodal').html(),{wrap:false});">GUIDE</div>
+			<div class="gamebutton clickable xbutton hidden mt5" style='border-color: #4A95D4' onclick="tile_set=null; $(this).hide()"><div class='px2'></div>X</div>
+		</div>
+		<div id="topleftcorner">
+			{% for set,inf in tilesets.items()|sort %}
+				{% if set not in ["pack_1a","licht","stands"] %}
+					<div class="gamebutton clickable mb5" onclick="load_tileset('{{set}}','{{inf.file}}')">{{set}}</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+		<div id="toprightcorner" style="background: black; border: 5px solid #32A3B0; z-index: 900" class="hidden">
+		</div>
+		<script>
+			$("input").each(function(){
+				$(this).attr("onkeyup",$(this).attr("onchange"));
+			});
+		</script>
+		{% include "utility/htmls/map_editor_info.html" %}
+	</body>
+</html>

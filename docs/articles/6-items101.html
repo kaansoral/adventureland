@@ -1,0 +1,42 @@
+<p>Items are defined in <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.items</span> You can think of each G.items entry as a recipe for an item, the definition of the item. One example:</p>
+
+<div class="code">
+"fclaw":{
+	"type": "weapon",
+	"wtype": "fist",
+	"skin": "fclaw",
+	"attack": 14,
+	"range": 5,
+	"ability": "freeze",
+	"attr0": 0.2,
+	"int": 8,
+	"upgrade":{
+		"attack": 4,
+		"range": 1.5,
+		"attr0": 0.1,
+	},
+	"name": "Frozen Claw",
+	"g": 72000,
+	"a": True,
+	"grades": [0,7],
+}
+</div>
+
+<p>It's of "type"/"weapon" - It's weapon type, i.e. "wtype" is "fist" - If you check <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.classes</span> - You can see which classes use "fist" weapons. The item's visible "name" is "Frozen Claw" - keep in mind that the item's keyname is "fclaw"</p>
+
+<p>"grades" property determines [At what level the item becomes High grade, At what level the item becomes Rare grade], so [0,7] means it's High grade at +0 and Rare grade at +7.</p>
+
+<p>Now that we know about the definition/recipe, we can move onto the actual items/products of these recipes. You can inspect your own items before we do so: <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">character.items</span> One example:</p>
+
+<div class="code">
+{
+	"name": "fclaw",
+	"level": 8,
+}
+</div>
+
+<p>So actual items refer to their definitions with their "name" attributes. It's the keyname from G.items</p>
+
+<p>Useful function: <span class='rlabel' onclick="render_function_reference($(this).html())">item_grade</span></p>
+
+<p>Work in progress / Incomplete</p>

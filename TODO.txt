@@ -1,0 +1,12 @@
+- X button for mobile CODE to be able to hide
+- TUTORIAL STEP: ITEM UI
+- Merchant skills give XP
+- Re-visit server.js 'creward' / 'ureward'
+- Make spawns spawn on people who attacked
+- IDEA: A lobby for A/B Testing
+- Fix renaming of character code files, renaming one in the game UI breaks things
+
+
+- SPIKE 2400 HP
+
+There's a character with an item that has a "name" set as an [] array - find and fix it [28/06/23]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html,body{
+				background:black;
+			}
+			body{
+				overflow-y: scroll;
+			}
+		</style>
+		<script>
+			var filter=null,mode="{{mode}}",items="{{items}}",only_list=false;
+			if(mode=="list") only_list=true;
+			if(mode=="to_convert") only_list=true;
+			if(items)
+			{
+				filter=[];
+				items.split(",").forEach(function(i){
+					filter.push(i);
+				});
+				console.log(filter);
+			}
+			function is_bold(){}
+			document.addEventListener("DOMContentLoaded",function(event){
+				var styles="vertical-align: top; margin-right: 10px"
+				for(var name in G.items)
+				{
+					if(filter && !in_arr(name,filter)) continue;
+					var def=G.items[name];
+					if(mode=="to_convert" && (def.ignore || G.positions[def.skin][0]=="pack_20")) continue;
+					var html="";
+					if(!only_list) html+="<div style='margin-bottom: 15px'>";
+					console.log(def);
+					if(def.compound && !only_list)
+					{
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:0},sell:1});
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:1},sell:1});
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:2},sell:1});
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:3},sell:1});
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:4},sell:1});
+						html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:5},sell:1});
+					}
+					else if(def.upgrade && !only_list)
+					{
+						html+="<div style='margin-bottom: 15px'>";
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:0},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:1},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:2},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:3},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:4},sell:1});
+						html+="</div>";
+						html+="<div style='margin-bottom: 15px'>";
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:5},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:6},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:7},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:8},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:9},sell:1});
+							html+=render_item("html",{item:def,name:name,styles:styles,actual:{name:name,level:10},sell:1});
+						html+="</div>";
+					}
+					else
+					{
+						html+=render_item("html",{item:def,name:name,thumbnail:only_list});
+					}
+					if(!only_list) html+="</div>";
+					$("#items").append(html);
+				}
+			});
+		</script>
+		<style>
+			.buyitem{
+				display: inline-block;
+				margin: 6px;
+				vertical-align: top;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="items">
+		</div>
+	</body>
+</html>

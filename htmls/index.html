@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{domain.name}}</title>
+		{% if domain.electron and domain.no_html %}<script>require=parent.require;</script>{% endif %}
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon3.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon3.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon3.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon3.png"> <!-- 144 -->
+		<meta name="google-site-verification" content="828I6vVcDPWUBQyONrSKy8Y5cMaibNSMxZSfiKzOQrk" />
+		<meta property="og:url" content="{{domain.url or 'http://adventure.land'}}"/>
+		<meta property="og:image" content="http://adventure.land/images/first_logo.png"/>
+		<meta property="og:title" content="Adventure Land"/>
+		<meta property="og:description" content="A Casual Browser Based MMORPG Where You Can Even Code Your Character! Very Early Access."/>
+		<meta name="description" content="A Casual Browser Based MMORPG Where You Can Even Code Your Character! Very Early Access."/>
+		<meta name="keywords" content="browser,mmorpg,pixel,2d,retro,code"/>
+		<script src="/js/pixi/{{domain.pixi_version}}/pixi.min.js{{domain.pixi_fversion}}"></script>
+		{% if not domain.no_graphics and 0 %} <script src="/js/pixi-display/{{domain.pixi_display_version}}/pixi-display.js"></script> {% endif %}
+		{% if not domain.no_graphics and 1 %} <script src="/js/pixi-layers/{{domain.pixi_layers_version}}/pixi-layers.js"></script> {% endif %}
+		{% if not domain.no_graphics %} <script src="/js/pixi-filters/{{domain.pixi_filters_version}}/pixi-filters.js"></script> {% endif %}
+		{% if not domain.no_graphics and 0 %} <script src="/js/pixi-lights/{{domain.pixi_lights_version}}/pixi-lights.js"></script> {% endif %}
+		<script src="/js/socket.io/{{domain.io_version}}/socket.io.min.js"></script>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="try{if(typeof require!=='undefined') window.$=window.jQuery=module.exports;}catch(e){}"{%endif%}></script>
+		{% if not domain.no_html %}
+			<script src="/js/howler/{{domain.howler_version}}/howler.min.js"></script>
+			<script src="/js/howler/{{domain.howler_version}}/howler.spatial.min.js"></script>
+			<script src="/js/libraries/jquery.payment.min.js"></script>
+			<script src="/js/libraries/jquery-ui.draggable.min.js"></script>
+		{% endif %}
+		<script src="/js/libraries/bowser/bowser.16.08.16.js"{%if domain.electron%} onload="try{if(typeof require!=='undefined') window.bowser=module.exports;}catch(e){}"{%endif%}></script>
+		<script src="/js/libraries/combined.js?v=4"></script>
+		{# <script src="/js/interact/{{domain.interact_version}}/interact.js"></script> #}
+		{%if 0%} <script src="/js/tests/msgpack.min.js"></script><script src="/js/tests/pako.min.js"></script> {%endif%}
+		{% if not domain.no_html %}
+			<script src="/js/codemirror/{{domain.cm_version}}/codemirror.js"></script>
+			<link href="/js/codemirror/{{domain.cm_version}}/codemirror.css" rel="stylesheet" type="text/css"/>
+			<link href="/js/codemirror/pixel.css" rel="stylesheet" type="text/css"/>
+			<script src="/js/codemirror/{{domain.cm_version}}/javascript.js"></script>
+			<script src="/js/codemirror/{{domain.cm_version}}/xml.js"></script>
+			<!--<script src="/js/codemirror/{{domain.cm_version}}/addons/javascript-lint.js"></script>-->
+		{% else %}
+			<script src="/js/codemirror/fake/codemirror.js"></script>
+		{% endif %}
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/game.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/js/payments.js?v={{domain.v}}"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		{% if user.admin %}<script src="/js/admin.js?v={{domain.v}}"></script>{% endif %}
+		{% if not domain.no_html %} <link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/> {% endif %}
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		{% include "htmls/base_script.html" %}
+		{% if not domain.no_html %}<script src="/js/ios-drag-drop.js"></script> <!-- https://github.com/timruffles/ios-html5-drag-drop-shim -->{% endif %}
+		{% if domain.no_html %}
+			<style>
+				html,body{
+					color: white;
+					font-family: Pixel;
+					font-size: 24px;
+					overflow: hidden;
+					background-color: black;
+				}
+				html{
+					height: 60px;
+					width: 128px;
+				}
+				*{
+					pointer-events: none;
+				}
+			</style>
+		{% endif %}
+		{% if domain.recording_mode %}
+			<style>
+				.CodeMirror{
+					font-size: 32px;
+				}
+			</style>
+		{% endif %}
+	</head>
+	<body>
+		{% if domain.no_html %}
+			<div style="border: 2px solid gray; text-align: center; margin-bottom: 1px; color: gray" id="name">{{domain.character_name|upper}}</div>
+			<div id="status" style="text-align: center;">
+				0%
+			</div>
+		{% else %}
+			<div id="content">{% if not user %}{% include "htmls/contents/login.html" %}{%else%}{% include "htmls/contents/selection.html" %}{% endif %}</div>
+			{# {% include "htmls/contents/guide.html"%} #}
+			{% include "htmls/contents/hardcore_guide.html"%}
+			{% include "htmls/contents/booster_howto.html"%}
+			{% include "htmls/contents/shells_info.html"%}
+			{% include "htmls/contents/keymap_guide.html"%}
+			<div id="ttp" style="display: none">
+				<div class="gamebutton block" onclick="btc(event); show_terms()">Terms of Service</div>
+				<div class="gamebutton block mt5" onclick="btc(event); show_privacy()">Privacy Policy</div>
+				<div class="gamebutton block mt5" onclick="btc(event); show_credits()">Thanks and Attributions</div>
+			</div>
+			<div id="credits" style="display: none">{% include "htmls/contents/credits.html"%}</div>
+			<div id="terms" style="display: none">{% include "htmls/contents/terms.html"%}</div>
+			<div id="privacy" style="display: none">{% include "htmls/contents/privacy.html"%}</div>
+			<div id="opensource" style="display: none">{% include "htmls/contents/opensource.html"%}</div>
+
+			<!-- <div id="snow" style="background: url(https://media.giphy.com/media/xT0xeOeZspRlIheb84/giphy.gif) repeat center center fixed; position: fixed; left:0px; top:0px; bottom: 0px; right: 0px; z-index: 2; pointer-events: none"></div> -->
+			
+			
+			
+			<div id="bottomleftcorner2" style="width: 320px; display:none" onclick="last_say='normal';" class="bpclicks">
+				{#<div style="background: black; padding: 2px 0px 2px 8px; width: 312px; border: 5px solid gray; font-size: 24px; line-height: 24px; margin-bottom: -6px"
+					class="coordsx">
+					0,0
+				</div>#}
+				<div style="background: black; padding: 3px 4px 3px 4px; width: 312px; border: 5px solid gray; font-size: 24px; line-height: 22px; margin-bottom: -6px; text-align: center"
+					class="clickable" onclick="btc(event); $('.coords').toggle()">
+					<div class="coords hidden">0,0</div>
+					<span class='servername'>Europas I</span> | <span class="mapname">Town</span>
+				</div>
+				<div style='position: relative'>
+					<div style='border: 4px solid gray; background: black; position: absolute; top: 1px; right: -9px; font-size: 24px; line-height: 24px; padding-left: 6px; padding-right: 4px' class='timeui clickable' onclick="show_json(S,{name:'parent.S'})">12:24</div>
+					<div id="chatlog" class="noscroll cbold"></div>
+				</div>
+			</div>
+			<div id="bottomrightcorner" class="disableclicks bpclicks">
+				<div style="text-align: right; font-size: 0px" class="bpclicks">
+					<div id="iframelist" style="display: none; margin-bottom: -5px; vertical-align: bottom" class="enableclicks"></div><div id="partylist" style="display: none; margin-left: -5px; margin-bottom: -5px; vertical-align: bottom"></div><div id="skillbar" style="margin-left: -5px; margin-bottom: -5px; display: none; vertical-align: bottom"></div>
+				</div>
+				<div style="background: black; padding: 2px; width: 316px; border: 5px solid gray; margin-bottom: -5px; display:none; position: relative" 
+					class="clickable inline-block bshadow tutorialui enableclicks" onclick="btc(event); open_tutorial()"><!-- previously margin-bottom: -5px; [16/07/18] -->
+					<div style="background: #3D386C; width: 20%; height: 30px" id="tutorialslider" class="flasht"></div> <!-- red #B12727 green #368C2B -->
+					<div style="position: absolute; width: 316px; top: 2px; left: 0px; height: 30px; color: white; vertical-align: middle; line-height: 30px; text-align: center; font-size: 30px" id="tutorialui">
+						TUTORIAL 12 / 87
+					</div>
+				</div>
+				<div style="background: black; padding: 2px; width: 316px; border: 5px solid gray; margin-bottom: -10px; display:none; position: relative" 
+					class="clickable inline-block bshadow xpsui enableclicks" onclick="btc(event); tut('stats'); toggle_stats()"><!-- previously margin-bottom: -5px; [16/07/18] -->
+					<div style="background: #166D11; width: 87%; height: 30px" id="xpslider"></div> <!-- red #B12727 green #368C2B -->
+					<div style="position: absolute; width: 316px; top: 2px; left: 0px; height: 30px; color: white; vertical-align: middle; line-height: 30px; text-align: center; font-size: 30px" id="xpui">
+						LV54 87%
+					</div>
+				</div>
+				<div id="gamelog" class="noscroll cbold enableclicks"></div>
+			</div>
+			<div id="bottomrightcodecorner" class="codeui disableclicks bpclicks">
+				<div style="background: black; color: #9C9C9C; padding: 2px; width: 316px; border: 5px solid gray; display:inline-block; font-size: 32px; margin-bottom: -10px; line-height: 24px; height: 30px; vertical-align: middle; position: relative" 
+					class="inline-block bshadow enableclicks">
+					<div style='display: inline-block; color:white; padding: 4px; margin-top: 0px; margin-left: 2px; margin-right: -6px; vertical-align: top;'>?</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 40px; margin: -4px 0 -4px 0;'></div>
+					
+					<!--<div style='display: inline-block; padding: 4px; margin-top: 2px; margin-left: -2px; margin-right: -4px; vertical-align: top;'>Search</div>-->
+					<input placeholder="Search" class='codesearch' style='padding: 0px; background: transparent; border: none; font-size: 32px; color: white; font-family: Pixel; width: 200px; vertical-align: top; padding-top: 2px' />
+
+					<div style='display: inline-block; float: right; color:gray; padding: 4px; margin-left: 5px; color: #e8e44d' onclick="btc(event); render_code_docs();"class='clickable'>DOCS</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 36px; float: right; margin-top: -2px'></div>
+				</div>
+				<div id="codelog" class="noscroll cbold enableclicks">
+				</div>
+			</div>
+			<div id="bottomleftcorner" class="bpclicks"></div>
+			<div id="topleftcorner" class="bpclicks">
+				<div id="topleftcornerui" style='display: inline-block; vertical-align: top' class="bpclicks"></div>
+				<div id="topleftcornerdialog" style='display: inline-block; margin-left: 5px; vertical-align: top'></div>
+			</div>
+			<div id="codeui" class="codeui">
+				<textarea id="code"></textarea>
+				{#<div class="gamebutton cslotbutton">Wizard.js</div>
+				<div class="gamebutton engagebutton" onclick="btc(event); start_runner()">ENGAGE</div>
+				<div class="gamebutton dengagebutton hidden" onclick="btc(event); stop_runner()">DISENGAGE</div>#}
+				<div style='text-align: center; position: absolute; right: -5px; top: -5px; width: 40px; border: 4px solid gray; z-index: 200; background: black; vertical-align: middle; font-size: 64px; line-height: 72px; height: 48px; vertical-align: middle; line-height: 36px; padding: 10px 10px 0px 10px' onclick="btc(event); toggle_code()" class='mclosebutton hidden'>
+					X
+				</div>
+				<div style='position: absolute; left: -5px; right: -5px; bottom: -42px; border: 4px solid gray; z-index: 200; background: black; vertical-align: middle; font-size: 32px; line-height: 36px; padding: 0px 10px 0px 10px'>
+					<div style='margin-top: -4px'></div>
+					<div style='display: inline-block; color:#67D74C; padding: 4px; margin: -4px -4px -4px -4px;' class='clickable' onclick="btc(event); api_call_l('list_codes',{purpose:'save'},{disable:$(this)})">Save As</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 42px; margin-bottom: -12px'></div>
+					<div style='display: inline-block; color: #3A84B7; padding: 4px; margin: -4px -4px -4px -4px;' class='clickable' onclick="btc(event); api_call_l('list_codes',{purpose:'load'},{disable:$(this)})">Load</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 42px; margin-bottom: -12px'></div>
+					<div style='display: inline-block; color: #B1B1B7; padding: 4px; margin: -4px -4px -4px -4px;' class='xclickable codeslottype' xonclick="btc(event); api_call_l('list_codes',{purpose:'load'},{disable:$(this)})">Character</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 42px; margin-bottom: -12px'></div>
+					<div style='display: inline-block; padding: 4px; margin: -4px -4px -4px -4px;' class="codeslotname xclickable" xonclick="btc(event); api_call_l('list_codes',{purpose:'load'},{disable:$(this)})">Default Code</div>
+					<div style='display: inline-block; float: right; margin: 0px -4px -4px 6px; color:#E48B3A; padding: 4px' class='clickable iengagebutton' onclick="btc(event); start_runner()">Engage!</div>
+					<div style='display: inline-block; float: right; margin: 0px -4px -4px 6px; color:gray; display:none; padding: 4px' class='clickable idengagebutton' onclick="btc(event); stop_runner()">Disengage</div>
+					<div style='display: inline-block; border-left: 4px solid gray; width: 0px; height: 42px; margin-bottom: -12px;  float: right'></div>
+				</div>
+			</div>
+			<div id="toprightcorner" class="hidden disableclicks bpclicks">
+				<span class="codebuttons">
+				</span>
+				<div class="gamebutton minutesui hidden" style='border-color:#4D75B5'>XX:XX</div>
+				{% if user.admin and (not domain.screenshot and not domain.recording_mode or not domain.electron) %}
+					<div class="gamebutton" onclick="btc(event); show_renderer();">ACCESS</div>
+					{# <div class="gamebutton promode {% if domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); item_analysis();">I</div> #}
+					<div class="gamebutton promode {% if domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); visualize();">V</div>
+				{% endif %}
+				<div class="gamebutton promode {% if domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); tut('snippet'); show_snippet()">X</div>
+				<div class="gamebutton promode {% if domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); tut('code'); toggle_code()">CODE</div>
+				<div class="gamebutton" onclick="btc(event); tut('com'); render_com()">COM<span class='comcount' style='color: #9083BC'>{% if user_data and user_data.info.mail%} [{{user_data.info.mail}}]{% endif%}</spam></div>
+				<div class="gamebutton newcomermode {% if not domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); toggle_character()">CHAR</div>
+				<div class="gamebutton newcomermode {% if not domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); render_inventory()">INV</div>
+				<div class="gamebutton newcomermode {% if not domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); toggle_stats()">STATS</div>
+				<div class="gamebutton" onclick="btc(event); tut('skills'); render_skills()">SKILLS</div>
+				<div class="gamebutton" onclick="btc(event); tut('guide'); show_game_guide();">GUIDE</div> {# newcomermode {% if not domain.newcomer_ui%}hidden{% endif%} #}
+				{# <div class="gamebutton promode {% if domain.newcomer_ui %}hidden{% endif%}" onclick="btc(event); ping()">PING</div> #}
+				<div class="gamebutton newcomermode {% if not domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); tut('code'); toggle_code()">CODE</div>
+				<div class="gamebutton" onclick="btc(event); tut('travel'); render_travel();">TRAVEL</div>
+				<div class="gamebutton townb newcomermode {% if not domain.newcomer_ui%}hidden{% endif%}" onclick="btc(event); socket.emit('town'); push_deferred('town'); hide_transports();">TOWN</div>
+				<div class="gamebutton rewardsbutton hidden" style='border-color:#60B879' onclick="btc(event); render_rewards();">REWARDS</div>
+				<div class="gamebutton" onclick="btc(event); tut('settings'); show_settings()">CONF</div>
+				<!-- <div class="codeui hidden" style="text-align: right; margin-top: 5px">
+					{% if domain.is_sdk or 1 %}
+						<div class="gamebutton" onclick="btc(event); render_code_articles()" style="border-color: #f59b2c;  border-color: #D46E33; /*border-color: #38B54E*/">LEARN</div>
+						<div class="gamebutton" onclick="btc(event); /*render_code_gallery()*//*api_call('load_gcode',{file:'/documentation/runner_functions.js'})*/render_code_docs();" style="border-color: #f59b2c; border-color: #d6d135">DOCS</div>
+					{% endif %}
+					<div class="gamebutton" onclick="btc(event); api_call_l('list_codes',{purpose:'save'},{disable:$(this)})" style="border-color: #E13758">SAVE</div>
+					<div class="gamebutton" onclick="btc(event); api_call_l('list_codes',{purpose:'load'},{disable:$(this)})" style="border-color: #32A3B0">LOAD</div>#}
+				</div>
+				-->
+				<div class="skillsui hidden" style="text-align: right; margin-top: 5px">
+					<div class="gamebutton" onclick="btc(event); show_modal($('#keymapguide').html())" style="border-color: #D46E33">INFO</div>
+					<div class="gamebutton" onclick="btc(event); show_json(G.skills)" style="border-color: #d6d135">DATA</div>
+					<div class="gamebutton" onclick="btc(event); show_json(keymap)" style="border-color: #E13758">KEYMAP</div>
+				</div>
+				<div class='disableclicks' style='text-align: right'>
+					<div id="newparty" class="hidden" style="text-align: right; margin-top: 5px; display: inline-block"></div>
+					<div id="serverinfo" class="hidden" style="text-align: right; margin-top: 5px; display: inline-block"></div>
+				</div>
+			</div>
+			<div id="topmid" class="hidden" style="position: fixed; top: 0px; z-index: 5" class="hidden">
+			</div>
+			<div id="bottommid" style="position: fixed; bottom: 0px; font-size: 0px; text-align: center; z-index: 5" class="hidden disableclicks">
+
+				<div id="ripbutton" class="hidden" onclick="btc(event); socket.emit('respawn'); push_deferred('respawn');"
+					style="text-align: center; margin-bottom: 5px">
+						<div class="gamebutton" onclick="btc(event); socket.emit('respawn'); push_deferred('respawn')">RESPAWN</div>
+						<div></div>
+						<div class="gamebutton hidden saferespawn" style="border-color: #399427; margin-top: 5px" onclick="btc(event); socket.emit('respawn',{safe:1});">SAFE RESPAWN</div>
+				</div>
+				<div id="pausedui" class="hidden" onclick="btc(event); socket.emit('respawn'); push_deferred('respawn')"
+					style="text-align: center; margin-bottom: 5px">
+						<div class="gamebutton" onclick="btc(event); pause()">GRAPHICS PAUSED</div>
+				</div>
+				<div class="badplaceforaui" style="position: absolute; pointer-events: none; left: 0px; right: 0px; bottom: 92px; text-align: center"></div>
+				<div class="codebbuttons" style="position: absolute; pointer-events: none; left: 0px; right: 0px; bottom: 92px; text-align: center"></div>
+				<div id="rightcornerui" class="inline-block" style="margin-bottom: -5px"></div>
+				<div style="margin-bottom: -4px" class="enableclicks">
+					<div style="background: black; padding: 2px; border: 4px solid gray" class="inline-block bshadow2 clickable" onclick="btc(event); attack_click();">
+						<div style="vertical-align: middle; font-size: 30px; height: 30px; line-height: 30px; width: 125px; background: #6A6A6A" class="tint atint inline-block"> <!-- perfect gray #8F8F8F -->
+							<span class="attackui ontint">ATT 100</span>
+						</div>
+					</div>
+					<div style="background: black; padding: 2px; border: 4px solid gray; margin-left: -4px;" class="clickable bshadow2 inline-block" onclick="btc(event); tut('character'); toggle_character()">
+						<div style="padding: 0px 20px 0px 20px; height: 30px; line-height: 30px; vertical-align: middle; font-size: 30px" class="tint pvptint inline-block">
+							<span class="charactername ontint">NAME</span>
+						</div>
+					</div>
+					<div style="background: black; padding: 2px; border: 4px solid gray; margin-left: -4px;" class="clickable bshadow2 inline-block" onclick="btc(event); tut('inventory'); render_inventory()">
+						<div style="vertical-align: middle; height: 30px; font-size: 30px; line-height: 30px; width: 125px; background: #6A6A6A" class="tint ptint inline-block">
+							<!-- nice teal #4B979C nice purple #664FA0 | #4A959B -->
+							<!-- chrome palette | nice earth tone #9c7f4b | darker earth tone #8a7246 | better teal #47867d -->
+							<span class="invui ontint">INV 12/42</span>
+						</div>
+					</div>
+				</div>
+				<!-- .vtopx fixes the bottom spacing issue on iOS/iPad -->
+				<div style="background: black; padding: 2px; width: 240px; border: 4px solid gray; position: relative" class="clickable inline-block bshadow vtopx enableclicks" onclick="btc(event); use('hp')">
+					<div style="background: #A62323; width: 75%; height: 30px" id="hpslider"></div> <!-- red #B12727 green #368C2B -->
+					<div style="position: absolute; width: 240px; top: 2px; left: 0px; height: 30px; vertical-align: middle; line-height: 30px; text-align: center; font-size: 30px" id="hptext">
+						1231/5212
+					</div>
+				</div>
+				<div id="mpbar" style="background: black; padding: 2px; width: 240px; border: 4px solid gray; margin-left: -4px; position: relative" class="clickable inline-block bshadow vtopx enableclicks" onclick="btc(event); use('mp')">
+					<div style="background: #295184; width: 75%; height: 30px" id="mpslider"></div> <!-- blue #225DB1 cool blue #3E6D91 teal #4997AA very cool blue #295184 -->
+					<div style="position: absolute; width: 240px; top: 2px; left: 0px; height: 30px; vertical-align: middle; line-height: 30px; text-align: center; font-size: 30px" id="mptext">
+						1231/5212
+					</div>
+				</div>
+			</div>
+			{% include "htmls/contents/settings.html" %}
+			<div id="paymentshtml" style="display:none">
+				{% include "htmls/contents/payments.html" %}
+			</div>
+			{#<div id="gameui" style="position:fixed; bottom: 0px; left: 100px" class="hidden">
+				<div class="gamebutton attackui" style="background: green">ATTACK</div>
+				<div class="gamebutton hppui" style="background: red">HP POT</div>
+				<div class="gamebutton mppui" style="background: blue">MP POT</div>
+			</div>#}
+		{% endif %}
+		<script>
+			function first_things_first()
+			{
+				if(harakiri) return;
+				keyboard_logic();
+				init_sounds();
+				if(!bowser.chrome && perfect_pixels) retina_mode=true;
+				the_game();
+				drag_logic();
+				init_interface();
+				window.onresize=on_resize;
+				on_resize();
+				code_logic();
+				setTimeout(payment_logic,1200);
+				// $("body").nodoubletapzoom();
+				window.onbeforeunload=function(e){
+					// if(character && game_loaded) code_persistence_logic(); // best not I guess [30/05/20]
+					if(character && next_skill.use_town>new Date())
+					{
+						add_log("Since you engaged another player in the last 3.6 seconds, If you leave now, You will be automatically defeated.","#E58859")
+						var response="Are you sure?";
+						e.returnValue=response;
+						return response;
+					}
+				};
+				$(document).on('click','a.eexternal',function(event) {
+					if(!is_electron) return;
+					event.preventDefault();
+					require('electron').shell.openExternal(this.href);
+				});
+				if(no_graphics && !no_html)
+				{
+					$("body").css("background-color","#4D4E50");
+					// block_right_clicks=false;
+				}
+				set_status("50%");
+				setTimeout(function(){ $("#gamelog").scrollTop(0);},10);
+				setTimeout(function(){ $("#gamelog").scrollTop(0);},240);
+			}
+			$(function(){ //document.addEventListener("DOMContentLoaded", // now replaced $(document).on("ready") too [10/04/17]
+				first_things_first();
+			});
+			window.addEventListener("contextmenu", function(e) {
+				//console.log(e);
+				if(!block_right_clicks) return;
+				var custom=false,current=e.target||{};
+				if((current.className||"").substr(0,6)=="rclick") custom=true;
+				while(current.parentNode && !custom)
+				{
+					current=current.parentNode;
+					if((current.className||"").substr(0,6)=="rclick") custom=true;
+				}
+				if(inside!="login" && inside!="selection")
+				{
+					if(custom) on_rclick(current);
+					e.preventDefault();
+					return false;
+				}
+	   		 });
+			window.addEventListener("unhandledrejection",function(event){
+				if(event.reason && !event.reason.reason)
+				{
+					add_log(event.reason,colors.code_error); // game errors all have .reason, so if the actual reason is an exception, render it [09/03/19]
+					log_trace("unhandledrejection",event.reason);
+				}
+				event.preventDefault();
+			});
+		</script>
+		{%for k in domain.imagesets %}
+			<img src="{{domain.base_url}}{{domain.imagesets[k].file}}" style='display:none' />
+		{% endfor %}
+<textarea id='dcode' style='display:none'>{% if domain.code %}{{domain.code}}{% else %}{% include 'htmls/contents/codes/default_code.js' %}{% endif %}
+</textarea>
+	</body>
+</html>

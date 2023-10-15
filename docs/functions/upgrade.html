@@ -1,0 +1,139 @@
+<p>
+	Arguments:
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the item [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the scroll [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - (Optional) Inventory index of the offering [0 to 41]</div>
+</p>
+<p>
+	Returns:
+	<div>&nbsp; <b>*</b> Promise</div>
+</p>
+
+<!-- <p>Current inventory with indexes: <br/><span class="xlabel" onclick="code_eval($(this).html())">show_json([Array(42).keys()].reduce(function(map,i){ map[i]=character.items[i]; return map; },{}))</span></p> -->
+
+<p>Example usages:</p>
+
+<div class='code'>
+upgrade(0,1); // Item is in the first slot[0], scroll is in the second[1]
+
+upgrade(0,1,2); // A primordial essence in the 3rd slot[2]
+
+if(character.q.upgrade) log("Already upgrading something!");
+
+upgrade(locate_item("coat"),locate_item("scroll0")).then(function(data){
+	if(data.success) game_log("I have a +"+data.level+" coat now!");
+	else game_log("Rip coat, you'll be missed.");
+});
+
+upgrade(locate_item("shoes"),locate_item("scroll0")).then(
+	function(data){
+		game_log("Upgrade call completed");
+	},
+	function(data){
+		game_log("Upgrade call failed with reason: "+data.reason);
+	},
+);
+</div>
+
+<p>Promise Reference:</p>
+
+<span class='dlabel'>"resolve"</span>
+<div class='code'>
+{
+	success: true,
+	level: 7,
+	num: 37,
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	success: false, // Upgrade failed
+	level: 7,
+	num: 37,
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	success: true,
+	stat: true,
+	stat_type: "str",
+	num: 41,
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"reject"</span>
+<div class='code'>
+{
+	reason: "max_level", // Item reached it's max level
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "scroll", // Incompatible scroll
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "scroll_quantity", // Not enough scrolls
+	need: 100,
+	have: 24,
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "locked", // Item locked
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "no_item", // There's no item on that inventory index
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "no_scroll", // There's no scroll on that inventory index
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "not_upgradeable", // Item not upgradeable
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	// If you send 2+ upgrade calls simultaneously
+	// The consecutive ones will likely fail with this rejection
+	reason: "mismatch", // Item details don't match the upgrade call
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "offering", // Invalid offering
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "bank", // If operation isn't allowed inside
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "exception", // Possible server exception
+}
+</div>
+
+<p></p>
+<span class='redlabel'>"source"</span>

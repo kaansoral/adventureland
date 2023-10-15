@@ -1,0 +1,69 @@
+<p>Nearby Characters, Monsters and Citizens are in the <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">parent.entities</span> dictionary. You can check how the Code function <span class='rlabel' onclick="render_function_reference($(this).html())">get_nearest_monster</span> parses this data.</p>
+
+<div class='code'>
+{
+	"name": "Goo (Modified)",
+	"type": "monster",
+	"mtype": "goo",
+	"skin": "goo",
+	"hp": 20000,
+	"max_hp": 50000,
+	"mp": 100,
+	"speed": 36,
+	"xp": 1200,
+	"attack": 120,
+	"level": 8, // After level 12, only hp/max_hp/xp increases
+	"frequency": 0.4, // 0.4 attacks/second
+	"aggro": 0.5, // 50% chance to attack on sight
+	"rage": 0.5, // 50% chance to target the player on attack
+	"damage_type": "physical", // "physical" or "magical"
+	"respawn": 10, // Respawns in 10 seconds on average
+	"difficulty": 1.25, // A multiplier for monsters' gold drops
+	"range": 12, // Attack range in pixels
+	"id": "376", // ID of the monster
+	"map: "main", // Map of the monster, always your map
+	"in": "main", // Instance of the monster, always your instance
+	"s": {
+		"stunned": false,
+		"cursed": {"ms":400},
+	},
+	"target": "CharacterName", // Set when a monster is targeting a player
+	"moving": false,
+	"visible": true, // If it's false, you can't see the monster
+	"dead": false, // true when the monster is defeated
+	// "dead" can have string values too, such as "map" / "vision"
+	// Indicating the reason why the monster is as good as dead to you
+	"x": 200,
+	"y": 300,
+	"width": 23,
+	"height": 22,
+	// Optional Attributes
+	"armor": 0,
+	"resistance": 750,
+	"dreturn": 3, // 3% Damage Return
+	"lifesteal": 120, // 120% Lifesteal
+	"evasion": 12.5, // 12.5% Evasion
+	"reflection": 5, // 5% Spell Reflection
+	"humanoid": false, // Some things are more effective against humanoids
+	"cooperative": true, // Everyone gets a %-based drop
+	"immune": true, // Immune to most skills and conditions
+	"1hp": true, // Attacks only deal 1hp damage
+	"spawns": [
+		[200,"nerfedmummy"], // Spawns a "nerfedmummy" every 200ms
+	],
+	"abilities": {
+		"portal": {
+			"cooldown": 0,
+		},
+	},
+	// Following attributes can be referenced when "moving" is true
+	"vx": 36, // Speed on the X-axis
+	"vy": 0, // Speed on the Y-axis
+	"from_x": 200,
+	"from_y": 300,
+	"going_x": 300,
+	"going_y": 300,
+}
+</div>
+
+<p><span class="xlabel" onclick="code_eval($(this).html())">show_json(G.monsters)</span> includes the base stats, "attack", "frequency", "speed", "hp", "xp" increase until level 12. <span class="xlabel" onclick="code_eval($(this).html())">show_json(G.maps.main.monsters)</span> is an example array of monster packs, if "grow" is set to true, that pack is marked for newcomers, these pack of monsters spawn faster and their stats increase less when they level up!</p>

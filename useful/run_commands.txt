@@ -1,0 +1,14 @@
+> For .zshrc
+
+alias run_thegame_server="node ~/thegame/node/server.js EU I 8120"
+alias profile_thegame_server="node --prof ~/thegame/node/server.js EU I 8120"
+alias profile_test_server="node --prof ~/thegame/node/server.js EU TEST 8120"
+#dispatcher.py mod: https://plus.google.com/+JustinRibeiro/posts/LuSxEPv9Gkp [15/09/16]
+alias run_thegame="python2.7 /Users/kaan/Desktop/APPENGINE/sdk/dev_appserver.py --storage_path=/Users/kaan/Desktop/PROJECTS/thegame/storage/ --blobstore_path=/Users/kaan/Desktop/PROJECTS/thegame/storage/blobstore/ --datastore_path=/Users/kaan/Desktop/PROJECTS/thegame/storage/db.rdbms --host=0.0.0.0 --port=8083 /Users/kaan/Desktop/PROJECTS/thegame/thegame/ --require_indexes"
+#alias deploy_thegame="node ~/gscripts/deploy.js; cd ~/deploy/thegame_appengine; python2.7 ~/appengine-deployer/appcfg.py --no_cookies --noauth_local_webserver --email=kaansoral@gmail.com update app.yaml; cd ~;"
+alias deploy_thegame="node ~/gscripts/deploy.js; cd ~/deploy/thegame_appengine; gcloud app deploy --project twodimensionalgame --stop-previous-version --promote; cd ~;"
+alias deploy_dthegame="cd ~/deploy/thegame_appengine; python2.7 ~/appengine-deployer/appcfg.py --no_cookies --noauth_local_webserver --email=kaansoral@gmail.com update app.yaml; cd ~;"
+alias thegame_update_crons="python2.7 ~/appengine-deployer/appcfg.py --no_cookies --email=kaansoral@gmail.com update_cron ~/thegame/"
+alias thegame_update_indexes="python2.7 ~/appengine-deployer/appcfg.py --no_cookies --email=kaansoral@gmail.com update_indexes ~/thegame/"
+alias thegame_update_queues="python2.7 ~/appengine-deployer/appcfg.py --no_cookies --email=kaansoral@gmail.com update_queues ~/thegame/"
+alias precompute_images="node ~/thegame/scripts/precompute.js"

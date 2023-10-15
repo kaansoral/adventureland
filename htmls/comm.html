@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body{
+				overflow: hidden;
+				margin: 0;
+				padding: 0;
+				background-color: black;
+			}
+		</style>
+		<title>{{domain.name}}</title>
+		{% if domain.electron and domain.no_html %}<script>require=parent.require;</script>{% endif %}
+
+		{# <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densityDpi=device-dpi" /> #}
+		{# <meta name="viewport" content="user-scalable=yes, initial-scale=2, maximum-scale=2, minimum-scale=2" /> #}
+		{# <meta name="viewport" content="user-scalable=no, initial-scale=0.5, minimum-scale=0.5, maximum-scale=0.5, width=device-width, viewport-fit=cover" /> #}
+		<meta name="viewport" content="user-scalable=yes, width=device-width, viewport-fit=cover">
+		<meta name="mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-capable" content="yes">
+
+		<script src="/js/pixi/{{domain.pixi_version}}/pixi.min.js{{domain.pixi_fversion}}"></script>
+		<script src="/js/pixi-layers/{{domain.pixi_layers_version}}/pixi-layers.js"></script>
+		<script src="/js/pixi-filters/{{domain.pixi_filters_version}}/pixi-filters.js"></script>
+		<script src="/js/socket.io/{{domain.io_version}}/socket.io.min.js"></script>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		
+			<script src="/js/howler/{{domain.howler_version}}/howler.min.js"></script>
+			<script src="/js/howler/{{domain.howler_version}}/howler.spatial.min.js"></script>
+
+		<script src="/js/libraries/bowser/bowser.16.08.16.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.bowser=module.exports;"{%endif%}></script>
+		<script src="/js/libraries/combined.js?v=4"></script>
+		
+		<script src="/js/codemirror/{{domain.cm_version}}/codemirror.js"></script>
+		<link href="/js/codemirror/{{domain.cm_version}}/codemirror.css" rel="stylesheet" type="text/css"/>
+		<link href="/js/codemirror/pixel.css" rel="stylesheet" type="text/css"/>
+		<script src="/js/codemirror/{{domain.cm_version}}/javascript.js"></script>
+		<script src="/js/codemirror/{{domain.cm_version}}/xml.js"></script>
+
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/game.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/js/comm.js?v={{domain.v}}"></script>
+		<script src="/js/payments.js?v={{domain.v}}"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		{% if user.admin %}<script src="/js/admin.js?v={{domain.v}}"></script>{% endif %}
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		{% include "htmls/base_script.html" %}
+		<style>
+			body{
+				overflow: hidden;
+				margin: 0;
+				padding: 0;
+				background-color: black;
+				/*transform-origin: 0px 0px; transform: scale(0.5);*/
+			}
+			#bottom{
+				position: fixed;
+				bottom: 20px;
+				left: 0px;
+				right: 0px;
+				text-align: center;
+				z-index: 201;
+			}
+			#progressui{
+				position: fixed;
+				bottom: 10px;
+				left: 10px;
+				z-index: 201;
+			}
+			#gamelog{
+				position: fixed;
+				bottom: 30px;
+				left: 10px;
+				z-index: 201;
+			}
+			.disconnected{
+				position: fixed;
+				bottom: 30px;
+				left: 10px;
+				z-index: 201;
+			}
+			input{
+				border-radius: 0px;
+			}
+			#observeui{
+				position: fixed;
+				top: 40px;
+				right: 10px;
+				z-index: 201;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="observeui" class="hidden">
+			<div class="gamebutton block mb5" onclick="socket.emit('o:home')">HOME IN</div>
+			<div class="gamebutton block mb5" onclick="render_inventory()">INVENTORY</div>
+			<div class="gamebutton block mb5" onclick="show_commander()">COMMAND</div>
+		</div>
+		<div class='disconnected hidden' style='color: red'>X Disconnected.</div>
+		<!-- <div id="gamelog"></div> -->
+		<div id="progressui">0%</div>
+		<div id="login" style="display: none">
+			<div style='background: black; padding: 8px; border: 4px solid gray' class='gg'><input class="selectioninput theemail mprotected" type="email" placeholder="Email" style='width: 200px; box-sizing: border-box'></input></div>
+			<div style='background: black; padding: 8px; border: 4px solid gray' class='gg'><input class="selectioninput thepassword mprotected" type="password" placeholder="Password" style='width: 200px; box-sizing: border-box'></input></div>
+			<div class="gamebutton block mt5" style='text-align: center' onclick="if(bc(this)) return; api_call_l('signup_or_login',{email:$('.imodal > .gg > .theemail').val(),password:$('.imodal > .gg > .thepassword').val(),only_login:true,mobile:true},{disable:$(this)})">LOGIN</div>
+		</div>
+		<div id="bottom" class="{% if not user %}hidewithmodals{% endif %}">
+			{% if not user %}
+				<div class="serversui"></div>
+				<div class="gamebutton" style='min-width: 120px; max-width: 240px; margin-bottom: 8px' onclick="show_modal($('#login').html(),{wrap:false})">LOGIN</div>
+			{% else %}
+				<div class="serversui serversuic hidden"></div>
+				<div class="charactersui charactersuic"></div>
+				<div></div>
+				<div class="gamebutton" style='min-width: 120px; max-width: 240px' onclick="toggle_ui()">TOGGLE</div>
+			{% endif %}
+		</div>
+		<script>
+			on_load_progress();
+			inside="com";
+			cached_map=false;
+			is_comm=true;
+			force_webgl=true;
+			render_characters();
+			render_servers();
+		</script>
+		<script>
+			function first_things_first()
+			{
+				keyboard_logic();
+				init_sounds();
+				if(!bowser.chrome && perfect_pixels) retina_mode=true;
+				the_game();
+				drag_logic();
+				window.onresize=on_resize;
+				on_resize();
+				code_logic();
+				setTimeout(payment_logic,1200);
+				// $("body").nodoubletapzoom();
+				window.onbeforeunload=function(e){
+					if(character && game_loaded) code_persistence_logic();
+					if(character && next_skill.use_town>new Date())
+					{
+						add_log("Since you engaged another player in the last 3.6 seconds, If you leave now, You will be automatically defeated.","#E58859")
+						var response="Are you sure?";
+						e.returnValue=response;
+						return response;
+					}
+				};
+				$(document).on('click','a.eexternal',function(event) {
+					if(!is_electron) return;
+					event.preventDefault();
+					require('electron').shell.openExternal(this.href);
+				});
+				if(no_graphics && !no_html)
+				{
+					$("body").css("background-color","#4D4E50");
+					// block_right_clicks=false;
+				}
+				set_status("50%");
+				setTimeout(function(){ $("#gamelog").scrollTop(0);},10);
+				setTimeout(function(){ $("#gamelog").scrollTop(0);},240);
+			}
+			$(function(){ //document.addEventListener("DOMContentLoaded", // now replaced $(document).on("ready") too [10/04/17]
+				first_things_first();
+			});
+			window.addEventListener("contextmenu", function(e) {
+				if(!block_right_clicks) return;
+				var custom=false,current=e.target||{};
+				if((current.className||"").substr(0,6)=="rclick") custom=true;
+				while(current.parentNode && !custom)
+				{
+					current=current.parentNode;
+					if((current.className||"").substr(0,6)=="rclick") custom=true;
+				}
+				if(inside!="login" && inside!="selection")
+				{
+					if(custom) on_rclick(current);
+					e.preventDefault();
+					return false;
+				}
+	   		});
+			window.addEventListener("unhandledrejection",function(event){
+				if(event.reason && !event.reason.reason) add_log(event.reason,colors.code_error); // game errors all have .reason, so if the actual reason is an exception, render it [09/03/19]
+				event.preventDefault();
+			});
+		</script>
+<textarea id='dcode' style='display:none'></textarea>
+	</body>
+</html>

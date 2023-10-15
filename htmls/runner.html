@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% if domain.electron%}<script>require=parent.require;</script>{% endif %}
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="try{if(typeof require!=='undefined') window.$=window.jQuery=module.exports;}catch(e){}"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/runner_functions.js?v={{domain.v}}"></script>
+		<script src="/js/runner_compat.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html,body{
+				background: black;
+				color: white;
+				font-family: Pixel;
+				font-size: 24px;
+				overflow: hidden;
+			}
+			html{
+				height: 60px;
+				width: 128px;
+			}
+			*{
+				pointer-events: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="border: 2px solid gray; text-align: center; margin-bottom: 1px" id="code">CODE</div>
+		<div id="gg" style="text-align: center;">Initiating</div>
+		<script>
+			var active=false,catch_errors=true,is_code=1,is_server=0,is_game=0,is_bot=parent.is_bot,is_cli=parent.is_cli,is_sdk=parent.is_sdk;
+			document.addEventListener("DOMContentLoaded",function(event){
+				active=true;
+				parent.code_active=true;
+				set_message("Code Active");
+				parent.socket.emit("code",{run:1});
+				var s=document.createElement('script');
+				s.type='text/javascript';
+				try{
+					s.appendChild(document.createTextNode(parent.the_code));
+				}catch(e){
+					s.text=parent.the_code;
+				}
+				document.head.appendChild(s);
+				if(character.rip) character.trigger("death",{past:true});
+			});
+			window.onerror = function(msg, url, line, col, error) { //http://stackoverflow.com/a/10556743/914546
+				if(!catch_errors) return false;
+				var extra = !col ? '' : ' Column: ' + col;
+				//extra += !error ? '' : '\nerror: ' + error;
+				game_log("CODE Error Caught",colors.code_error);
+				game_log(msg,colors.code_error);
+				game_log("Line: " + line + extra,colors.code_error);
+				// if(error && error.stack) console.log("stack:"),console.log(error.stack);
+				return false;
+			};
+		</script>
+	</body>
+</html>

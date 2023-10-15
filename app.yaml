@@ -1,0 +1,62 @@
+application: twodimensionalgame
+version: 3 #2-new UI | 3-new font dynamics
+runtime: python27
+threadsafe: true
+api_version: 1
+builtins:
+#- appstats: on
+#- remote_api: on
+- deferred: on
+inbound_services:
+- warmup
+
+#F2/F4: same warmup handler performance [14/10/14]
+instance_class: F2
+automatic_scaling:
+  min_idle_instances: 0
+  max_idle_instances: 1
+  min_pending_latency: 6000ms
+  max_pending_latency: 12000ms
+
+default_expiration: "4d"
+
+handlers:
+#- url: /robots.txt
+#  script: stuff.application
+- url: /favicon\.ico
+  static_files: images/favicon.ico
+  upload: favicon\.ico
+- url: /css
+  static_dir: css
+- url: /images
+  static_dir: images
+- url: /img/
+  static_dir: images/screenshots
+- url: /sounds
+  static_dir: sounds
+- url: /js
+  static_dir: js
+- url: /api.*
+  script: api.application
+- url: /admin.*
+  script: admin.application
+  login: admin
+- url: /cr/.*
+  script: crons.application
+  login: admin
+- url: /tasks.*
+  script: tasks.application
+- url: /test.*
+  script: tests.application
+- url: .*
+  script: main.application
+
+libraries:
+- name: jinja2
+  version: latest
+- name: markupsafe
+  version: latest
+- name: lxml
+  version: latest
+- name: ssl
+  version: latest

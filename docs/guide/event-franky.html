@@ -1,0 +1,26 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #B6A9FF; text-decoration: underline dotted #C7C7B3'>Franky Event</p>
+
+	<p>
+		<span class='spfranky'></span> <span class='spmummy'></span> Franky is a challenging server event boss. He spawns Nerfed Mummy's that are very hard to defeat. A good way to die. The event lasts 40 minutes but as long as Franky is attacked in the last 20 seconds, the event will go on.
+	</p>
+
+
+	<div style='margin-bottom: 24x'></div>
+
+	<div class='gamebutton' onclick="btc(event); join('franky'); hide_modal();">Join the Event!</div>
+
+	<script>
+		$(".spfranky").html(sprite("franky",{width:70,height:90,scale:3}));	
+		$(".spmummy").html(sprite("mummy",{width:70,height:90,scale:3}));
+	</script>
+	<span class="oncreate" onclick="$('.imodal:last').children().css('background','#2B2D4E').css('color','#BBBABF')"></span>
+<p style='font-size: 32px; color: #B6A9FF; text-decoration: underline dotted #C7C7B3; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+	if(parent.S.franky && !get_nearest_monster({type:'franky'}))
+		join('franky');
+		// Takes you there
+</div>
+
+</div>

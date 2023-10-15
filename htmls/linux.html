@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Linux: How to Make it Work</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background: black;
+			}
+			html,pre,body{
+				font-family: Pixel;
+				color: #CECECE;
+				font-size: 24px;
+				/*text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);*/
+				margin: 0;
+				padding: 0;
+			}
+			pre{
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			.big{
+				color:#E0676D;
+			}
+			.feature{
+				color:#7BB18F;
+			}
+			.warning{
+				color:#D6627F;
+			}
+			#devlogs{
+				margin: 20px 20px 40px 20px;
+			}
+			#devlogs p{
+				margin-bottom: 4px;
+				margin-top: 4px;
+			}
+			#devheader{
+				margin-top: 15px;
+			}
+			#devheader,.devtitle{
+				color: #939393;
+			}
+			.devlink{
+				color: #C64C4C;
+				color: #D85C61;
+			}
+			.devbig{
+
+			}
+		</style>
+		{% if not domain.is_sdk %}
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-81826565-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<div id="devlogs" style="margin-bottom: 32px">
+			<p><span class="feature">Linux:</span> Common and Distro-Specific Issues</p>
+
+			<p>Adventure Land uses Electron. When you stumble onto an issue, you can google the issue by combining error phrases with "electron". Sadly each distro and setup has it's own various issues, but they are usually easy to solve.</p>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">Black or Blank Screen</div>
+				<p>First thing to try is to find the Steam games directory and simply run Adventure Land from the command line. For some reason it usually works. You can also try the --disable-gpu flag. If the game works when you disable the GPU, the issues are most likely related to GPU/driver issues. When you run the game from command line once, make sure to go back and test it from Steam again. Some players reported the game starting to work from Steam, only after they ran it from command line once. Mysterious.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">Disable Steam Overlay Modification</div>
+				<p>Find main.js - It's the Electron code/logic of Adventure Land - comment out the line with "app.commandLine.appendSwitch("in-process-gpu");" - this is needed to render the Steam overlay, but it can also cause issues. Currently it's disabled by default.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[07/03/19]: version `ZLIB_1.2.9' not found (required by /nix/store/parrh56r6sr4ccp9ypl4sh7h5b19rijg-libpng-apng-1.6.36/lib/libpng16.so.16)</div>
+				<p>User "foldM_" on Discord stumbled onto this issue on NixOS - his solution was to set Steam to launch the game with: LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH %command% (from Steam's Game Properties > Launch Options)</p>
+			</div>
+
+			<p>If you find and solve an issue, or just stumble onto an issue you can't solve, please email hello@adventure.land with details</p>
+			
+		</div>
+	</body>
+</html>
+	

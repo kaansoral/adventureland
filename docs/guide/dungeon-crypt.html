@@ -1,0 +1,22 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>The Crypt [Dungeon]</p>
+
+	<p>
+		<div style='float:left; margin-right: 20px'><span class='eitem1'></span></div> You need the Crypt Key to enter the instanced crypt dungeon, once a party member has unlocked the dungeon, other party members will be able to directly enter. <br />
+	</p>
+
+	<p><span class='hlabel'>Note:</span> Instances are only alive as long as there's someone inside and online!</p>
+	
+<div class='code'>
+enter("crypt");
+// To unlock using a key
+
+enter("crypt",player.in);
+// To enter an already unlocked dungeon
+</div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.cryptkey.skin},{name:"cryptkey",q:0}));
+	</script>
+</div>

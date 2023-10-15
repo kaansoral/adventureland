@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{domain.title}}</title>
+		<link rel="apple-touch-icon-precomposed" href="{{favicon or '/images/favicon.png'}}" /> <!-- 152 -->
+		<link rel="icon" href="{{favicon or '/images/favicon.png'}}" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="{{favicon or '/images/favicon.png'}}"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="{{favicon or '/images/favicon.png'}}"> <!-- 144 -->
+		<meta name="mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-capable" content="yes">
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		{% if extras %}
+			<script src="/js/codemirror/{{domain.cm_version}}/codemirror.js"></script>
+			<link href="/js/codemirror/{{domain.cm_version}}/codemirror.css" rel="stylesheet" type="text/css"/>
+			<link href="/js/codemirror/pixel.css" rel="stylesheet" type="text/css"/>
+			<script src="/js/codemirror/{{domain.cm_version}}/javascript.js"></script>
+			<script src="/js/codemirror/{{domain.cm_version}}/xml.js"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		{% endif %}
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<style>
+			html, body{
+				background: black;
+				color: white;
+				font-family: pixel;
+				font-size: 32px;
+				overflow: auto;
+			}
+		</style>
+		<!-- base.html - for simple usages [19/11/18] -->
+	</head>
+	<body>
+		<script>
+			function on_resize()
+			{
+				width=$(window).width();
+				height=$(window).height();
+				position_modals();
+			}
+			on_resize();
+			function first_things_first()
+			{
+				on_resize();
+				window.onresize=on_resize;
+				$(document).on('click','a.eexternal',function(event) {
+					if(!is_electron) return;
+					event.preventDefault();
+					require('electron').shell.openExternal(this.href);
+				});
+			}
+			$(function(){
+				first_things_first();
+			});
+		</script>
+		{%block body%}{%endblock%}
+	</body>
+</html>

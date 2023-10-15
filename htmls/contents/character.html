@@ -1,0 +1,15 @@
+<script>
+	var slots{{character.name}}={{character.info.slots|to_slots|safe}};
+</script>
+<div style='width: 600px; height: 216px; border: 5px solid gray; margin-bottom: 10px; margin-top: 10px; background: black'>
+	<span class='cskin' data-skin="{{character.info.skin}}" data-cx="{{character|get_cx}}" data-rip="{% if character.info.rip%}{{character.info.gravestone or 'gravestone'}}{%endif%}" style='float: left; margin-top: 20px; margin-left: 10px'></span>
+	<div style='display: inline-block; padding: 10px; text-align: left'>
+		<div><span style='color:gray'>Name:</span> {{character.info.name}}</div>
+		<div><span style='color:gray'>Class:</span> {{character.type|title}}</div>
+		<div><span style='color:gray'>Level:</span> {{character.level}}</div>
+		{% if character.online %}
+			<div><span style='color:green'>Online</span></div>
+		{% endif %}
+	</div>
+	<span class='slots' data-name="{{character.name}}" style='float: right'></span>
+</div>

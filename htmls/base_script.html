@@ -1,0 +1,280 @@
+<script>
+	var inside="{% if not user %}login{%else%}selection{%endif%}";
+	var user_id="{{user and user.k() or ''}}",user_auth="{{user and user.info.auths[0] or ''}}";
+	var base_url="{{domain.base_url}}";
+	var server_addr="{{server and (domain.https and server.ip or server.actual_ip) or ''}}",server_port="{{server and server.port or ''}}";
+	var server_names={"US":"Americas","EU":"Europas","ASIA":"Eastlands"};
+	var sound_music='{%if domain.music_on %}1{%endif%}',sound_sfx='{% if domain.sfx_on %}1{%endif%}',xmas_tunes=false,music_level=0.3;
+	var perfect_pixels='{% if domain.perfect_pixels%}1{%endif%}';
+	var screenshot_mode='{% if domain.screenshot %}1{% endif %}';
+	var pro_mode='{% if not domain.newcomer_ui or 1 %}1{% endif %}';
+	var tutorial_ui='{% if domain.tutorial %}1{% endif %}';
+	var new_attacks='{% if domain.new_attacks %}1{% endif %}';
+	var recording_mode='{% if domain.recording_mode %}1{% endif %}';
+	var cached_map='{% if domain.fast_mode %}1{%endif%}',scale='{{domain.scale}}';
+	var d_lines='{% if domain.d_lines%}1{%endif%}';
+	var sd_lines='{% if domain.sd_lines%}1{%endif%}';
+	var is_sdk='{%if domain.is_sdk %}1{% endif %}';
+	var is_electron='{%if domain.electron %}1{% endif %}',electron_data={};
+	var is_comm=false;
+	var no_eval=false;
+	var VERSION='{{domain.v}}';
+	var platform='{{domain.platform}}';
+	var engine_mode='{{domain.engine_mode}}';
+	var no_graphics='{%if domain.no_graphics %}1{% endif %}';
+	var border_mode='{%if domain.border_mode %}1{% endif %}'; // use after adding a new monster
+	var no_html='{%if domain.no_html %}{{domain.no_html or 1}}{% endif %}';
+	var is_bot='{%if domain.is_bot %}1{% endif %}';
+	var is_cli='{%if domain.is_cli %}1{% endif %}',harakiri='{%if domain.harakiri %}1{% endif %}';
+	var explicit_slot='{% if domain.explicit_slot%}{{domain.explicit_slot}}{%endif%}';
+	var is_mobile=false;
+	var is_bold=false;
+	var c_enabled='{%if domain.cash%}1{%endif%}',stripe_enabled='{% if domain.stripe_enabled %}1{% endif %}';
+	var auto_reload="{{domain.auto_reload}}",reload_times='{{domain.times}}',character_to_load='{{domain.load_character}}',mstand_to_load=null;
+	// It's pretty complicated but there are 2 persistence, auto login routines, the above one is the first, the below one is the second, second one uses the URL data
+	var url_ip='{{domain.url_ip}}',url_port='{{domain.url_port}}',url_character='{{domain.url_character}}';
+	var update_notes={{domain.update_notes|safe}};
+	var server_regions={"US":"Americas","EU":"Europas","ASIA":"Eastlands"};
+	var X={};
+	function payment_logic(){};
+
+	if(is_electron)
+	{
+		if(!electron_is_main())
+		{
+			sound_music='';
+			sound_sfx=''; // new [25/04/21]
+			setTimeout(function(){ sound_off(1); },200);
+		}
+		if(electron_get_http_mode())
+		{
+			setTimeout(function(){
+				$('.httpmodeon').hide();
+				$('.httpmodeoff').show();
+			},200);
+		}
+		// if(platform=="steam") electron_dev_tools();
+		electron_data=electron_get_data();
+		try{
+			if(window.process && process.platform=="win32")
+				setTimeout(function(){
+					$('.windowsonly').show();
+				},200);
+		}catch(e){console.error(e);}
+	}
+
+	if(is_cli)
+	{
+		setInterval(function(){
+			if(!character || !code_active) return;
+			CLI_IN.forEach(function(m){
+				if(m.type=="smart_move")
+					call_code_function("cli_smart_move_result",m);
+				else if(m.type=="cm")
+					call_code_function("trigger_character_event","cm",{name:m.data[0],message:m.data[1]});
+				else
+					call_code_function("trigger_character_event","clim",m);
+			});
+			CLI_IN=[];
+		},10);
+	}
+
+	if(harakiri)
+	{
+		CLI_OUT.push({"type":"time_kill"});
+		G={gg:true};
+	}
+
+	if(url_character && !harakiri)
+	{
+		if(url_ip)
+		{
+			server_addr=url_ip;
+			server_port=url_port;
+			character_to_load=url_character;
+			setTimeout(function(){
+				if(!character)
+				{
+					add_log("If the character doesn't connect","gray");
+					add_log("Reloading the page to retry in 7 seconds","gray");
+					setTimeout(function(){
+						if(character) return;
+						if(is_cli) CLI_OUT.push({"type":"kill"});
+						else location.reload();
+					},7000);
+				}
+			},8000);
+		}
+		else
+		{
+			setTimeout(function(){
+				add_log("Server not found","gray");
+				add_log("Reloading the page to retry in 10 seconds","gray");
+				setTimeout(function(){
+					if(character) return;
+					if(is_cli) CLI_OUT.push({"type":"kill"});
+					else location.reload();
+				},10000);
+			},5000);
+		}
+	}
+
+	if(!is_sdk)
+	{
+		for(var f in log_flags) log_flags[f]=0;
+	}
+
+	if(1 && (navigator.userAgent.match(/Android/i)
+		|| navigator.userAgent.match(/webOS/i)
+		|| navigator.userAgent.match(/iPhone/i)
+		|| navigator.userAgent.match(/iPad/i)
+		|| navigator.userAgent.match(/iPod/i)
+		|| navigator.userAgent.match(/BlackBerry/i)
+		|| navigator.userAgent.match(/Windows Phone/i)))
+	{
+		is_mobile=true;
+		/*
+		document.addEventListener('gesturestart', function (e) {
+		    e.preventDefault();
+		});
+
+		*/
+
+		$('.mclosebutton').show();
+
+		if(0 && document.documentElement) // these are to prevent the iOS pinch_zoom + dblclick zoom ... Android used to suck, I guess now it's iOS's turn with this new user-scalable=no block ... [16/10/16]
+		{
+				document.documentElement.addEventListener('touchstart', function (event) {
+			  if (event.touches.length > 1) {
+			    event.preventDefault();
+			  }
+			}, false);
+
+
+				var lastTouchEnd = 0;
+			document.documentElement.addEventListener('touchend', function (event) {
+			  var now = (new Date()).getTime();
+			  if (now - lastTouchEnd <= 300) {
+			    event.preventDefault();
+			  }
+			  lastTouchEnd = now;
+			}, false);
+		}
+
+		if(0) $(".mobile").show();
+
+
+    	// $("head").append('<meta name="viewport" content="width=1280, user-scalable=no" />'); // initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no
+} /* temporary dirty fix, works wonders! (I guess I like it dirty) [16/10/16] */
+
+(function($) {
+  var IS_IOS = /iphone|ipad/i.test(navigator.userAgent);
+  $.fn.nodoubletapzoom = function() {
+    if (IS_IOS)
+      $(this).bind('touchstart', function preventZoom(e) {
+        var t2 = e.timeStamp
+          , t1 = $(this).data('lastTouch') || t2
+          , dt = t2 - t1
+          , fingers = e.originalEvent.touches.length;
+        $(this).data('lastTouch', t2);
+        if (!dt || dt > 500 || fingers > 1) return; // not double-tap
+
+        e.preventDefault(); // double tap - prevent the zoom
+        // also synthesize click events we just swallowed up
+        $(this).trigger('click').trigger('click');
+      });
+  };
+})(jQuery);
+
+X.servers={{domain.servers|to_json|safe}};
+X.characters={{domain.characters|to_json|safe}};
+X.tutorial={{user_data|to_tutorial|safe}};
+X.unread={{user_data and user_data.info.mail or 0}};
+X.codes={{(user_data and user_data.info.code_list or {})|to_json|safe}}
+
+{% if domain.no_html == "bot" %}
+	Cookies.set('auth',"{{user and user.k()}}-{{user and user.info.auths[0] or ''}}",{ expires:12*365});
+{% endif %}
+
+</script>
+
+{% if domain.cash and domain.stripe_enabled %}
+	<script type="text/javascript">
+		function payment_logic()
+		{
+			(function() {
+				var s=document.createElement('script'); s.type='text/javascript'; s.async = true;
+				s.src = "https://js.stripe.com/v2/";
+				s.onload=function(){ Stripe.setPublishableKey('{{domain.stripe_pkey}}'); };
+				var sc=document.getElementsByTagName('script')[0]; sc.parentNode.insertBefore(s,sc);
+			})();
+		}
+	</script>
+{% endif %}
+
+{% if user.admin %}
+	<script>
+		var access_master="{{domain.access_master}}";
+		function show_renderer()
+		{
+			var html="<textarea id='renderer'></textarea><div class='gamebutton' style='position: absolute; bottom: -68px; right: -5px; border-color: #14561D' onclick='send_to_server()'>EXECUTE</div>";
+			show_modal(html);
+			window.codemirror_render2=CodeMirror(function(current){$("#renderer").replaceWith(current);},{
+				value:window.codemirror_render2 && codemirror_render2.getValue() || "",
+				mode:"javascript",
+				indentUnit:4,
+				indentWithTabs:true,
+				lineWrapping:true,
+				lineNumbers:true,
+				gutters:["CodeMirror-linenumbers","lspacer"],
+				theme:"pixel",
+				cursorHeight:0.75,
+				/*,lineNumbers:true*/
+			});
+		}
+
+		function send_to_server()
+		{
+			socket.emit("render",{
+				pass:access_master,
+				code:codemirror_render2.getValue(),
+			})
+		}
+
+		function pull_D()
+		{
+			socket.emit("render",{code:"window={D:D}; after='visualize()'",pass:access_master});
+		}
+	</script>
+{% endif %}
+
+<style>
+.cbold{
+	font-weight: normal;
+	/* conditional bold, can't decide whether to make things bold or not, better not, since it's a synthetic bold [16/08/16] */
+}
+</style>
+
+{%if not domain.is_sdk %}
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-81826565-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+{% endif %}
+
+{% if domain.perfect_pixels%}
+	<style>
+		canvas{
+			image-rendering: optimizeSpeed;
+			image-rendering: -moz-crisp-edges;
+			image-rendering: -webkit-optimize-contrast;
+			image-rendering: optimize-contrast;
+			image-rendering: pixelated;
+			-ms-interpolation-mode: nearest-neighbor;
+		}
+	</style>
+{% endif %}

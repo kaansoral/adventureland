@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Development <!--Logs-->Blog*</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background: black;
+			}
+			html,pre,body{
+				font-family: Pixel;
+				color: #CECECE;
+				font-size: 24px;
+				/*text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);*/
+				margin: 0;
+				padding: 0;
+			}
+			pre{
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			.big{
+				color:#E0676D;
+			}
+			.feature{
+				color:#7BB18F;
+			}
+			.warning{
+				color:#D6627F;
+			}
+			#devlogs{
+				margin: 20px 20px 40px 20px;
+			}
+			#devlogs p{
+				margin-bottom: 4px;
+				margin-top: 4px;
+			}
+			#devheader{
+				margin-top: 15px;
+			}
+			#devheader,.devtitle{
+				color: #939393;
+			}
+			.devlink{
+				color: #C64C4C;
+				color: #D85C61;
+			}
+			.devbig{
+
+			}
+		</style>
+		{% if not domain.is_sdk %}
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-81826565-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<div id="devlogs" style="margin-bottom: 32px">
+			<!-- <p><span class='devtitle'>Notice:</span> Looking for a "Pixel Artist" to join the team, to be a part of the game, to lead, direct, steer wherever possible.</p>
+			<p><span class='devtitle'>Email:</span> hello@adventure.land</p> -->
+
+			<div><a target="_blank" href="/roadmap" class="cancela"><span style="color: #948F99">~OLD</span> <span style="color: #E39F59; text-decoration: underline">Planned Features</span></a> <a target="_blank" href="/allnotes" class="cancela"><span style="color: #63ABE4">NEW!</span> <span style="color: #E39F59; text-decoration: underline">All Update Notes</span></a></div>
+
+			{#
+				[19/12/19]: Grinch made babies cry today :/
+			#}
+
+			{#<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[14/08/19]: Signs</div>
+				<p>Can't say that the last few months were super productive, in fact, they were only minimally productive, there's progress, but not enough to shape the game fast enough.</p>
+				<p>Back in 2015, before I started working on Adventure Land, I decided to cross an item off my bucket list, which was to gather the best gaming pc I could - I always wanted to have a high performance gaming system. After all the hurdles, one night, everything was finally coming together, it was time to update the motherboard's bios. I figured, since there was no power outage in the last 2 years, and the electrical infrastructure now seemed pretty reliable, it was a safe operation. It takes 30 seconds anyway. Started the bios update, and around 20 seconds later, right when it was just passing 60%, I sat in complete darkness, the power was gone... motherboard corrupted. A minute later, the power was back on - no outages again for a long long time.</p>
+				<p>Back then, I attributed this experience to my extreme luck, but later on, I started seeing it more as a sign. That gaming system ended up being both a time and money pit, affected my life significantly, possibly put me in a much worse course.</p>
+				<p>On 29th of July, I was outside on empty fields with my dog, there's a very serene place nearby, lots of hills, natural water and so on. It was around 19 pm, I started thinking about the power outage, kinda wished I received another sign like that, wishing it would pull me out of this endless loop of procrastination vs. progress.</p>
+				<p>This was the day and exact time when a player found a Sucker Punch, 6 times in a row, a one in a million chance proc'ing 6 times in a row, an impossibility. Suffice to say, I choose to see this as a sign too. To get things back on track.</p>
+				<p>Turns out, if you combine the -25% Luck from the non-verified email status, and the -85% Luck from the steam/mac authorization failure debuff, it dropped the Luck multiplier below 0, and caused the game to drop everything possible from monsters, but still, since this loophole was introduced months ago, it's quite a coincidence that it happened when it happened.</p>
+				<p>I was finally able to get things back on track some days ago, ultimately, I ended up eliminating all the sources of procrastination from my life. The last one was watching an excessive amount of movies and tv shows. Currently I either work on the game, or spend time outside/exercise. So even if I'm not in the mood to work, I end up exercising instead, so it's a win win scenario.</p>
+			</div>#}
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[28/02/19]: Summer Mode On</div>
+				<p>Finally mostly healed, took some time off last week. Last 2 weeks was harsh, but I believe I have a clear vision of what to do now. Going to completely revamp the initial player experience, add a unique, code assisted tutorial that accompanies the player when they first start playing. I'm still very much anti-(must complete tutorial) and anti-(starting zone), so this tutorial will be unintrusive and optional. Each step will both teach the player of the things they can do in-game, and show them how it's done in Code. Use smart_move to move them from place to place, on their command.</p>
+				<p>Today I started working 8 hours a week again, the weather is better, my energy is up, I believe I can keep it up for the months to come. With this new tutorial, ongoing code documentation and changes, pressing need to introduce new game content, I certainly need the strict work schedule.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[05/02/19]: Steam Release and a New Era</div>
+				<p>Never expected such a successful release. Steam is truly a one of a kind platform. For example the game sold 5-6 copies on Mac App Store, and as far as I guess, they were all direct sales and not discovery sales. But with Steam, the game started selling 30-40 copies a day. Without any promotional effort, and for an indie game, I find these numbers to be extraordinary. If you are reading this, consider making a unique, alluring, single player game for Steam (like a unique rogue-like), it would be the optimal scenario. Multiplayer games are always challenging.</p>
+				<p>If it goes like this, and I hope it does, it seems Adventure Land will be cash positive. I've been burning through my savings for the last 4 years, going through $1-2K every month. I really look forward to being profitable once again. Thanks to such a positive outcome, I feel like I'm healing faster too, I do believe the immune system functions better with high motivation.</p>
+				<p>Current plan is to address the initial experience first. While the feedback has been positive until now, I believe initial players are struggling, they need more guidance. Especially with CODE. I really hate games with tutorials. But it's being requested too, not sure what to do about it yet. Adventure Land is a do whatever you want type of game. Not everyone likes it. Some want a tutorial and strict things to do. Some want purpose. First stage will likely be improving the CODE documentation and guiding new players through the process. After it's done, might introduce the game tutorial through code too, providing small snippets to walk the player through simple tasks.</p>
+				<p>Meanwhile launched the <a target="_blank" href="https://steamcommunity.com/games/777150/announcements/detail/1756870026694683047" class="cancela"><span class="devlink">Chinese New Year</span></a> event. Also going to post updates every week during Early Access.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[05/02/19]: Just before the Steam Release</div>
+				<p>Military service wasn't kind, started around -10 degrees, even saw 30+'s momentarily at one point, started with snow and ice, moved onto cold rains, everyday had a different kind of challenge. The only good thing about it was the dogs, there were many happy dogs that tagged along wherever you went. Never experienced such a dog culture before. In the end, managed to get away with pharyngitis, sinusitis, eye and ear infections, luckily got vaccinated for meningitis, or it would have been endgame.</p>
+				<p>Returned home 25th of January, and started the last preparations for the Steam release on 28th of January.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[04/02/19]: Up to January</div>
+				<p>I had a good thing going until October, but when the cold winter arrived, it became a challenge to wake up at 7am and prepare to start working at 8am. I couldn't maintain that work schedule for long. If I lived alone and had the opportunity to concentrate in a healthy and serene work environment, it would have been possible, but sadly, it ended.</p>
+				<p>Started working more in a free manner, which has it's own advantages, you get to make better high level decisions. Immediately decided to concentrate on the Steam release and nothing else. Started pushing small things to completion, polished whatever I can. Fast forward to November, still wasn't ready. As Steam has a lot of requirements, decided to release on Mac App Store first. For me, the hardest part of releases are always taking screenshots, recording videos and preparing optimal descriptions. Marketing doesn't come easy. Released on the Mac App Store around 12th of December. One good thing about the Mac App Store release: I was originally planning a very complex introductory video, it had a lot of tiers, promoted various aspects of the game, basically I was being crushed under that responsibility, however, after discovering that Mac App Store only allows videos to be 30 seconds long, I decided to only showcase the core part of the game, the coding and multi-character aspect, and ended up with a very simple yet concentrated and explanatory video, which I ended up using for Steam too.</p>
+				<p>In Turkey, males have to serve in the military, I had enrolled for a paid short term beforehand, and the lottery hit me at 7th of January, which complicated things further. I had the opportunity to release on Steam around the 20th of December, but as I needed to be away for ~20 days, delayed the release until I returned. In hindsight, one needs to complete the Steam Store listing page weeks before the actual release. You learn these things once you go through with the process.</p>
+				<p>Apart from these, December was a really bad month, I got subjected to an extreme amount of injustice from Facebook, had really old apps that lived on their platform, they decided to completely remove one of them for no reason, became really ill from sadness, couldn't sleep most of the time.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[07/09/18]: Cloud vs. Dedicated</div>
+				<p>I'll start this small informal blog post about issues and ramblings about Cloud.</p>
+				<p>First, App Engine: Normally I was a big fan of App Engine, in the early days, they were extremely dynamic, at their peak, even Guido van Rossum was part of the team and the entire team interacted with developers. Nowadays, it's just a shadow of those glorious days. Total neglect and incompetence. It's clear that the team, if there's a team, has no grip on the product. Is it still the best cloud product out there? Most probably. And if you push enough, you get things recognized. If you push really hard? maybe you could get problems solved.</p>
+				<p>Spadar, one of our hardcore players has been complaining about 500 errors that didn't manifest themselves in logs. After quite a bit of investment, I managed to track these errors, got the issues recognized, but while it's a beyond major issue and a major breach of trust, the respond from Google was along the lines of "meh, it happenz, let it be, it's smallz". I sincerely hope they clean their house and we see those old glorious days once again.</p>
+				<p>Second, AWS: I had 15k$'s of AWS Activate credits, and used 8k$ of that credits up until August. Many thanks to Amazon for their help, thanks to them, I got to develop Adventure Land for 2 years without worrying about server costs. When the September bill arrived tho, it's clear that a change was necessary. ~$80 each for 3x 2-core servers. $240. And an extreme amount of data charges. Up until this point, I honestly didn't even bother calculating feasability. But on Monday, after the bill, calculated it alright. What's more bothersome was the data charges.</p>
+				<p>At this point in time, we have only 40 active characters (Very healthy number for prolonged development in my opinion, fyi) - anyway - the $240 server charge isn't that bothersome, as servers are unutilised, but the $40 data charge was bothersome, it means each character costs $1, since one player can have 4 characters, it meant that each player cost $4/monthly in just data. Beyond infeasible. I first thought something was amiss. As the game uses miniscule amounts of data. Like 5-10kb/s. But when you make the calculations. Even those small amounts end up being 10-20GB per month. As characters are online 24/7. So a new old-era has started, Dedicated Servers.</p>
+				<p>I started web development with Dedicated Servers, those were the days. I had 3-4 ServerLoft dedicated servers at my peak. It was a pain manually scaling things. That's why I moved to App Engine later on. More expensive, but could be 1:1 and more practical if you use it well. After reseach, 2 candidates popped up, Hetzner and OVH groups. They provide the best performance-bucks ratio possible.</p>
+				<p>As players prefer the US servers, I chose OVH's child company SoYouStart and got a i7-4790K game server for just 35 euro/mo. Comes with 250Mbps of unmetered/unlimited/free bandwidth. So basically no more data charges.</p>
+				<p>So I'm a Computer Engineer and all, but, as a shame, I don't hold information in my brain, so I ended up googleing core/thread dynamics and how the 4-core, 8-thread processor can be best utilised. The main question was, for a pure-cpu workload, whether the 8 threads provided any value. To inform the reader, the 2 threads per core enables 2 processes to use a single core in an efficient way, so for a pure computing workload, the threads aren't ground breakingly useful. I concluded that I'll run 5 servers on a single machine. 4 PVE and 1 PVP. I assume each PVE server will utilise a single core to it's fullest and the PVP server will hang in there.</p>
+				<p>The server has an initial pre-computing stage, on my local i7-7700HQ, it's computed in ~13000ms, on the top AWS servers, it was around 20000ms, on the i7-4790K, it was an impressive 6900ms, double the performance of my i7-7700HQ, shame and hurray. Back in earlier tests, the AWS servers crumbled with ~70 players in one server (I improved the server logic afterwards, to slowdown ticks dynamically, fyi) - with the dedicated server, loaded 80 characters myself, it's the limit for my own internet bandwidth to handle, and the CPU utilisation was just around 30%. So I suspect the new servers could even handle 200 non-abusive players, but realistically, set the new limit at 96 players, as most players thrash the servers hard :)</p>
+				<p>So basically that's a huge problem solved, 35 euros for 500 characters, it's like $0.3/mo (worst case) for player (4ch for 1p). Considering the game will be for $12.99 on Steam. We're feasible now. By the way, each game server will try to gather $20-$50 each month with shells sales, so don't quote my calculations here and blame me for overselling things :)</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[07/09/18]: A New Era</div>
+				<p>Around December 2016, I kind of broke myself, I had a very strict work approach, It was forcing me to work every day, every hour, the stress was unbearable, I decided to just set myself free and see how it goes. It didn't go well. It eliminated the stress, but the stress became anxiety due to neglecting work.</p>
+				<p>After 1.5 years of bad performance, around June, a new approach started forming as an idea, and on June 21st, I started a new system of work.</p>
+				<p>Basically I work only weekdays, wake up at 7am, have a breakfast, brew a coffee until 8am, work from 8am to 12am, have a lunch, watch some TLC or sth, then work from 1pm to 5pm and leisure time afterwards. It's basically working wonders. No stress. No anxiety. But some energy issues due to waking up so early. In order to wake up early, one must prepare well before sleep, that part I didn't quite yet master.</p>
+				<p>Thanks to this new system, last 2 months have been beyond awesome.</p>
+			</div>
+
+			<div id="devheader">[22/05/17]</div>
+			<p><span class="feature">Today's Feature:</span> Hardcore Mode</p>
+
+			<div id="devheader">[21/05/17]</div>
+			<p><span class="feature">Today's Feature:</span> Player</p>
+			<p>This is more of an internal change, enables a certain usage, and makes it almost impossible to achieve something very specific. Basically, there is the "User", and "Character"s, this change adds a new model/entity called "Player" in-between. As it is, this doesn't add much to the game, but I believe, in the future, it will simplify certain things a lot, make things flexible, allow 1+ realms.</p>
+
+			<div id="devheader">[20/05/17]</div>
+			<p><span class="feature">Today's Feature:</span> Mail</p>
+			<p>Implementing the "Mail" routines. There will be multiple types of mails, most needed one (from my side) is game-to-player mails, for example, the game needs a "Recruitment Actions" interface, they will be in-game mails instead, when you recruit someone, when someone you recruit achieves something, you will receive an in-game Mail, possibly for a lot of other things too.</p>
+			<p>Considered handling all incoming PM's as Mail's too, yet, it seems like an overkill.</p>
+			<p>I have a lot more to write about in the coming days, possibly a hefty blogpost.</p>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[22/04/17]: "Development Logs" becomes the "Development Blog"</div>
+				<p>As a habit, I take a lot of notes, mostly in the form of entries, kind of like a diary, it's part a habit, part an obsession. It's a work thing. You know, sometimes, you feel like you've experienced a time slip, it feels like months have passed, and you've achieved nothing? Probably every student will know the feeling, when the semester starts, everyone is generally very relaxed, but, when the midterms or the first exams arrive, even though likely 2 months have passed, it feels like no time has passed at all, it's a time slip. Anyway, I've started this note-taking habit to prevent these time slips from happening, and kind of force myself to work. About 7 years ago, I was developing Facebook apps, at one point, Facebook started a crusade against apps and app developers, they disabled, removed apps from their platform without reason. It was devastating. Every time it happened, it caused a form of depression that caused something similar to these time slips, It was hard coping with loss, after these happened, I would discover that weeks, or months have passed since I've done anything to achieve my goals. Anyway, long story short, I write down pretty much everything work related I do, on Moleskine notebooks, this way, the work keeps on going no matter what, it works, but it has it's issues too, after years of doing this, I wonder whether it's more natural to just let time slip.</p>
+				<p>Anyway, you've probably wondered what this has to do with Adventure Land, when I first started developing Adventure Land, there was just development, there wasn't a significant playerbase, there was no playerbase to satisfy, to retain, to grow, after our first Reddit announcement, things changed quite a bit, actually, pretty much everything changed. So, TL;DR: It's no longer possible to aggregate my physical notes into daily notes, list of changes for the game. I loved doing it, it was good while it lasted</p>
+				<p>From now on, without any format, I will use this page as an occasional blog, to write about things, thoughts, feelings - and of course, about the game</p>
+				<p>A lot has happened in these last 4 months, the game has improved significantly, old players are amazed when they re-visit, the most important and determining decision was to postpone the Steam release, instead of releasing as Early Access, I decided to "complete" and "perfect" the game first, in hindsight, this might not have been a good decision, time will tell.</p>
+				<p>I sincerely hope it ends up being a good decision, on the bright side, games are timeless, so additional time spent working on a game could tip the scales significantly in the long run, received a lot of feedback, experienced a feedback overload, some were really good, some were misleading, demotivating, but in the end, spotted a lot of core issues, it was a great learning experience, I can tell you this much</p>
+			</div>
+
+			<div id="devheader">[16/01/17]</div>
+			<p><span class="feature">Today's Highlight:</span> Launch of the New Town!</p>
+			<p>After the midnight, updated the "notes", "looking forward to" sections, made last minute checks, corrections, everything was ready for the New Town, + Deployed!</p>
+			<p>This was the first update that refactored all the characters beforehand, those who were in the old town needed to be reset to positions in the new town.</p>
+			<p>After the update some players were experiencing transport/movement issues, fixed that issue, Added an "is_code" flag, separated the Code logic in one of the common functions.</p>
+			<p>Discovered another PIXI bug, "Curse" started causing issues, two filters can no longer be combined, there are other reported issues too, WebGL crashes are continuing.</p>
+			<p>Preparing to convert all existing 16x16 items to new 20x20 ones with Ellian.</p>
+
+			<div id="devheader">[15/01/17]</div>
+			<p><span class="feature">Today's Features:</span> Live Reload! + New Town! + Well-Crafted Bow, Sucker Punch, Mole's Teeth Earring!</p>
+			<p>Today was a long and productive day, started by integrating the new elixirs, adding quirks to the new town. Decided to add the "Live Reload" feature before launch, as it allows on-the-fly changes to the server data, like adding new items, modifying existing items. I was doing these kind of things manually, but after the "Orb of Second Chances" incident, it was clear something better was needed.</p>
+			<p>The "Live Reload" feature both refreshes the server data and at the same time triggers a data reload at every connected game client. So when a new item/drop is added, existing players don't need to reconnect and the servers don't need to be updated anymore! (+ Some other internal perks, like modifying the drop rates practically)</p>
+			<p>Added all the planned items, completed/re-visited all the new quests, monsters, drops. There's still a lot to be added/integrated to the game. Didn't add the new armor sets yet.</p>
+
+			<div id="devheader">[14/01/17]</div>
+			<p><span class="feature">Today's Feature:</span> Attack Animation: Nudge</p>
+			<p>Continuing with the integrations.</p>
+			<p>Got the idea to add a new attack animation, non-moving entities now nudge forwards when they attack. Monsters that don't have an idle animation really needed this.</p>
+
+			<div id="devheader">[13/01/17]</div>
+			<p><span class="feature">Today's Highlights:</span> New Town's Integrations + Vitality Earring</p>
+			<p>Added the Tavern/Premium-Items NPC's. Set the phoenix spawn points, improved the stats and drops of the Phoenix. Improved the seashells quest, enriching the new town.</p>
+
+			<div id="devheader">[12/01/17]</div>
+			<p><span class="feature">Today's Highlights:</span> Band of Fury + Evasion/Reflection Scrolls</p>
+			<p>Added the Reflection/Evasion scrolls, they have custom/balanced multipliers. Added the "Band of Fury" head-slot item, very rare and very powerful. Originally, it was meant to be a Tier0 item.</p>
+			<p>Tested Jayson's tavern entities, including the roulette table, slot machine and spin-game, impressive. Converted/Unified the "transport" responses.</p>
+			<p>Crated the new upgrade/compound animation, it iterates over the existing assassin_smoke method. Finalised the exchange/upgrade/compound integrations for the new town.</p>
+
+			<div id="devheader">[02/02/17]: Last 2 weeks, I've been working on the friends system, code system, new skills, valentine's day event, and several other things, going to update the /logs soon++ | Additionally, planning to add another page to the game, as it's being requested a lot, something like a /todo or a /roadmap - Current roadmap includes, Friends System, Guilds System, Skills System, Tavern, Daily Events, Skin/Looks System, Steam Release, Achievements/Statistics/Leaderboards, Code Tutorials and more - The community should have a way to track all these</div>
+
+			<div id="devheader">[15/01/17]: I've been working on the new town non-stop for the last few days, going to update the /logs soon</div>
+
+			<div id="devheader">[11/01/17]</div>
+			<p><span class="feature">Month in Review</span></p>
+			<p>Caught up with my logs today and had the opportunity to review last month. I love December, overall I took a lot of time to relax and slack before and after new year's eve. It wasn't unproductive either, yet, I could've crammed a couple of days here and there to work all day and get a lot of stuff done. December 10th/11th was the last time that happened. I feel ashamed that the new town is still not integrated, even though all the content was ready for weeks. I experience something similar to a writer's block whenever there is new content to add to the game.</p>
+			<p>Jayson prepared the first prototype for a slot machine. It's a nice one. He seems to be recovering from the motorcycle accident. While he initially told me it wasn't serious, as I understand it was a serious accident. I keep on wishing we could have an active stream of communication, but at this point, I've settled with bursts of collaboration too. I think another burst of collaboration/creation is imminent, as we are both hungry to add some new stuff to the game.</p>
+			<p>Received an awesome suggestion list from "Trexnamedtom" on Discord for Achievements. It's the best suggestion list I've received so far. Usually while reading suggestion lists, I absorb 10%-20% of the ideas, and the rest clash with my vision and direction for the game (or they require more effort than what's possible on indie levels), some suggestion lists are completely uncoupled from the game, that's why Trexnamedtom's suggestions really suprised me, we share the same vision, I love all of the achievement ideas and intend to work on them. Previously, "Aelwrath" also sent an incredible suggestion document, just re-visited it again, I should integrate some of his ideas, most of them are very high level, but on the lowest level, there are some intriguing item ideas and the MOBA/Code event idea is unique.</p>
+
+			<div id="devheader">[10/01/17]</div>
+			<p>Catching up with the /logs + Finalised the improved transport system - It's not possible to move or re-transport during a transport now, applied at the client level.</p>
+
+			<div id="devheader">[09/01/17]</div>
+			<p><span class="feature">Today's Highlight:</span> How Machines Can be Misunderstood</p>
+			<p>Some time ago I've received a report, that showed "Gleich" cheating in game. After that, I personally noticed the same behaviour myself. It was upsetting, as, while a bit controversial, Gleich probably played the game most as non-afk. It doesn't make sense for him to cheat.</p>
+			<p>I've asked Gleich about the situation, didn't want to take action, and as it turns out, it was a bug/shortcoming, causing the misunderstanding. With the investigation of Deliagwath; Gleich, theZhoul and Deliagwath managed to replicate the bug. During a transport, there's a brief time where the client is in the old position, after the server moves the character to the new position, when the client moves during that short time period, it was possible to move outside the map unintentionally.</p>
+			<p>Gleich's code was pretty innocent too, the coded behaviour was to escape when someone is spotted, but, for a human, the observed behaviour was a cheater/stalker (as the character is outside the map boundaries, in the bank) exiting the game when he spots someone, which was very creepy.</p>
+			<p>Designed an improvement to overcome this scenario.</p>
+
+			<div id="devheader">[08/01/17]</div>
+			<p><span class="feature">Today's Highlights:</span> Injustice I've Caused + Bugfix Relief</p>
+			<p>Deliagwath brought to my attention that the grades of the "Orb of Second Chances" is [0,0] for the client and [0,1] for the servers. Ideally, I should update the server and the clients together, during an intermediary update I sent to the game clients, I forgot about the updated grades. As a result, a lot of people spent more gold compared to others that realised the server still references the [0,1] "grades" property. I can't describe how bad it felt. Corrected the issue, but, what's done is done, started adding a live-reload ability to the servers.</p>
+			<p>Patched the pvp/combo routines. It seems some rogue's are making teams kill their teammates. Ingenious but patched at the next update.</p>
+			<p>Today's highlight comes from "theZhoul" on Discord, he discovered that consecutive "move"s are to blame for the "move" discrepancies that we discovered thanks to the location correction routine. He did this externally. Internally, running the "mode.debug_moves" routine, it's indeed the case. Reason: There is an internal move timer, it resets every time a move command arrives, the fix is to reset the timer only when the player isn't already moving. I love patches/bugfixes like these. Simple yet great.</p>
+
+			<div id="devheader">[07/01/17]</div>
+			<p>Integrated our new cave. The design is impressive. Dracul currently occupies the prime area, yet, he will probably become a random and frequently spawning boss, and that awesome area could be used in a different way, maybe a global event triggered through an item.</p>
+
+			<div id="devheader">[06/01/17]</div>
+			<p>Integrated the NPC's to the new town, combined the basic armor and weapons merchants, added direct access to Upgrade and Compound through the wells near the combined upgrade and compound NPC.</p>
+			<p>Due to weather conditions Jayson wasn't around for the last 2 weeks. He's also been in a motorcycle accident recently. He says he's ok but I'm not sure. I sincerely hope he gets well soon.</p>
+
+			<div id="devheader">[05/01/17]</div>
+			<p>Started designing the new movement and vision system. The vision aspect improves performance, the movement one is complex and strict.</p>
+			<p>Updated most of our existing items to the new looks.</p>
+
+			<div id="devheader">[04/01/17]</div>
+			<p><span class="feature">Today's Feature:</span> Temporary Account Blockage + Analysis Routines</p>
+			<p>There are 3 ways to violate the rules, 1 of them is through abusive behaviour, the second one is using 1+ accounts to overcome the 1+1 allowance for siblings, the other one is to violate the map lines. I've been receiving a lot of reports for people using 2 accounts to party in the same server, with this feature added, blocked the secondary accounts. In the future, the servers will issue temporary blockages too, for various scenarios.</p>
+			<p>Added 2 new internal analysis routines, one of them analyses the game in general, the other one is for individual accounts, helpful for moderation and monitoring.</p>
+
+			<div id="devheader">[03/01/17]</div>
+			<p>Researched possible games for the Tavern today, read Wikipedia pages for various games, inspected some patents. {#The thing I love most about developing Adventure Land is gaining experiences in such unexpected fields.#} Learned a lot on chance games design today. Most of the real life challenges doesn't exist in our game, still, there are a lot to apply.</p>
+			<p>Earlier, I made some performance improvements to the game, an oversight was causing the inventory size not to be re-calculated after upgrades and compounds, fixed that issue and applied the same performance improvements to other places.</p>
+
+			<div id="devheader">[02/01/17]</div>
+			<p><span class="feature">Today's Feature:</span> Tavern: Roulette</p>
+			<p>Implemented the Roulette, it can be played through Code, the UI will arrive later on, I'm thinking a monster running on a mill with numbers, when the monster stops, a number is selected.</p>
+			<p>I had 180M on my local test character, lost it, added another 400M, lost it, so Roulette itself is a fun gold sink, verified. Not all games will be like this tho, the next game will likely be player-vs-player and similar to <a target="_blank" href="https://en.wikipedia.org/wiki/Pig_(dice_game)" class="cancela"><span class="devlink">this game</span></a>.</p>
+			<p><span style="color: #E47F8B">Life:</span> Yesterday a pigeon entered the house from the air duct, struggled a lot there, she looked cheerful when we rescued her, ate, drank, tried to let her go today, she wasn't able to fly, and tonight, she passed away, buried her, it was devastating.</p>
+
+			<div id="devheader">[01/01/17]</div>
+			<p><span class="feature">Today's Highlight:</span> Tavern: First Step</p>
+			<p>Implemented/Started the internal architecture for the Tavern, started building the Roulette.</p>
+
+			<div id="devheader">[31/12/16]</div>
+			<p><span class="feature">New Year's Eve!</span></p>
+			<p>Inspired. Started the Tavern. Improved the game performance when the window is minimised.</p>
+			<p><span style="color: #E43E4A">Looking Back:</span> On a personal level, 2016 didn't start well, I was working on a project for 4+ years, I was continually failing to gain traction or recognition, I was stuck inside a fruitless loop, It was time to start doing something else, not to abandon the project, but to do something more productive. It was around May when I started creating Adventure Land, and in June I fully committed to the project. It was an incredible journey for me, along the way, I paid my emotional debt, normalised my life ambitions and goals, broke my obsessions, and thanks to the game, became a better person with insights into unexpected fields and various unexpected experiences. I was expecting game development to be mostly about development, but it was more about, economy, psychology, sociology, business, and even politics. Trying to build an enjoyable game, I started appreciating life a lot more too. In many ways life is a lot like a game, but much greater than any of us can even dream of building.</p>
+			<p><span style="color: #2C941A">Going Forward:</span> Code/Teaching aspect of the game inspired me to go back to university and complete my master's degree and continue on from there. I wish to start a family too, during my emotional turmoil in 2016, I concluded that business endeavours shouldn't be primary objectives, but rather, secondary bonuses. For the game, tavern, daily events, code improvements, communicator, skills, items - there are a lot of exciting stuff to work on. My mistake these couple of months was to set clear objectives and deadlines, they killed my productivity, stressed me, going forward, I intend to continue on with a more scattered approach. As an aspiring game developer, I couldn't wish for a better community, I'm extremely thankful. Thanks to you all, it's a joy working on the game with all the feedback, suggestions and the company. Looking forward to our Steam release.</p>
+
+			<div id="devheader">[30/12/16]</div>
+			<p><span class="feature">Today's Highlights:</span> New Year's Eve Boost + Next Iteration of Limits Enforcer</p>
+			<p>Boosted the Mistletoe, Candy Cane drops significantly.</p>
+			<p>Improved the global limits enforcer once again, it's a lot more complicated and refined now.</p>
+
+			<div id="devheader">[29/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Greenlit!</p>
+			<p>The game is Greenlit on Steam, so fast, and such a relief :)</p>
+			<p>Integrated the new looks for the armors, sent an early UI update.</p>
+
+			<div id="devheader">[28/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> New Items with Ellian</p>
+			<p>Created the graphics for our <a target="_blank" href="http://adventure.land/img/20x20b2.png" class="cancela"><span class="devlink">new items</span></a> with Ellian.</p>
+
+			<div id="devheader">[27/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> The Second Chance Ability</p>
+			<p>Improved the integration of the new town, finalised the items that will initially arrive with the new town.</p>
+			<p>Implemented the "Second Chance" ability, it's a fun one, the Orb's increase code complexity too, which is a direction I aim for, even if one gets a better Orb in the future, it makes sense to equip the Xmas Orb's just before death. Modified the "Orb of Second Chances" to be rare at +0, the modification will be live after new year's eve when the event is over.</p>
+			<p>Reproduced the movement issue we've been hunting with Mark, it does happen consistently, I didn't have a chance to inspect it deeply yet, glad I added the "Location Correction" routine, otherwise it's an issue that would go unnoticed.</p>
+
+			<div id="devheader">[26/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Stacked Listings for Merchant's!</p>
+			<p>Added/Calibrated the "Spiked Shield" item. Upgraded to OSX Sierra, seems stable, using WebGL heavily, UI glitches started happening more frequently, Sierra seems stable.</p>
+			<p>Improved the trade system to allow listings for 1+/Stacked items. All trade/exchange routines have to be perfect, even the smallest oversight could be fatal for the economy.</p>
+
+			<div id="devheader">[25/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Weapon Tiering System</p>
+			<p>Designed the system that will govern the weapon tiering. Calibrated the T2 Bow which is heavily requested by the community.</p>
+
+			<div id="devheader">[24/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> The Mining Tunnel</p>
+			<p>Created/Integrated the mining tunnel + drops. Mole's aren't easy to farm, yet, in the long run, farming them will be very rewarding.</p>
+
+			<div id="devheader">[23/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Json's Wings</p>
+			<p>This was a productive day for Jayson, wish his productive days are more frequent, the wing idea is an impressive one, can't wait to add a "wing logic" that adds wings to any character.</p>
+			<p>Improved the Friends/Server/Guildies interface, it's one step closer to production. Mostly worked on new tiles and the integration of the new town and monsters.</p>
+			<p><span style="color: #E47F8B">Side Note:</span> The world is becoming darker and darker, there are terrorist attacks almost every week in Europe/Middle-East, the country I live in is also suffering heavily, trying not to lose hope, the solution in my opinion is to be positive, nurturing, affect other's live's in positive ways, be forgiving, patient.</p>
+
+			<div id="devheader">[22/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Dynamic Spawn Bosses</p>
+			<p>Woke up early to a semi-nightmare. It occurred to me that I might've set a high gold drop for Rudolph. Checked the statistics, it wasn't the case, but it was still higher than intended rates, Mark also noticed it and started farming it, ended up patching the drop rate.</p>
+			<p>Today's feature is the ability for bosses to spawn in random locations. This enables me to increase boss drops, it also encourages players to write smarter Code's.</p>
+			<p>Integrating new monsters. Improved the way game calls functions inside the Code, added error handling, otherwise, for the "on_draw" function, Code exceptions had fatal results.</p>
+
+			<div id="devheader">[21/12/16]</div>
+			<p>Improved the design of the New Town. Discovered a visibility issue, in the original town, when someone moves from a certain point to the merchant area, some merchants are invisible, patched the issue.</p>
+			<p>Working on an improved movement and visibility system. Current system is a bit complex, it's the 4th or 5th iteration, I really want to make some time and move to a 6th iteration.</p>
+
+			<div id="devheader">[20/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Xmas Email + Interaction</p>
+			<p>Send our Xmas email today. Increased the drops for the Ornament quest. Promoted the Steam Greenlight page in-game. Updated <a target="_blank" class="cancela" href="https://www.reddit.com/r/AdventureLand/"><span class="devlink">Reddit</span></a>/Twitter/FB.</p>
+
+			<div id="devheader">[19/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Steam Greenlight Page!</p>
+			<p>Interacted with our new players until 4AM, It's always a joy to see new players enjoy the game, the initial feedback is also very important, at this point, I'm confident the game is going in the right direction.</p>
+			<p>Created the screenshots I was planning for the <a target="_blank" class="cancela" href="http://steamcommunity.com/sharedfiles/filedetails/?id=821265543"><span class="devlink">Steam Greenlight</span></a> page, wrote the descriptions, launched the page, it's a relief. Changed the game's Twitter username to @CodeMMORPG from @PixelMMORPG.</p>
+
+			<div id="devheader">[18/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Second Reddit Announcement</p>
+			<p>Preparing the Steam Greenlight page, Improved the Code functions a bit.</p>
+			<p>Highlight of the day is our second <a target="_blank" class="cancela" href="https://www.reddit.com/r/MMORPG/comments/5j0lgc/adventure_land_the_code_mmorpg_winterland_xmas/"><span class="devlink">Reddit</span></a> announcement, once again, it was a joy to start welcoming new players</p>
+
+			<div id="devheader">[17/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Code Video</p>
+			<p>Executed the small giveaway I was planning, both players and I are probably getting very fluent at creating small functional scripts. In the past, I used to add features/code to projects I work on, for even the smallest task, nowadays everything has a small script - Interestingly, the game is very similar too, for different gaming occasions, one can whip up a modified Code.</p>
+			<p>Today's main task was the preparation of the "Code Showcase" for the Steam Greenlight page, marketing material for any kind challenges me, but preparing the video ended up being fun, I wish I did this a month earlier.</p>
+
+			<div id="devheader">[16/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Dynamic Observation</p>
+			<p>Previously the login/character-selection page only showed the merchant area, with this new system, random players are shown. It's nice to shuffle through the server a bit this way.</p>
+			<p>Improved the new bank, added the Clerk's, Finalised the unlock routines.</p>
+			<p>Added a "Booster Guide" and accompanying Code functions. Through code, it's possible to utilise one booster to benefit from everything, it should be fun implementing this strategy.</p>
+			<p>Updated the game, fixed the issues.</p>
+
+			<div id="devheader">[15/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Boosters</p>
+			<p>Caught up with these /logs again, normally I was updating them daily now, but the events on [02/12/16] caused another delay.</p>
+			<p>The "Taunt" now takes the aggro from monsters that are targeting allies, thanks to Mark's reminder :]</p>
+			<p>Integrated/Improved the new boosters, simplified the internals, going to document a "How to Use" section along with Code methods soon.</p>
+			<p>Monster XP's now factor in the .xpm XP Modifier of players. Useful for PVP. Going to add another notice to PVP soon, advertising the increased luck and gold too.</p>
+			<p>Improved the Guide, added a Limits section.</p>
+
+			<div id="devheader">[14/12/16]</div>
+			<p>Started finalising the new "Booster" items, they are the improved version of "Stone"s.</p>
+			<p>Today is a big day for me personally, I completed my personal quest, the future seems brighter now. Going to celebrate this in-game soon.</p>
+
+			<div id="devheader">[13/12/16]</div>
+			<p>Servers are performing very well. Improved the bank design with Jayson. Interacted with the community, debugged a movement issue, it turned out to be a false alarm, yet, ended up adding a "Location Correction" feature. It should be triggered if a high amount of delay causes a character's client-position differ from the server-position by >100px's. The movement system was designed to make the game fluent even when there are high delays, but this system requires compromises, as an example, line/border violations are allowed, if a player is experiencing a minor amount of delay, they should be able to play the game without issues, but this system causes a lot of headaches for me, so I might end up replacing our movement system with a new one at one point. Can't be soon tho.</p>
+			<p>Last few days, I've been on a personal quest, it materialised on [06/12/16], and it's been a source of motivation and much-needed distraction for the past month, it's finally nearing completion.</p>
+
+			<div id="devheader">[12/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Bank Slots</p>
+			<p>Started relaxing, going to take it easy for a few days.</p>
+			<p>Implemented the system for additional bank slots. They can be unlocked with Gold or Shells. Jayson created the first version of the new bank with 8 Clerks.</p>
+			<p>Fixed the count for the leather quest. Fixed an issue affecting the .cursed,.stunned properties for monsters, they weren't being removed, and monsters stayed cursed or stunned.</p>
+
+			<div id="devheader">[11/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Xmas Launch</p>
+			<p>Finalising the new drops, added the stat ring drops, previously, all stat based drops were diverse, a stramulet and intamulet had the same drop rate, this is no longer the case.</p>
+			<p>Added a "Well-Crafted Cape" - a rare but achievable exchange from the leather quest.</p>
+			<p>Calibrated the new monsters, added properties, most monsters will have it's own challenges as game progresses, based on properties, aggressiveness, spawn rates, drops and competition.</p>
+			<p>Added guard NPCs as a placeholders, they will guard un-launched zones/caves/places.</p>
+			<p>Replaced "Dark Knight"s with "Croc"s, I added "Dark Knight"s in July when I first launched the game, they were the first monsters too, however, having them in the Town never made sense, they will serve in the Underworld in the future.</p>
+			<p>Said goodbye to Mercury, he was a really positive player, helped form the Wikia, left the game to concentrate on his studies. I wish all goodbyes could be civil like his.</p>
+			<p>Further enriched the leather quest, there are other very rare armors too. Might increase the droprate of the armors.</p>
+			<p>Calibrated/Finalised all the Xmas items and drops, getting excited.</p>
+			<p>Set the update notes, deployed the improvements, updated the servers.</p>
+			<p>It was delighting to see so many players rushing and exploring the game as soon as the update went live. Moments like these make me proud. I cherished every moment.</p>
+
+			<div id="devheader">[10/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Xmas Push</p>
+			<p>Added the "Would you like to turn on the Xmas Tunes?" prompt, after hunting the perfect tune, I want it to be enjoyed :)</p>
+			<p>Added the initial integration of music/fx levels, currently internal, reduced the music_level;</p>
+			<p>Completed the new "Upgrade or Compound" NPC, I think simple is better, instead of statues that are hard to discover, this new NPC/design is very easy to discover, and explains things in a very basic form.</p>
+			<p>Completed the Cape/Orb equip logic.</p>
+			<p>Perfected the "Winter Inn".</p>
+			<p>Added a new feature to NPC's, they can now change direction when you interact with them, in the future, they will have their own routines, they will at least walk, and hopefully a lot more. Currently only "Ace" has a pre-set movement. I think it would be nice to have several NPC's that are just there to add color, they could give small tips.</p>
+			<p>Improving the game client / server interactions, ideally, server should never send text to the client, all text and responses should be on the client, this will make it easier to translate the game at one point.</p>
+			<p>Turns out I was mis-spelling "Mistletoe" all this time, I thought it was "Misletoe", lol.</p>
+			<p>Added the "Transport Lady" to Winterland, the "Captain" is ready too, yet, for the time being, transport is more practical than sea travel.</p>
+			<p>Completed all the details for the Winterland and Winter Inn.</p>
+			<p>Integrated/Improved all the new quests and monsters, yet, there's still a lot that needs to be done, a lot of polishing and enriching and testing.</p>
+
+			<div id="devheader">[09/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Xmas Rush</p>
+			<p>Created/Integrated "Rudolph", added the drop. Integrating the "Winter Inn". We've created a strong synergy with Jayson. I really don't want to delay the December 10th goal of launching the Xmas event. I've already far-missed my timeline for the Steam Greenlight launch.</p>
+			<p>Added the "Orb of Second Chances" - our first Orb, has the ability to prevent death with a %.</p>
+			<p>Created Tier 1.5 for the Xmas items, based on the Halloween experience, releasing a unique T2 armor with a high-drop rate wasn't a good idea, comparatively, Xmas items are much easier to achieve, much easier to upgrade thanks to their initially normal grade, and T1.5 doesn't wreck the game balance.</p>
+			<p>Slowed players in Winterland.</p>
+			<p>Added the leather merchant, polishing the quest system. Improved "Stompy". Jayson improved my Rudolph a lot.</p>
+			<p>Added a ".rage" property, similar to ".aggro", when ".aggro" happens, ".rage" is the probability of the monster targeting the player.</p>
+			<p>Unified all NPC interactions, I love refactoring.</p>
+			<p>Today was an extremely productive and satisfying day, one personal lesson is, it's a good idea to live a relaxed life, as long as you can squeeze in 10x productive days like these every once in a while.</p>
+
+			<div id="devheader">[08/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Xmas Rush</p>
+			<p>We've started working with Jayson heavily, sadly, Sun Pixels didn't deliver on his promises, so it's up to us to achieve the Xmas goals. Luckily, the items Ellian prepared for Xmas are perfect.</p>
+			<p>I've improved the internal "Drops and Exchange" system of the game, now it's more like a "Forest" in computer science terms, makes it really practical to design and set drops.</p>
+			<p>Added the "Cape" - an exciting item, yet, really hard to acquire, the leather quest isn't an easy one.</p>
+			<p>To fix a small issue, I've deployed an update to the game, forgetting the new limits enforcer, the enforcer discontinued almost everyone, but on the bright side, I got to improve/fix the new system. Developing a live game really isn't easy, the game almost always gets judged by it's current state, however, if the game wasn't live, I couldn't develop this efficiently, so it's definitely worth it.</p>
+
+			<div id="devheader">[07/12/16]</div>
+			<p>Fixed a memory leak that affected HP Bar's and Name Tag's. The leak only became noticeable after making Name Tag's toggle on/off and dynamic.</p>
+			<p>Started creating the first quests, the xmas quests.</p>
+			<p>Improved the IP Limitations layer. Improved the server, added the "Convert to Shells" routine for items that are being discontinued.</p>
+			<p>Lately I've been very stressed, so instead of working ~10 hours a day on the game, I've reduced this amount to 3-4 hours, and in the remaining time, I've been working towards a life achievement/goal, when you are young, concentrating purely on work is manageable, yet, as time passes, the desire for something more grows.</p>
+			
+			<div id="devheader">[06/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Targeting Aggressive Monsters</p>
+			<p>Up to now, some monsters only attacked players and moved on, with this improvement, they might target the player too.</p>
+			<p>Improved the HP Bar's and Name Tag's.</p>
+			<p>Started refactoring the character status flags, like .cursed etc.. Improved/fortified the server.</p>
+			<p>Added the "Candy Cane" and blue "Pom Pom"s.</p>
+			<p>Outside the game, a very positive development happened, I've been looking for something and finally found the perfect candidate.</p>
+
+			<div id="devheader">[05/12/16]</div>
+			<p><span class="feature">Today's Feature:</span> Damage Return</p>
+			<p>Added some new cache's to the game to improve performance. Improved/Re-Visited some server routines, refactoring/improving existing code is always enjoyable, serene.</p>
+			<p>Implemented the "Damage Return" property, Armadillo is going to receive it, and in the future, there will be items that add "Damage Return" to players. It's physical and melee only, however, it might affect close-range ranged attacks at one point too.</p>
+			<p>Added the "Eggnog".</p>
+
+			<div id="devheader">[04/12/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Improved Password Routines</p>
+			<p>Improved the NPC animations, they flow better now.</p>
+			<p>Re-Implemented the password routines, passwords are hashed with random salts now. Implemented a supplementary, new password reset routine. Deployed, Tested the changes and refactored all existing passwords.</p>
+
+			<div id="devheader">[03/12/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Random Respawns and other stuff ...</p>
+			<p>The Phoenix is going to spawn in random spots when the system is completed.</p>
+			<p>Worked with Jayson a bit, I encouraged him a lot to improve his pixel art skills in the past, contribute to the map tiles, he designed some tiles today, they ended up great.</p>
+			<p>Improving the game designs, the winterland, the desertland, and everything else.</p>
+			<p>Improved the IP security layer of the game.</p>
+			<p>I have a relaxed and simple approach to security, my assumption was, if people are challenged too much while recovering their passwords, they might quit instead, this is why I initially chose to keep passwords in plain text, it seems the practice is heavily frowned upon, live and learn, we lost a valued member today, as I predicted earlier, the lifetime of the game is 60 days for most people, which is more than enough, I just wish, after bonding, getting to know each other, people would quit in a more joyful manner. Game moderation, development, is more challenging than I thought.</p>
+			<p>After working non-stop for almost 6 years, I think I need a break, maybe a vacation - and definitely some changes in my routines. I used to have a very relaxed approach to work, it's probably best to go back to my roots.</p>
+
+			<div id="devheader">[11/12/16]: It's been a hectic week, especially this last 2 days were great, we've achieved a lot with Jayson, going to update the logs soon, I've been integrating, polishing Winterland, Xmas stuff for the last 12 hours, It's finally complete, I'm very proud, at the same time, I'm very anxious at times like these, a lot changed with the game, I hope I don't wake up to offline servers tomorrow :)</div>
+
+			<div id="devheader">[02/12/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Elixirs, Christmas Items and Improved Item Speeds</p>
+			<p>Implemented the Elixir logic, the usage, expiry, integrations.</p>
+			<p>Finalised the Christmas Events and Items, the most exciting item is an Orb, Orb of Good Spirits, in addition to stats, it also has an ability called "Second Chances" - with a % chance, revives the player when HP hits 0.</p>
+			<p>Made my decision on the game "Limits" - this topic is very heated, I decided to limit free characters to 1 PVE + 1 PVP + 1 Merchant, and even with the new xp/gold/luck booster item that costs $8, the limit is 3, so for $16/mo, a player can play with 3 characters. In the past, when the limits were added, then reduced, there was always a backlash, yet, after 1-2 days, the game always improved, became more social, economy metrics improved. So I'm confident this change will be positive too. It will go into effect along with the Christmas Event and new maps.</p>
+			<p>Reduced the monster charge speeds, for Squig, increasing the speed from 10 to 20 was displeasing, reduced multipliers.</p>
+			<p>Basher's speed reduction now shows up on stats, the speed reduction also decreases with upgrade. The "Slow" weapon speed is now a multiplier, currently 0.8 for Basher, but soon, all weapons will receive a Speed stat. Going to balance the dynamics once all weapons are designed. "Very Slow", "Slow", "Normal", "Fast", "Very Fast" are the options. Might simplify things and go with "Slow", "Normal", "Fast".</p>
+			<p>Integrated the Christmas Event sounds.</p>
+			<p>Discovered and fixed a rare server issue, newly introduced, improved the server system, now PVP and TEST servers have unique names (not I,II,II etc.).</p>
+
+			<div id="devheader">[01/12/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Paid the Logs Debt + Combined Damage Warnings</p>
+			<p>Today was a slow and relaxing day, caught up with the /logs. In the background, I'm constantly weighing alternatives and options about the game's direction. If past has proved anything, bad decisions are costly.</p>
+			<p>Checked out AWS re:invent, Adventure Land uses C4 EC2 instances, the new C5 instances are very exciting, can't wait to make the switch.</p>
+			<p>Added combined damage warnings + "on_combined_damage" callback for Code.</p>
+			<p>Picked a tune for the Christmas Event, I love it, going to add a "Do you want to turn the Music on?" prompt soon.</p>
+			<p>The new Pokemon game seems like a flop, I'm guessing they cater to the newer Pokemon GO generation now, the 3D and directed gameplay wasn't enjoyable for me, I would rather have 2D and free gameplay, no matter how repetitive it is.</p>
+			<p>Spent a lot of time outside, bought some new years lottery tickets, I always loved December, if everything goes according to plan, we are going to have a new years lottery in-game too :)</p>
+
+			<div id="devheader">[30/11/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Fisherman(?) NPC</p>
+			<p>Continually designing our new items.</p>
+			<p>Improved the "Exchange" system to support Quests too. Added the "Seashell" item, drops on the beach, the Fisherman NPC collects them, you can turn over 20 to receive a random rewards. These NPC Quests will be the only source of some items. Some Elixirs, Some Rare Accessories, Some Scrolls.</p>
+			<p>There will be 3-4 Quests like these. One of them will be inside the "Mystery House" - It's not a mystery house any more, there will be rats inside that ate all the jewels of an NPC, she's looking for her jewels back. Each zone will likely have rare "Key" drops too, to unlock the "Dungeon" of that Region/Map. All in all, design-wise, I'm really satisfied with the direction.</p>
+			<p>Found some nice solutions to some of the PVP challenges, asked for feedback on Discord. The main challenge is always healing, Priest's heals are over-powered, considering future levels of armor and res, the heals will only become more powerful. So today's idea is to start adding abilities, skills to block heals. The obvious one is Priest's own Curse, another one is, a "Hex Arrow" for Ranger's. It will be a rare item that needs to be farmed. Some weapons, items might also receive similar abilities of their own.</p>
+			<p>Received the new Pokemon games, Moon for myself, Sun for my brother. We've been following Pokemon again since the XY times, each game provides 30 hours of fun. I guess, a lot of people like 2D/Pixel games because of the original Pokemon games too. Learned about "Star Trek: Discovery". There's a lot to look forward to.</p>
+
+			<div id="devheader">[29/11/16]</div>
+			<p><span class="feature">Today's Addition:</span> The Sneaky Goblin</p>
+			<p>The Sneaky Goblin has high Evasion, Reflection, 1 HP, no ATT, a mean attitude, and a hefty drop. After being hit ~100 times, he just laughs and teleports to a different place. It will be a small server-wide event. It's really hard to land a successful hit, and after it escapes, it's not that easy to find where it went :)</p>
+			<p>Added a "Line Check" feature to our map editor, I always enjoy adding small technical features like these. The bad news is, apart from the gap "Mr. Clean" found, there aren't any more gaps. Finding one more gap would have been enjoyable. As it is, I suspect, there might be a special case where our current `calculate_move` moves people outside the lines.</p>
+			<p>Added the "skin" property to monsters, basically, two monster definitions will be able to share the same looks, the first example is normal rats and jail rats.</p>
+			<p>Took care of some things I was delaying, Announcing our Merchant Class, a Debit Card application for the company. Paypal really hurt everyone in Turkey, more than it needs to, there is nothing preventing them from simply charging credit cards, apart from their online wallet, you realise everyone uses Paypal when you lose the ability to use Paypal. Most of my issues these past 2 months originated from Paypal challenges too, almost all Pixel Artists, Freelancers, use Paypal to get paid. Even though I have a relative abroad to make payments on my behalf. It's still very challenging. Not everyone is understanding either. Now, only finalising the "Community Code" video and preparing the Steam Greenlight page remains. Taking screenshots, preparing videos, any kind of pr/marketing, these are the tasks that I always hate and delay. They really don't come easy to me.</p>
+
+			<div id="devheader">[28/11/16]</div>
+			<p>Preparing the elementals, they will likely be random spawning bosses, rather than set-spawn/set-interval bosses.</p>
+			<p>Considering alternative movement systems, algorithms, our system is custom, very robust, it serves us well, the downside is that violating the system is possible, and it upsets everyone when someone does that, so for the next generation, not going to settle with anything less then perfect.</p>
+			<p>Negotiated with Sun Pixels/Leo, he's going to be our pixel artist for the map details, characters, monsters. If everything goes according to plan. However, if my limited experience taught me anything, things usually don't go according to plans. As a backup, Jayson is working on some new stuff. Previously, Revangale was going to be the pixel artist, but we had issues with the first sample, and later on he left due to personal reasons, he did a great job on the "Ship" tho, we had potential, that's why I started being cautious, in terms of delays and expectations, I've also learned not to be specific, and let artists use their creativity. On the bright side, I can rely on Ellian for our items, he also said he can help with other stuff if need be.</p>
+
+			<div id="devheader">[27/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> Monsters with Properties + Charging Monsters</p>
+			<p>Improved our internal map editor, added the ability to visualise monster packs on the map, it eases map design significantly.</p>
+			<p>Added Armor, Resistance, Evasion, Reflection to monsters. Feels great. As an example, a monster with high Evasion could only be farmable with Mage's/Priest's, while, a monster with high Reflection wouldn't easily be farmable by a magical class. It's always good to have some variety.</p>
+			<p>Added a charge behaviour to monsters, it's dynamic, low speed monsters speed up 2X when targeting someone, the multiplier is much lower for high speed monsters. I might further dial it down. I don't want to prevent kiting, but slow monsters aren't very fun either, so there's a balance in between.</p>
+
+			<div id="devheader">[26/11/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Post Server Update Stuff</p>
+			<p>Server updates are always stressful, a lot changes between updates, there are lots of new features, improvements, and almost always, there are things that needs to be fixed fast. Suprisingly, this update wasn't that eventful. There are 2 bugs introduced, one is an innocent one. I didn't deem them worthy of a hotfix.</p>
+			<p>Spent some time with Allegaea, he seemed disruptive at first, as I received a violation report earlier about him, a map/line violation, yet, he turned out to be very kind and helpful. We inspected the server's IP response together, thanks to him, I discovered an interesting issue regarding dynamic IP's. I had dynamic IP's handled, yet, one edge case still remains.</p>
+			<p>Life-wise, getting things back on track, slowly boosting my morale, game-wise, it's becoming easier too, stress levels are reducing, the community is maturing. Spent half of this day tidying my surroundings. My greatest hobby is mechanical keyboards, I had a project laying around for almost a year, the parts are there, yet it takes 3 full days to build a keyboard, and I won't have 3 spare days for some time, so wrapped all the parts, keycaps and stored them in the attic. Cleaned the room and got a haircut afterwards. Feels like a new beginning.</p>
+
+			<div id="devheader">[25/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> Sales Tax!</p>
+			<p>Worked on our Community Code video. Adjusted the upgrade/compound rates slightly.</p>
+			<p>Decided to add a small Sales Tax, mainly for fun, I think it will be educating for our young players too. With higher character level, the tax decreases.</p>
+			<p>Jayson designed a beautiful "Shells Island" - it's the background for /shells.</p>
+			<p>Tier2 armors now become "Rare" at +7.</p>
+			<p>Perfected the combo/aggro check routine, the logic is different for PVP/PVE, in PVE, you can't just get close to a stranger and get them killed, but in PVP, you might do that, not that it makes sense to do it.</p>
+			<p>Updating this /logs - It's really challenging, there are a lot of changes every day, and when I neglect to update the logs even for a week, it becomes an extreme chore :)</p>
+			<p>Tested our latest changes, made some last minute fixes, and updated the servers!</p>
+
+			<div id="devheader">[24/11/16]</div>
+			<p><span class="feature">Today's Highlights:</span> More PVP Improvements + Vitality Scroll + Lottery Lady! + Jail!! + Quirks</p>
+			<p>Added a 12-second respawn cooldown. Improved the "use_town" skill, it reflects the cooldowns now.</p>
+			<p>Added a re-log cooldown, some players were using the agility of the system to their advantage. Improving this re-log blockage, at first it was based on logout, currently, it's based on login, this way, when someone wants to join a friend in another server after a while, s/he won't have to wait.</p>
+			<p>Added the "Vitality Scroll" - for the time being, it only drops from the strong Scorpion's.</p>
+			<p>Added our Lottery Lady, after working on the game for this long, I started wanting NPC Dialogues too, and adding the dialogue for the Lottery Lady was refreshing.</p>
+			<p>There are players who commit minor offences, like walking past the lines, so decided to add a cute jail to our game, anyone can just walk out the jail, it's more of a friendly warning, for actual offences, the best course of action is to block accounts for a duration, or, just disable them. Again, considering we live in a world where online actions have no consequences, countries with dynamic IP's, it's a saddening challenge with no real solution.</p>
+			<p>Maps had "Signs", replaced that system with "Quirks", Quirks can be anything, signs, unimportant but fun map interactions etc.</p>
+
+			<div id="devheader">[23/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> COMBO's!! (or, Penalties)</p>
+			<p>Combo's aren't exactly what they sound like, it's basically an extension to the internal attack system, with one attack, it's now possible to hit multiple targets, so it's kind of a server improvement.</p>
+			<p><span class="warning">Terrified/Petrified:</span> There is a new property on character's, .targets, when you target multiple entities, your character now starts getting terrified, it slows down, and each attack from monsters deal an increasing amount of damage, this is to prevent the practice of tagging multiple monsters, stealing loots and getting away with it. It's much harder to do now, manually, maybe possible, but with Code, definitely not easy.</p>
+			<p><span class="warning">No More Stacking:</span> This is a very major change, an extremely common practice for both PVE and PVP was to put all party characters in one spot, for a bystander, it's very displeasing, you can't see who's who, for PVP, it was extremely advantageous, you can't easily execute a strategy against 6 characters in one spot, without Code, you can't even target them, so with this new system, each attack to stacked players increases the count by 1, similar to terrified/petrified state, but, for the group, the total damage is calculated from the cumulative count, so basically, on PVP, even a single Rogue can eliminate a stacked party with a Supershot+Shot.</p>
+			<p>Both systems aren't perfect yet, the first one doesn't have to be, but the stack prevention system is very aggressive, I'm planning to add both Code + Game Log warnings soon.</p>
+
+			<div id="devheader">[22/11/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Server Refactoring + New Layer(s) + Trade Protection</p>
+			<p>I love refactoring, today was a fun day. Added a new layer on top of all items, this was something I wanted to do for a long time, It ended up being a lot simpler and fun than I thought it would be. Also had the opportunity to improve the performance and bandwidth along with these improvements.</p>
+			<p>Added a .rid property to trade items, it changes each time the trade slot is modified, this prevents continually swapping items to trick Code'd merchants into buying something that didn't mean to buy. Congratulations to Vehn for achieving this, he did it for the fun of it, and returned the gold. I kind of wanted this to happen, it's a fun method, and it coincidentally happened today, independent from my .rid improvement.</p>
+			<p>Improved the trade slots, the data for the slots isn't sent when the slots aren't visible any more.</p>
+			<p>Jayson decided to stop playing on PVP Servers and become more active as a GM. It's a good decision and it was good to hear. Tho, I will miss seeing him on the PVP servers. And I wish the bullying from the community didn't contribute to his decision. We probably need a "PVP Etiquette" too. PVP is tooo controversial.</p>
+			<p>Started adding yet another layer to prevent abuse, it's not completed or integrated yet, however, I think we are going to need this layer a lot in the future. I really wish I didn't need to spend this much effort into protective layers like these, but when you think about the state of the world, they are really needed, online, there is no such thing as "responsibility", people aren't responsible for their actions, there is no system to attribute minor abusive actions to individuals. For a developer, it's a nightmare.</p>
+
+			<div id="devheader">[21/11/16]</div>
+			<p><span class="feature">Today's Highlight:</span> Addressed the PVP Issues</p>
+			<p>Processed the video, asked for feedback, the video ended up being a bit too simple, so started planning a secondary video that showcases the Code aspect of the game more. Thanks to Delia's suggestion.</p>
+			<p>Spent some time outside, I realised I've been putting myself under a lot of stress lately, I have certain rules for myself, one of them is "Don't screw yourself", I realised, with high expectations, self-imposed deadlines, I've been doing just that. Going to try and enjoy the journey, stop worrying about things.</p>
+			<p>Improved PVP dynamics further, .invincible deals 45% damage, both Supershot and Mana Burst received an initial cooldown.</p>
+
+			<div id="devheader">[20/11/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Agile Parties + Added the "PM" Button + Greenlight Gameplay Video</p>
+			<p>Observed the first referral transaction, it's a nice milestone, a player referring another player, new player making a purchase, and the referrer receiving credit for it.</p>
+			<p>While designing the new items, decided to give Basher a push, boosted the damage significantly. Improved my internal items interface, added filtering, it's easier to compare and improve items now.</p>
+			<p>Improved the party system, now any member of a party can invite others, also, a higher member can kick a lower one. Additionally, it's possible to "REQUEST" to become a party member. Basically, considering people usually afk and check back in from time to time, this will enable parties to evolve more easily.</p>
+			<p>Integrating the new maps, mainly to slowly prepare for the re-launch, start polishing things</p>
+			<p>Created the first example code: <a target="_blank" href="https://github.com/kaansoral/adventureland/blob/master/examples/" class="cancela"><span class="devlink">https://github.com/kaansoral/adventureland/blob/master/examples/simple_but_improved.js</a> It's simple, yet it covers most of the early player questions, has conservative potion usage, target and path checks.</p>
+			<p>We finally synchronised and recorded a short, simple Gameplay video for the Steam Greenlight page, Thanks to Json, Muhnch, Grim, draivin, Deliagwath, Aelwrath and everyone who participated in the earlier versions.</p>
+
+			<div id="devheader">[19/11/16]</div>
+			<p><span class="feature">Today's Highlight: Friends System Materialising</span>
+			<p>Started implementing the friends system, implemented the interface, received feedback from the community, added .afk info to the system, started designing the Guilds system, interaction-wise, It's going to be very similar to Friends.</p>
+			<p>Collaborated with Jayson, he has been extremely productive in November, in October we lost our synergy for a while, turns out he's also going through tough times like me.</p>
+			<p>I'm spending a lot of time outside lately, normally I concentrate on work, but becoming 26 hit me hard, when you are young, you can take a lot of risks easily, but I feel like I can't use work as an excuse any more, there's also the constant feeling of stress, and I feel like I've under-achieved. On the bright side, there are a lot to be grateful for, I've started receiving emotional support from friends and family, so things are progressing well.</p>
+
+			<div id="devheader">[18/11/16]</div>
+			<p><span class="feature">Today's Highlight: Item Designs</span>
+			<p>Designing our high and rare grade items. The challenge is mainly the acquisition and economy. Rare grade items should truly be rare and High Grade items should be hard to find. There are a magnitude of options. The easiest ones are having them as more seldom drops, or having them as rng/chest drops. Another idea that started shaping is small/local quests. Instead of monsters dropping stuff, they could drop quest items which can be exchanged for random rewards in some quantities.</p>
+			<p>draivin has been helping me a lot behind the scenes, he first came to me with his performance analysis around our October rush, it was a very pleasant surprise to receive an external performance analysis and suggestions for improvements, with his encouragement, I accelerated our new map/draw system, which has now been launched and matured, otherwise, I was going to postpone that system for some time. After that, instead of my calculate_move, we moved onto his optimised version of calculate_move, and today, he contributed another component to the game, one that will check for line violations. I truly appreciate his help. I never expected to get outside help at these levels. Thanks to his help, I can concentrate on the design aspect of the game more.</p>
+			<p>On the side, my existential crisis has been growing, my priorities have been shifting, without the game, I could've been crushed already, but the game showed me new beginnings are always possible. However, building the game isn't an all peachy experience either.</p>
+			<p>After 3 years away from the hobby, received a new fountain pen today, a Pilot Custom Heritage 912 with Falcon Nib, engaging with the pen boosted my morale.</p>
+
+			<div id="devheader">[17/11/16]</div>
+			<p><span class="feature">Today's Highlight:</span> First Version of the Steam Greenlight Video + Smooth Walk</p>
+			<p>I'm already behind my schedule for our Steam release, like 2 weeks late, so with an impulse decision, decided to just go ahead and shoot a gameplay video for Steam Greenlight, thanks to our awesome community, we recorded one in 15 minutes. Turns out my OSX recording solution had a lot of issues, FPS was very low, but it still felt great, we had a lot of fun, and gained a lot of experience for the next try.</p>
+			<p>The company I formed is both adding to my stress, and hard to maintain at the same time, it's also extremely costly and slow. I really wish being an individual and making business was possible. Yet it's impossible.</p>
+			<p>Implemented a "Smooth Walk" routine, some Code's walk in 1px/2px, it ends up being very displeasing, for such short movements, the walking animation can't even start, so rigged something up to try and merge those short walks. The ultimate solution is probably to disregard such short walks. And I think we need a "Code Etiquette" guide.</p>
+
+			<div id="devheader">[16/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> Minimap</p>
+			<p>With our new map architecture, adding a minimap ended up being trivial, yet, since our maps are cozy, there is no point in adding one, so I temporarily axed the minimap.</p>
+			<p>Spent some time servicing other projects, as a life rule I learned, it's important to not commit 100% into one thing, even 90% is a lot, 80%/20% is healthier, I'm currently at ~95% with the game. The reason for the rule is, doing other things alleviates the stress, makes you more creative, opens up horizons - and - more specifically, if a project is making you money, you have to care for it regularly. I've never abandoned a project, yet neglect is equally bad. So I tried to work on all my projects daily, weekly, or at least, monthly.</p>
+
+			<div id="devheader">[15/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> Vitality Attribute + First NPC Dialog</p>
+			<p>I previously decided against it, yet, as PVP became further tested, it seems increasing the character HP's will be a good idea, it also allows stronger weapons.</p>
+			<p>As the hp caps increases, priests became more powerful, so a heal nerf might be needed, or a weapon/orb with a heal blocking ability.</p>
+			<p>Hot-patched some game issues, improved my workflow to allow more hot-patches like these, manually patched OSX/Firefox to use Canvas instead of WebGL.</p>
+			<p>Improved the design of our new items. Have an items.txt that I'm continually improving.</p>
+			<p>Received some inspiring feedback on Reddit, decided to go forward with the NPC Dialogues and created our first one. Unlike our all-black interfaces, NPC dialogues have light backgrounds, I love them.</p>
+			<p>Receiving feedback about our booster items, the new design is almost finalised, it will likely be a $8 stone with higher Gold/Luck bonuses but less XP bonuses.</p>
+			<p>Improved <a target="_blank" href="https://adventure.land/shells" class="cancela"><span class="devlink">https://adventure.land/shells</span></a>. There is a new map in the background. Going to integrate this soon.</p>
+
+			<div id="devheader">[14/11/16]</div>
+			<p><span class="feature">Today's Feature:</span> CRIT + Complicated Upgrades</p>
+			<p>Added the "Crit" property/logic.</p>
+			<p>Further balanced the PVP, the respawn MP is now 50%.</p>
+			<p>Added the "use_town" skill.</p>
+			<p>Fixed our new/smooth movement routine.</p>
+			<p>Designed + Implemented the first version of the new upgrade system. It ended up being too unbalanced, needs some balancing :]</p>
+			<p>The items retain a hefty history now, exposing this history would spoil the fun, so some hefty game system improvements are needed.</p>
+
+			<div id="devheader">[13/11/16]</div>
+			<p><span class="feature">Today's Improvement:</span> PVP Balancing + Evasion/Reflection</p>
+			<p>Character names now appear on the browser tab titles.</p>
+			<p>Improved PVP dynamics significantly, xp and gold loss now factors the attacker's xp and gold. Both attacker and target are now blocked from escaping for 3.6 seconds. These improvements make combats more honourable. Considering adding a delay to server hopping too.</p>
+			<p>Added a prompt when a player tries to close the tab during a PVP combat, escaping results in defeat, so this prompt and the accompanying message will raise awareness.</p>
+			<p>Pre-Ordered the new Pokemon 3DS games and re-indulged my fountain pen addiction with a new pen, my morale is fully back up now :]</p>
+			<p>Since I've touched the combat routines, decided to implement evasion + reflection too, evasion is simple, yet reflection seemed complicated, in the end, both of them ended up being simple and fun. They work on PVE too, since all current bosses are magical, the Pumpkin Helmet's from our Halloween event are going to shine :]</p>
+
+			<div id="devheader">[12/11/16]</div>
+			<p><span class="feature">Today's Topic:</span> It Is What It Is</p>
+			<p>Deployed the improvements of the last 10 days, including the Merchant class, skillbar, chat dialogs.</p>
+			<p>Had to make a lot of restarts, for small improvements, things seemed stable afterwards, went to sleep. - Woke up to only 2 servers alive, Checked Discord, apparently there was a very simple and obvious issue that a player discovered. Normally server exceptions were handled, this issue broke that routine. Revised/Improved exception handling and re-deployed. Now exceptions cost 10 calls.</p>
+			<p>Dealt with a user drama, thanks to a few players, my morale is usually pretty low lately, I keep dealing with same issues over and over again. To not deal with these issues again, wrote this: <a target="_blank" href="http://adventure.land/it-is-what-it-is" class="cancela"><span class="devlink">It Is What It Is</span></a></p>
+			<p>It includes various pre-confessions that will let me develop the game in peace, It feels great getting these out of my chest.</p>
+
+			<div id="devheader">[20/10/16]</div>
+
+			<div id="devheader">[19/10/16]</div>
+			<p><span class="feature">Today's Highlight: Europas I Down</span></p>
+			<p>Continuing the Reddit Day, took a break around 2am, I was really exhausted. Around 4am, when I continued greeting new players, RedSky mentioned he couldn't click anywhere, and while we were talking JourneyOver also stated he was never able to click anything, and he thought the game was Code-only. This was extremely worrisome, as in the past, I saw players who never moved and left after a while, It was a serious cause of concern for me. Since our early players mostly weren't native english speakers, none of them mentioned the issue either, they just left. Anyway, after exchanging 10's of emails with RedSky, we pin-pointed the issue, it was PIXI, something was introduced after 4.0.2 that broke all interactions for players with browsers that support "pointer events". I couldn't thank RedSky enough for reporting this issue, and helping me relentlessly during the process. "themoonrat" from the PIXI project also deserves a mention, it's the second time he introduced something into PIXI that turned out to be catastrophic like this. In hindsight, this issue hurt Adventure Land when it mattered the most, our initial boost...</p>
+			<p>I went to sleep, but woke up early, anxiously, during sleep, I was constantly worried about the servers, and when I woke up, indeed, the servers were down.</p>
+			<p>When the server went down, players defaulted to Europas II, which was a PVP server at the time, and they got wiped out, a lot of players thought the game was pvp-only during that time. After this experience, I improved the server selection logic, to prioritise PVE servers over PVP.</p>
+			<p>Researched why the server went down, the most logical explanation is extreme load, since the game has "Observers", even if people don't login, each visitor adds a load to the server, it seems, along with ~100 players and 100's of observers, Europas I just gave up.</p>
+			<p>Spent most of this day interacting with players, replying to emails and messages.</p>
+
+			<div id="devheader">[18/10/16]</div>
+			<p><span class="feature">Today's Highlight: The Reddit Day!!!</span></p>
+			<p style="color: #6C9DDF">[01/12/16]: Writing these lines, more than a month later, let me state that [18/10/16] was a monumental day for Adventure Land. The day didn't start well, but in the end, It ended up being a day I will always remember.</p>
+			<p>Discovering the email issue the day before, my morale was down, I started integrating Amazon's SES, and email integrations are usually very challenging, it involves DNS changes, integration, testing, custom systems to send emails in a robust manner. Luckily, the integration+testing parts were a breeze. I also had existing routines that sent a small amount of emails from Amazon SES, that helped too.</p>
+			<p>Improved the recruits system, as I hoped the Halloween Event would create a rush, added/integrated new internal systems and added "Your Recruits" to the menu.</p>
+			<p>Converted our .wav sound files to .ogg's. While the Sound/FX system is experimental, no need to make people download huge .wav files.</p>
+			<p>Integrated the "Pumpkin Helmet" Jayson designed, this was another moment I will always remember, he really made me proud, he was aspiring to become a pixel artist, yet, I wasn't expecting results this fast. The "Pumpkin Helmet" ticked all the boxes, simple, good use of colors, looks great. Integrated it into the game, added "Reflection" as a unique stat.</p>
+			<p>Fixed our new Ranger/Warrior characters, they had 1-2 pixel issues that were only noticeable when they walked.</p>
+			<p>Added the "Fancy Pots" NPC to the Spooky Forest. Added the "Pom Pom"s. Calibrated the drops one last time.</p>
+			<p>Finally deployed the game, made early tests, and triggered the email sender routine. Checked the logs, and got devastated when I found out about the 14 emails/second limit Amazon SES has, most of the emails were wasted, and since I didn't track email routine completion, there was no easy way to retry. If I retried, some players would receive the email twice. Devastated, I went to sleep.</p>
+			<p>Woke up around 8PM, our regulars were enjoying the Halloween Zone, spent some time with them, I wasn't sure whether I should retry the email routine, started browsing Reddit, got the idea to announce the game on r/mmorpg, It was something I was planning to do, but not this early on, however, I really wanted our new Halloween Zone to be enjoyed and remembered, so I just prepared an introduction, from the bottom of my heart and posted it: <a href="https://www.reddit.com/r/MMORPG/comments/5855bd/adventure_land_an_mmorpg_in_which_you_can_code/" class="devlink"><span class="devlink">https://www.reddit.com/r/MMORPG/comments/5855bd/adventure_land_an_mmorpg_in_which_you_can_code/</span></a></p>
+			<p>It was an impulse decision, normally, I prepare and obsess over announcements like these. I wasn't expecting such a positive feedback. From the first moment I posted, people started appearing on Europas I, greeted everyone individually, It was so very exciting. I really wasn't expecting such a positive turnover, people seemed to be loving the game, embracing the Code, asking questions, making suggestions. It was truly an "It's Happening" moment for me. Time flied.</p>
+
+			<div id="devheader">[17/10/16]</div>
+			<p><span class="feature">Today's Feature: Announcement Emails</span></p>
+			<p>Implemented an email system to email all players. Created a Halloween Event announcement email.</p>
+			<p>Added the Str/Int/Dex amulets. Improved Mr. Pumpkin. Polishing the zone, monsters, drops. Added the "Ghost".</p>
+			<p>Added the Tier3/4 Armor Drops to the Armor Box.</p>
+			<p>Discovered that App Engine's mail deprecation affects the game too, can't send all those emails tomorrow, I'm deeply saddened and worried.</p>
+
+			---
+
+			<div id="devheader">[16/10/16]</div>
+			<p><span class="feature">Today's Highlights:</span> Ms. Dracul + Mobile Improvements + Low-FPS Improvements + Improved Interactions</p>
+			<p>Added Ms. Dracul, Improved the Halloween Zone.</p>
+			<p>Improved the gameplay on mobile devices, fixed some minor issues, the web version isn't supposed to be played on mobile devices, yet, it doesn't hurt to polish things a bit. Imporoved draw routines to support sub-60fps framerates. Previously, timings always assumed FPS around 60. Currently, they are based on milliseconds.</p>
+			<p>Improved the Inventory interactions, previously, click events were dynamically added, moving to static events, to increase performance and simplify things.</p>
+
+			<div id="devheader">[15/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Transport NPC: Red Lady</p>
+			<p>Moved the party invites to the left, tested Jayson's ranger+warrior, some pixels need to be fixed, going to fix them soon.</p>
+			<p>An extreme amount of thinking on Clans/Guilds.</p>
+			<p>Created the Transport NPC, added the orange snakes to the Halloween map.</p>
+
+			<div id="devheader">[14/10/16]</div>
+			<p>Obsessed over a resizing issue for hours, even wrote a custom routine to manually resize images in a pixel perfect way, no matter what I did, the result was the same, turns out, the image I was trying to resize had 3x3 pixels for each actual pixel, and I was dividing by 2, instead of 3, wasted 2 hours like this, but on the bright side, got to acquire skills to manually manipulate/create images with code.</p>
+			<p>Updated our map tilesets and refactored our maps.</p>
+			<p>Improved the skillbar prototype, tested PVP, the movement routine improvements worked. Started designing the Halloween zone, updated these logs.</p>
+
+			<div id="devheader">[13/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Ancient Computer</p>
+			<p>Jayson prepared new Ranger and Warrior looks, again, very impressive.</p>
+			<p>Inspired by his work, I created the Ancient Computer myself, it was super fun, If I had enough time, or, if we had enough time, like 1-2 years, Self-sufficiency in terms of pixel art would have been possible.</p>
+			<p>Reference, Dolch Computer: <a target="_blank" href="https://www.google.com/search?q=dolch+computer" class="cancela"><span class="devlink">https://www.google.com/search?q=dolch+computer</span></a></p>
+
+			<div id="devheader">[12/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Skillbar Prototype</p>
+			<p>Another slow day, updated my iPad to iOS10, to test stuff on iOS10.</p>
+			<p>Created the first skillbar prototype, items can be dropped onto the skillbar.</p>
+
+			<div id="devheader">[11/10/16]</div>
+			<p>Jayson designed a Quiver, I was very proud, it was beautiful, we started using Aseprite earlier, I think Aseprite inspired him.</p>
+			<p>Decided to make Quiver upgradeable, instead of compound like the Mage offhands, the distinction was unclear, I decided to determine the upgrade/compound difference based on size, small items should be combined. Combining 3 books make sense to me, yet combining 3 Quiver's doesn't.</p>
+			<p>Added Supershot, Ranger attack animations, set the line colors, integrated and calibrated all of Ranger's stuff.</p>
+			<p>Spent some time outside, checked out a house, want to have my own home, maybe start a family one day.</p>
+
+			<div id="devheader">[10/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Supershot</p>
+			<p>Today was a slow day, Improved Rogue's SNEAK! attack, added the damage modifier.</p>
+			<p>Updated the game, collaborated with Jayson, improved the conversation with Ellian, announced the Rogue class.</p>
+			<p>Added Supershot to Ranger's as today's feature, brainstormed possible recruitment rewards, level based rewards are pretty challenging.</p>
+
+			<div id="devheader">[09/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Class Previews at Creation</p>
+			<p>Working on the orb design, 3X Orb's just doesn't seem nice, it's too lazy, had the idea to convert one Orb to an Elixir slot, it will be a long-duration booster potion.</p>
+			<p>Brainstormed various alternatives for stats/attributes, decided not to add Vitality for now.</p>
+			<p>Added the "Quiver" item, improved character deletion, tested shadows for disappearing texts.</p>
+			<p>Experimented with class previews at character creation, the idea developed quickly, completed all classes.</p>
+
+			<div id="devheader">Slowly catching up with the earlier logs [14/11/16]</div>
+
+			<div id="devheader">[08/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Ranger</p>
+			<p>Checked the halloween map, perfect, opened a dialog with Ellian.</p>
+			<p>Researching the Ranger on a philosophical level, decided to let Rogue equip a single Warrior weapon double-handed, and similarly, allow a Ranger to equip a single Rogue weapon double-handed.</p>
+			<p>Added the ability to create 5+ characters.</p>
+			<p>Added the welcoming CODE comment to encourage new players to learn coding, to make it all more welcoming.</p>
+			<p>Added the Ranger class, the Bow, the attack animation, started playing and balancing a Ranger.</p>
+			<p>Added multiple Orb's to test the dynamics. Implemented the orb dynamics, so only unique Orb's can be equipped.</p>
+			<p>#NEWIDEA: A potion that replenishes both HP and MP, I should remember this one.</p>
+
+			<div id="devheader">[30/10/16] WHEW ...</div>
+			<p>It's been the most exciting, joyful, interesting, stressful, productive 12 days I've had in ... probably years ... It all started with: <a target="_blank" href="https://www.reddit.com/r/MMORPG/comments/5855bd/adventure_land_an_mmorpg_in_which_you_can_code/" class="cancela"><span class="devlink">https://www.reddit.com/r/MMORPG/comments/5855bd/adventure_land_an_mmorpg_in_which_you_can_code/</span></a></p>
+			<p>I was hoping, but wasn't expecting such a rush, going to pay my logs debt soon, I have the habit of taking regular notes, so at one point, I'm going to re-visit and summarise the story here</p>
+
+			<div id="devheader">[07/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Rogue!!</p>
+			<p>I've been trapped in the "Next Feature Fallacy" loop once again, I know that the game needs more adventure, events, the launch of the new maps that Jayson prepared, but it's easier to make/build/add other things. (Also new players, friends system etc. to keep the momentum going)</p>
+			<p>Re-Calibrated the XP/Level dynamics. After Level 70, Things are ever slightly harder now. A Level 70 Character becomes pretty agile, A Level 80 Character is pretty over-powered. So I think this hardness is deserved. We can always re-balance the dynamics and refactor existing users, so I shouldn't worry too much.</p>
+			<p>Started designing the new items, pixel art became a bottleneck. Emailed @ThisIsEllian - I admire his work on pixel items. It would be nice to have him onboard.</p>
+			<p>I've talked to a lot of players by now, received feedback, they asked questions, but, interestingly, no one asked about the "3 Unknown Slots", well they are Orb's, tested some alternative Orb's today, felt the balance, thought about the dynamics, not sure I'm going to keep to the original idea of adding Orb's as items. Postponing this decision.</p>
+			<p>And, today's highlight, Rogue!! - Added the Rogue class, which uses the already available Invis ability, and an accompanying "Claw" item, It's a fist weapon, no daggers yet. :]</p>
+
+			<div id="devheader">[06/10/16]</div>
+			<p><span class="feature">Today's Theme:</span> Endgame Re-Balancing</p>
+			<p>Without piercing properties, 950 armor = 95% Reduction in Physical Damage, 950 Resistance = 95% Reduction in Magic Damage. So, the challenge is, all armors should be useful, relevant, yet it should be challenging to get close to high armor/resistance levels. Ideally, ~50% should be achievable by a dedicated player who plays the game for weeks.</p>
+			<p>Completed and ~balanced the armor tiers today. Also adjusted the res./armor/speed/hp gains of classes. Increased the hp gain by level.</p>
+			<p>Ideally, a warrior shouldn't one-hit a mage and the current dynamics are balanced, maybe not super-well-balanced, but at least it's fun-balanced.</p>
+			<p>Added new features to our in-house map_editor. It has various zoom controls now. And some performance improvements thanks to pixel-perfect TilingSprite's.</p>
+
+			<div id="devheader">[05/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Tier 1/2/3/4 Armors</p>
+			<p>Preparing the rogue class. Decided to push the game design further. There will be 4 main tiers of armors, this applies to the resistance and armor dynamics. For example the "Dracul's Cape" is a Tier2 Chest armor. Unique armors like these will most probably be Tier3 at most, since they have additional properties.</p>
+
+			<div id="devheader">[04/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> "Your Recruits"</p>
+			<p>Added passive character abilities, currently only "Stun" is adopted from the weapon. Implemented the actual "Stun" ability today, the logic, the effects, everything. I guess I can add "Crit" as another passive ability soon, maybe from a specific ring.</p>
+			<p>Pushed both "Stun" and "Curse" as far as I can take them, both for players and monsters.</p>
+			<p>Updated these logs, I hadn't synchronised them since 26/09, so this was basically a debt-day.</p>
+			<p>Viewed Jayson's second version of the town map, he surprises me with every new thing he shows, I really wasn't expecting an iteration of the town map, I just got used to the first version (which is actually, maybe the 5th iteration, but at least it was the first version of that iteration up until now). Now the beach has large trees. The upgrade/compound house is bigger. I'm still not sure whether I preferred the original version tho.</p>
+			<p>Today's feature is actually more of a word, "Recruit", rather then "Refer/Referral". "Recruit" is a cool, game-worthy word, I hated "Refer".</p>
+
+			<div id="devheader">[03/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> Tiny Crab's (and in future, Spiderling's)</p>
+			<p>Added "Crab"s to the beach, but they are really huge, so, instead, shrinked them to half their size as "Tiny Crab"s, the actual "Crab"s are now "Huge Crab"s, because they are huge, and not cute.</p>
+			<p>PIXI has a new TilingSprite improvement, by Ivan, tested it, it seems Adventure Land is going to get a HUGE performance boost once it hits the production build. Great news. Currently all tiles are individual Sprite's. As TilingSprite quality was much inferior.</p>
+			<p>Calibrated "Tiny Crab"s. It's actually challenging, they are irregular, compared to other monsters, the Sprite's are shrinked in half, I decided to take the easy route and fit them in manually for now, works great.</p>
+			<p>Re-Visited the walking/line routines. Inner corners were challenging, they amplify the shortcomings of the design. I re-wrote the boundary logic a couple of times, in the end, made a patch, seemed to work, I'm settling for now.</p>
+
+			<div id="devheader">[02/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> New Attribute: Armor Piercing (and Resistance Piercing)</p>
+			<p>I really like "Armor Piercing", added it to the "Spear", makes a lot of sense too, since a "Spear" could pierce an armor. Practically, 50 armor piercing, increases damage by ~5%, which is a lot.</p>
+			<p>Picked up the "Random Looks" logic, fixed it, improved it, verified it.</p>
+			<p>Implemented "skin"/"Looks" selection, it works, yet I need to add a client routine to update the looks for both the player and others nearby.</p>
+			<p>I'm really worried that people will feel cheated by "Random Looks", you might prefer a male look, but you can also get a female look, I considered letting people choose/buy a specific look. Still not sure. I personally like chaos, taking my chances, so It's probably best to stick with the current dynamics.</p>
+			<p>Added new routines for checking the "disable" flags, like stun, .rip etc. Improved the CODE too.</p>
+			<p>Imported Jayson's town as "main2", It will exist along with the current town for now.</p>
+
+			<div id="devheader">[01/10/16]</div>
+			<p><span class="feature">Today's Feature:</span> First Item Ability: Stun!</p>
+			<p>A new month reminds me of the passage of time, I don't like it, It would have been great to just enter a time dilation field, build a product, get out of the time dilation field, show the world the product. Get in the time dilation field again, cry a bit, revise the product, and cram the entire process in a day. And maybe a solution to the ageing issue while we're at it.<p>
+			<p>I think I'm just adding a new feature every day to procrastinate, so I asked the regulars what they thought about "Item Ability"'s, so basically I asked Aiek and Oragon, they were around at the time, they both liked the idea. I like it too now. It ~complicates the game, but let's hope in a good way.</p>
+			<p>Mostly added the ability to the "Item" sheet, and added the "Stunned" animation today, and the upgrade dynamics, when the item is upgraded, both the chance and duration increases. The "Basher" item makes more sense now.</p>
+
+			<div id="devheader">[30/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Defeat on Escape</p>
+			<p>This was more of an ideas day, Added a "SHELLS" UI/Info to premium items. It seems, just having the "SHELLS" button on inventory was a mistake, most people just don't discover it.</p>
+			<p>Generated many improvement ideas, most are related to Premium Items, and how they need to look, I Just stopped liking my placeholder/improvised images. Going to turn these items into variations of the "Tome of Protection" image/design that I love. The tome with different scriblings on them.</p>
+			<p>Found/Reported an Electron bug, Researched browser notifications. Chrome notifications are more complex than I thought. The background listener part. Going to pull the trigger and start integrating at one point tho.</p>
+			<p>Added "Defeat on Escape", basically, on PVP, one emerging method was closing the browser just before escape. Now the player is auto-defeated when this happens, within the PVP-block duration.</p>
+
+			<div id="devheader">[29/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Curse</p>
+			<p>Today was a busy day for me, not in a good way, I need to enrol in a university every semester, for reasons specific to my country :[</p>
+			<p>We improved the "Mystery House" design with Jayson, he was already working on the rooms, but it seems we needed to synchronise. I got the chance to improve my design.</p>
+			<p>Implemented the "Curse" ability for Priest's. It's a first on many fronts. The attack routine was improved with amplifications, de-amplifications. Integrated it with animations, added a custom line color, added a custom filter to change the cursed entity color. Added a "[C]" indicator to the focus interface. The curse both slows, reduces attack and increases damage taken. Especially useful for PVP.</p>
+
+			<div id="devheader">[28/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Merchanting! with "Merchant Stand"s + "[AFK]"</p>
+			<p>Well this was a productive day.</p>
+			<p>Implemented the "Charge" effect that leaves disappearing clone's in it's wake.</p>
+			<p>Started experimenting with trade carts, drew one from scratch, didn't really fit in well with the game, It looked like an arcade cabinet tho, so that was a plus. In the future, when there is time. There will be around 12 unique trade carts, or merchant stands as I finalised the naming.</p>
+			<p>Added the "[AFK]" notice and logic. There are a lot of players who use CODE, when new players visit the game, if they don't see that those players are afk, the first impression isn't well.</p>
+			<p>Adjusted a wooden box to be the first "Merchant Stand", it looks great, fits well into the game, when a player opens the "Merchant Stand", it's like the player is a Trade NPC. :]</p>
+			<p>Added "Trade History", integrated it to the "Merchant Stand" item, previously it was a mystery who bought items, now the Trade History logs the last 40 trades.</p>
+			<p>Implemented a speed recalculation logic at both server and client, this is a revelating improvement, as dynamic speed adjustments are super practical now. It was needed for Charge, Curse abilities too.</p>
+			<p><a target="_blank" href="http://adventure.land/img/merchant.png" class="cancela"><span class="devlink">http://adventure.land/img/merchant.png</span></a></p>
+
+
+			<div id="devheader">[27/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Charge</p>
+			<p>Another day, another map_editor improvement, with similar specs, I can open 10X+ map_editor's on Windows/OSX, but Jayson always complains of the performance, anyway, normally, since map_editor was going to be an internal tool for myself, performance wasn't a concern, but it sadly became a concern, this last improvement adds texture caching, pushing the performance close to maximum levels with this draw-all architecture. It's also interesting that a GT750M on OSX can handle 10-15 things at once at 60fps, yet a GTX960 on Windows can't do one.</p>
+			<p>New Item: Earring of Dexterity + Improved the Pumpkin Helmet item, mainly the 16x16 image. Getting better at pixel-art, at least I hope. My biggest mistake it using too many colors and not having a palette. Going to stick to few colors on my next try.</p>
+			<p>New Ability: Charge for Warriors</p>
+			<p>Received/Inspected a bug report from a player, Teoman, he found a way to consistently go outside the boundaries, it seems inner corners are easy to break-free from.</p>
+			<p>The new maps are progressing well.</p>
+
+			<div id="devheader">[26/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Random Looks Routine</p>
+			<p>Improved/Patched many of the server routines. These improvements are to make the game glitch-free, and in-future, abuse-free.</p>
+			<p>Calibrated Boss cooldowns and drops. Implemented the "Random Look" routine internally, this routine will give player random looks. It will be integrated to the "Looks" NPC.</p>
+
+			<div id="devheader">[25/09/16]</div>
+			<p><span class="feature">Today's Feature(s):</span> Dracul's Cape + Lifesteal + Basher</p>
+			<p>Added a new item, "Dracul's Cape", this is a major change for the game, decided to add random/rare drops like this for most bosses, monsters. The cape has +HP that benefits Mage's/Priest's significantly. The "Lifesteal" attribute is new too. Very small for the Cape, as attributes are cumulative.</p>
+			<p>Added the "Basher" item, and the "Weapon Speed"/"Slow" routines. "Basher" adds armor, it's the first two-handed weapon, would be ideal for Tank's.</p>
+			<p>Made a lot of internal improvements, testing, fixes for the new additions, overall this was a productive day.</p>
+			<p>Side Note: After reading my own logs, and writing this /logs summary on [03/10/16], I wonder whether I should let go off my productivity obsession, yes it produces short-term results, but I can't help but wonder whether it's worth all the stress, in the long-run.</p>
+
+			<div id="devheader">[24/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Character Operations</p>
+			<p>Slow day, mostly minor improvements, Improved login/selection, Added "Character Operations" and Implemented character deletion.</p>
+
+			<div id="devheader">[23/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Referrals!</p>
+			<p>Mostly fixed newly introduced issues today. Improved/Simplified the shutdown routine of the server, It's much cleaner/simpler now. Reviewed the bank routines, found/patched another possible loophole. I want to be confident that the bank transactions are solid now.</p>
+			<p>Struggling with game and map design, the "Newcomer Experience" is extremely important, the new maps are beautiful, yet I'm not sure about the main town design. I'm also unsure whether the town should be stand-alone and players should teleport to different zones - or whether the main town should be super-large that houses multiple regions in one map. Probably something in between. A large but not huge main town.</p>
+			<p>I don't know whether it's the case, or just what I feel, but user acquisition is a real struggle in the age we are in. Things weren't like this, let's say, 5 years ago. My solution is to give players something for helping the game grow. While I have a very humble ad running, the real growth is from player-to-player sharing. People enjoying the game and inviting their friends. So my strategy from this point forwards is to give SHELLS to players for inviting their friends, hence the "Referral" system. I might find a cooler name for it.</p>
+			<p>Also briefly started the <span class="feature">"Achievements"</span> system, and debating <span class="feature">"Quests"</span> with Jayson, I honestly can't think of many meaningful quests. In almost all online games, quests are sugar-coated grinding, so I was against quests originally. Not anymore tho. I feel like small/local quests could add some color to the game.</p>
+
+			<div id="devheader">[22/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Tome of Protection!</p>
+			<p>So PVP is super-fun. Yet it's a bit extreme, you currently lose 4% of your XP on death. If you are LV.60+ - that's a lot of XP. This "Tome of Protection" costs 20 SHELLS, significantly reduces the XP loss, and to make things fun and fair, on PVP, the opponent gets 10 SHELLS if a Tome is consumed.</p>
+			<p>Applied a simple fix so the game can handle "disappear"+"reappear" on the same frame. Otherwise due to the design it wasn't an easy problem to fix. Updated PIXI, made some small improvements, patched the `.destroy` routine so it doesn't cause crashes.</p>
+			<p>Aided Jayson on the issues he was having, the new maps are finally progressing well. Not having to worry about the map design aspect of the game is a relief.</p>
+			<p>Side Note: I'm an OSX User myself, It's sad that Windows/Hardware field is still ridiculed with various repeating issues, it forces everyone to become a superuser, maybe it's a good thing, but It's definitely not easy.</p>
+
+			<div id="devheader">[21/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> PVP Servers!</p>
+			<p>Americas/Europas II's weren't too useful. The 6-people PVP Arena limit is mostly too much early on. So decided to make the II's all-pvp servers for now. With higher "Luck"/"Gold"/"XP" gain stats.</p>
+			<p>Started catching up on the "Development Diary", the last update was on [05/09/16], I REALLY need to do some things daily, It's really hard to generate proper updates, especially social media, hate social media now. Intending to create a GIF with some abilities, disappearing lines soon, and to announce the PVP servers.</p>
+
+			<div id="devheader">[20/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Mana Burst!</p>
+			<p>Implemented, Calibrated the "Mana Burst" ability for Mage's. Added a custom animation and a custom disappearing line. When used, it converts half the mana to damage. It's intended to be used during PVP. I find the ability pretty balanced. It's only super-useful for 1V1 encounters where a Mana Burst is enough to kill the opponent. After the burst, a pot usage is needed to attack again. The ability doesn't affect the attack cooldown.</p>
+			<p>Added the "A"/"Q"/"R" keypresses. "A" is Attack, "Q" is Taunt for warriors, "R" is mana burst for mages. "Q"/"R" are misc for now. The game doesn't have official abilities yet.</p>
+
+			<div id="devheader">[19/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Taunt</p>
+			<p>It's a ranged attack for warriors, inflicts only one damage, but prevents the opponent from escaping and taunts monsters.</p>
+			<p>Re-written/unified all the attack routines, both PVE and PVP, I love refactoring, this simplifies things a lot, especially for abilities.</p>
+			<p>Disabled Stripe for now, I need to refactor servers to use secure connections, it's not trivial, I'm also unsure whether the overhead is significant. The practical Stripe UX I implemented just used an overlay on top fo the game, so it was HTTP, against Stripe's rules. For now Super Rewards seems more than enough.</p>
+
+			<div id="devheader">[18/09/16]</div>
+			<p>Finally caught the bank issue, it was more extreme than I thought, on one side, I'm glad that it was an obvious issue, on another side, It's a shame that I let such a major issue pass. It happened because I was improving the synchronization routine, jumped onto something else, then left a simple yet deadly routine in place. Basically, every 5 minutes, the bank was automatically unmounted. So if a player got into the bank, wait 5 minutes, took everything, those items/gold would still be there.</p>
+			<p>I had improvements in-mind that would push the bank routines from 99.5% to 99.99% (hopeful, made-up numbers) - so I ended up making those. Now it seems almost impossible to cause a discrepancy. Even in extreme circumstances.</p>
+			<p>Found and started investigating a serious Electron issue, It seems it could be related to the CODE issue I was experiencing myself. I use OSX, most players are on Windows, so the issues are not always shared.</p>
+			<p>No "Today's Feature" today, but the bank issue was pretty major, and the fix/improvements were hefty. #TODO: Review all trade routines once more</p>
+
+			<div id="devheader">[17/09/16]</div>
+			<p><span class="feature">Today's Feature:</span> Invis!</p>
+			<p>Improved/Finalised the PVP Indicator UI. Started designing the "Friends" UI/UX. It's not simple yet. It should be simple and fun.</p>
+			<p>Implemented "Abilities", "Invis" is the first one, and probably would be the most challenging one, but it turned out pretty simple. When the "Assassin" class is added. The "Invis" will be their edge.</p>
+			<p>Improved, Simplified, Extended the character effects/filters. Like the existing item-glows, invis fade-away, etc.</p>
+
+			<div id="devheader">[16/09/16]</div>
+			<p>A lot of minor things, some post-deployment stuff, where issues pop-up.</p>
+			<p>Experienced a bank dejavu, I wasn't sure, but it seemed like the bank rolled back. Extremely concerning. Trade routines have to be flawless. I investigated but couldn't reproduce.</p>
+			<p>Decided to add a major, or rather, significant, preferably player-facing feature every day, as I feel like the progress is slowing down.</p>
+			<p><span class="feature">Today's Feature:</span> PVP Hit Indicator + Escape Prevention</p>
+			<p>Basically, when you get hit, your name becomes red and the indicator fades away, you can't TOWN or Escape when you are hit, so the PVP is now more fun :]</p>
+
+			<div id="devheader">[15/09/16]</div>
+			<p>Another Productive Day!</p>
+			<p>Improved and completed the Stripe payment system integration+UI/UX/logic. I love how Stripe makes credit card payments simple.</p>
+			<p>Implemented a simple Mapping routine, as the Map in Mapreduce, I love to reinvent the wheel whenever possible, especially for data processing. The mapping routine for Adventure Land is both super simple and robust.</p>
+			<p>Added "SHELLS" drops to monsters, gems. Completed and deployed the premium currency of Adventure Land. A monumental day.</p>
+			<p>Tested both payment routines myself, made fixes, improvements, calibrations.</p>
+			<p>I play the game as any other player, so while the premium items existed, I didn't/couldn't get any, this was kind of the reason why I launched SHELLS this early, to get some premium items myself as I couldn't wait any more. I set the game to give me 200 SHELLS every hour. To experience the dynamics first hand.</p>
+
+			<div id="devheader">[14/09/16]</div>
+			<p>Implemented the "Noob Mode", one of the main issues of the game is that people don't interact with interfaces too much, to see what does what, back in the day, game interfaces was cryptic as hell, nowadays, smallest challenge and you lose a player. So this mode puts INV/CHAR/STATS/GUIDE buttons to the top. While the "Pro Mode" replaces them with CODE/PING.</p>
+			<p>Improved the Stripe integration, Integrated Super Rewards, so far Super Rewards seem great, very easy to integrate, simple, clean, it looks like there are many free offers too.</p>
+			<p>Pixel Art/ist research. Got some inspiration.</p>
+
+			<div id="devheader">[13/09/16]</div>
+			<p>Minor bugfixes, improvements. Created the "Amulet of Mystery". It will be a rare drop from the "House of Mystery". It has various stats + evasion/reflection. Properties that don't exist yet :]</p>
+
+			<div id="devheader">[12/09/16]</div>
+			<p>Today is my birthday, getting old, birthdays are stressful now, to me, they indicate another passing year without an achievement. My goal in life has become seeking success through products I built. Not healthy, maybe not logical, but it is what it is. My time with Adventure Land was rejuvenating tho, without Adventure Land, things could've been harder.</p>
+			<p>Calibrated/Improved the new monster aggression routines, disappearing lines and the new server/client data routines.</p>
+			<p>Improved the login/selection interface, Added "Last Update Notes".</p>
+			<p>Jayson was having issues with the map_editor, tested various alternatives, none seemed to work, so we invested in a new laptop.</p>
+
+			<div id="devheader">[11/09/16]</div>
+			<p>Super Productive Day! I needed one.</p>
+			<p>Added flexible+persistent properties to characters. Not used yet, but will be needed when there are daily events, multiple looks, options etc.</p>
+			<p>Implemented "Aggressiveness". This is a simple yet major update. The underlying system is also remarkably efficient, otherwise it would have been costly to make each monster find someone to attack whenever it's able to do so. The same system/method/data-structure might also increase the game performance significantly at a future rewrite -but- the main movement/map logic is much more complex for this method to be easily accessible. I got the idea from Geobird, it's "geo-hashing", both simple and efficient/effective when calibrated.</p>
+			<p>Refactored the monster+player information routines, initially, things were excluded, this made it easy to develop the game, now, things are included, so each property that are sent to clients are manually added to the list.</p>
+			<p>Added a new "is_in_front" logic, so monsters only show aggression towards what are in front of them, the same check could be added to other things too, but things are fun the way they are.</p>
+			<p><span class='big'>Disappearing Lines!</span> There was no way to know who attacked who before. I initially didn't like these too much, now I can't imagine the game without them. I like scripting a party with CODE, now it's much more enjoyable, watching the interactions through lines :]</p>
+
+			<div id="devheader">[10/09/16]</div>
+			<p>Met "Zenn" in-game, we literally debugged an issue together for 3 hours. The inventory was never shown for him. Which is bizarre, as I keep the UI as simple as it goes. For whatever reason, the `position:fixed` inventory never showed up for him. I researched, deployed alternatives 10's of times, he tested and tested, it never showed up - And this is on Chrome, his solution was to use IE. - I ended up re-creating a unique inventory each time, instead of using an existing "div", that solved the issue. - The cause is still a mystery tho, in hindsight, I neglected to ask whether he had any 3rd party plugins.</p>
+			<p>Made some other drag/drop, item related improvements.</p>
+			<p>Created the first custom map animations, a small fire, iterated it, added a blue version too. Then tested some lava/fire pools. I love pixel animations, the game will be filled with them in the future.</p>
+
+			<div id="devheader">[09/09/16]</div>
+			<p>Found a bank issue. Added retry+fail logic to the bank routines, and other routines while at it. Improved the character start/sync/stop routines. Fixed some newly introduced bugs.</p>
+
+			<div id="devheader">[08/09/16]</div>
+			<p>Sick day, took care of some external things I needed to take care of in the meantime. Overall ~3 days affected, yesterday, today, ~tomorrow.</p>
+
+			<div id="devheader">[07/09/16]</div>
+			<p>Explored the casino/tavern options a bit. I want the game to have a communal place for chance games, nothing serious. just a place in a 2D pixel world where people could hang out casually. Such a place should have basic but fun games. Some single player, some multiplayer.</p>
+			<p>Wrapping up the bugfixes, research, testing.</p>
+			<p>Started feeling dizzy, It happens ~every 3-4 months, when I don't eat healthy for extended periods of time, I've been addicted to Wasa bars lately, you would expect it to be ~healthy, but apparently not.</p>
+
+			<div id="devheader">[06/09/16]</div>
+			<p>Added an "Under Mode" to the map_editor, really eases the map_editor usage and extends it's capabilities.</p>
+			<p>Started inspecting/improving the right click logic, currently it's pretty complicated, the game is 2D, when a character shadows a monster, in some cases the click should propagate through, but in certain cases it shouldn't. Tested things for hours, it seems I need to modify/extend the existing PIXI Interaction routines at one point. They mimic DOM Events 1:1 and it's not a good thing.</p>
+			<p>Side Note: I could've never imagined 3 months of game development could extend my horizon this much</p>
+			<p>Side Note 2: Since in the past I've lost so much time with minor issues/obsessions like these, I try to improve as much as I can and move on fast, but still, each issue can still consume 1-2 days</p>
+
+			<div id="devheader">[05/09/16]</div>
+			<p>Mostly catching up with things, small fixes, I really need to do some things daily, like updating these logs, and preparing game updates/screenshots.</p>
+
+			<div id="devheader">[04/09/16]</div>
+			<p>Completed the bank, a proud moment.</p>
+			<p>Perfected the drag/drop and right_click routines, another proud moment. Now drag/drop and right_click works everywhere, internally things are much simpler too. These routines are so robust now that I feel like I can utilise them when the time comes to build iOS, Android versions of the game.</pr>
+			<p>Improved the "auth" and "transport" routines of the server. Patched the game so re-calling some routines are safe. So it won't be possible to cause glitches whether intentionally or unintentionally.</p>
+			<p>Improved the map_editor to ease working with "entities", which are 3D. Probably not the right term, but basically they are things that you can also get under, like statues, trees, houses, gates. I used them sparingly, as I didn't optimise the tiling routine to dynamically add/remove them, Jayson enjoys using them wherever possible, results in a more lively map.</p>
+			<p>Deployed the bank!: <a target="_blank" href="http://adventure.land/img/bank.png" class="cancela"><span class="devlink">http://adventure.land/img/bank.png</span></a></p>
+
+			<div id="devheader">[03/09/16]</div>
+			<p>Started working with Jayson, it seems I neglected to give him a proper tutorial on how to use the in-house map_editor, features, limitations, how to design with these in mind etc.</p>
+			<p>Tested his "worldmap", while impressive, it had too many overlapped tiles, an unnecessary performance hog, but, on the bright side, the map inspired me to improve the map tiling routine, it turns out PIXI children are an array, so batching the deletion improved the performance significantly, luckily this was possible without any modifications, since all map entities were naturally adjacent.</p>
+			<p>Made other small improvements to tiling, and generated some major improvement ideas, It's super challenging to cram everything to 16ms, to keep the game flawlessly 60ms, even a 20ms frame is noticeable. The next improvement will involve pre-calculations.</p>
+			<p>Started inspecting a CODE issue, it seems to only affect me, might be a Chrome bug, various elements of the iFrame doesn't load most of the time.</p>
+			<p>Added "signs" to the game! - The first one is for the "Offshore Bank" :]</p>
+			<p>Implemented the Gold NPC, and "withdraw"/"deposit".</p>
+			<p>Designed the bank map, the counters, interior design, I just love the bank.</p>
+			<p>Started implementing the item storage routines, completed the "swap" operation, which happens between the inventory and storage.</p>
+
+			<div id="devheader">[02/09/16]</div>
+			<p>Implemented the internal bank connections, persistence, server logic. All trade systems have to be flawless, even the smallest oversight could devastate the game economy.</p>
+
+			<div id="devheader">[01/09/16]</div>
+			<p>Deployed the improvements, fixed the initial issues, re-balanced the pvp zone, increased gem drops</p>
+			<p>During the last few days, the "Bank" design in my mind became clearer, started implementing the internal systems</p>
+			<p>PVP(Zone): <a target="_blank" href="http://adventure.land/img/instances.png" class="cancela"><span class="devlink">http://adventure.land/img/instances.png</span></a></p>
+
+			<div id="devheader">[31/08/16]</div>
+			<p>Added the pvp announcements, logic, starting to wrap things up, re-calibrated drops, valuations.</p>
+			<p>Created "Skeletor", the boss of the pvp region, he's super tough, but very kiteable by mages, however, since the region is PVP, a warrior can suprise and "pwn" the mage, so I feel it balances things.</p>
+			<p>Made some small fixes and improvements, mainly to the items system. Overflowing the inventory was possible, it was even a feature in the early days.</p>
+			<p>Experimented with "Bitmap Text"s - fonts converted to images, going to convert names to bitmap texts at one point in the future, probably.</p>
+
+			<div id="devheader">[30/08/16]</div>
+			<p>Created a new internal system that I call "ACCESS", I build systems like these for all my projects (basically Geobird and Adventure Land), existing systems are Renderer, Executor, Viewer(s), this one is new, it gives practical remote access to the game server, a running process. I couldn't find a cooler name for it yet.</p>
+			<p>Created the first "Live NPC" - so basically a NPC that is technically a player, the pvp blocker NPC will be live, he will move from the cave entrance to the revival zone when there are enough players for the pvp zone to unlock.</p>
+			<p>Created the "Priest's Mace", along with the image. Created a new pants image.</p>
+			<p>Finalised the "Tier 2" armors, they will drop mainly from the "Armor Box", named them with "Sturdy" and "Rugged" prefixes, "Leather" would have been more appropriate. Going to rename and re-style them in the future.</p>
+			<p>Added a "Spear" to the game, can only be equipped to the mainhand of warriors, compared to a "Blade", has a much higher range.</p>
+			<p>Created the images of "Armor Box" and "Weapon Box" (Also "Jewellery Box", to-be-launched)</p>
+			<p>NOTE: Starter items intentionally don't look super cool, I'm unsure whether I should make them look cool, probably not, I plan to make rare items look cool.</p>
+
+
+			<div id="devheader">[29/08/16]</div>
+			<p>Fixed a bug that eluded me for some time, along with the bugfix, made some performance improvements to the mapping, the bug occurred when a tile had uneven width/height.</p>
+			<p>Improved and highly simplified player right clicks, Implemented "PVP Death Loss" dynamics, currently both xp and gold are transfered.</p>
+			<p>To procrastinate, completed the "Names" feature, now, whenever "N" is pressed, names show up. A needed feature but it wasn't crucial. Perfecting the text rendering is super challenging.</p>
+			<p>Created the "Tiny Ruby" for the pvp zone.</p>
+			<p>Created "Irradiated Goo"s - The game will become 50 Shades of Goo's when I'm done.</p>
+			<p><span class='big'>BIG UPDATE:</span> Jayson is now a part of the team, or this one man operation now becomes a team, in the short span of 2-3 days, he designed remarkable map entities. It's great to have someone to work with. "Map Design" was a heavy burden for me, It's a form of art that one needs to dedicate him/herself to. Not simple, as I plan to mature the game in 6 months, and we are already 3 months in. (1 month start, 1 month development, ~1 month since the launch)</p>
+			<p>WOW, just realised it has been a month since the launch, we've come a long way since then, I see the game as a community now, met a lot of people, made a lot of friends, my entire vision changed, and not just about the game too, about life in general, about development. Let's just say I'm more hopeful now, about many things :)</p>
+
+
+			<div id="devheader">[28/08/16]</div>
+			<p>Improving the PVP region, dynamics and the surrounding routines</p>
+			<p>Community member Jayson, a.k.a Oragon/Premier shared his first map, It was incredibly promising, and motivating. Gave me a lot of hope for the future of the game.</p>
+			<p>I realised I should do what I do/enjoy the best and collaborate with others who are better at things I struggle at. In this regard, the "Community Map Editor" proved to be extremely useful.</p>
+
+			<div id="devheader">[27/08/16]</div>
+			<p>Improved the "main" map / cave area. Tested alternative map designs. Started implementing the new PVP region that unlocks only if there are enough players around.</p>
+
+			<div id="devheader">[26/08/16]</div>
+			<p>Fun day for me: Refactoring</p>
+			<p>Implemented "instances" to replace "maps", this new system isolates maps, increases performance, also allows things like "dungeons", spontaneous server events, solo zones, party zones, and so on. :]</p>
+			<p>Created the first test dungeon, "dungeon0", it was a joyful moment, no bugs, It just worked (It's a small rectangle with some Goo's)</p>
+
+			<div id="devheader">[25/08/16]</div>
+			<p>Implemented the "Stone of Wisdom/Luck/Riches" dynamics, calibrated, created images for the stone's (used Primordial Shard as a starting point)</p>
+			<p>Started implementing a "Community Map Editor"</p>
+
+			<div id="devheader">[24/08/16]</div>
+			<p>Tested some new routines to improve the map performance</p>
+			<p>Created the "Stone of Wisdom", along with "activate"/"morph" capabilities</p>
+
+			<div id="devheader">[23/08/16]</div>
+			<p>Tested/Improved the new routines, Implemented new internal interfaces</p>
+			<p>Added a re-focus routine to the game, when the browser window is re-focused, the monster/player focus was lost, now it's recovered.</p>
+			<p>Balanced monsters and drops</p>
+
+			<div id="devheader">[22/08/16]</div>
+			<p>Pursued the implementation and integration of the new event/backup systems.</p>
+			<p>Implemented new payment routines and interfaces, Improved the existing ones, going to roll them out with the next major update.</p>
+			<p>By design, Adventure Land isn't pay to win, the current progress of the game is proof, as everyone who got to know the game is both enjoying the game and learning a lot from the experience.</p>
+			<p>The addition of "SHELLS" won't change this, on the contrary, If there is inward cash flow, I will better be able to promote the game when the time comes, and strengthen the community.</p>
+
+			<div id="devheader">[21/08/16]</div>
+			<p>The day started experimental, improved SFX a bit, created a Slack community for contributors, created a community map editor, the game needs another community tho, might create a forum.</p>
+			<p>Started implementing internal event and backup routines, for analysis and disaster recovery</p>
+
+			<div id="devheader">[20/08/16]</div>
+			<p>Became really obsessed with the memory leak and performance issues. Re-Visited every single routine available. Made a lot of improvements, found 2 major things to fix. They weren't the cause of the major leak.</p>
+			<p>After eliminating everything, started introducing things one by one, Text's turned out to be the leak source, the disappearing texts in game, manually patched the issue and reported it to the pixijs project.</p>
+			<p>While I was at it, tested several new methods that will improve the game performance, but decided to delay these endeavours, gameplay should come first, the game is already 60fps in most systems.</p>
+			<p>Added shadows to the maps, still experimental, first usage is in the cave.</p>
+			<p>First event designed: "Goo Brawl"! :] Everyone is teleported to a small island with Super Goo's that have super drops. 5 minutes.</p>
+
+			<div id="devheader">[19/08/16]</div>
+			<p>Started hunting memory leaks and performance issues.</p>
+			<p>Designing a new map and new server events</p>
+			<p>Disabled the chaotic cross-party +XP messages, where the +XP would show up on every member of the party, it was initially cool tho, I will later add it as an option.</p>
+			<p>Stackable items can now be traded, individually.</p>
+
+			<div id="devheader">[18/08/16]</div>
+			<p>New NPC + Feature: Gems + Exchange. The first gem, "Raw Emerald" drops from any monster. It's super rare tho.</p>
+			<p>First game refactoring, refactored item formats and routines, there were no casualties, it was a smooth operation.</p>
+			<p>Rare items and high-level items are "High Grade" now, added new "High Grade" upgrade scrolls and a new "Dexterity" scroll. The dexterity scroll is pretty fun, there are no dexterity classes yet, however, if someone is farming bee's, switching the armor stats to dexterity makes a lot of sense, in terms of speed. :]</p>
+			<p>Created new images for future gems, one more common, one only drops at the soon-to-be launched PVP map.</p>
+			<p>Perfected the standalone version of the game.</p>
+			<p>EXCHANGE: <a target="_blank" href="http://adventure.land/img/exchange.png" class="cancela"><span class="devlink">http://adventure.land/img/exchange.png</span></a></p>
+
+			<div id="devheader">[17/08/16]</div>
+			<p>The Party-Player buttons are now functional. It's Heal for Priests and Focus for others.</p>
+			<p>Improved CODE, added new functions: heal, buy, upgrade, get_player(name)</p>
+			<p>Created a standalone executable with Electron, patched things a bit to make it work, it was much simpler than I imagined it would be. It's much more fun playing the game in a separate window, browsers are super annoying, as they don't draw when the window/tab is out of focus. These standalone executables are perfect for CODE, and for casual playing, as playing in the browser can be distracting, if you are working and taking small breaks to venture in Adventure Land.</p>
+
+			<div id="devheader">[16/08/16]</div>
+			<p>Another day of huge improvements! Animated Death + Priest Class on the same day!</p>
+			<p>Moved away from bold texts, now all texts are uniform. Also increased text_quality for everyone on default. This results in crisper yet thinner texts. I was so used to the illegible bold disappearing texts, so it wasn't easy to let go ;]</p>
+			<p>I personally don't like how "TOWN" works right now, without any animation you just re-appear in the main spawn point, so cold. For this reason I decided to make death colourful and fun (actually the opposite). When you die, you turn into a tombstone, the game becomes black and white, but you can still talk with others until you press "RESPAWN".</p>
+			<p>With death in the picture, game became much harder, the logical next step was introducing the Priest class. I already knew how I wanted to implement/integrate the Priest and just decided to make it happen today. I personally love the new priest class. It's just right click to heal and similarly right-click to attack, however the attack only does 40% of the heal. Improved the interfaces to include "HEAL".</p>
+			<p>Introduced new animations and skins</p>
+			<p>The HEAL/ATT button on the middle UI is now functional. It's needed for priests to self-heal. But it might also help players who use touch devices and can't right click easily.</p>
+			<p>Next Step: Passive abilities that extend to party members. These will show up in STATS. For example the Priest might add damage reduction to the party.</p>
+			<p>Death: <a target="_blank" href="http://adventure.land/img/death.png" class="cancela"><span class="devlink">http://adventure.land/img/death.png</span></a></p>
+
+			<div id="devheader">[15/08/16]</div>
+			<p>Created a small island with 3 overpowered fairies and the soon-to-be appearance NPC.</p>
+			<p>Fixed the character movement boundary checks. Previously it was possible to walk outside boundaries in rare circumstances.</p>
+			<p>Started implementing/testing an actual death routine.</p>
+
+			<div id="devheader">[14/08/16]</div>
+			<p>New server side boundary checks for monsters! No more walking on water :] This is kind of the reason why I designed the initial town as an island cluster, better pass water instead of walking through a wall. With this update, it will be possible to extend the cave and create more extensive maps. For some reason I have the desire to build a farm map, monsters inside their own fences and a simple NPC that herds them.</p>
+			<p>Implemented the definite fix to the consecutive item upgrade issues. On slow systems, it was still possible to re-upgrade items before the game was re-drawn. Not anymore :)</p>
+			<p>Much thicker upgrade animations, the thin ones were barely visible.</p>
+			<p>Improved the server failure routine, players are no longer immediately unlocked, they unlock automatically in 12 minutes. Another iteration is needed, luckily the server is solid now, no more unexpected exceptions.</p>
+
+			<div id="devheader">[13/08/16]</div>
+			<p>Very stressful day, only researched PeerJS, would be a nice addition to CODE.</p>
+
+			<div id="devheader">[12/08/16]</div>
+			<p>Ideally "font" worries should be delayed, but I indulged myself. Found an extremely simple method to perfect the font-rendering in-game. Basically you draw texts 2x or 4x and shrink them. I might post it on Stack Overflow at one point. It's a simple solution to haunting blurry Canvas text issues.</p>
+			<p>Closed the gap between browser font differences slightly. I think, in the end, there won't be any "bold" fonts. So Chrome texts will thin-down a bit, yet things will look the same across all browsers. I'm really used to how things look now. So I didn't make any changes at this point.</p>
+			<p>Re-Implemented character names as it was requested, it's not launched yet, but they look great! I think I will add it to button "N", it will be hold-to-show.</p>
+
+			<div id="devheader">[11/08/16]</div>
+			<p>Implemented the initial fix for the consequent upgrade issue that came up a lot. Diverted a portion of my efforts back to Geobird. My performance will drop until I re-balance.</p>
+
+			<div id="devheader">[10/08/16]</div>
+			<p>SFX is finally not totally horrendous, managed to rig-up and integrate some slightly pleasing effects. It's interesting that the game was totally silent all this time, yet no one even mentioned it, I wonder whether a non-perfect Sound/Music adds to a game, or takes from a game (probably the latter). Anyway, until things are more satisfying, SFX/Music needs to be toggled ON each time.</p>
+			<p>Spending too much time in-game, it really reduces my performance, tho, receiving lots and lots of awesome feedback and suggestions, caught up with logs today, also starting to take a more active approach for sharing on Reddit/Twitter/FB. I hate FB beyond imagination. Yet it's probably a necessary evil for a game, there is engagement even at this scale. I might revise the social media strategy in a future time. I would personally like to have only a subreddit.</p>
+			<p>
+				A Comparison between old and new:
+				<a target="_blank" href="http://adventure.land/img/early.png" class="cancela"><span class="devlink">http://adventure.land/img/early.png</span></a>
+				<a target="_blank" href="http://adventure.land/img/new_crowded.png" class="cancela"><span class="devlink">http://adventure.land/img/new_crowded.png</span></a>
+			</p>
+
+			<div id="devheader">[09/08/16]</div>
+			<p>Implemented "CONF" for game settings, along with default-off Music/SFX switches</p>
+			<p>Implemented the SFX logic, Improved the Music logic</p>
+			<p>Added the "Perfect Pixels" switch and logic, as my Dell P2415Q monitor can't handle perfect pixels at 4K, no matter what I try, I was playing the game anti-aliased during development, the same routine made it's way to production, now, on default, players will see a perfectly pixellized game. The "OFF" option provides a potentially more blurry/soothing game play. The behaviour might change from system to system, and it might be ineffective for non-retina screens. There will be another option for Retina screens soon, as non-Chrome browsers need a different solution for perfect pixels.</p>
+
+			<div id="devheader">[08/08/16]</div>
+			<p>Finally added range checks to attacks, I intentionally left it unchecked originally, even now it needs another iteration before PVP becomes serious, currently it's heavy lag-friendly</p>
+			<p>Experimented with some alternative character graphics, ones that iterate over existing ones</p>
+			<p>Improved the server offline detection routine, It marked live servers offline by mistake, Probably a glitch based on minutely differences between instances and db #TODO: Iterate once more</p>
+			<p>First version of Music!</p>
+
+			<div id="devheader">[07/08/16]</div>
+			<p>An eventless day of community engagement, bug fixes, design and re-balancing</p>
+			<p>Patched an issue that occasionally took a server offline</p>
+
+			<div id="devheader">[06/08/16]</div>
+			<p>The day of HUGE improvements. Maybe a turning point in the game. My most productive day in a long time. A ~24 Hour sprint.</p>
+			<p>Started by designing, implementing the party logic, had no intention of completing the entire system in one day, but things came to fruition fast.</p>
+			<p>Really proud of how the party design evolved, they are simple to form, simple to manage, when the leader leaves the next one in line become the leader, the XP isn't reduced significantly, so people have a strong incentive to team up.</p>
+			<p>All hp bars of team members are visible, so when Priests arrive they will have an easy time targeting people to heal, when a monster attacks a team member, again it's indicated by it's visible hp bar, all xp gains of party members are shown as purple disappearing texts, all in all, in my opinion, it's beautifully chaotic, I love it</p>
+			<p>While spending time with the early players, Trade was requested again, players really need to transfer items to their friends and alt-characters, so decided to push the day further and add a basic trade too. It's not "Trade", but rather, a way to practically showcase and sell items</p>
+			<p>Added a "SHOW/HIDE" interface, and 4 showcase/sell slots to the Character interface.</p>
+			<p>Improved the drag/equip dynamics a lot further, now things can be dragged to the Character slots, and vice versa. Previously drag was only inside the inventory.</p>
+			<p>Discovered game's first "not cheater" with his own words, "Sammy", I was super proud, It was such a happy moment. To build a game, and have a cheater this fast, almost brought me to tears.</p>
+			<p>Improved NPC's to be left-clickable, they activate, in future they should have a different left-click behaviour, probably a name and a story.</p>
+			<p>Tested Adventure Land on Safari/Firefox, made lots of fixes/improvements.</p>
+			<p>
+				<a target="_blank" href="http://adventure.land/img/p_b.png" class="cancela"><span class="devlink">http://adventure.land/img/p_b.png</span></a>
+				<a target="_blank" href="http://adventure.land/img/trui.png" class="cancela"><span class="devlink">http://adventure.land/img/trui.png</span></a>
+			</p>
+
+			<div id="devheader">[05/08/16]</div>
+			<p>Big changes today, re-designed and implemented the entire game interface</p>
+			<p>The original interface had the ATT, XP, HP, MP all as buttons with texts, with cooldown animations underneath the buttons, I personally liked them, they weren't perfect, but they were awesome placeholders</p>
+			<p>The new interface has HP/MP/Character/Inventory/Attack interfaces in the middle section. The Attack and Inventory have a recharging animation that lights up when it's active.</p>
+			<p>The XP interface is now a bar, like HP,MP, it's above the game log. The Server/Map information section is moved to the left, above the chat section, with a toggle on/off coordinate interface</p>
+			<p>Improved the guide a bit too, added the "Attributes" section, + populated it further</p>
+			<p><a target="_blank" href="http://adventure.land/img/ui_new.png" class="cancela"><span class="devlink">http://adventure.land/img/ui_new.png</span></a></p>
+
+			<div id="devheader">[04/08/16]</div>
+			<p>Added the "Fiery Blade" and "Fiery Staff" items, they are very rare, so they don't affect the game balance, yet make the game more fun</p>
+			<p>Improved the UI a bit, STATS now toggle the Character Sheet, Calibrated the z-index of UI elements, matters a lot for low-width screens</p>
+			<p>Shown the "CODE" to the new players, now everyone is CODE'ing, Improved the game logic so the CODE keeps half-working in the background</p>
+			<p>Connected the 1st Island to the 3rd Island, re-balanced monsters, Cave is still the best spot</p>
+			<p>Next Feature: Everyone wants to party
+
+			<div id="devheader">[03/08/16]</div>
+			<p>Met with new players, the initial feedback is very positive, so motivating, I couldn't even sleep, woke up early on to check the game</p>
+			<p>Most confusing part of the game is right clicking it seems, for this reason added colors to the game guide, also started showing the game guide automatically to every level 1 player</p>
+			<p>Replaced the coordinates interface with coordinates, map name, server name. Next Step: New XP/Character/Attack/Use interfaces</p>
+			<p>Re-Improved the movement system + teleports, It seems perfect now, character directions are also synced</p>
+			<p>Improved the server upgrade routines, the chat, game logs are left in place, there's also a disconnect reason provided</p>
+			<p>Implemented "F"/Activate Nearest NPC - It's possible to block NPC's, this should solve that challenge</p>
+
+			<div id="devheader">[02/08/16]</div>
+			<p>Improved the server registry system, server numbering, naming</p>
+			<p>Implemented the multi-server UI/logic, server switching</p>
+			<p>Implemented auto server selection based on rough distance</p>
+			<p>Deployed/Tested/Verified Americas I,II and Europas I,II!! - The ping is down to 70ms for me. Next location: Eastlands</p>
+
+			<div id="devheader">[01/08/16]</div>
+			<p>Created a very basic game guide</p>
+
+			<div id="devheader">[31/07/16]</div>
+			<p>Improved the main town, brought down the front walls, added a second bridge, Improved the map editor in the progress</p>
+			<p>Moving towards a multi-server UI + Patched the live server shutdown routine to be clean, there were some unforeseen issues</p>
+			<p>Implemented a password reminder email feature, the button shows up when you fail to enter your password</p>
+
+			<div id="devheader">[30/07/16]</div>
+			<p>Planning a remake of the map</p>
+			<p>Improved monster/player movements, now there is an abrupt stop logic and dynamic speed calibrations</p>
+			<p>Improving the disappearing texts, font-rendering is still ...</p>
+			<p>Refactored/Simplified most of the server/client events, routines</p>
+			<p>Players, monsters now change direction on attack if they are not moving - Next step: An attack animation or indicator, especially for pvp</p>
+
+			<div id="devheader">[29/07/16]</div>
+			<p>Receiving feedbacks, started writing a small guide, preparing to make server connections secure, added a percentage based loader</p>
+			<p>Improved Code/runner features, populated <a target="_blank" href="https://github.com/kaansoral/adventureland" class="cancela"><span class="devlink">https://github.com/kaansoral/adventureland</span></a></p>
+
+			<div id="devheader">[28/07/16]</div>
+			<p>An early launch for adventure.land, mainly to test the network, configured the communications between systems, set up hello@adventure.land, solved some minor server challenges</p>
+			<p>Honestly, it was super fun</p>
+			<p>It's apparent that US/EU/Asia servers are needed even in this early stage, Implemented ping, it was 150ms</p>
+
+			<div id="devheader" style="color: #9361DF">Back Story: Coming Soon [01/12/16]</div>
+		</div>
+	</body>
+</html>
+	

@@ -1,0 +1,2 @@
+manually refactored "from stripe"'s and "import stripe"'s [22/08/16]
+manually replaced " stripe." with " libraries.stripe." [15/09/16]

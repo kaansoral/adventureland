@@ -1,0 +1,176 @@
+@font-face {
+	font-family: pixel;
+	/*src: url(/css/fonts/pixel_unicode/Pixel-UniCode.ttf);*/
+	src: url(/css/fonts/m5x7.ttf);
+	font-weight: normal;
+	font-style: normal;
+}
+.disableclicks{
+	pointer-events: none;
+}
+.gamebutton,.enableclicks,.slimbutton,.tinybutton{
+	pointer-events: auto;
+}
+.noselect,.button,.whiteheader,.textbutton,.gamebutton,.tinybutton{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.yesselect,.label,.klabel,pre{
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+.shstring { color: green; }
+.shnumber { color: darkorange; }
+.shboolean { color: blue; }
+.shnull { color: magenta; }
+.shkey { color: red; }
+
+.shstring { color: #CCC11E; }
+.shnumber { color: #44C2C7; }
+.shboolean { color: #CD6C2A; }
+.shnull { color: #44C2C7; }
+.shkey { color: #DC4D7B; }
+
+/*.shcontainer {color : #DC4D7B;}*/
+
+.borderbox{
+	box-sizing: border-box;
+}
+.vtop{
+	vertical-align:top;
+}
+.hidden, .showwithmodals{
+	display:none;
+}
+.bshadow{
+	-webkit-text-shadow: 0 0 1px #3B3B3B;
+	-moz-text-shadow: 0 0 1px #3B3B3B;
+	text-shadow: 0 0 1px #3B3B3B;
+}
+.bshadow2{
+	-webkit-text-shadow: 0 0 1px #646464;
+	-moz-text-shadow: 0 0 1px #646464;
+	text-shadow: 0 0 1px #646464;
+}
+.fright{
+	float: right;
+}
+.gray{
+	color: gray;
+}
+.gyellow{
+	color: #A19D50;
+}
+.ggreen{
+	color: #6BA75E;
+}
+.gold{
+	color: gold;
+}
+.inline-block{
+	display: inline-block;
+}
+.block{
+	display: block;
+}
+.mb2{margin-bottom: 2px;}
+.mb4{margin-bottom: 4px;}
+.mb5{margin-bottom: 5px;}
+.mb10{margin-bottom: 10px;}
+.mb15{margin-bottom: 15px;}
+.px1{width: 1px;display: inline-block;}
+.px15{width: 1.5px;display: inline-block;}
+.px2{width: 2px;display: inline-block;}
+.px4{width: 4px;display: inline-block;}
+.mb10{margin-bottom: 10px;}
+.ml5{margin-left: 5px;}
+.mr5{margin-right: 5px;}
+.ml2{margin-left: 2px;}
+.mt4{margin-top: 4px;}
+.mt5{margin-top: 5px;}
+.mt10{margin-top: 10px;}
+.mt15{margin-top: 15px;}
+.brd2{border: 2px solid gray;}
+.brd5{border: 5px solid gray;}
+.hspace4+.hspace5{
+	margin-left: 4px;
+}
+
+.cancela,.cancela:link,.cancela:visited,.cancela:hover,.cancela:focus,.cancela:active{
+	color: inherit;
+	text-decoration: none;
+}
+.clickable,.button,.clickable{
+	cursor:pointer;
+}
+.gamebutton[onclick],.blockbutton[onclick],.slimbutton[onclick],.textbutton[onclick],.tinybutton[onclick]{
+	cursor:pointer;
+}
+pre, .pre{
+	/* https://stackoverflow.com/questions/248011/how-do-i-wrap-text-in-a-pre-tag [19/06/18] */
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    tab-size: 1.25em;
+}
+.moveable{cursor:move;}
+.disable{cursor: default;}
+.rotate2{ /*leaning left <- */
+	-webkit-transform:rotate(270deg);
+	-moz-transform:rotate(270deg);
+	-o-transform:rotate(270deg);
+	-ms-transform:rotate(270deg);
+	transform:rotate(270deg);
+}
+.rotate4{ /*upside down*/
+	-webkit-transform:rotate(180deg);
+	-moz-transform:rotate(180deg);
+	-o-transform:rotate(180deg);
+	-ms-transform:rotate(180deg);
+	transform:rotate(180deg);
+}
+.rotate6{ /*leaning right -> */
+	-webkit-transform:rotate(90deg);
+	-moz-transform:rotate(90deg);
+	-o-transform:rotate(90deg);
+	-ms-transform:rotate(90deg);
+	transform:rotate(90deg);
+}
+.rotate8{ /*vertical flip*/ /*upside-down mirror*/
+	-moz-transform: scale(1, -1);
+	-webkit-transform: scale(1, -1);
+	-o-transform: scale(1, -1);
+	-ms-transform: scale(1, -1);
+	transform: scale(1, -1);
+}
+.rotate10{ /*vertical flip*/ /*upside-down*/
+	-moz-transform: rotate(90deg) scale(1, -1);
+	-webkit-transform: rotate(90deg) scale(1, -1);
+	-o-transform: rotate(90deg) scale(1, -1);
+	-ms-transform: rotate(90deg) scale(1, -1);
+	transform: rotate(90deg) scale(1, -1);
+}
+.rotate12{ /*horizontal flip*/ /*left-right mirror*/
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+}
+.rotate14{ /*horizontal flip*/ /*left-right mirror*/
+	-moz-transform: rotate(90deg) scale(-1, 1);
+	-webkit-transform: rotate(90deg) scale(-1, 1);
+	-o-transform: rotate(90deg) scale(-1, 1);
+	-ms-transform: rotate(90deg) scale(-1, 1);
+	transform: rotate(90deg) scale(-1, 1);
+}

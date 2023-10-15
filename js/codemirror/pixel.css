@@ -1,0 +1,48 @@
+.cm-s-pixel {
+  background-color: #000000;
+  color: rgba(233, 237, 237, 1);
+}
+.cm-s-pixel .CodeMirror-gutters {
+background: black;
+  color: rgb(83,127,126);
+  border: none;
+}
+.lspacer{
+	background: black;
+	padding-left: 7px;
+}
+.cm-s-pixel .CodeMirror-guttermarker, .cm-s-pixel .CodeMirror-guttermarker-subtle, .cm-s-pixel .CodeMirror-linenumber { color: #E0E0D9; background: #303030; }
+.cm-s-pixel .CodeMirror-cursor { border-left: 2px solid #f8f8f0; }
+.cm-s-pixel div.CodeMirror-selected { background: rgba(255, 255, 255, 0.30); }
+.cm-s-pixel.CodeMirror-focused div.CodeMirror-selected { background: rgba(255, 255, 255, 0.25); }
+.cm-s-pixel .CodeMirror-line::selection, .cm-s-pixel .CodeMirror-line > span::selection, .cm-s-pixel .CodeMirror-line > span > span::selection { background: rgba(255, 255, 255, 0.25); }
+.cm-s-pixel .CodeMirror-line::-moz-selection, .cm-s-pixel .CodeMirror-line > span::-moz-selection, .cm-s-pixel .CodeMirror-line > span > span::-moz-selection { background: rgba(255, 255, 255, 0.25); }
+
+.cm-s-pixel .CodeMirror-activeline-background { background: rgba(0, 0, 0, 0); }
+.cm-s-pixel .cm-keyword { color: #C792EA; } .cm-s-pixel .cm-keyword {color: #6c6b6d;}
+.cm-s-pixel .cm-operator { color: #EDEDED; }
+.cm-s-pixel .cm-variable-2 { color: #80CBC4; }
+.cm-s-pixel .cm-variable-3 { color: #82B1FF; }
+.cm-s-pixel .cm-builtin { color: #DECB6B; }
+.cm-s-pixel .cm-atom { color: #F77669; }
+.cm-s-pixel .cm-number { color: #F77669; }
+.cm-s-pixel .cm-def { color: #EDEDED; }
+.cm-s-pixel .cm-string { color: #C3E88D; }
+.cm-s-pixel .cm-string-2 { color: #80CBC4; }
+.cm-s-pixel .cm-comment { color: #546E7A; }
+.cm-s-pixel .cm-variable { color: #82B1FF; } .cm-s-pixel .cm-variable { color: #7d7caf; }
+.cm-s-pixel .cm-tag { color: #80CBC4; }
+.cm-s-pixel .cm-meta { color: #80CBC4; }
+.cm-s-pixel .cm-attribute { color: #FFCB6B; }
+.cm-s-pixel .cm-property { color: #80CBAE; } .cm-s-pixel .cm-property { color: #F77669; }
+.cm-s-pixel .cm-qualifier { color: #DECB6B; }
+.cm-s-pixel .cm-variable-3 { color: #DECB6B; }
+.cm-s-pixel .cm-tag { color: #FF5370; }
+.cm-s-pixel .cm-error {
+  color: rgba(255, 255, 255, 1.0);
+  background-color: #EC5F67;
+}
+.cm-s-pixel .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}

@@ -1,0 +1,25 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #68C6FF; text-decoration: underline dotted #C7C7B3'>Ice Golem Event</p>
+
+	<p>
+		<span class='spicegolem'></span> Ice Golem hurls frostballs to everyone who dares engage him. Hard to bring down but not impossible!
+	</p>
+
+
+	<div style='margin-bottom: 24x'></div>
+
+	<div class='gamebutton' onclick="btc(event); join('icegolem'); hide_modal();">Join the Event!</div>
+
+	<script>
+		$(".spicegolem").html(sprite("icegolem",{width:120,height:150,scale:3}));	
+	</script>
+	<span class="oncreate" onclick="$('.imodal:last').children().css('background','#19446C').css('color','#BBBABF')"></span>
+<p style='font-size: 32px; color: #68C6FF; text-decoration: underline dotted #C7C7B3; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+	if(parent.S.icegolem && !get_nearest_monster({type:'icegolem'}))
+		join('icegolem');
+		// Takes you there
+</div>
+
+</div>

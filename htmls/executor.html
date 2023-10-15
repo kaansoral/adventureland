@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		{% if domain.electron%}<script>require=parent.require;</script>{% endif %}
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/runner_functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html,body{
+				background: black;
+				color: white;
+				font-family: Pixel;
+				font-size: 24px;
+				overflow: hidden;
+				margin: 0px;
+				padding: 0px;
+			}
+			html{
+				height: 24px;
+				line-height: 24px;
+				width: 200px;
+			}
+			*{
+				pointer-events: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="gg" style="text-align: center; color: #FD9610; height: 24px; line-height: 24px; padding-left: 4px; padding-right: 4px;">Initiating</div>
+		<script>
+			var active=false,catch_errors=true,is_code=1,is_server=0,is_game=0;
+			document.addEventListener("DOMContentLoaded",function(event){
+				active=true;
+				set_message("Executing ...","#FD9610");
+				eval(parent.the_example);
+				if(parent.the_example.indexOf("set_message")==-1)
+					set_message("Test Executed!","#4FA91D");
+				if(character.rip) handle_death();
+			});
+			window.onerror = function(msg, url, line, col, error) { //http://stackoverflow.com/a/10556743/914546
+				if(!catch_errors) return false;
+				var extra = !col ? '' : ' Column: ' + col,output="";
+				//extra += !error ? '' : '\nerror: ' + error;
+				output+="Execute! Error Caught\n";
+				output+=msg+"\n";
+				output+="Line: " + line + extra;
+				alert(output);
+				return false;
+			};
+			window.alert=function(x){parent.show_alert(x);}
+		</script>
+		<div id="xix" style="position: fixed; border: 1px solid white; top: -1px; right: -1px; height: 14px; width: 14px; font-size: 24px; line-height: 10px; z-index: 10; text-align: center; background: black" class='clickable' onclick='parent.$(".executei").remove()'>x</div>
+	</body>
+</html>

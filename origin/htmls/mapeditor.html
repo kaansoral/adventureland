@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RPG MAP Editor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <style>{% include "style.css" %}</style>
+    <script>{% include "common.js" %}</script>
+  </head>
+  <body>
+    <canvas id="map" width="2000" height="2000">
+	Change your browser.
+    </canvas>
+  <div id="editor" class="editor" title="Map Editor">
+	Tileset:
+	<select id="tileset" onchange="load_palet(); s_x=0; s_y=0;">
+	<option value="t1">Tile A1</option>
+	<option value="t2">Tile A2</option>
+	<option value="t3">Tile A3</option>
+	<option value="t4">Tile A4</option>
+	<option value="tb">Tile B</option>
+	<option value="tc">Tile C</option>
+	<option value="td">Tile D</option>
+	<option value="te">Tile E</option>
+	<option value="c1">Chars 1A</option>
+	<option value="i4">Icon Set BC4</option>
+	</select>
+	Current:
+	<canvas id="current-el" width="32" height="32"></canvas>
+	Default:
+	<canvas id="default-el" width="32" height="32"></canvas>
+	<table width="100%">
+	    <tr>
+		<td width="140" valign="top">
+		    Lines: <input type="checkbox" onchange=" if (this.checked) lines=1; else lines=0" checked/> <br />
+		    Coords: <input type="checkbox" onchange=" if (this.checked) coordinates=1; else coordinates=0" checked/> <br />
+		    PLines: <input type="checkbox" onchange=" if (this.checked) plines=1; else plines=0; load_palet()" checked/> <br />
+		    X_f: <input type="checkbox" onchange=" if (this.checked) x_f=16; else x_f=0; load_palet()"/> <br />
+		    Y_f: <input type="checkbox" onchange=" if (this.checked) y_f=16; else y_f=0; load_palet()"/> <br />
+		    16x16: <input type="checkbox" onchange=" if (this.checked) b_size=16; else b_size=32; load_palet()"/> <br />
+		    24x24: <input type="checkbox" onchange=" if (this.checked) b_size=24; else b_size=32; load_palet()"/> <br />
+		    Forbidden: <input type="checkbox" onchange=" if (this.checked) forbidden=1; else forbidden=0;"/> <br />
+		    Delete: <input type="checkbox" onchange=" if (this.checked) delete_mode=1; else delete_mode=0;"/> <br />
+		    Don't Delete: <input type="checkbox" onchange=" if (this.checked) dont_delete=1; else dont_delete=0;"/> <br />
+		    Multiplier X: <input type="text" onchange="multip_x=pa(this.value); if (multip_x<1) multip_x=1;" value="1"/> <br />
+		    Multiplier Y: <input type="text" onchange="multip_y=pa(this.value); if (multip_y<1) multip_y=1;" value="1"/> <br />
+		    <input type="reset" value="Save" class="green button" onclick="save_map()"/> <br />
+		    <input type="reset" value="Set Spawn Point" class="small orange button" onclick="spawn_mode=1;"/> <br />
+		    <input type="reset" value="Make Default" class="small blue button" onclick="make_default()"/> <br />
+	</td>
+	<td>
+	    <div align="center"><canvas id="palet"></canvas></div>
+	</td>
+	</tr>
+	</table>
+    </div>
+    <script>
+	var multip_x=1,multip_y=1,forbidden=0,dont_delete=0;
+	var lines=1,plines=1,coordinates=1,delete_mode=0,spawn_mode=0;
+	var x_f=0,y_f=0,b_size=32;
+	var rep=eval("({{info.rep|escapejs}})");
+	if (typeof rep.items !="object")
+	    rep.items=new Array();
+	if (typeof rep.spawn !="object")
+	    rep.spawn=new Object();
+	var map_x,map_y,palet_x,palet_y,s_x=0,s_y=0;
+	var WIDTH=2000,HEIGHT=2000,PWIDTH,PHEIGHT;
+    </script>
+    <script>
+	function reflect_default()
+	{
+	    if (rep.def)
+	    {
+		default_el.canvas.width=32;
+		default_el.canvas.height=32;
+		default_el.drawImage(document.getElementById(rep.def.tile),rep.def.x,rep.def.y,32,32,0,0,32,32);
+	    }
+	}
+	function make_default()
+	{
+	    rep.def=new Object();
+	    rep.def.tile=$("#tileset").val();
+	    rep.def.x=s_x;
+	    rep.def.y=s_y;
+	    alert("Made Default")
+	}
+	$('#map').dblclick(function() {
+	    var d_x,d_y,t_d=-1,undeleted=Array();
+	    d_x=(parseInt(map_x/b_size))*b_size;
+	    d_y=(parseInt(map_y/b_size))*b_size;
+	    if(spawn_mode)
+		{
+		    rep.spawn.x=d_x;
+		    rep.spawn.y=d_y;
+		    alert("Spawn point set: "+d_x+","+d_y);
+		    spawn_mode=0;
+		}
+		else
+		{
+		    // delete existing items
+		    if(!dont_delete)
+		    {
+			for(var i=0;i<rep.items.length;i++)
+			    {
+				var c=rep.items[i],xx=1,xy=1;
+				c=c.split("|");
+				if(c[0][0]=="m")
+				    xx=pa(c[7]),xy=pa(c[8]);
+				if(d_x<= pa(c[3]) && pa(c[3])+pa(c[2])*xx<=d_x+b_size*multip_x && d_y<=pa(c[4]) && pa(c[4])+pa(c[2])*xy<=d_y+b_size*multip_y){}
+				else
+				    undeleted.push(rep.items[i]);
+			    }
+			    rep.items=undeleted;
+			}
+		    // end delete
+		if (!delete_mode )
+		    {
+			s_x=parseInt(s_x);s_y=parseInt(s_y);map_x=parseInt(map_x);map_y=parseInt(map_y);
+			var cur=new Object();
+			cur.t="r";
+			if(multip_x>1 || multip_y>1)
+			    cur.t="m";
+			if (forbidden)
+			    cur.t+="f";
+			cur.x=d_x;
+			cur.y=d_y;
+			cur.s=b_size;
+			cur.f=$("#tileset").val();
+			cur.fx=s_x;
+			cur.fy=s_y;
+			var gg=cur.t+"|"+cur.f+"|"+cur.s+"|"+cur.x+"|"+cur.y+"|"+cur.fx+"|"+cur.fy;
+			if(multip_x>1 || multip_y>1)
+			    gg=gg+"|"+multip_x+"|"+multip_y;
+			rep.items.push(gg);
+		    }
+	    }
+	});
+	$('#palet').dblclick(function() {
+	  if(b_size==32)
+	      {
+		  s_x=parseInt((palet_x-x_f)/32)*32+x_f;
+		  if (x_f && palet_x<16) s_x=0;
+		  s_y=parseInt((palet_y-y_f)/32)*32+y_f;
+		  if (y_f && palet_y<16) s_y=0;
+	      }
+	      else if(b_size==16)
+		{
+		  s_x=parseInt((palet_x)/b_size)*b_size;
+		  s_y=parseInt((palet_y)/b_size)*b_size;
+		}
+		current_el.canvas.width=b_size;
+		current_el.canvas.height=b_size;
+		current_el.drawImage(document.getElementById($("#tileset").val()),s_x,s_y,b_size,b_size,0,0,b_size,b_size);
+	});
+	window.onload=function(){
+	    setInterval(draw_world,1000);
+	    mapCanvas = document.getElementById('map');
+	    context = mapCanvas.getContext('2d');
+	    editorCanvas = document.getElementById('palet');
+	    palet = editorCanvas.getContext('2d');
+	    current_el=document.getElementById('current-el').getContext('2d');
+	    default_el=document.getElementById('default-el').getContext('2d');
+	    reflect_default();
+	    $( "#editor" ).dialog({
+		name: "Editor",
+		width: 700,
+		height: 500,
+		closeOnEscape: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }});
+	    setInterval(load_palet,1000);
+	    
+	}
+	function load_palet()
+	{
+	    palet.canvas.width=palet.canvas.width;
+	    PWIDTH=palet.canvas.width;
+	    PHEIGHT=palet.canvas.height;
+	    img=document.getElementById($("#tileset").val());
+	    palet.canvas.width=img.width;
+	    palet.canvas.height=img.height;
+	    palet.drawImage(img,0,0);
+	    if (plines)
+		{
+		    palet.fillStyle="white";
+		    for(var i=0;i<PHEIGHT;i++)
+			if(!((i+y_f)%b_size) || ((i+y_f)%b_size)==b_size-1)
+			    palet.fillRect(0,i,WIDTH,1);
+		    for(var i=0;i<PWIDTH;i++)
+			if(!((i+x_f)%b_size) || ((i+x_f)%b_size)==b_size-1)
+			    palet.fillRect(i,0,1,HEIGHT);
+		}
+
+	}
+	function draw_world()
+	{
+	    context.canvas.width=context.canvas.width;
+	    WIDTH=context.canvas.width;
+	    HEIGHT=context.canvas.height;
+	    for(var i=0;i<rep.items.length;i++)
+	    {
+		var c=rep.items[i];
+		c=c.split("|");
+		if(c[0][0]=='r')
+		{
+		    context.drawImage(document.getElementById(c[1]),c[5],c[6],c[2],c[2],c[3],c[4],c[2],c[2]);
+		}
+		else if(c[0][0]=='m')
+		{
+		    for(var j=0;j<pa(c[7]);j++)
+			for(var k=0;k<pa(c[8]);k++)
+			    context.drawImage(document.getElementById(c[1]),c[5],c[6],c[2],c[2],pa(c[3])+j*pa(c[2]),pa(c[4])+k*pa(c[2]),c[2],c[2]);
+		}
+	    }
+	    if (lines)
+		{
+		    context.fillStyle="purple";
+		    for(var i=0;i<HEIGHT;i++)
+			if(!(i%b_size) || (i%b_size)==b_size-1)
+			{
+			    context.fillRect(0,i,WIDTH,1);
+			    context.fillRect(i,0,1,HEIGHT);
+			}
+		}
+	}
+	window.addEventListener('click',doClick,true);
+
+    function doClick(e){
+	var x;
+	var y;
+	if (e.pageX || e.pageY) {
+	  x = e.pageX;
+	  y = e.pageY;
+	}
+	else {
+	  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+	  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	map_x=palet_x=x;
+	map_y=palet_y=y;
+	map_x -= $("#map").offset().left;
+	map_y -= $("#map").offset().top;
+	palet_x -= $("#palet").offset().left;
+	palet_y -= $("#palet").offset().top;
+	//palet_x+=17;
+	//palet_y+=40;
+	// JQUERY DIALOG ADJUSTMENTS - DIRTY
+	console.log(map_x +" "+map_y);
+	console.log(palet_x +" "+palet_y);
+    }
+    function save_map()
+    {
+	$.post("/rpgapp/map/{{mapkey}}", { map_rep:JSON.stringify(rep) },
+       function(data) {
+	 alert("Saved "+data);
+       });
+    }
+    </script>
+    {% include "resources.html" %}
+  </body>
+</html>

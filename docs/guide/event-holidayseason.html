@@ -1,0 +1,100 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>Holiday Season on Adventure Land</p>
+
+	<p>
+		<div style='float:left; margin-right: 10px'><span class='eitem1'></span> <span class='eitem2'></span> <span class='eitem3'></span></div> All New Years drops are global. You can exchange them by finding the right NPC's in Winterland. <br />
+		<span class='spjayson'></span> Jayson is easy to find. <br />
+		<span class='spfaith'></span> Faith is inside the Tavern. <br />
+		<span class='spsanta'></span> You can find Santa with Rudolph to the north of the Arctic Bee's. <br />
+	</p>
+
+	<p>
+		<div style='padding: 0px; border: 4px solid #2B5B89; display: inline-block; font-size: 0px; vertical-align: text-bottom'><img src="http://lh3.googleusercontent.com/BbENUEvYLaLvbHPdk9uWDkMwhh59v4Sd_V_wex6whMDiLr9h2ZDCmDN-i5XxTehHbnaRQPrnd-msEgSsjaQrLWxCNQz6uvvA=s400" style='height: 200px'/></div>
+		<div style='vertical-align: top; display: inline-block; width: 320px'>
+			You can get a Holiday Spirit buff by interacting with the New Years Tree <br />
+			<div style='margin-top: 10px; display: inline-block;'>
+				<div style='float:left; margin-right: 10px'><span class='eitemf'></span></div>
+				If you get the buff after it expires, the tree awards you a fun token!
+			</div>
+		</div>
+	</p>
+
+	<p>
+		<div><div style='float:left; margin-right: 10px'><span class='eitemxbox'></span></div> Collect all 9 pieces of this mystic puzzle and craft the X Box and exchange it from Xyn for something special!</div>
+		<div style='margin-top: 10px'><span class='eitemx0'></span> <span class='eitemx1'></span> <span class='eitemx2'></span> <span class='eitemx3'></span> <span class='eitemx4'></span> <span class='eitemx5'></span> <span class='eitemx6'></span> <span class='eitemx7'></span> <span class='eitemx8'></span></div>
+	</p>
+
+	<p>
+		The Holiday Spirit set includes many items, some you can craft, most you get by returning the global drops to the NPC's.
+		<div style='margin-top: -16px; text-align: left'><span class='eitemh0'></span> <span class='eitemh1'></span> <span class='eitemh2'></span> <span class='eitemh3'></span> <span class='eitemh4'></span> <span class='eitemh5'></span> <span class='eitemh6'></span> <span class='eitemh7'></span> <span class='eitemh8'></span> <span class='eitemh9'></span> <span class='eitemh10'></span> <span class='eitemh11'></span> <span class='eitemh12'></span> <span class='eitemh13'></span> <span class='eitemh14'></span> <span class='eitemh15'></span></div>
+	</p>
+
+	<p>
+		<span class='spsnowman'></span> The snowman spawns every hour. Snowman is a collaborative boss, everyone who participates gets a reward. You can only deal 1 damage to Snowman - better participate at each spawn for the common good!
+	</p>
+
+	<p>
+		<span class='spgrinch'></span> Grinch is a trickster. He portals to you, steals your gold, and escapes before he can be defeated! Make sure you are never alone. Defeating Grinch requires a lot of planning, as he doesn't stay long in one place and can heal himself. When he spawns, he already has 12,000,000+ gold in his pockets!
+		<br />
+		<br />
+		Dealing 400,000 damage to Grinch unlocks the Festive achievement and a title reward for your equipped cape, so make sure you target him whenever he teleports to you!
+	</p>
+
+	<p style='line-height: 40px'>
+		<span class='eitemhx'></span> Tip: Grinch really hates the sweater!
+	</p>
+
+	<p>
+		We also have many new items for the winter and holiday season, like throwable Snowballs!
+		<div style='margin-top:-30px'><span class='eitemm1'></span> <span class='eitemm2'></span> <span class='eitemm3'></span> <span class='eitemm4'></span> <span class='eitemm5'></span> <span class='eitemm6'></span></div>
+	</p>
+
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+// Check the buff, to make sure we get the token
+if(!character.s.holidayspirit)
+	parent.socket.emit("interaction",{type:"newyear_tree"});
+// raw socket method for the interaction
+
+game.on("event",function(data){
+	if(data.name=="grinch")
+		log("oh boy");
+	else if(data.name=="snowman")
+	{
+		smart_move(data);
+		// since data includes "map"/"x"/"y" - this will work
+	}
+});
+
+auto_craft("xbox"); // 2 methods to craft the "xbox"
+craft(locate_item("x0"),locate_item("x1"),locate_item("x2"),locate_item("x3"),locate_item("x4"),locate_item("x5"),locate_item("x6"),locate_item("x7"),locate_item("x8"));
+</div>
+
+<div style='margin-bottom: 24x'></div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.candycane.skin},{name:"candycane",q:0}));
+		$(".eitem2").html(item_container({skin:G.items.ornament.skin},{name:"ornament",q:0}));
+		$(".eitem3").html(item_container({skin:G.items.mistletoe.skin},{name:"mistletoe",q:0}));
+		$(".eitemf").html(item_container({skin:G.items.funtoken.skin},{name:"funtoken",q:0}));
+		for(var i=0;i<9;i++)
+			$(".eitemx"+i).html(item_container({skin:G.items['x'+i].skin},{name:'x'+i,q:0}));
+		for(var i=0;i<16;i++)
+			$(".eitemh"+i).html(item_container({skin:G.items[G.sets.holidays.items[i]].skin},{name:G.sets.holidays.items[i],level:0}));
+		$(".eitemhx").html(item_container({skin:G.items.xmassweater.skin},{name:'xmassweater',level:0}));
+		$(".eitemm1").html(item_container({skin:G.items.snowball.skin},{}));
+		$(".eitemm2").html(item_container({skin:G.items.gcape.skin},{}));
+		$(".eitemm3").html(item_container({skin:G.items.iceskates.skin},{}));
+		$(".eitemm4").html(item_container({skin:G.items.snowboots.skin},{}));
+		$(".eitemm5").html(item_container({skin:G.items.snowflakes.skin},{}));
+		$(".eitemm6").html(item_container({skin:G.items.northstar.skin},{}));
+		$(".eitemxbox").html(item_container({skin:G.items.xbox.skin},{name:"xbox",q:0}));
+		$(".spsnowman").html(sprite("snowman"));
+		$(".spgrinch").html(sprite("grinch",{height: 56}));
+		$(".spsanta").html(sprite("santa"));
+		$(".spjayson").html(sprite("splithair"));
+		$(".spfaith").html(sprite("pink"));
+	</script>
+</div>

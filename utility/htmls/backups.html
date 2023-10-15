@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html,body{
+				background:black;
+				font-size: 32px;
+			}
+			body{
+				overflow-y: scroll;
+			}
+			*{
+				-webkit-touch-callout: text;
+				-webkit-user-select: text;
+				-khtml-user-select: text;
+				-moz-user-select: text;
+				-ms-user-select: text;
+				user-select: text;
+			}
+		</style>
+		
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		{% for backup in backups%}
+			<div style='margin: 20px'>{{backup}}</div>
+		{% endfor %}
+	</body>
+</html>

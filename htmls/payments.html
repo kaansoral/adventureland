@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{domain.name}}</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<meta name="google-site-verification" content="828I6vVcDPWUBQyONrSKy8Y5cMaibNSMxZSfiKzOQrk" />
+		<meta property="og:url" content="{{domain.url or 'http://adventure.land'}}"/>
+		<meta property="og:image" content="http://adventure.land/images/first_logo.png"/>
+		<meta property="og:title" content="Adventure Land"/>
+		<meta property="og:description" content="A Casual Browser Based MMORPG Where You Can Even Code Your Character! Very Early Access."/>
+		<meta name="description" content="A Casual Browser Based MMORPG Where You Can Even Code Your Character! Very Early Access."/>
+		<meta name="keywords" content="browser,mmorpg,pixel,2d,retro,code"/>
+		{% if domain.test_clicks %} <!-- until the click issue is definitely fixed--> {#  or 1 and not domain.test_fast #}
+			<script src="/js/pixi/4.0.2/pixi.min.js"></script>
+		{% else %}
+			<script src="/js/pixi/{{domain.pixi_version}}/pixi.min.js"></script>
+		{% endif %}
+		{% if 1%}<script src="/js/pixi-display/{{domain.pixi_display_version}}/pixi-display.js"></script>{% endif %}
+		<script src="/js/socket.io/1.4.5/socket.io.js"></script>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/howler/{{domain.howler_version}}/howler.min.js"></script>
+		<script src="/js/libraries/bowser/bowser.16.08.16.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.bowser=module.exports;"{%endif%}></script>
+		<script src="/js/libraries/jquery.payment.min.js"></script>
+		<script src="/js/libraries/jquery-ui.draggable.min.js"></script>
+		<script src="/js/libraries/combined.js?v=2"></script>
+		{#<script src="/js/interact/{{domain.interact_version}}/interact.js"></script>#}
+		{%if 0%}<script src="/js/tests/msgpack.min.js"></script><script src="/js/tests/pako.min.js"></script>{%endif%}
+		{% if 1%}
+			<script src="/js/codemirror/{{domain.cm_version}}/codemirror.js"></script>
+			<link href="/js/codemirror/{{domain.cm_version}}/codemirror.css" rel="stylesheet" type="text/css"/>
+			<link href="/js/codemirror/pixel.css" rel="stylesheet" type="text/css"/>
+			<script src="/js/codemirror/{{domain.cm_version}}/javascript.js"></script>
+			<script src="/js/codemirror/{{domain.cm_version}}/xml.js"></script>
+		{% endif %}
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/game.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/js/payments.js?v={{domain.v}}"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		{% include "htmls/base_script.html" %}
+		<script src="/js/ios-drag-drop.js"></script> <!-- https://github.com/timruffles/ios-html5-drag-drop-shim -->
+	</head>
+	<body>
+		{% set inside = "payments" %}
+		<div id="content" style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; z-index: 9000; vertical-align: middle; text-align: center">{% include "htmls/contents/payments.html" %}</div>
+		
+		<script>
+			inside="payments";
+			function resize() {
+				width=$(window).width();
+				height=$(window).height();
+				if(window.renderer)
+				{
+					renderer.resize(width,height);
+					renderer.antialias=antialias;
+					if(window.map) map.last_max_y=undefined;
+				}
+				$("#pagewrapped").css("margin-top",Math.floor(($(window).height()-$("#pagewrapped").height())/2)+"px");
+				reposition_ui();
+				position_modals();
+				// $("#gameui").css("left", round((width-$("#gameui").width())/2) );
+			}
+			document.addEventListener("DOMContentLoaded",function(event){
+				keyboard_logic();
+				init_sounds();
+				if(!bowser.chrome && perfect_pixels) retina_mode=true;
+				the_game("demo");
+				drag_logic();
+				window.onresize = resize;
+				on_resize();
+				if(inside!="payments") setTimeout(code_logic,10);
+				setTimeout(payment_logic,200);
+				// $("body").nodoubletapzoom();
+			});
+			window.addEventListener("contextmenu", function(e) {
+				if(!block_right_clicks) return;
+				var custom=false,current=e.target||{};
+				if((current.className||"").substr(0,6)=="rclick") custom=true;
+				while(current.parentNode && !custom)
+				{
+					current=current.parentNode;
+					if((current.className||"").substr(0,6)=="rclick") custom=true;
+				}
+				if(inside!="login" && inside!="selection")
+				{
+					if(custom) on_rclick(current);
+					e.preventDefault();
+					return false;
+				}
+	   		 });
+		</script>
+	</body>
+</html>

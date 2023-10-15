@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Planned Features</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background: #E5E5E5;
+				color: #010805;
+			}
+			html,pre,body{
+				font-family: Pixel;
+				color: #5D5D5D;
+				font-size: 24px;
+				/*text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);*/
+				margin: 0;
+				padding: 0;
+			}
+			pre{
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			.big{
+				color:#E0676D;
+			}
+			.feature{
+				color:#27B175;
+			}
+			#devlogs{
+				margin: 20px 20px 40px 20px;
+				max-width: 920px;
+				text-align: left;
+				display: inline-block;
+			}
+			body{
+				text-align: center;
+			}
+			#devlogs p{
+				margin-bottom: 4px;
+				margin-top: 4px;
+			}
+			#devheader{
+				margin-top: 15px;
+			}
+			#devheader,.devtitle{
+				color: #939393;
+			}
+			.devlink{
+				color: #C64C4C;
+				color: #D85C61;
+			}
+			.devbig{
+
+			}
+		</style>
+		{% if not domain.is_sdk %}
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-81826565-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<div id="devlogs" style="margin-bottom: 32px">
+			<div id="devheader">Planned Features <span style="float:right">Last Update [12/02/17]</span></div>
+			<div id="devheader" style="color: #3B96AA">Steam</div>
+			<p>While the standalone version of the game has been ready for some time, decided to postpone the Steam release until the game is fuller, basically, I think, "Daily Events", "Tavern", "Documented Code", "Improved Sound/FX" should be completed beforehand.</p>
+			<div id="devheader" style="color: #8E77DE">Tavern</div>
+			<p><b>Purpose:</b> A place to relax, </p>
+			<p><b>Last Status:</b> Code design and the server implementation is ready, working on Animations/UI.</p>
+			<div id="devheader" style="color: #DC5567">PVP</div>
+			<p><b>In Progress:</b> Working on balance changes, new skills, new methods to improve PVP. Likely going to limit the XP exchange and introduce "Item Drops" from players. Basically, "Newly Acquired" items will have a chance to drop on death.</p>
+			<div id="devheader" style="color: #64AB3D">Daily Events</div>
+			<p><b>Purpose:</b> Every server is going to run an event every day at 9:20PM. While the game is mostly an idle/afk/coding game, these daily events will be an opportunity to socialise and have some fun.</p>
+			<p><b>Last Status:</b> The "Goo Brawl" event is ready, working on the first PVP event.</p>
+			<div id="devheader" style="color: #CDC647">Achievements/Statistics/Leaderboards</div>
+			<p>Observing the gameplay and the needs of the players, this feature is heavily needed and requested, I'm not 100% sure how to go forward with the Achievements and Awards, going to start with basic Statistics and Leaderboards first.</p>
+			<div id="devheader" style="color: #E43491">Sound/FX</div>
+			<p>Ever since I've launched the game, with the exception of the Xmas Tune, the tunes and fx has been the same, going to improve the fx logic, and re-visit all the sound/fx selections at one point. It's challenging.</p>
+			<div id="devheader" style="color: #53C7E7">Communicator</div>
+			<p><b>In Progress:</b> The friends system is complete, the Communicator needs serious improvements on the interface/usability side of things. Going to add additional features to the server so players have a way to communicate, get to know new players.</p>
+			<div id="devheader" style="color: #E55756">Content: New Items, Events, Quests</div>
+			<p><b>In Progress:</b> Continually working on adding new content to the game, most of the cave entrances in game are unused at the moment. Planning on adding triggerable events like dungeons.</p>
+			<div id="devheader" style="color: #3AEBCF">The Resort</div>
+			<p>This is the feature I'm second most excited about, first one being the Tavern. The Resort is kind of like the holodecks in Star Trek. Everyone will be able to design their own maps/rooms, and hopefully Code for them too. While the "Community Map Editor" is ready, the Code part, security is the challenge.</p>
+		</div>
+	</body>
+</html>
+	

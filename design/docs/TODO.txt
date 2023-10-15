@@ -1,0 +1,45 @@
+Discord message pool [12/12/20]
+Specify Code Limits [13/12/20]
+A separate git for db.rdbms [15/12/20]
+
+Check out Steam Points Shop https://steamcommunity.com/groups/steamworks/announcements/detail/2924488121712219462 [11/01/21]
+
+Integrate: NEW STYLE EMOTION ANIMATIONS  [26/11/20]
+Integrate the new Desertland [25/07/20]
+New Ent-like Monster - Armor Box Drops [30/06/20]
+Integrate the building rooms [01/07/20]
+/untie for Steam [02/07/20]
+Promisify exchange + sell [06/07/20]
+Look into disabling mouse4/mouse5 [08/08/20]
+
+Make monsters pathfind back to their spawns [20/08/20]
+
+IDEA: Instances where if you die, you can't repeat, so multi-chars are heavily promoted [11/08/20]
+
+CLI's smart_move blocks character update processing [04/07/20]
+Promised equip with guaranteed pre-refreshed .items [11/07/20]
+
+Make all user_data updates transactional [12/09/20]
+
+Goblin Minion [30/06/20]
+First Time Task Buffs: First +8 -> 100% Luck [30/06/20]
+Make Low Spawn Monsters Have - difficulty Multiplier [30/06/20]
+
+Franger's weird text alignment - roundPixels is bad, false is good, rare issue [19/08/20]
+
+Make projectiles adopt the modifiers like crit/burn [11/08/20]
+Weapon/Armor achievements - 100M damage taken -> +5% armor/res - 1,000 unique kills -> +2 damage [14/07/20]
+ - Lucky - for exact %-hit
+ - Holy - for heals
+ - Stalwart - for tanking
+ - Bloody - for PK's
+ - 1M consecutive kills over 200 range
+
+ Chromium/BOT: Test the cli_time checks [29/07/20]
+ Announce stealth cape events delayed and anonymous [02/08/20]
+
+ 
+Ellian:
+	Skill:
+		- Rogue Pickpocket 
+

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MacOS: How to Make it Work</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background: black;
+			}
+			html,pre,body{
+				font-family: Pixel;
+				color: #CECECE;
+				font-size: 24px;
+				/*text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);*/
+				margin: 0;
+				padding: 0;
+			}
+			pre{
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			.big{
+				color:#E0676D;
+			}
+			.feature{
+				color:#7BB18F;
+			}
+			.warning{
+				color:#D6627F;
+			}
+			#devlogs{
+				margin: 20px 20px 40px 20px;
+			}
+			#devlogs p{
+				margin-bottom: 4px;
+				margin-top: 4px;
+			}
+			#devheader{
+				margin-top: 15px;
+			}
+			#devheader,.devtitle{
+				color: #939393;
+			}
+			.devlink{
+				color: #C64C4C;
+				color: #D85C61;
+			}
+			.devbig{
+
+			}
+		</style>
+		{% if not domain.is_sdk %}
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-81826565-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<div id="devlogs" style="margin-bottom: 32px">
+
+			<p>Adventure Land uses Electron. When you stumble onto an issue, you can google the issue by combining error phrases with "electron".</p>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">Just Re-Open or Re-Install</div>
+				<p>Very rarely Steam glitches and the game can't connect to Steamworks, so restarting Steam is a must. Sometimes simply doing a clean install could be the solution.</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">Steam: Run from the Command Line</div>
+				<p>Copy paste this to Terminal by inserting your own system user: /Users/YOUR_USER/Library/Application\ Support/Steam/steamapps/common/adventureland/Adventure\ Land.app/Contents/MacOS/Adventure\ Land<br />
+					You'll likely stumble onto the issue that you can report/search
+				</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">App Store: Run from the Command Line</div>
+				<p>Copy paste this to Terminal: /Applications/Adventure\ Land.app/Contents/MacOS/Adventure\ Land
+				</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">App Store: Can't Install - "Unable to Download App"</div>
+				<p>Please email hello@adventure.land</p>
+			</div>
+
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">src/common/pipes.cpp (883) : fatal stalled cross-thread pipe.</div>
+				<p>Restart Steam</p>
+			</div>
+
+			<p>If you find and solve an issue, or just stumble onto an issue you can't solve, please email hello@adventure.land with details</p>
+			
+		</div>
+	</body>
+</html>
+	

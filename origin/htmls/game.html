@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% block "content" %}
+<style>
+    body{
+	background-image: url("/rpgapp/images/128-25.jpg");
+	background-repeat: repeat;
+}
+body{cursor: url('/rpgapp/images/blank.gif'), default !important;}
+    </style>
+<script src="//lordkaan.com:1080/socket.io/socket.io.js"></script>
+<script>{% include "common.js" %}</script>
+<script>
+    var HEIGHT=600,WIDTH=800,inited=0;
+    var c_x=200,c_y=200,dx=2,dy=2,to_x=-1,to_y=-1,s_x,s_y,moving=0;
+    var mouse_x=0,mouse_y=0;
+    var direction=0;
+    var gameCanvas,context;
+    var loaded=0;
+    var players=Array(),npeople;
+    var maps=new Object();
+    var curmap=0;
+    var steps=0;
+    var cworld=0;
+    var on_chat=0;
+    var cursor_type=1,c_cursor=0;
+    var gofleft=0,goftop=0;
+</script>
+<div id="loading" style="color: #E9F607; font-size: 1.8em; font-weight: bold; padding-top: 200px;"><img src="/rpgapp/images/ajax-loader.gif" /> Loading ...</div>
+<canvas id="gameCanvas" width="800" height="600">
+  This text is displayed if your browser does not support HTML5 Canvas.
+</canvas>
+<div id="game-infos" unselectable="on" class="unselectable">
+<div id="game-info" align="left" unselectable="on" class="unselectable">
+</div>
+<input type="text" id="field" onkeydown=" if (event.keyCode==13) {
+    socket.emit('msg',my_nick+': '+$('#field').val());
+    $('#field').val('');
+}" />
+</div>
+<div id="cursor" onclick="return false;" unselectable="on" class="unselectable"></div>
+
+<script>
+var socket,my_id="{{user.appuser.id}}",my_nick="{{char.nick}}";
+window.onload=function()
+{
+    document.getElementById('saudio').volume=0.1;
+    document.getElementById('saudio').addEventListener('ended', function(){
+	this.currentTime = 0;
+	}, false);
+    gameCanvas = document.getElementById('gameCanvas');
+    context = gameCanvas.getContext('2d');
+    inited=1;
+
+     socket= io.connect('http://lordkaan.com:1080');
+      
+      socket.emit('setuser',{"id":"{{user.appuser.id}}","pass":"{{user.rpguser.password}}","appid":"{{app.db.appid}}","char":"{{char.id}}"});
+
+      socket.on('msg', function (data) {
+	console.log(data);
+	html=$("#game-info").html();
+	$("#game-info").html(html+"<div class='message' unselectable='on' class='unselectable'>"+data["msg"]+"</div>");
+      });
+
+      socket.on('world', function (data) {
+	  if(loaded && inited)
+	  {
+		  for(var i=0;i<data.players.length;i++)
+		    {
+			var c=data.players[i];
+			if(c.id==my_id)
+			    c_x=c.x,c_y=c.y;
+		    }
+		cworld=data;
+	  }
+      });
+
+    socket.on('disconnect', function (data) {
+	window.top.location="//apps.facebook.com/{{app.db.slug}}/";
+      });
+
+      socket.on('ready', function (data) {
+	    if(!data.map)
+		data.map="start";
+	    loadMap(data.map);
+
+      });
+
+
+}
+window.addEventListener('keydown',doKeyDown,true);
+window.addEventListener('click',doClick,true);
+window.addEventListener('mousemove',doMove,true);
+
+function walk()
+{
+    var s=0;
+    if(to_x!=-1)
+    {
+	if(to_x>c_x)
+	{
+	    c_x+=10;
+	    if(to_x<=c_x)
+		to_x=-1;
+	}
+	else
+	{
+	    c_x-=10;
+	    if(to_x>=c_x)
+		to_x=-1;
+	}
+	s=1;
+    }
+    if(to_y!=-1)
+    {
+	if(to_y>c_y)
+	{
+	    c_y+=10;
+	    if(to_y<=c_y)
+		to_y=-1;
+	}
+	else
+	{
+	    c_y-=10;
+	    if(to_y>=c_y)
+		to_y=-1;
+	}
+	s=1;
+    }
+    if(s) { moving=1; send_coord(); }
+    else if(moving){
+	moving=0;
+	send_coord();
+    }
+}
+
+function stepper(){
+    steps=steps+1;
+}
+function setCursor()
+{
+    if(c_cursor!=cursor_type)
+    {
+	if(cursor_type==1)
+	    $("#cursor").css("background","url('/rpgapp/images/gam1229.gif')");
+	else if(cursor_type==2)
+	    $("#cursor").css("background","url('/rpgapp/images/cur886.gif')");
+    }
+    $("#cursor").css("top",mouse_y-30);
+    $("#cursor").css("left",mouse_x-30);
+}
+setInterval(stepper,200);
+setInterval(walk,200);
+function doMove(e){
+    if(inited && loaded)
+    {
+	var x;
+	var y;
+	if (e.pageX || e.pageY) {
+	  x = e.pageX;
+	  y = e.pageY;
+	}
+	else {
+	  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+	  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	mouse_x=x;
+	mouse_y=y;
+	x-=gofleft;
+	y-=goftop;
+	if(x>=0 && x<=200 && y>=0 && y<=200)
+	{
+	    if(!on_chat) $("#game-infos").addClass("onit");
+	    on_chat=1;
+	}
+	else
+	{
+	    if(on_chat) $("#game-infos").removeClass("onit");
+	    on_chat=0;
+	}
+    }
+    setCursor();
+}
+
+function doClick(e){
+    if(inited && loaded)
+    {
+	var x;
+	var y;
+	if (e.pageX || e.pageY) {
+	  x = e.pageX;
+	  y = e.pageY;
+	}
+	else {
+	  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+	  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	x -= gameCanvas.offsetLeft;
+	y -= gameCanvas.offsetTop;
+	var dispx=WIDTH/2-c_x,dispy=HEIGHT/2-c_y;
+	if(!on_chat)
+	{
+	    to_x=x-dispx;
+	    to_y=y-dispy;
+	}
+    }
+    if(on_chat)
+	$("#field").select();
+}
+
+function doKeyDown(evt){
+    switch (evt.keyCode) {
+	case 38:
+	break;
+    }
+}
+
+setInterval(draw_world,250);
+
+function draw_world(data)
+{
+    if(!cworld) return;
+    data=cworld;
+    if(!curmap) return;
+    WIDTH=context.canvas.width  = window.innerWidth;
+    HEIGHT=context.canvas.height = window.innerHeight;
+    var dispx=WIDTH/2-pa(c_x),dispy=HEIGHT/2-pa(c_y);
+    var pnx,pny;
+    for(var i=0;i<WIDTH/32;i++)
+    for(var j=0;j<HEIGHT/32;j++)
+    {
+	context.drawImage(dge(curmap.def.tile),curmap.def.x,curmap.def.y,32,32,i*32,j*32,32,32);
+    }
+    for(var i=0;i<curmap.items.length;i++)
+    {
+	var c=curmap.items[i];
+	c=c.split("|");
+	if(c[0][0]=="r")
+	{
+	    var t,y;
+	    pnx=parseInt(c[3])+dispx;
+	    pny=parseInt(c[4])+dispy;
+	    if(-40<=pnx && pnx<=WIDTH+40 && -40<=pny && pny<=HEIGHT+40)
+		context.drawImage(dge(c[1]),pa(c[5]),pa(c[6]),pa(c[2]),pa(c[2]),pnx,pny,pa(c[2]),pa(c[2]));
+	}
+	else if(c[0][0]=='m')
+	{
+	    for(var j=0;j<pa(c[7]);j++)
+		for(var k=0;k<pa(c[8]);k++)
+		    {
+			pnx=pa(c[3])+j*pa(c[2])+dispx;
+			pny=pa(c[4])+k*pa(c[2])+dispy;
+			if(-40<=pnx && pnx<=WIDTH+40 && -40<=pny && pny<=HEIGHT+40)
+			    context.drawImage(dge(c[1]),pa(c[5]),pa(c[6]),pa(c[2]),pa(c[2]),pnx,pny,pa(c[2]),pa(c[2]));
+		    }
+	}
+    }
+    for(var i=0;i<data.players.length;i++)
+	{
+	    var cur=data.players[i];
+	    var c=cur.character;
+	    c=c.split("|");
+	    if(c[0]=="r")
+	    {
+		context.fillStyle="green";
+		context.fillText(cur.nick,cur.x-20+dispx,cur.y-48+dispy,50);
+		pnx=cur.x-16+dispx;
+		pny=cur.y-48+dispy;
+		if(-40<=pnx && pnx<=WIDTH+40 && -40<=pny && pny<=HEIGHT+40)
+		    context.drawImage(dge(c[1]),pa(c[2])*96+(steps%3)*32*pa(cur.m),pa(c[3])*192+cur.d*48,32,48,pnx,pny,32,48);
+	    }
+	}
+	$("#game-infos").css("left",$("#gameCanvas").offset().left);
+	$("#game-infos").css("top",$("#gameCanvas").offset().top+HEIGHT-220);
+	gofleft=$("#game-infos").offset().left;
+	goftop=$("#game-infos").offset().top;
+}
+</script>
+<script>
+
+    function loadMap(name)
+    {
+	if(maps[name])
+	{
+	    curmap=maps[name];
+	}
+	else
+	{
+	    $.get("/rpgapp/getmap/{{app.adventure}}-"+name,function(data){
+		$("body").css("background","none");
+		$("#loading").hide();
+		curmap=maps[name]=eval("("+data+")");
+		c_x=curmap.spawn.x;
+		c_y=curmap.spawn.y;
+		loaded=1;
+	    });
+	}
+    }
+
+  function send_coord()
+  {
+      socket.emit('coord',{x:c_x,y:c_y,d:direction,m:moving});
+  }
+</script>
+<audio id="saudio" loop="loop" volume="0.2">
+  <source src="/rpgapp/images/CloudTopLoops.ogg" type="audio/ogg" />
+  No Audio Support, Upgrade your Browser
+  </audio>
+{% include "resources.html" %}
+
+{% endblock %}

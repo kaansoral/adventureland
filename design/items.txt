@@ -1,0 +1,150 @@
+[RINGS]
+>NORMAL
+Ring of Small Joys
+>HIGH
+Ring of Armor Piercing - 40+20 Armor Piercing
+Ring of Resistence Piercing - 40+20 Resistence Piercing
+
+>RARE
+"Sucker Punch" 2%+1% Lifesteal | 3%+1% Crit | 30+10 Armor Piercing
+
+[BELTS]
+> NORMAL
+Belt of HP 
+> HIGH
+Belt of Evasion 3% + 2%
+Belt of Anti-Hex 3% + 2% Reflection
+> RARE
+Belt of the Warrior - 12+3 Str - 20+10 Armor
+
+[EARRINGS]
+Earring of Vitality - 3+2 Vitality
+Earring of Dexterity - 3+2 Dexterity
+Earring of Strength - 3+2 Strength
+Earring of Intelligence - 3+2 Int
+
+[ORBS]
+Orb of Vitality - 7+3 Vitality
+Orb of Strength - 6+3 Strength
+Orb of Dexterity - 6+3 Dexterity
+Orb of Intelligence - 7+3 Intelligence
+
+[CAPES]
+Cape - 20+2 Armor - 4 Stat - 3+1 Vitality
+
+[QUEST ITEMS]
+Leather x 20 | Rope x 5 = Cape
+Seashell x 20 = Sea Quest
+Ring + Amulet + Earring = House Quest
+Old Coin = Desertland Quest
+
+[SHIELDS]
+Shield - 
+
+[WARRIOR WEAPONS]
+Blade - T1 - 1H
+Fiery Blade - T2 - 1H
+
+
+[Stat Scrolls]
+Vitality Scroll
+Armor Piercing Scroll - 2X per stat
+Resistence Piercing Scroll - 2X per stat
+Evasion Scroll - 0.1% per stat
+Reflection Scroll - 0.1% per stat
+
+[Elixirs]
+For 4 Stats:
+	Elixir of Vitality - 5 Vitality
+	Elixir of Greater Vitality - 10 Vitality
+	Elixit of Extreme Vitality - 15 Vitality
+Elixir of the Dark Mage - 100 Resistence Piercing
+Hero's Juice - 100 Armor Piercing
+
+[Christmas]
+Mistletoe - Very, very rare
+Candy Cane
+Ornament x20 = Quest
+[Items]
+Mittens
+Fluffy Shoes
+Orb of Good Spirits - Vitality | All Stats | Ability: Second Chances
+Elixir: Eggnog - Speed: -4 Armor: -40 Resistance: -20 HP: 1000
+
+[Anniversary]
+Orb - 2 Vitality 3 Speed
+T3/T4 Items
+Birthday Hat
+A Ring - Rare
+
+[Halloween]
+Green Pumpkin Head (Green version of the existing Orange one)
+Ethereal Essence (Bottled Essence, drops from ghosts)
+Ethereal Amulet (Activates a temporary ghost form with high evasion)
+Pumpkin Spice Latte (Elixir)
+Assassin's Pouch (A Pouch, A Smoke bomb, when dropped, splits smoke, cosmetic item)
+A Dagger that drops from Mummies (These weapons are up to your imagination)
+A Staff that drops from Mummies
+A Sword that drops from Mummies
+A Bow that drops from Mummies
+A Mace that drops from Mummies
+Franky's Belt (Frankestein's Belt, source of his power)
+Tuxedo Pants
+
+[Xmas]
+Super Mittens
+Quantum Box - Xbox
+9 pieces of Xbox
+Angel's Wings (Cape)
+Hot Chocolate
+Warm Scarf
+Santa's Belt
+Candy Cane Sword
+Rudolph's Red Nose (Head Slot / Helmet)
+Ornament Staff
+
+[Buffs]
+Server Jump Penalty
+Drug Addiction Penalty
+Xmas Spirit / Joy
+Luck Buff (From Merchants)
+Speed Buff
+
+[Valentines]
+Solitaire Ring (Single stone http://www.kay.com/images/products/1508/150866806_MV_ZM.jpg)
+
+[Chinese New Year]
+Red Envelope (Gol scribings) https://i.pinimg.com/originals/de/e6/dd/dee6dd8183be64e4f41985684e7a2054.jpg
+License to Adopt a Puppy (A piece of paper / license, it will allow players to get a puppy pet once they are released)
+Dragon Scale Armor (Dark coloured, cool looking, hefty armor, chest slot)
+
+[Game]
+Fun Token (We prepared PVP Tokens before, coins, this one will be similar to those, but a colourful coin/token, it will be a reward from daily events)
+
+[Halloween 2018]
+essense of fire and pumpkin heads - create jackolanterns.  jackolanterns have a 5% chance to scare the stuff in your vicinity. mobs would run away for 3 seconds and players would "drop" some gold as a chest you can loot when they get a fright and jump. <- removes all targets
+
+Name:    Yorick the Talking Skull
+Type:     Orb
+Stats:    +5% EXP
+
+vampire's blood: potion slot- gives you vampirism 100, scariness 50, strength 50, intelligence 50, dexterity 50, duration 30 mins (or 1 hour), can be combined to increase the duration time (increases by 4 times so ppl wouldn't drink 3 potions to get increased duration, or maybe add in 5 more to stats) and scariness to 60. <- elixir
+
+Golden Fleece [Cape]
+
+Philosopher's Stone [Orb]
+
+Weaver's Bow [Spider-y Bow, or Web-y, casts a web with a %]
+
+Ethereal Amulet [Introduce]
+
+Franky Items [Introduce]
+
+[Halloween]
+• Jack-o Lantern - Orb Slot - (Scares away monsters when activated)
+• Yorick the Talking Skull (Orb slot, an actual talking skull, logs things in-game, gives +Experience)
+• Vampire's Blood (Elixir, gives lifesteal)
+• Weaver's Bow (Spider-y Bow, or Web-y, casts a web with a %)
+[Others]
+• Golden Fleece (Cape)
+• Philosopher's Stone (Orb)

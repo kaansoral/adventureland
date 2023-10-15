@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block "content" %}
+<style>
+    body{
+	background-image: url("/rpgapp/images/128-25.jpg");
+	background-repeat: repeat;
+}
+    </style>
+<div style="padding-top: 150px;">
+    <div style="font-size: 1.8em; font-weight: bold; color: white; padding-bottom: 30px;">
+	{{app.db.name}}
+	</div>
+    {% if chars %}
+    
+    
+<input type="reset" class="huge green button" onclick="window.top.location='//apps.facebook.com/{{app.db.slug}}/game/'+$('#server').val()" value=" Play " />
+<br />
+<br />
+<select name="schar" class="fsel">
+    {% for ch in chars %}
+	<option value="{{ch.id}}">{{ch.nick}}</option>
+    {% endfor %}
+    </select>
+<select id="server" class="fsel">
+	<option value="s1">Server 1</option>
+	</select>
+	<div style="font-style: italic; color: white">(Your character is the same on all servers.)</div>
+{% else %}
+<form method="get" target="_top" action="//apps.facebook.com/{{app.db.slug}}/game/">
+    <span style="font-size: 1.8em; font-weight: bold; color: white; padding-bottom: 30px;">
+	Nickname:
+	</span>
+    <input name="char" type="text" id="char" style="width: 150px; height: 30px; font-size: 1.4em; font-weight: bold" /><br />
+    <input type="submit" class="large green button" value=" Create Character " />
+</form>
+<br />
+{% endif %}
+{% if error %}
+<div style="font-size: 1.8em; font-weight: bold; color: red; padding-bottom: 30px;" >
+    {{ error }}
+</div>
+{% endif %}
+</div>
+<audio id="saudio" autoplay="autoplay" loop="loop" volume="0.2">
+  <source src="/rpgapp/images/CloudTopLoops.ogg" type="audio/ogg" />
+  No Audio Support, Upgrade your Browser
+  </audio>
+<script>
+window.onload=function(){
+
+    document.getElementById('saudio').volume=0.2;
+
+}
+</script>
+{% endblock %}

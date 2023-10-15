@@ -1,0 +1,54 @@
+{% for c in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17] %}
+	{% if c==0 %}<div class='page1'>{%endif%}{% if c==6 %}<div class='page2 hidden'>{%endif%}{% if c==12 %}<div class='page3 hidden'>{%endif%}
+		{% if characters[c] %}
+			<div class="gamebutton mb5" onclick="if(bc(this)) return; if(!observe_character('{{characters[c].info.name}}')) log_in(user_id,'{{characters[c].k()}}',user_auth)" style='text-align: left; width: 160px'>
+				<span class='cskin' data-skin="{{characters[c].info.skin}}" data-cx='{{characters[c]|get_cx|safe}}' data-rip="{% if characters[c].info.rip%}1{%endif%}" style="float:left; margin-right: 5px; margin-top: -5px; margin-left: -4px; margin-bottom: -7px;"></span>
+				{{characters[c].info.name|sshorten}}
+				<span class='characterav{{characters[c].info.name}}'>
+					{% if characters[c].server %}
+						<span style="color: #F3A05D">[I]</span>
+					{% else %}
+						<span style="color: #A4FA64">[A]</span>
+					{%endif%}
+				</span>
+				<br />
+				Lv.{{characters[c].level}} <span class="gray" {%if characters[c].private%}style='text-decoration: underline #C7BAFF;'{%endif%}>{{characters[c].type|title}}</span>
+			</div>
+		{% else %}
+			<div class="gamebutton mb5" onclick="if(bc(this)) return; $('.nchb').click()" style='text-align: left; width: 160px'>
+				<span class='cskin' data-skin="thehelmet" style="float:left; margin-right: 5px; margin-top: -5px; margin-left: -4px; margin-bottom: -5px"></span>
+				{%if c < user.info.slots %}<span style='color'>Free Slot</span>{%else%}<span style='color:gray'>Available Slot</span>{% endif %}
+				<br />
+				<span style='color:gray'>Unused</span>
+			</div>
+		{% endif %}
+	{% if c==5 or c==11 or c==17 %}</div>{%endif%}
+{% endfor %}
+<div class='mb5'>
+	<div class="gamebutton pgbt pgbt1" style='width: 62px' onclick="$('.page2').hide(); $('.page3').hide(); $('.page1').show(); $('.pgbt').css('color','gray'); $('.pgbt1').css('color','white');">Page 1</div>
+	<div class="gamebutton pgbt pgbt2" style='width: 61px; color: gray' onclick="$('.page1').hide(); $('.page3').hide(); $('.page2').show(); $('.pgbt').css('color','gray'); $('.pgbt2').css('color','white');">Page 2</div>
+	<div class="gamebutton pgbt pgbt3" style='width: 61px; color: gray' onclick="$('.page1').hide(); $('.page2').hide(); $('.page3').show(); $('.pgbt').css('color','gray'); $('.pgbt3').css('color','white');">Page 3</div>
+	<div class="gamebutton {%if not user.info.characters %}mt5{%endif%} mb5 nchb" style='text-align: center; width: 62px' {% if user.info.character|length < 18 %}onclick="pcs(); $('.menu').hide(); $('.salesui').hide(); $('.newcharacter').show(); load_class_info('rogue','male'); resize(); chartype='',gendertype='';"{% endif %}><span style='{% if user.info.character|length >= 18 %}color:gray{% endif %}'>New</span></div>
+</div>
+<script>
+	user_id="{{user and user.k() or ''}}";
+	user_auth="{{user and user.info.auths[0] or ''}}";
+	$(".cskin").each(function(){
+		$(this).html(sprite($(this).data("skin"),{cx:$(this).data("cx"),rip:$(this).data("rip")||0,height:52,overflow:true,scale:2})); /* height: +50 +4 | margin-bottom: -5 -4 [03/10/18] */
+		/* overflow:true,scale:2 - otherwise female ranger's tattoo can't possible align with natural pixel offsetting [24/04/20] */
+	});
+</script>
+
+
+{#
+
+			{% for c in characters %}
+				<div class="textbutton mt5" onclick="if(bc(this)) return; log_in('{{user.k()}}','{{c.k()}}','{{user.info.auths[0]}}')">
+					&gt; Lv.{{c.level}}
+					<span class="gray">{{c.type|title}}</span>
+					{{c.info.name}}
+				</div>
+			{% endfor %}
+			<div class="textbutton mt5 {%if not user.info.characters %}mb5{%endif%}" onclick="pcs(); $('.menu').hide(); $('.newcharacter').show(); load_class_info('rogue','male'); resize(); chartype='',gendertype='';">&gt; New Character</div>
+
+#}

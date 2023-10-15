@@ -1,0 +1,50 @@
+indexes:
+
+- kind: Character #UnstuckPlayers
+  properties:
+  - name: online
+  - name: server
+  - name: last_sync
+
+- kind: Character #verify_steam_installs()
+  properties:
+  - name: platform
+  - name: last_online
+    direction: desc
+
+- kind: Event
+  properties:
+  - name: tag
+  - name: created
+    direction: desc
+
+- kind: Backup
+  properties:
+  - name: backup_item_id
+  - name: backup_created
+    direction: desc
+
+- kind: Mail
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
+- kind: Message
+  properties:
+  - name: owner
+  - name: created
+    direction: desc
+
+- kind: Message
+  properties:
+  - name: author
+  - name: created
+    direction: desc
+
+- kind: Message
+  properties:
+  - name: owner
+  - name: type
+  - name: created
+    direction: desc

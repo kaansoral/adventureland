@@ -1,0 +1,100 @@
+<p>
+	Arguments:
+	<div>&nbsp;<b>*</b> Object - Character or Monster</div>
+</p>
+<p>
+	Returns:
+	<div>&nbsp; <b>*</b> Promise</div>
+</p>
+
+<p>Example usages:</p>
+
+<div class='code'>
+attack(target);
+attack(target).then(function(data){
+	reduce_cooldown("attack",character.ping); // Try to increase your dps with ping correction
+});
+attack(target).then(
+	function(data){
+		game_log("yes!");
+	},
+	function(data){
+		game_log("oh no, attack failed: "+data.reason);
+	},
+);
+</div>
+
+<p>Promise Reference:</p>
+
+<span class='dlabel'>"resolve"</span>
+<div class='code'>
+{
+	source: "attack",
+	actor: "CharacterName",
+	target: "42", // Monster ID or Character ID
+	damage: 1390,
+	projectile: "momentum",
+	eta: 50, // Arrival in milliseconds
+	pid: "abcd1234", // Projectile ID
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"reject"</span>
+<div class='code'>
+{
+	reason: "not_found", // Target not found
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "too_far", // Target too far
+	distance: 120,
+	origin: "server", // or "client"
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "cooldown", // Target too far
+	remaining: 20, // 20 milliseconds remaining
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "no_mp", // No MP
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "disabled", // Character disabled
+	// If you are stunned, you can't attack
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "friendly", // PVP attacks in PVE servers
+	// PVP attacks against friendly targets
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "failed", // Other reasons
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "miss", // Attack missed
+	// Old response
+	// Replaced by "too_far" and "cooldown"
+}
+</div>
+
+<p></p>
+<span class='redlabel'>"source"</span>

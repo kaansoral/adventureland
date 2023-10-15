@@ -1,0 +1,62 @@
+# SSH's
+
+ssh -i ~/thegame/design/docs/id_rsa.pem root@149.56.107.85
+scp -i ~/thegame/design/docs/id_rsa.pem root@149.56.107.85:s2053.out .
+scp -i ~/thegame/design/docs/id_rsa.pem root@149.56.107.85:s2083.out .
+scp -i ~/thegame/design/docs/id_rsa.pem root@149.56.107.85:s2087.out .
+
+# EU
+
+ssh -i ~/thegame/design/docs/id_rsa.pem root@138.201.60.196
+scp -i ~/thegame/design/docs/id_rsa.pem root@138.201.60.196:s2053.out .
+scp -i ~/thegame/design/docs/id_rsa.pem root@138.201.60.196:s2083.out .
+
+# Google Cloud
+europas0: ssh -i ~/thegame/design/docs/id_rsa.pem kaan@35.246.228.205
+americas0: ssh -i ~/thegame/design/docs/id_rsa.pem kaan@34.66.236.106
+
+eu1: ssh -i ~/thegame/design/docs/id_rsa.pem kaan@35.246.244.105
+eu1: nohup node server/server.js EU I 2053 > s2053.out 2> s2053.err < /dev/null &
+us1: scp -i ~/thegame/design/docs/id_rsa.pem kaan@35.184.37.35:s2053.out .
+
+scp -i ~/thegame/design/docs/id_rsa.pem kaan@34.66.236.106:s2087.out .
+
+https://support.google.com/cloud/contact/free_trial_support
+
+# Setup
+
+0) Choose advanced installation - everything default
+1) Select the id_rsa SSH public-key that's also in design/docs
+2A) ssh-copy-id -i ~/thegame/design/docs/id_rsa.pem ubuntu@158.69.23.127
+2) Add the server to scripts/data.js
+3) N2 / N1 or E2 - 8 cores min - likely 16 highcpu
+
+# Installs
+
+1) sudo apt-get update
+2) sudo apt-get upgrade
+3) sudo apt-get install npm
+3.1) sudo npm install n -g
+3.2) sudo n latest
+3.3) use "node" instead of "nodejs"
+4.0) npm init
+4) npm install socket.io ////   @2.1.1 (until this is fixed: https://github.com/socketio/socket.io/issues/3459)
+4.1) npm install request
+4.2) npm install range_check
+4.3) npm install protobufjs
+4.4) npm install bytebuffer
+5) sudo reboot
+
+# Updates
+
+0) sudo n latest
+1) npm outdated
+2) npm update
+
+# Server updates
+
+1) sudo apt-get update
+2) sudo apt-get upgrade
+
+
+ssh -i ~/thegame/design/docs/id_rsa.pem root@149.56.107.85 "ps aux | grep 'node server/server.js US I 2053'"

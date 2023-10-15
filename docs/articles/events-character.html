@@ -1,0 +1,261 @@
+<p>Character events are individual to your character.</p>
+
+<div class='code'>
+// Register to a single character event:
+character.on("level_up",function(data){
+	game_log("I am now level "+data.level+"!");
+});
+
+// Register to all character events:
+character.all(function(name,data){
+	data.event_name=name;
+	show_json(data);
+});
+
+</div>
+
+<p>Data Reference:</p>
+
+<span class='dlabel'>"new_map"</span>
+<div class='code'>
+{
+	// Sent after your character enters a new map
+	name: "main", // G.maps.main
+	in: "main", // Unique instance ID for instances
+}
+</div>
+
+<span class='dlabel'>"incoming"</span>
+<div class='code'>
+{
+	// If an "action" Game Event is targeting you
+	// It's emitted to your character as an "incoming" event
+	source: "attack", // Can be positive or negative
+	actor: "CharacterName", // Monster ID or Character ID
+	target: "42", // Monster ID or Character ID
+	damage: 1390,
+	projectile: "momentum",
+	eta: 50, // Arrival in milliseconds
+	pid: "abcd1234", // Projectile ID
+}
+</div>
+
+<span class='dlabel'>"hit"</span>
+<div class='code'>
+{
+	// Emitted when you've been hit by a projectile
+	// Could be damaging, healing, or containing a condition
+	// The full reference can be found in Game Events
+	source: "attack",
+	actor: "AttackerID", // Monster ID or Character ID
+	target: "YourCharacterName", // Monster ID or Character ID
+	damage: 1390,
+	pid: "abcd1234", // Projectile ID
+}
+</div>
+
+<span class='dlabel'>"target_hit"</span>
+<div class='code'>
+{
+	// Same format as "hit" event
+	// Emitted when you've hit someone
+}
+</div>
+
+<span class='dlabel'>"loot"</span>
+<div class='code'>
+{
+	// Emitted when you or a party member opens a chest
+	id: "qwerty12345",
+	opener: "CharacterName", // Character who opened the chest
+	goldm: 1.2, // Character who opened the chest had +20% Gold
+	dry: false, // Set if the opener was far away from the chest
+	stale: false, // Set if the chest was unopened for more than 30 minutes
+	// If the dry or stale flags are set, goldm is 1
+	gold: 87, // You looted 87 gold
+	party: true, // The chest was looted by a party
+	items:[
+		{name:"xsword", "level":0, "looter":"ACharacterName"},
+		{name:"xstaff", "level":0, "looter":null, "lostandfound":true}, // Lost
+		{name:"xbow", "level":10, "looter":"AnotherCharacterName", pvp_loot:true},
+		// pvp_loot flag is set if the chest was a character drop at pvp
+	],
+}
+</div>
+
+<span class='dlabel'>"buy"</span>
+<div class='code'>
+{
+	name: "coat",
+	num: 0, // Inventory slot 0
+	q: 1, // Quantity
+	cost: 6000, // Gold spent
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"sell"</span>
+<div class='code'>
+{
+	item: {name:"staff",level:9},
+	gold: 500,
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"cm"</span>
+<div class='code'>
+{
+	name: "CharacterName", // Name of the character who sent the code message
+	message: object, // Can be a string, array, any serializable object
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"clim"</span>
+<div class='code'>
+{
+	// Raw data that's posted to the CLI jsdom window from character.js
+	// Can also be posted from master.js, which character.js will propagate
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"death"</span>
+<div class='code'>
+{
+	past: false, // true when your code executes with a dead character
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"respawn"</span>
+<div class='code'>
+{
+	// Respawned
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"item_received"</span>
+<div class='code'>
+{
+	name: "SenderName",
+	item: "staff",
+	q: 1,
+	num: 12, // Inventory#
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"item_sent"</span>
+<div class='code'>
+{
+	name: "ReceiverName",
+	item: "staff",
+	q: 1,
+	num: 12, // Inventory#
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"mail_sent"</span>
+<div class='code'>
+{
+	to: "ReceiverName",
+	// There's also a "mail_failed" with a reason
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"gold_sent"</span>
+<div class='code'>
+{
+	name: "ReceiverName",
+	gold: 100,
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"gold_received"</span>
+<div class='code'>
+{
+	name: "SenderName",
+	gold: 100,
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"craft"</span>
+<div class='code'>
+{
+	name: "gstaff", // Item ID of the item 
+	num: 12, // Inventory# of the item
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"dismantle"</span>
+<div class='code'>
+{
+	name: "staff", // Item ID of the item you've dismantled
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"sale"</span>
+<div class='code'>
+{
+	buyer: "BuyerName",
+	item: {name:"staff",level:9},
+	slot: "trade8",
+}
+</div>
+
+<span class='dlabel'>"mluck"</span>
+<div class='code'>
+{
+	name: "MerchantName",
+	item: {name:"staff",level:0},
+	num: 12,
+}
+</div>
+
+<span class='dlabel'>"exchange_buy"</span>
+<div class='code'>
+{
+	// Token Exchange
+	num: 12, // Inventory# of the item
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"mobbing"</span>
+<div class='code'>
+{
+	// If you target 4+ monsters, they start dealing increased damage
+	// This behaviour is called "mobbing"
+	intensity: 1, // The intensity increases with each hit
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"stacked"</span>
+<div class='code'>
+{
+	// If you place your characters on top of each other
+	// Monsters deal stacked/increasing damage to all the stacked characters
+	// When this event is triggered, scatter your characters
+	ids: ["CharacterName1","CharacterName2","..."],
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"level_up"</span>
+<div class='code'>
+{
+	level: 72, // Your new level
+}
+</div>
+
+<p>Work in progress ...</p>

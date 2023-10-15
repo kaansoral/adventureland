@@ -1,0 +1,13 @@
+/secrets.py
+/node/live_variables.js
+/node/variables.js
+/stack/
+/origin/images/
+/electron/dist/
+/electron/node_modules/
+/node/node_modules/
+/scripts/node_modules/
+*.pyc
+*.pem
+*.pub
+/scripts/test.js

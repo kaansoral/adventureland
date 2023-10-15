@@ -1,0 +1,5 @@
+- All the negative conditions are now affected by "stresistance" and sent as a "condition" character event
+- There's a new very aggressive male Harpy
+- Cuteness adds a negative aggro difference - this way >1 aggro values make some sense too
+- Bling adds a positive aggro difference - this way even peaceful monsters could attack you
+- New Item: Harpy Bow - along with its own crafting recipe, Harpy's both drop the crafting material and the bow itself, so it's not just low-RNG based and there'll be a slow but steady progress too

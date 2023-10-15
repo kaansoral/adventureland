@@ -1,0 +1,45 @@
+<p>CLI is a command line game client for Adventure Land. It's currently in a very early stage, but the base integration is there. As the developer, from my perspective, allowing the game to be run from the command line is very risky. While Adventure Land is a coding and botting game, there's a just exchange between the use of server resources and the use of one's own gaming hardware. For this reason, the CLI comes with a cost. It's 29 <a href="https://adventure.land/shells" target="_blank">shells</a> per week for now. You can purchase time with the following command: (Up to 4 weeks) <span style='color:#A3A3A3'>Ps. Characters up to Level 70 can run freely!</span></p>
+
+<div class='code'>
+parent.api_call('cli_time');
+</div>
+
+<p>To use the CLI, copy the files from: <a href="https://github.com/kaansoral/adventureland/tree/master/cli" target="_blank">Here[GitHUB]</a> - and copy common_functions.js to the same folder. (You can find it by typing /codes as a Chat command in the Steam or Mac client).</p>
+
+<p>The node packages you need to install are: <span class='dlabel'>jsdom</span> <span class='dlabel'>request</span> and <span class='dlabel'>node-localstorage</span></p>
+
+<div class='code'>
+npm install jsdom request node-localstorage
+// edit the characters array in master.js to include your own characters
+// edit auth to be: show_json(parent.Cookies.get("auth"))
+// then run your characters!
+node --expose-gc master.js
+</div>
+
+<p>JSDom performance is enough for light operations, but since it's an emulation, it's too slow for computations like smart_move, for this reason, the CLI has a system to move computation out, and communicate with messages, you can use this system too:</p>
+
+<div class='code'>
+// in master.js
+character['CharacterName'].worker.postMessage({a:1,b:2});
+// in character.js
+dom.window.CLI_IN.push({a:1,b:2});
+// in Code
+character.on("clim",function(data){
+	// data is {a:1,b:2}
+});
+</div>
+
+<p>You can either use the `cli_require` function inserted into the jsdom instance to request packages inside your game Code, or, you can use the same method to handoff objects or packages to the jsdom instance:</p>
+
+<div class='code'>
+// in character.js, find "dom.window.cli_require=require;"
+// After that, add your own thing to insert
+dom.window.my_thing={a:1,b:2};
+// in your Code
+var my_thing=null;
+if(game.cli) // best to make your code work on all platforms, not only CLI
+{
+	my_thing=parent.my_thing; // dom.window is the parent of Code
+}
+// Warning: the scoping could get funky, best to just offload things to character.js, or master.js as described above, move data in as "clim" messages
+</div>

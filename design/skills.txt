@@ -1,0 +1,10 @@
+Warrior
+1200 MP - 50% Evasion for 4 seconds - 60 second CD
+800MP - War Cry - +10 Speed - 200 Armor - 200 Res - Party - 3 seconds - 80 second CD
+500MP - Cleave
+500MP - Stomp
+
+
+Priest
+Party Heal
+Mana Burn - Burns Mana + Damage - 60 second CD - maybe DOT

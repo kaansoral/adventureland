@@ -1,0 +1,10 @@
+{%extends "htmls/base.html"%}
+{%block body%}
+	{% for tag,collection in gallery %}
+		<div style="text-align: center; font-size: 160px; margin-bottom: 20px; margin-top: 20px">{{tag}}</dib>
+		{% for img in collection %}
+			<img src="{{img}}" style="float: left" />
+		{% endfor %}
+		<div style="clear: both;"></div>
+	{% endfor %}
+{%endblock%}

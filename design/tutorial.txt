@@ -1,0 +1,20 @@
+Interfaces
+A) A new notification interface (For prompts, server notifications, stays on the screen until dismissed) Challenge: Placement
+B) Tutorial status interface (For example, Step [1/24] Progress [0/10]) (On the game UI) Challenge: Placement, Size, Visibility
+C) Tutorial step/page | Challenge: Aid's
+
+Tutorial Steps
+1) MOVE - Move 10 times
+2) TARGET - Target 20 monsters or players
+3) ATTACK - Attack 10 times
+4) USE - Use 10 potions
+5) FARM - Earn 20,000 gold
+6) BUY - Buy a Helmet, an Upgrade Scroll
+7) UPGRADE - Upgrade the Helmet - Reward: Rings
+8) COMPOUND - Compound the rings
+
+Aid's / UI / Ideas
+I) "Move" Moves the player to an ideal point for this tutorial step, uses `smart_move`
+II) "Skip" Skips the tutorial step
+III) "Dismiss" Dismisses the tutorial altogether
+IV) "Awards" - Possibly tie the tutorial to an Achievements system, for example, give away 3 rings at one step, before "COMPOUND"

@@ -1,0 +1,28 @@
+#INCREASE THE GAME VERSION!
+#TOFIX: Permission denied (publickey). - Just run list_servers once - running ssh fixes it! [04/01/21]
+node ~/gscripts/update_machines.js
+servers_eval('broadcast("disconnect_reason","Game Update!"); setTimeout(shutdown_routine,1);');
+node ~/gscripts/list_servers.js
+deploy_thegame
+node ~/gscripts/run_servers.js
+
+
+
+
+#After Maps Change
+Executor: download_maps()
+node ~/thegame/node/precompute.js
+node ~/gscripts/update_machines.js data
+
+#Auto
+node ~/thegame/scripts/precompute.js
+
+#Occasional
+node ~/thegame/scripts/process_gallery.js 
+node ~/thegame/scripts/electron_bundle.js 
+
+#Help
+node ~/gscripts/list_commands.js
+
+#Delayed
+echo "nohup node server/server.js ASIA HARDCORE 2083 > s2083.out 2> s2083.err < /dev/null &" | at now + 276 min

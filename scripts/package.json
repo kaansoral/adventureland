@@ -1,0 +1,22 @@
+{
+  "name": "adventureland-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "list_commands.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node list_commands.js"
+  },
+  "author": "",
+  "license": "AdventureLandOnlyUse",
+  "dependencies": {
+    "image-size": "^0.8.3",
+    "ip": "^1.1.5",
+    "node-fetch": "^2.6.1",
+    "node-minify": "^3.6.0",
+    "prompt": "^1.1.0",
+    "request": "^2.88.2",
+    "sync-exec": "^0.6.2",
+    "xml2js": "^0.4.23"
+  }
+}

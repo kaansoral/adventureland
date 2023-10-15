@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			@font-face {
+				font-family: pixel;
+				src: url(m5x7.ttf);
+				font-weight: normal;
+				font-style: normal;
+			}
+			html,body{
+				background:black;
+				color:white;
+				margin:0 0 0 0;
+				padding:0 0 0 0;
+				width:100%;
+				height:100%;
+				overflow:hidden;
+				font-family:pixel;
+				color:white;
+				word-wrap:break-word;
+				-webkit-font-smoothing:subpixel-antialiased;
+			}
+		</style>
+	</head>
+	<body>
+		<table width=100% height="100%">
+			<tr>
+				<td align="center">
+					<div style='border: 5px solid gray;font-size: 24px;line-height: 24px;padding: 12px; display: inline-block;text-align: center; overflow-wrap: break-word; max-width: 400px'><div id='thecolor' style='color:#85C76B'>LOADING</div> <span id="percentage">0</span>%</div>
+					<div style='border: 5px solid gray; font-size: 24px; line-height: 24px; padding: 20px; margin-top: 10px; display: none; width: 380px' id="notloading">
+						At this point, it's probably not loading. Adventure Land requires an internet connection. Make sure you are connected! Try reloading once to see if it works. If the issue persists: You can always email hello@adventure.land
+						<div style='color:#85C76B; display: none' id='apologies'>Apologies :)</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<script>
+			var progress=0,s9=0,percent=0;
+			setInterval(function(){
+				progress+=1;
+				if(progress<=99)
+					document.getElementById("percentage").innerHTML=progress;
+				else
+				{
+					percent+=1;
+					if(percent==10) percent=0,s9++;
+					if(s9>=480)
+					{
+						s9=480; if(!percent) percent=1;
+					}
+					var dot=".";
+					for(var i=0;i<s9;i++) dot+="9";
+					if(percent) dot+=percent;
+					document.getElementById("percentage").innerHTML="99"+dot;
+				}
+			},10);
+			setTimeout(function(){
+				document.getElementById("notloading").style.display="block";
+				document.getElementById("thecolor").style.color="#D38639";
+			},24000);
+			setTimeout(function(){
+				document.getElementById("notloading").style.display="block";
+				document.getElementById("apologies").style.display="block";
+				document.getElementById("thecolor").style.color="#D22E1B";
+			},36000);
+		</script>
+	</body>
+</html>

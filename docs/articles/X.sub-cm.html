@@ -1,0 +1,26 @@
+<p>Adventure Land has a feature called Code Messages. It's a server-wide feature. You can't send a CM from EU I to EU II, however, you can send a code message anywhere from EU I to another character in EU I.</p>
+
+<p>You can send objects as CM's, anything that can be JSON.stringify'ed can be sent, larger messages have higher code costs.</p>
+
+<div class='code'>
+send_cm("Wizard","hello"); // Send a string
+send_cm("Wizard",{"items":character.items}) // Send your inventory data as a CM
+send_cm(["Wizard","Protector"],{"task":"move","map":character.map,"x":character.x,"y":character.y})
+// you can send CM's to multiple recipients
+// Instead of sending code messages individually, send them to multiple recipients whenever possible, the code cost is lower
+</div>
+
+<p>To handle incoming CM's:</p>
+
+
+<div class='code'>
+function on_cm(name,data)
+{
+	if(name!="Wizard") // Make sure to check who the CM came from
+	{
+		game_log("Unauthorized CM "+name);
+		return;
+	}
+	show_json(data);
+}
+</div>

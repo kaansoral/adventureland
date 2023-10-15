@@ -1,0 +1,830 @@
+img{ /* makes a change, noticeable [28/05/16] */
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimize-contrast;
+	image-rendering: pixelated;
+	-ms-interpolation-mode: nearest-neighbor;
+}
+body{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+div[contenteditable],span[contenteditable]{
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
+	-khtml-user-select: auto;
+	-moz-user-select: auto;
+	-ms-user-select: auto;
+	user-select: auto;
+}
+::-webkit-scrollbar{background:transparent;}
+::-webkit-scrollbar-track{
+	background:transparent;
+}
+::-webkit-scrollbar-thumb {
+  background:rgba(200,200,200,0.8);
+}
+.noscroll::-webkit-scrollbar{
+	background:black;
+}
+
+/*  *{font-weight:normal !important;}  */
+/* best to abandon all "bold" texts [12/08/16] */
+
+html,body{
+	margin:0 0 0 0;
+	padding:0 0 0 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden; /* temporary solution [16/05/16]*/
+	font-family: pixel;
+	color: white;
+	word-wrap: break-word;
+
+	/*text-rendering: optimizeLegibility !important;
+	-webkit-font-smoothing: antialiased !important;*/
+
+	-webkit-font-smoothing: subpixel-antialiased;
+	/* this makes safari render fonts thicker, wanted */
+
+	/*-moz-osx-font-smoothing: grayscale;*/
+	/* this makes regular fonts thinner in osx firefox, not wanted [12/08/16] */
+
+	/*font-smooth: never;
+	-webkit-font-smoothing : none; */
+	/*
+		NOTE: Chrome renders fonts thicker as default, it's nice, the other browsers render then reall thin ... ignoring the difference for the time being; [05/08/16]
+	*/
+
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: #A9ACAC;
+	opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	color: #A9ACAC;
+}
+canvas { display:block; } /*replaces the overflow: hidden solution [07/07/16] */
+.psuccess{
+	color: #5DAC40;
+}
+.pfail{
+	color: #AC393E;
+}
+.iqui{ /*item quantity ui*/
+	color: white;
+	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
+	position:absolute; right:-2px; bottom:-2px; text-align: center;
+	line-height: 16px; font-size: 24px; height: 16px;
+}
+.iqhp{
+	color: #F37A87;
+}
+.iqdbf{
+	color: #343792;
+}
+.iqmp{
+	color: #66B3F6;
+}
+.iuui{ /*item upgrade ui*/
+	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
+	position:absolute; left:-2px; bottom:-2px; text-align: center;
+	line-height: 16px; font-size: 24px; height: 16px;
+	color: gray;
+}
+.truui{ /*item upgrade ui*/
+	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
+	position:absolute; left:-2px; top:-2px; text-align: center;
+	line-height: 16px; font-size: 24px; height: 16px;
+	color: gray;
+}
+.trruui{
+	border: 2px solid gray; background: black; padding: 1px 2px 1px 3px;
+	position:absolute; right:-2px; top:-2px; text-align: center;
+	line-height: 16px; font-size: 24px; height: 16px;
+	color: gray;
+}
+.imu{
+	color:#64B867;
+}
+.ivu{
+	color:#D3391E;
+}
+.itu{
+	color:gold;
+	color:#E6C409;
+	color:#389261;
+	color:#398F2E;
+	color:#FFFFFF;
+	color:#398F2E;
+}
+.ibu{
+	color:#5D688F;
+	color:#808C8F;
+	color:#D96C0E;
+	color:#DA8F20;
+}
+.igu{
+	color:#D96EDC;
+}
+.ixu{
+	color:#5C5D5E;
+	color:#B3AFB4;
+}
+.ilsu{
+	color:#B3AFB4;
+	color:#8C7A36;
+	color:#C9AE5D;
+	color:#A28D4C;
+}
+.iluu{
+	color:#B3AFB4;
+	color:#949698;
+	color:#5C5D5E;
+}
+.ering{
+	border: 2px solid gray;
+	padding: 8px;
+	display: inline-block;
+}
+.clevel4{
+	color: #FFC949;
+}
+.clevel5{
+	color: #B753C7;
+}
+.clevelA{
+	color: #FFC949;
+}
+.clevelB{
+	color: #4A9AFF;
+}
+.clevelC{
+	color: #FC4546;
+}
+.clevelD{
+	color: #9353FF;
+}
+.clevelE{
+	color: #FD8915;
+}
+.clevelW{
+	color: #5BAD59;
+}
+.clevel6{
+	color: #FC2F72;
+}
+.clevel7{
+	color: #FD6A19;
+}
+.clevel7{
+	color: #D71D41;
+}
+.ulevel8{
+	color: #FFC949;
+}
+.ulevel9{
+	color: #E64D31;
+}
+.ulevel10{
+	color: #B753C7;
+}
+.ulevel11{
+	color: #E0DE58;
+	color: #B753C7;
+}
+.ulevel12{
+	color: #2096D8;
+	color: #B753C7;
+}
+.infop{
+	color: #9E9E9E;
+}
+.mw{
+	color: #FFFFFF;
+}
+.infot{
+	margin-top: 4px;
+}
+.itemnumi{ /* input */
+	vertical-align: middle;
+	width: 40px;
+	height: 16px;
+	line-height: 16px;
+	font-size: 16px;
+	font-family: Pixel;
+	margin-right: 5px;
+	display: inline-block;
+	border:0;
+	padding-left: 5px;
+	background: #7D7D7D;
+	color: white;
+}
+.cinput{ /* code save */
+	height: 48px;
+	line-height: 36px;
+	font-size: 36px;
+	font-family: Pixel;
+	display: inline-block;
+	border:0;
+	padding: 12px;
+	background: #7D7D7D;
+	background: #2D2D2E;
+	border: 4px solid gray;
+	color: white;
+	margin-right: 4px;
+	vertical-align: top;
+}
+
+/* #toprightcorner .gamebutton{ margin-left: -9px; } */
+
+#gamelog,#chatlog,#codelog{
+	/*z-index: 300;
+	position: fixed;
+	bottom: 0px;
+	right: 0px;*/
+	height: 208px;
+	width: 300px;
+	background: rgb(0,0,0);
+	line-height: 24px;
+	font-size: 24px;
+	text-align: left;
+	vertical-align: middle;
+	padding: 10px;
+	overflow-y: scroll;
+	border: 5px solid gray;
+	/*letter-spacing: 0.8px;*/
+}
+#xcodehint{
+	z-index: 400;
+	height: 36px;
+	width: 320px; /*300+15+5*/
+	right: 0px;
+	position: fixed;
+	border: 5px solid gray;
+	bottom: 192px; /*208+15-36+5*/
+	overflow: hidden;
+	background: black;
+	font-size: 36px;
+	line-height: 36px;
+	text-align: center;
+}
+.codesearch::placeholder {
+  color: gray;
+  opacity: 1;
+}
+.chatlog{
+	line-height: 24px;
+	font-size: 24px;
+	text-align: left;
+	vertical-align: middle;
+	padding: 10px;
+	overflow-y: scroll;
+	height: 190px;
+	width: 300px; /* .chatinput is 314+3x2 - this one is 300+10x2 */
+}
+#chatinput{
+	position: fixed;
+	z-index:99;
+	bottom: 5px;
+	left: 5px;
+	width: 314px;
+	height: 30px;
+	font-size: 24px;
+	font-family: Pixel;
+	display: inline-block;
+	background: #404040;
+	color: white;
+	border: none;
+	padding: 3px;
+}
+.chatinput{
+	width: 314px;
+	height: 30px;
+	font-size: 24px;
+	font-family: Pixel;
+	display: inline-block;
+	background: #404040;
+	color: white;
+	border: none;
+	padding: 3px;
+}
+.ccinput,.ccinput:focus{
+	border: none;
+	outline: none;
+	background: none;
+	/*background: #8653D8;*/
+	padding: 5px 12px 5px 12px;
+	color: white;
+	font-size: 36px;
+	font-family: Pixel;
+}
+.newmessage{
+	color: green;
+}
+.tint{
+	position: relative;
+	z-index:1;
+	overflow: hidden;
+}
+.ontint{
+	position: relative;
+	z-index:2;
+}
+.gameentry{
+}
+#chatlog{
+	z-index:98;
+	left: 0px;
+	/*direction:rtl;*/
+}
+.chatentry{
+	/*direction: ltr;*/
+	margin-bottom: 30px;
+}
+.chatentry+.chatentry{
+	margin-top: -30px;
+}
+#topleftcorner{
+	z-index: 109;
+	top: 0px;
+	left: 0px;
+	position: fixed;
+	pointer-events: none;
+}
+.mimicker{
+	position: fixed;
+	font-size: 0px;
+	display: inline-block;
+	cursor: pointer;
+	/* background-color: rgba(0,200,0,0.5); */
+	z-index: 400;
+}
+/*#topleftcornerui > *{
+	pointer-events: auto;
+}*/
+#toprightcorner{
+	z-index: 100;
+	top: 0px;
+	right: 0px;
+	position: fixed;
+}
+#bottomrightcorner{
+	z-index: 300;
+	bottom: 0px;
+	right: 0px;
+	position: fixed;
+}
+#bottomrightcodecorner{
+	z-index: 300;
+	bottom: 0px;
+	right: 325px;
+	position: fixed;
+	display: none;
+}
+#bottomleftcorner2{
+	z-index: 99;
+	bottom: 0px;
+	left: 0px;
+	position: fixed;
+}
+.xclicks{
+	cursor: none;
+}
+.bpclicks{ /* Block Parent Clicks - Only [24/07/18] */
+	pointer-events: none !important; /* if !important is not set, the '> *' takes priority */
+}
+.bpclicks > *{
+	pointer-events: auto;
+}
+#bottomleftcorner{
+	z-index: 100;
+	bottom: 0px;
+	left: 0px;
+	position: fixed;
+}
+.label,.klabel{
+	padding: 0px 4px 2px 4px;
+	background: #808080;
+	color: white;
+	border-radius: 1px;
+	margin-bottom: 2px;
+	display: inline-block;
+	vertical-align: middle;
+}
+.klabel{
+	margin: 1px;
+	background: #E13758;
+}
+.clabel,.xlabel,.rlabel,.jlabel,.dlabel,.redlabel,.hlabel,.elabel{
+	margin-left: -4px;
+	margin-right: -2px;
+	padding: 0px 2px 2px 6px;
+	line-height: 22px; /* with padding's bottom adjustment, reduces the top padding, as -2px top padding doesn't work */
+	display: inline-block;
+	border-radius: 1px;
+	color: white;
+	background: #888888;
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+.clabel[onclick],.xlabel[onclick],.rlabel[onclick],.jlabel[onclick],.redlabel[onclick],.hlabel[onclick],.elabel[onclick]{
+	cursor:pointer;
+}
+.xlabel{
+	background: #77A6C3;
+}
+.rlabel{
+	background: #E5680D;
+}
+.jlabel{
+	background: #49BD74;
+}
+.hlabel{
+	background: #B9AB63;
+}
+.elabel{
+	background: #46BE2E;
+}
+.dlabel{
+	background: #3C9BC4;
+}
+.redlabel{
+	background: #C01941;
+}
+.slimbutton{
+	display: inline-block;
+	border: 2px solid gray;
+	font-size: 24px;
+	line-height: 24px;
+	padding: 5px 10px 5px 10px;
+	background: black;
+	text-align: center;
+	color: white;
+}
+.tinybutton{
+	display: inline-block;
+	border: 2px solid gray;
+	font-size: 16px;
+	line-height: 16px;
+	padding: 4px 7px 4px 7px;
+	background: black;
+	text-align: center;
+	color: white;
+	margin: 4px;
+}
+.gamebutton{
+	display: inline-block;
+	border: 4px solid gray;
+	font-size: 24px;
+	line-height: 24px;
+	padding: 12px;
+	background: black;
+	text-align: center;
+	color: white;
+}
+.largerfont{
+	font-size: 32px;
+	line-height: 24px;
+	vertical-align: bottom;
+}
+.blockbutton{
+	display: block;
+	border: 4px solid gray;
+	font-size: 24px;
+	line-height: 24px;
+	padding: 12px;
+	background: black;
+	text-align: center;
+}
+a.textbutton{
+	color: inherit;
+	text-decoration:none;
+}
+a.gamebutton{
+	color: inherit;
+	text-decoration:none;
+}
+.redborder{
+	border-color: orange;
+}
+.orangeborder{
+	border-color: orange;
+}
+.gamebutton.active{
+	border-color: green;
+}
+.gamebutton.active2{
+	border-color: #FFFFFF;
+}
+.gamebutton.active3{
+	border-color: #42AFDE;
+}
+.gamebutton-large{
+	font-size: 36px;
+	line-height: 36px;
+}
+.gamebutton-small{
+	padding: 4px 8px 4px 8px;
+	border: 2px solid gray;
+	margin-bottom: 4px;
+}
+.gamebutton-active.gamebutton-small{
+	border: 2px solid #EAF1EC;
+}
+#pagewrapped{
+	margin-top: 400px;
+	width: 400px;
+	z-index:205;
+	display: inline-block;
+}
+.loginorselection{
+	text-align: center;
+	-webkit-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+	-moz-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+#codeui{
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	bottom: 37px;
+	left: 0px;
+	width: 800px;
+	display: none;
+	z-index: 401;
+	-webkit-box-shadow: 0 0 6px #555960;
+	-moz-box-shadow: 0 0 6px #555960;
+	box-shadow: 0 0 6px #555960;
+}
+.CodeMirror{
+	height: 100%;
+	width: 100%;
+	font-family: Pixel;
+	font-size: 24px;
+	letter-spacing: 1px; /* more readable */
+}
+.engagebutton,.dengagebutton{
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	z-index: 200;
+}
+.cslotbutton{
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	z-index: 200;
+}
+.loginorselection,#features,#codeui,.largeborder{
+	background: black;
+	border: 5px solid gray;
+	padding: 10px;
+}
+#selection{
+}
+#pagewrapper{
+	z-index:200;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	vertical-align:middle;
+	text-align: center;
+	/*background: rgba(0,0,0,0.3);*/
+}
+#features{
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	z-index: 201;
+	/* padding-right: 40px; WHY?! */
+}
+#topui{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 202;
+}
+#backbutton{
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	z-index: 201;
+}
+.input{
+	padding: 20px;
+	font-size: 18px;
+}
+.button{
+	background: #4C3634;
+	padding: 20px;
+	font-size: 18px;
+	font-weight: bold;
+	border:none;
+}
+.button.disable{
+	background: #2E4C28;
+}
+.textbutton,.whiteheader{
+	font-size: 24px;
+}
+.textbutton.disable{
+	color: #3A783E;
+}
+.logout.disable{
+	color: #787878;
+}
+.textheader{
+	font-size: 32px;
+	padding: 4px;
+	margin-bottom: 2px;
+	font-family: pixel;
+	text-align: center;
+}
+.input,.button{
+	/*font-family: pixel;*/
+	border:none !important;
+}
+.selectioninput{
+	font-size: 24px;
+	padding: 2px;
+	font-family: pixel;
+	text-align: center;
+}
+.selectiontextarea{
+	font-size: 24px;
+	padding: 2px;
+	font-family: pixel;
+	text-align: left;
+}
+.chartype{
+	border: 2px solid black;
+	display: inline-block;
+	padding: 4px 6px 4px 8px;
+	margin: 3px 0px 2px 3px;
+}
+.chartype.selected{
+	border: 2px solid gray;
+}
+.gendertype{
+	border: 2px solid black;
+	display: inline-block;
+	padding: 4px 6px 4px 8px;
+	margin: 3px 0px 2px 3px;
+}
+.gendertype.selected{
+	border: 2px solid gray;
+}
+.lookstype{
+	border: 2px solid black;
+	display: inline-block;
+	padding: 4px 6px 4px 8px;
+	margin: 3px 0px 2px 3px;
+}
+.lookstype.selected{
+	border: 2px solid gray;
+}
+input:focus, button:focus, div:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+.block{
+	box-sizing: border-box;
+	width: 100%;
+}
+li{
+	font-size: 24px;
+}
+
+.vtopx{
+	margin-bottom: 0px;
+	margin-top: 0px;
+	vertical-align: top;
+}
+
+.glow8{
+	-webkit-box-shadow: 0 0 3px orange;
+	-moz-box-shadow: 0 0 3px orange;
+	box-shadow: 0 0 3px orange;
+}
+.glow9{
+	-webkit-box-shadow: 0 0 5px #E6434B;
+	-moz-box-shadow: 0 0 5px #E6434B;
+	box-shadow: 0 0 5px #E6434B;
+}
+.glow10{
+	-webkit-box-shadow: 0 0 7px #ffe000;
+	-moz-box-shadow: 0 0 7px #ffe000;
+	box-shadow: 0 0 7px #ffe000;
+}
+
+.textglow{
+	animation: textglow 4s infinite alternate;
+}
+
+@keyframes textglow {
+	to {
+		text-shadow: 0 0 2px orange;
+	}
+}
+
+.boxglow{
+	animation: boxglow 3s infinite alternate;
+}
+
+@keyframes boxglow {
+	from {
+		box-shadow: 0 0 1px orange;
+	}
+	to {
+		box-shadow: 0 0 4px orange;
+	}
+}
+
+@keyframes boxglow2 {
+	from {
+		box-shadow: 0 0 12px #E3C410;
+		background-color: #000000;
+	}
+	50% {
+		box-shadow: 0 0 1px #E3C410;
+		background-color: #8B8C96;
+	}
+	to {
+		box-shadow: 0 0 12px #E3C410;
+		background-color: #000000;
+	}
+}
+
+@keyframes bg1 {
+	from {
+		background-color: #000000;
+	}
+	50% {
+		background-color: #599BC3;
+	}
+	to {
+		background-color: #000000;
+	}
+}
+
+@keyframes flashpa {
+	from {
+		background-color: #3A968E;
+	}
+	50% {
+		background-color: #56F0E7;
+	}
+	to {
+		background-color: #3A968E;
+	}
+}
+
+.flashp{
+	animation: flashpa 5s infinite linear;
+}
+
+@keyframes flashta {
+	from {
+		background-color: #3D386C;
+	}
+	50% {
+		background-color: #746AD9;
+	}
+	to {
+		background-color: #3D386C;
+	}
+}
+
+.flasht{
+	animation: flashta 3s infinite linear;
+}
+
+
+.loading{
+	animation: boxglow2 2s infinite ease-in-out;
+}
+
+@media only screen and (max-height: 640px) {
+	.loginfeatures{
+		top: 59px;
+		overflow: auto;
+	}
+}
+.mailsubject + .mailsubject{
+	border-top: 1px dashed gray;
+	padding-top: 4px;
+	margin-top: 4px;
+}

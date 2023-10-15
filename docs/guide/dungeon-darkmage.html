@@ -1,0 +1,42 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>Lair of the Dark Mage [Dungeon]</p>
+
+	<p>
+		<div style='float:left; margin-right: 20px'><span class='eitem1'></span></div> You need the Frozen Key to enter the instanced dungeon, once a party member has unlocked the dungeon, other party members will be able to directly enter. <br />
+	</p>
+
+	<p>
+		<span class='spxmagefz'></span> First phase has a random Freeze Burst every 6 seconds that freezes the opponent for 12 seconds! <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.xmagefz</span>
+	</p>
+
+	<p>
+		<span class='spxmagefi'></span> Second stage has Anger / random targeting and the Multi Burn skill that hurls a burning fireball to everyone! <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.xmagefi</span>
+	</p>
+
+	<p>
+		<span class='spxmagen'></span> Third stage has Tangle, Reflection and Self Healing. <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.xmagen</span>
+	</p>
+
+	<p>
+		<span class='spxmagex'></span> The last stage has 12,640 damage, Immunity, Anger and Warp/Stomp! <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.monsters.xmagex</span>
+	</p>
+
+	<p><span class='hlabel'>Note:</span> Instances are only alive as long as there's someone inside and online!</p>
+	
+<div class='code'>
+enter("winter_instance");
+// To unlock using a key
+
+enter("winter_instance",player.in);
+// To enter an already unlocked dungeon
+</div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.frozenkey.skin},{name:"frozenkey",q:0}));
+		$(".spxmagefz").html(sprite("xmagefz"));
+		$(".spxmagefi").html(sprite("xmagefi"));
+		$(".spxmagen").html(sprite("xmagen"));
+		$(".spxmagex").html(sprite("xmagex"));
+	</script>
+</div>

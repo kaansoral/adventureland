@@ -1,0 +1,184 @@
+{% set favicon = '/images/docs.png' %}
+{%extends "htmls/base.html"%}
+{%block body%}
+	<style>
+		body {
+			background-image: url("/images/docs.png");
+			background-repeat: repeat;
+			margin:0; padding:0;
+		}
+	</style>
+	<div style="position: fixed; top: 0px; left: 0px; z-index: 9999999" class='showwithmodals'>
+		<div class="gamebutton" onclick='pcs(); hide_modal();'>&lt; Back</div>
+	</div>
+	{% include "htmls/contents/booster_howto.html"%}
+	{% include "htmls/contents/shells_info.html"%}
+	{% include "htmls/contents/keymap_guide.html"%}
+	<table width=100% height="95%" class='hidewithmodals'>
+		<tr><td align="center">
+			<div style='width:420px; margin-top: 100px'>
+				<div class='gamebutton block mb5' onclick='pcs(); render_guide();'><span style='color: #9083BC'>&gt;</span> Game Guide <span style='color: #9083BC'>&lt;</span></div>
+				{#<div class='gamebutton block mb5' onclick='pcs(); render_guide();'>Game Tutorial</div>#}
+				<!-- <div class='gamebutton block mb5' onclick='pcs(); render_code_articles()'><span style='color: #E78E4E'>&gt;</span> Learn CODE <span style='color: #E78E4E'>&lt;</span></div> -->
+				<div class='gamebutton block mb5' onclick='pcs(); render_code_docs()'> <span style='color: #78C13F'>&gt;</span> CODE Docs  <span style='color: #78C13F'>&lt;</span></div>
+				<div class='gamebutton block mb5' onclick='pcs(); render_others()'> <span style='color: #F0D748'>&gt;</span> Other Systems  <span style='color: #F0D748'>&lt;</span></div>
+			</div>
+		</td></tr>
+	</table>
+
+	<iframe src="/runner" id="maincode" style="border: none; background-color: black; margin-top: -5px; height: 1px; width: 1px; overflow: hidden; pointer-events: none"></iframe>
+
+	<script>
+		var code_active=false,no_html=false,mode={},inside="docs",code=false,tracker={},ctarget=null,xtarget=null;
+		var page={title:"Docs",url:"/docs"};
+		var modal_opacity=0;
+		function add_log(){};
+		var path={{dpath|to_json|safe}};
+		if(path.length)
+		{
+			if(path[0]=="code")
+			{
+				if(path[1]!="learn") render_code_docs();
+				if(path[1]=="functions")
+				{
+					render_functions_directory();
+					if(path[2])
+					{
+						var n=path[2];
+						function the_call()
+						{
+							if(code_active) render_function_reference(n);
+							else setTimeout(function(){ the_call() },10);
+						}
+						if(in_arr(n,G.docs.documented))
+							api_call("load_article",{name:n,func:true});
+						else
+							the_call();
+					}
+				}
+				else if(path[1]=="data")
+				{
+					render_data_reference();
+					if(path[2]) render_data_reference([],path[2]);
+				}
+				else if(path[1]=="monster")
+				{
+					open_article("data-monster","/docs/code/monster/reference");
+				}
+				else if(path[1]=="game")
+				{
+					open_article("events-game","/docs/code/game/events");
+				}
+				else if(path[1]=="character")
+				{
+					if(path[2]=="events") open_article("events-character","/docs/code/character/events");
+					else open_article("data-character","/docs/code/character/reference");
+				}
+				else if(path[1]=="links")
+				{
+					render_useful_links();
+				}
+				else if(path[1]=="learn")
+				{
+					render_code_articles();
+					if(path[2])
+					{
+						var suffix="",docs=G.docs.articles,cpath=[];
+						for(var i=2;i<path.length;i++)
+						{
+							var step=path[i],ref=[];
+							cpath.push(step);
+							for(var j=0;j<docs.length;j++)
+								if(docs[j][0]==step)
+								{
+									ref=docs[j];
+									docs=docs[j][3];
+									break;
+								}
+							if(!docs)
+							{
+								open_article(step,"/docs/code/learn"+suffix+"/"+step);
+							}
+							else
+							{
+								render_code_articles(cpath,ref[1],ref[2]);
+								suffix+="/"+step;
+							}
+						}
+					}
+				}
+			}
+			else if(path[0]=="guide")
+			{
+				render_guide();
+				if(path[1]=="all")
+				{
+					if(path[2]=="items")
+					{
+						render_all_items();
+						if(path[3]) render_item_info(path[3]);
+					}
+					else if(path[2]=="monsters")
+					{
+						render_all_monsters();
+						if(path[3]) render_monster_info(path[3]);
+					}
+					else if(path[2]=="skills_and_conditions")
+					{
+						render_all_skills_and_conditions();
+					}
+					else if(path[2]=="recipes")
+					{
+						render_all_recipes();
+					}
+					else if(path[2]=="cosmetics")
+					{
+						render_all_cosmetics();
+					}
+					else if(path[2]=="events")
+					{
+						render_all_events();
+					}
+				}
+				else if(path[1])
+				{
+					var suffix="",docs=G.docs.guide,cpath=[];
+					for(var i=1;i<path.length;i++)
+					{
+						var step=path[i],ref=[];
+						cpath.push(step);
+						for(var j=0;j<docs.length;j++)
+							if(docs[j][0]==step)
+							{
+								ref=docs[j];
+								docs=docs[j][4];
+								break;
+							}
+						if(!docs)
+						{
+							open_guide(step,"/docs/guide"+suffix+"/"+step);
+						}
+						else
+						{
+							render_guide(cpath,ref[1],ref[2]);
+							suffix+="/"+step;
+						}
+					}
+				}
+			}
+			else if(path[0]=="ref")
+			{
+				render_others();
+				if(path[1]=="keymapping") show_modal($("#keymapguide").html(),{url:"/docs/ref/keymapping"});
+				else if(path[1]=="boosters") show_modal($("#boosterguide").html(),{url:"/docs/ref/boosters"});
+				else if(path[1]=="shells") show_modal($("#shellsinfo").html(),{url:"/docs/ref/shells"});
+				else if(path[1]=="holidayseason") open_guide("event-holidayseason","/docs/ref/holidayseason");
+				else if(path[1]=="halloween") open_guide("event-halloween","/docs/ref/halloween");
+				else if(path[1]=="cnewyear") open_guide("event-cnewyear","/docs/ref/cnewyear");
+				else if(path[1]=="valentines") open_guide("event-valentines","/docs/ref/valentines");
+				else if(path[1]=="egghunt") open_guide("event-egghunt","/docs/ref/egghunt");
+				else open_guide(path[1],"/docs/ref/"+path[1]);
+			}
+		}
+	</script>
+{%endblock%}

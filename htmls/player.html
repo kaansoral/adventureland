@@ -1,0 +1,23 @@
+{%extends "htmls/base.html"%}
+{%block body%}
+	<div style="position: fixed; top: 0px; left: 0px; z-index: 20">
+		<a class="gamebutton" href="/">&lt; Adventure Land</a>
+	</div>
+	<table width=100% height="100%">
+		<tr><td align="center">
+			{% for character in characters %}
+				{%include "htmls/contents/character.html" %}
+			{% endfor %}
+		</td></tr>
+	</table>
+	<script>
+		$(function(){
+			$(".cskin").each(function(){
+				$(this).html(sprite($(this).data("skin"),{cx:$(this).data("cx"),rip:$(this).data("rip")||0,height:160,width:100,scale:4})); /* height: +50 +4 | margin-bottom: -5 -4 [03/10/18] */
+			});
+			$(".slots").each(function(){
+				$(this).html(render_slots({slots:window['slots'+$(this).data("name")],skin:"",name:$(this).data("name")},{pure:true,gallery:true})); /* height: +50 +4 | margin-bottom: -5 -4 [03/10/18] */
+			});
+		});
+	</script>
+{%endblock%}

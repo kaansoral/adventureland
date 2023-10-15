@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background:black;
+				font-size:24px;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			*{
+				user-select: text;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div style="padding: 20px">
+			{% for event in events %}
+				{% include "utility/htmls/event.html" %}
+			{% endfor %}
+			{% if ncursor %}<div><a href="?cursor={{ncursor}}">Next Page</a></div>{% endif %}
+		</div>
+	</body>
+</html>

@@ -1,0 +1,8 @@
+<div data-id="{{event.key.id()}}">
+	<span style='color: gray'>[{{event.created|to_date}}][{{event.created|to_hour}}]</span>
+	<span style="{%if event.info.color %}color: {{event.info.color}}{%endif%}">{{event.info.message}}</span>
+	{% if "error" in event.tag %}
+		<pre style='font-size: 16px; font-family: Pixel'>IP: {{event.info.ip}} Country: {{event.info.country}} Name: {{event.info.e_name}}
+{{event.info.info}}</pre>
+	{% endif %}
+</div>

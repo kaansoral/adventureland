@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DRM-Free</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<style>
+			html{
+				background: #E5E5E5;
+				color: #010805;
+			}
+			html,pre,body{
+				font-family: Pixel;
+				color: #5D5D5D;
+				font-size: 24px;
+				/*text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);*/
+				margin: 0;
+				padding: 0;
+			}
+			pre{
+				white-space: pre-wrap;
+				white-space: -moz-pre-wrap;
+				white-space: -pre-wrap;
+				white-space: -o-pre-wrap;
+				word-wrap: break-word;
+			}
+			body{
+				overflow-y:scroll;
+			}
+			.big{
+				color:#E0676D;
+			}
+			.feature{
+				color:#27B175;
+			}
+			#devlogs{
+				margin: 20px 20px 40px 20px;
+				max-width: 920px;
+				text-align: left;
+				display: inline-block;
+			}
+			body{
+				text-align: center;
+			}
+			#devlogs p{
+				margin-bottom: 4px;
+				margin-top: 4px;
+			}
+			#devheader{
+				margin-top: 15px;
+			}
+			#devheader,.devtitle{
+				color: #939393;
+			}
+			.devlink{
+				color: #C64C4C;
+				color: #D85C61;
+			}
+			.devbig{
+
+			}
+		</style>
+		{% if not domain.is_sdk %}
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				ga('create', 'UA-81826565-1', 'auto');
+				ga('send', 'pageview');
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<div id="devlogs" style="margin-bottom: 32px">
+			<div id="devheader"><span class="feature">The Game is DRM-Free.</span> [02/05/19]</div>
+
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">And yes, it makes the game open to abuse, it's a sacrifice.</span> This issue comes up a lot, so I decided to write an article about it, explaining the reasoning, potential loopholes, potential issues - and give insight.</p>
+
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">What is DRM-Free?</span> DRM means Digital Rights Management - DRM-Free means the game intentionally doesn't try to enforce that you actually purchased the game so that you can play the game. Why? Let's say you buy an old EA game from Steam, you open the game, the game not only requires Steam DRM, but it also forces you to create an EA account, verify the CD-Key, each time you play the game, enter the EA account's cryptic password you forgot and so on. Imagine all the bad karma they receive. Anyone who opens the game, would instantly hate everyone involved with it. Now imagine a GOG.com game, no DRM, you can purchase it once, keep it on your computer, and in 30 years, when potentially the seller of the game, or maker of the game is no more, you can still play it. How beautiful. Good karma.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">What DRM-Free isn't?</span> It's not free. So even though you can play the game without purchasing, or worse yet, you purchase the game, refund it, still keep playing it. Doesn't mean that it's a free game. It's about your own morals.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">A Sacrifice</span> Making a game DRM-Free is a sacrifice, those who abuse such a system, both hurt the game makers and worse yet hurt those who play the game. If you are a game maker reading this. I suggest you DRM your game, or at least give the illusion that you DRM'ed your game and things can be DRM'ed (they can't).</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">Some Technical Reasons</span> Steam's DRM system is strong, so if the game was on Steam-only, it could've been DRM'ed, I'm not saying I'd DRM the game, but it could be done. As a result you would occasionally get wiped out if there was a problem with Steam auth, but it would be possible. However, the game is already on Mac App Store, and even from my own analysis, the Apple's auth system is undocumentedly weak and abusable, there are easy to discover loopholes that enable you to multiply invoices, infinitely repeat authorizations and so on (manually patched for our game). I also consider putting the game on GOG one day, and I'd do it without DRM, or sell the game from other sources. I don't want to deal with each of their DRM/auth systems individually, so DRM-free it is. <span class="feature">Also:</span> Those who play Adventure Land are all very technically capable, so better to have no DRM, rather than to have a DRM and get it busted and having to reply to all the messages related to that, why it happens, why it can't be prevented and so on, so this scenario is simpler</p>
+
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">What DRM is good-for, and how we use it!</span> Not DRM, but a "Purchase Authorization" is actually a very valuable service, so far, only Steam provides it in a non-easily-spoofable and dynamic manner, so things like "IP Limits Bypassing" is possible thanks to Steam. If you purchased the game from Steam, you can play the game with 10 friends on the same network. For a single player game, "Purchase Authorization"=DRM - but for an online game, "Purchase Authorization"="Abuse Protection". Otherwise, if CLI gameplay was allowed without purchase authorization, one could easily rent 100 virtual servers and potentially ruin my life.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">Why let Multiple Account Signups?</span> This comes up a lot, a player registers to the game with his/her email. Logs out, registers again. Then sends an email or discord message saying: "I found a very critical issue" - which I assume to be an endgame loophole, but 99% of the time ends up being this issue. <span class="feature">The main reason it's allowed:</span> You can sign-up with the wrong email. Logout, correct your email, continue with the new account, with the intention of moving your old characters to your new account if you created any. You could change your email, forgot the old email details, re-signup with your new email to contact hello@adventure.land later on to recover your old account. Or maybe, 2 players are playing with different accounts, but from the same computer / one purchased copy. It's a valid scenario. TL;DR: The scenarios are endless. <span class="feature">TL;DR-WHY:</span> To let players freely make account changes or corrections</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">(Bonus) The Free Mis-Perception</span> Whenever a regular players discovers that the game can be abused and can be played without purchasing (or purchase + refund), they instantly assume the game is free (Like 70% of players does this) and either start approaching the game in a negative manner, or expect the game to provide something more to those who verifiably purchased the game. Thankfully I discovered this phenomenon early on. Otherwise, originally, the game intended to let anyone sign up freely, but only for educational use, so kids who don't have money to purchase the game, could play the game anyway, and maybe learn coding. But early trials showed that this was also perceived as the game being free, and caused serious backlash and negative feedback (potential negative reviews and so on) - so disabled this feature before Steam release.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">(Bonus) Intentions and Analysis</span> I do intend to make things more strict in the future. I don't judge the 70% who have a different world view. I'm here to serve as a developer. And honestly, making things more strict => more money => a better quality game. So in a way it's nice that the majority actually wants more restrictions. It won't be DRM-level, but abuse protection will definitely get more strict. I'm also glad I wasn't naive enough to launch the game with a "Free Educational Sign-Up". I now suspect that it would just halve the sales and enrage the general playerbase. It's also important to note that Adventure Land has the most positive playerbase any player has ever seen. Everyone helps each other, there's minimal flaming and so on. So if you are a game developer reading this, the logical thing to do is to just DRM your game, restrict your game and move on with your life, it seems to me that no one cares about the sacrifices, they just hurt you and your game/community.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<p><span class="feature">Adventure Land</span> will hopefully stay DRM-Free, I'll try to keep it as it is, but it doesn't mean it lets any account do whatever it wants. The "Limits Enforcer" system will get more strict in the future. Especially if CLI-gameplay is ever officially introduced. Also it's likely that the game has responses in place that give delayed or periodic responses. So if you are a fresh tester, you'll likely not discover them until you attempt to run a scheme 24/7.</p>
+			
+			<div style='margin-top: 8px'></div>
+			<div id="devheader" style="text-align: right">Wizard</div>
+		</div>
+	</body>
+</html>
+	

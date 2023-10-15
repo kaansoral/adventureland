@@ -1,0 +1,155 @@
+<div id="pagewrapper">
+	<div id="pagewrapped" class="loginorselection hidewithmodals">
+		{% if domain.purchase_mode and not domain.electron %}
+			<div id="loginbuttons">
+				<div class="whiteheader mb4"><a class='cancela' href="https://store.steampowered.com/app/777150/Adventure_Land__The_Code_MMORPG/" target="_blank">&gt; Purchase on Steam <span style='color: #85C76B'>[Live!]</span></a></div>
+				<div class="whiteheader mb4"><a class='cancela' href="https://itunes.apple.com/app/adventure-land-code-mmorpg/id1442098247?mt=12" target="_blank">&gt; Purchase on Mac App Store <span style='color: #85C76B'>[Live!]</span></a></div>
+				{% if domain.is_sdk %}
+					<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Signup <span style='color: #2FA6C8'>[Development Use]</span></div>
+				{% endif %}
+				<!--
+					<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Free Signup <span style='color: #2FA6C8'>[Educational Use]</span></div>
+				-->
+				<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#loginlogin').show(); on_resize()">&gt; Login to the Game</div>
+				<div class="whiteheader mb4">Note: <span class='gray'>Signup requires a purchased copy</span></div>
+			</div>
+			<div id="edusignup" style="display:none">
+				<div style='border-bottom: 5px solid gray; margin-left: -10px; margin-right: -10px; font-size: 24px; padding: 16px; text-align: left; margin-bottom: 5px; background-color: #E5E5E5; color: #010805; margin-top: -10px; text-shadow:none'>
+					<p>Adventure Land aims to generate revenue from digital copy sales, while regular MMORPG's ban automators, we embrace them, and go further to let anyone have 4 characters online, 24/7, freely. We have a lot of costs, so if you can afford it, please consider purchasing the game.</p>
+					<p>However, if you are going to use the game with the intention of learning how to Code, improve yourself, you can freely signup, and play to your hearts desire, without any restrictions! :]</p>
+					<p>Have fun - and thank you for joining!</p>
+					<!--
+						I really wanted to let anyone play freely, but the realities proved it impossible, even if the condition is to learn coding, it makes the game free to play in the eyes of a regular player, a high percentage of early players expected something extra after they purchased the game, I predicted a larger backlash once the game is fully released, and had to disable this feature [02/01/19]
+					-->
+				</div>
+				<div class="whiteheader mb4">&gt; Email</div>
+				<input class="selectioninput" id="email1" type="text"></input>
+				<div class="whiteheader mt5 mb4">&gt; Password</div>
+				<input class="selectioninput" id="password1" type="password" onkeydown="if(event.keyCode==13) $('.subutton')[0].onclick()"></input>
+				<div class="textbutton mt5 subutton" onclick="if(bc(this)) return; api_call_l('signup_or_login',{email:$('#email1').val(),password:$('#password1').val(),only_signup:true},{disable:$(this)})">&gt; Signup</div>
+				<div class="textbutton mt5" onclick="$('#edusignup').hide(); $('#loginbuttons').show(); on_resize()">&lt; Back</div>
+			</div>
+			<div id="loginlogin" style="display:none">
+				<div class="whiteheader mb4">&gt; Email</div>
+				<input class="selectioninput" id="email2" type="text"></input>
+				<div class="whiteheader mt5 mb4">&gt; Password</div>
+				<input class="selectioninput" id="password2" type="password" onkeydown="if(event.keyCode==13) $('.lbutton')[0].onclick()"></input>
+				<div class="textbutton mt5 lbutton" onclick="if(bc(this)) return; api_call_l('signup_or_login',{email:$('#email2').val(),password:$('#password2').val(),only_login:true},{disable:$(this)})">&gt; Login</div>
+				<div class="textbutton mt5 passwordui hiddenx" onclick="if(bc(this)) return; api_call_l('password_reminder',{email:$('#email2').val()},{disable:$(this)})">&gt; Forgot My Password</div>
+				<div class="textbutton mt5" onclick="$('#loginlogin').hide(); $('#loginbuttons').show(); on_resize()">&lt; Back</div>
+			</div>
+		{% elif 0 %}
+			<input type="text" class="input block" id="email" placeholder="Email" />
+			<input type="text" class="input block" id="password" placeholder="Password" />
+			<button class="button block" onclick="if(bc(this)) return; api_call_l('signup_or_login',{email:$('#email').val(),password:$('#password').val()},{disable:$(this)})">Start Playing!</button>
+		{% else %}
+			<div class="whiteheader mb4">&gt; Email</div>
+			<input class="selectioninput" id="email" type="text"></input>
+			<div class="whiteheader mt5 mb4">&gt; Password</div>
+			<input class="selectioninput" id="password" type="password" onkeydown="if(event.keyCode==13) $('.slbutton')[0].onclick()"></input>
+			<div class="textbutton mt5 slbutton" onclick="if(bc(this)) return; api_call_l('signup_or_login',{email:$('#email').val(),password:$('#password').val()},{disable:$(this)})">&gt; Signup or Login</div>
+			<div class="textbutton mt5 passwordui hidden" onclick="if(bc(this)) return; api_call_l('password_reminder',{email:$('#email').val()},{disable:$(this)})">&gt; Forgot My Password</div>
+		{% endif %}
+	</div>
+</div>
+<div class="gamebutton menu" style="position: fixed; top: 0px; right: 80px; z-index: 201; text-align: center; border-color: green">{{total}} Online!</div>
+<div id="progressui" class="gamebutton menu loading" style="position: fixed; top: 0px; right: 0px; z-index: 201; width: 40px; text-align: center" onclick='loader_click();'>0%</div>
+<div id="topleftcorner" style="z-index: 201">
+	{% set buttons="essentials"%} {% include "htmls/contents/section_buttons.html" %}
+	{% set buttons="musts"%} {% include "htmls/contents/section_buttons.html" %}
+	{% set buttons="music"%} {% include "htmls/contents/section_buttons.html" %}
+</div>
+{% if domain.electron %}
+	{% include "htmls/contents/selection_features.html" %}
+{% else %}
+	<div id="features" style="font-size: 24px; max-width: 320px" class="loginfeatures">
+		<div style='border-bottom: 2px dashed gray; color: #E7E7E7; display: inline-block; margin-bottom: 6px'>About Adventure Land</div>
+		<div class="infop">
+			Adventure Land is an experimental Indie <span class='mw'>MMORPG</span>. Anyone can <span class='mw'>CODE</span> up to <span class='mw'>4!</span> characters, let Javascript do the grinding, while you do something productive!
+		</div>
+		<div class="infop" style="margin-top: 12px">
+			Gameplay has many aspects to it. It's <span class='mw'>NON-P2W</span>. You can <span class='mw'>UPGRADE</span> weapons, <span class='mw'>COMBINE</span> accessories, <span class='mw'>EXCHANGE</span> rewards, <span class='mw'>CRAFT</span> items, farm <span class='mw'>GOLD</span>.
+		</div>
+		<div class="infop" style="margin-top: 12px">
+			There are <span class='mw'>PVP</span> maps with increased LUCK, GOLD, XP.
+		</div>
+		<div class="infop" style="margin-top: 12px">
+			The ECONOMY is completely <span class='mw'>PEER-TO-PEER</span>. You can keep your <span class='mw'>MERCHANT</span> open 24/7 to <span class='mw'>SELL</span> or <span class='mw'>BUY</span> stuff.
+		</div>
+		<div class="infop" style="margin-top: 12px">
+			There are a lot of planned features like <span class='mw'>GUILDS</span> and <span class='mw'>DAILY EVENTS</span>, they are entirely shaped by our community and their feedback!
+		</div>
+		{#<div class="infop" style="margin-top: 12px">
+			Ps. If you can't afford to buy the game, you can signup for free
+		</div>
+		<div style='border-bottom: 2px dashed gray; color: #E7E7E7; display: inline-block; margin-bottom: 6px'>About Adventure Land</div>
+		<div class="infot">The Journey</div>
+		<div class="infop">
+			I'm an indie developer building the game I've always wanted to build. Really enjoy growing our community, getting feedback, adding things to the game every single day!
+		</div>
+		<div class="infot">Gameplay</div>
+		<div class="infop">
+			I guess you can call the game a casual mmorpg, just left click to move and right click to attack. Yet there's a lot more to it. You can UPGRADE weapons, COMBINE accessories, CODE your character, TRADE, PARTY, LOOT, PVP!
+		</div>
+		<div class="infot">Join Us</div>
+		<div class="infop">
+			The game launched in ~August, 2016, and we barely even scratched the surface of possibilities. Please join us and email me at hello<span>@</span>adventure.land if you have any issues/suggestions or just to say hello :]
+			The game launched in August and we barely even scratched the surface of possibilities. Please join our small community and help shape the game
+		</div>
+		<div class="infot">Email, for anything: hello@adventure.land</div>
+		<div class="infot">No Level Cap</div>
+		<div class="infop">
+			Exponential levelling
+		</div>
+		<div class="infot">Random Drops, Bosses</div>
+		<div class="infop">
+			Full of opportunities
+		</div>
+		<div class="infot">Upgradeable Items</div>
+		<div class="infop">
+			Weapons, armors can be upgraded, accessories can be combined together to create stronger versions
+		</div>
+		<div class="infot">P2P Economy</div>
+		<div class="infop">
+			Planned, a vibrant marketplace for people to trade
+		</div>
+		<div class="infot">Codeable Characters</div>
+		<div class="infop">
+			Code your character to do stuff while you are sleeping or doing something else :)
+		</div>
+		<div class="infot">PVP For Bounties</div>
+		<div class="infop">
+			Planned, a chaotic PVP Map with lots of opportunities for those who can survive it
+		</div>
+		<div class="infot">Always Free to Play</div>
+		<div class="infop">
+			The game will be full of opportunities, those who don't have the resources to support the game will always be able to enjoy the game to the fullest with equal opportunuties
+		</div>
+		<div class="infot">SUPER Early Access</div>
+		<div class="infop">
+			Literally just deployed the game to test how the network fares
+		</div>
+		<ul>
+			<li>No Level Cap</li>
+			<li>Random Drops</li>
+			<li>Random Bosses</li>
+			<li>Upgradeable Items</li>
+			<li>P2P Economy</li>
+			<li>Codeable Characters</li>
+			<li>Endless Possibilities</li>
+			<li>PVP For Bounties</li>
+			<li>But Mostly PVE</li>
+			<!--<li>No Quests'n Shit Tho</li>-->
+			<li>SUPER Early Access</li>
+			<li>Still In Development</li>
+			<li>Always Free to Play</li>
+		</ul>#}
+	</div>
+{% endif %}
+<script>
+	setTimeout(function(){ $("#features").html($("#features").html()) },0); /* otherwise the list entities overflow [28/07/16] */
+	setTimeout(function(){ $("#features").html($("#features").html()) },200);
+	setTimeout(function(){ $("#features").html($("#features").html()) },1000);
+	setTimeout(function(){ $("#features").html($("#features").html()) },2000);
+	setTimeout(function(){ $("#features").html($("#features").html()) },3000);
+</script>

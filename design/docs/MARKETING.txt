@@ -1,0 +1,116 @@
+SSCREENSHOTS:
+[Steam]: 1080p
+[Mac App Store]: 2880 x 1800 or 2560 x 1600
+
+[Titles / Themes for Screenshots]
+[1] Ever Expanding 2D Pixel World
+[2] Upgrade / Combine / Craft Items
+[2.1] [Small Things] Gamble in Tavern - Rare Drops from Monsters - Seasonal Events - Easter Egg Mechanics
+[3] Player driven economy with Merchant class
+[4] Freely move between PVE / PVP Servers
+[5] Party and Play with your Friends!
+
+[9] Play it safe in PvE or risk it all in PvP and reap the rewards!
+Dive deep into the underground labyrinth of caves to tackle the unknown...
+Group up with players to take down powerful opponents! (Queue epic battle screenshot)
+
+STEAM MAIN:
+
+Adventure Land is an experimental Indie MMORPG, in which you can CODE your character! You don't need to know programming either, you can learn from the community! You can play simultaneously with 3 Characters and one Merchant. Going open-source at 50,000 installs!
+
+Adventure Land is an experimental Indie MMORPG. ANYONE can Code. And not just one character, but up to 3 Characters and one Merchant! You can play manually, use the default Code, or start learning coding to do more! Going open-source at 50,000 installs!
+
+Adventure Land is an experimental Indie MMORPG. ANYONE can Code not just one, but up to 3 Characters and one Merchant! You can play manually, use the default Code, or start learning coding to do more! Going open-source at 50,000 installs!
+
+Jonyboys: Where ANYONE
+
+Mark: Adventure Land is an experimental Indie MMORPG. ANYONE can Code not just one, but up to 4 characters! You can play manually, use the given default Code, or use JavaScript to customize your characters behavior! Going open-source at 50,000 installs!
+
+Adventure Land is an experimental Indie MMORPG. ANYONE can Code not just one, but up to 4 characters! You can play manually, use the given default Code, or learn programming to do more! Going open-source at 50,000 installs!
+
+[h2]A Simple MMORPG[/h2]
+There are no quests, no guides you have to strictly follow to the letter. No objectives either. You can do anything you want. Even farming the lowest monster will yield satisfactory results! You can trade, gamble in tavern, party with friends, pvp solo with your rouge or go after rare loots!
+
+[h2]Origins of Code[/h2]
+Adventure Land wasn't originally a Code based game, during early development, it ended up a bit like a Clicker MMORPG, simple but fun. Then came Code, to let machines do the clicking! So it's not something extremely complex no one can understand, it's just basic automation with Javascript!
+
+[h2]6 Classes[/h2]
+Mage, Warrior, Rogue, Ranger, Priest and Merchant. All with different, easy to understand, but unique skills. There are no skill trees or the need to pick attributes, it's all automatic to keep things simple. Items provide some depth, and Code adds some variation to the mix.
+
+[h2]Upcoming[/h2]
+There's a lot to work on. Daily Events, Paladin Class, Pets, Guilds (or Familias, as they will be small), New Zones, New Items, New Skills. All features are shaped and vetted by the playerbase.
+
+[h2]Anti Pay to Win[/h2]
+Adventure Land had a lengthy early development period, one lesson was the clearest, the gameplay should never include things that are even remotely pay to win. The game however needs to amortise its costs, and as a prospective player, you deserve to know exactly how! So, There will be cosmetics, extra bank slots, and some account operations unlockable by premium currency. But nothing that directly affect game performance. (Ps. You can also farm premium currency in-game, from Goo's, and as rare drops)
+
+DESCRIPTION:
+
+Adventure Land is a new kind of MMORPG, where you can CODE your character, so everyone can automate the endless grinding that's usually associated with the genre.
+
+[Anti P2W + Cosmetics/Storage-Only Income]
+Adventure Land is a very challenging game from a Business perspective, in normal MMORPG's, players are allowed one regular character, in Adventure Land, you can play 24/7, with 4 characters, for months, without any monthly charges. As the player, you deserve to know how exactly the game intends to make money.
+
+As an indie developer, I hope the income from game sales will cover my expenses, help pay those who work on the game, and help me build a better life.
+
+To cover the ongoing expenses and server costs, the game will sell cosmetics, and extra bank slots for SHELLS, our premium in-game currency.
+
+It's really important to generate income in a fair way, so I continually gather feedback, and shape the game accordingly, for example, you can always find SHELLS in-game too, so even if the game intends to sell cosmetics, you can always attain them other ways too!
+
+[Who's Adventure Land For?]
+If you like coding, like coding games, or just want to learn coding, this is the game for you!
+If you like idle games, clicker games, this is the game for you!
+If you are just looking to experience a unique and experimental 2D Pixel MMORPG, be part of a small community, leave game afk 24/7, check on your characters progress from time to time, it's definitely the game for you! :)
+
+[Who's Adventure Land Not For?]
+If you're looking for a well balanced, well thought, perfect mmorpg, where you can be the best, and win because you have the best skills, this is definitely not the game for you.
+If you are very competitive, this is not the game for you. (There's no level cap, while levelling is highly non-linear, those who spend more time in-game will technically be ahead of you)
+Adventure Land is ultimately a Code to Win, or Grind to Win game, our PVP is very unbalanced too, it will certainly improve over time, but currently, unless you are Code assisted, it's almost impossible to dive solo into a Code'd group and leave alive :)
+So TL;DR: If you are looking for the perfect MMORPG, Adventure Land is likely not it, If you are looking for something new, something different, come on in! :)
+
+[Final Words]
+I try my best to shape Adventure Land into a better game every single day, there are many aspects of Adventure Land, ultimately I'm very proud of the educational aspect.
+
+
+
+
+
+
+
+
+
+
+[EARLY ACCESS]
+- Why Early Access?
+Adventure Land is at a sweet spot in its development journey. Most of the major challenges have been tackled and lately all the feedback has been positive. I believe and hope early adopters will enjoy the game, and at the same time, the game will benefit from a growing community. We're finally ready for the last sprint.
+
+-Approximately how long will this game be in Early Access?
+Hopefully 6 months
+
+-How is the full version planned to differ from the Early Access version?
+Planning on introducing more content to increase non-AFK engagement between players. Daily events, encounters that require 8-character parties, and so on. On the code side of things, after the gameplay improvements are finalised, going to complete the Code documentation and tutorial. As an Early Access player, you will likely use our Discord a lot to improve your Code and learn about the game, while the full version of the game is intended to be more guiding.
+
+-What is the current state of the Early Access version?
+The game is very refined at this point in terms of gameplay and performance. It's heavily tested. What we currently lack is more content, both game content, and more documentation.
+-----
+Gameplay - Refined and Final
+CODE - Fully Functional
+Item Upgrade System - Completed
+Item Compound System - Completed
+Item Crafting System - Functional but lacking content
+CODE Documentation - Work in Progress
+Cosmetics System - Work in Progress
+Daily Events - Work in Progress
+
+-Will the game be priced differently during and after Early Access?
+No pricing changes planned, if operating costs are higher than expected, the price might slightly increase.
+-----
+Price can fluctuate but it won't dramatically increase or decrease, it's safe to expect a fluctuation around 30% of the current price
+
+-How are you planning on involving the Community in your development process?
+We have a Discord with #feedback and #new_ideas channels. I reply to each and every email, take each request into consideration, reply to every GitHub issue. The main challenge for me as a developer is introducing new content without creating balance issues. I intend to create a public group of people within the Discord community called Refiners, there'll be strict rules, the process will be transparent, fair, and Refiners will take ideas from #new_ideas, and convert them into #refined_ideas.
+
+
+
+
+
+

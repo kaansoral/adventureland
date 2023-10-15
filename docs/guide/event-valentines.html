@@ -1,0 +1,33 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>Valentines Day Event on Adventure Land</p>
+
+	<p>
+		<div style='float:left; margin-right: 10px;'><span class='eitem1'></span></div> Candy Pop's drop globally. You can eat them or exchange them from Xyn in Mainland. <br />
+	</p>
+
+	<p>
+		<span class='sppinkgoo'></span> Love Goo spawns every hour in a random map and inside a random monster pack. Love Goo is co-op but has 98% avoidance, so it's a bit tricky to land a hit! :)
+	</p>
+
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A; margin-bottom: 10px'>Snippet</p>
+
+<div class='code'>
+game.on("event",function(data){
+	// "pinkgoo" is the keyname of 'Love Goo'
+	if(data.name=="pinkgoo")
+	{
+		smart_move(data);
+		// The data only includes "map" and no coordinates
+		// So you'll need to search for "pinkgoo" in one of the monster spawns
+	}
+});
+</div>
+	
+	<div style='margin-bottom: 24x'></div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.candypop.skin},{name:"candypop",q:0}));
+		$(".sppinkgoo").html(sprite("pinkgoo",{height:30,width:26}));
+	</script>
+</div>

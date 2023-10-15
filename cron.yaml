@@ -1,0 +1,13 @@
+cron:
+- description: check_servers
+  url: /cr/check_servers
+  schedule: every 1 minutes
+- description: unstuck_players
+  url: /cr/unstuck
+  schedule: every 5 minutes
+- description: hourly
+  url: /cr/hourly
+  schedule: every 60 minutes
+- description: backups
+  url: /cr/all/backups
+  schedule: every 23 hours

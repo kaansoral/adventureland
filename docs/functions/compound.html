@@ -1,0 +1,130 @@
+<p>
+	Arguments:
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the first item [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the second item [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the third item [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - Inventory index of the scroll [0 to 41]</div>
+	<div>&nbsp;<b>*</b> Integer - (Optional) Inventory index of the offering [0 to 41]</div>
+</p>
+<p>
+	Returns:
+	<div>&nbsp; <b>*</b> Promise</div>
+</p>
+
+<!-- <p>Current inventory with indexes: <br/><span class="xlabel" onclick="code_eval($(this).html())">show_json([Array(42).keys()].reduce(function(map,i){ map[i]=character.items[i]; return map; },{}))</span></p> -->
+
+<p>Example usages:</p>
+
+<div class='code'>
+compound(0,1,2,3); // Combines the first 3 items in your inventory [0,1,2] using the scroll in the 4th slot [3]
+
+compound(0,1,2,3,4); // A primordial essence in the 5th slot[4]
+
+if(character.q.compound) log("Already combining something!");
+
+compound(0,1,2,locate_item("cscroll0")).then(function(data){
+	if(data.success) game_log("I have a +"+data.level+" accessory now!");
+	else game_log("Rip accessories, you'll be missed.");
+});
+
+compound(0,1,2,locate_item("cscroll0")).then(
+	function(data){
+		game_log("Compound call completed");
+		log(data);
+	},
+	function(data){
+		game_log("Compound call failed with reason: "+data.reason);
+	},
+);
+</div>
+
+<p>Promise Reference:</p>
+
+<span class='dlabel'>"resolve"</span>
+<div class='code'>
+{
+	success: true,
+	level: 2,
+	num: 16, // Inventory index
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	success: false, // Compound failed
+	failed: true, 
+	level: 2,
+	num: 16,
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"reject"</span>
+<div class='code'>
+{
+	reason: "max_level", // Item reached it's max level
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "scroll", // Incompatible scroll
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "locked", // Item locked
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "in_progress", // Another compound in progress
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "no_item", // Inventory index issues
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "no_scroll", // There's no scroll on that inventory index
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "not_combinable", // Items are not combinable
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "mismatch", // Items are not the same
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "offering", // Invalid offering
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "bank", // If operation isn't allowed inside
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "exception", // Possible server exception
+}
+</div>
+
+<p></p>
+<span class='redlabel'>"source"</span>

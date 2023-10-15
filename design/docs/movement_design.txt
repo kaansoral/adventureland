@@ -1,0 +1,26 @@
+[BLOCKS]
+400x400 Blocks for line, player, monster caching
+
+[APPEARANCE]
+Challenging
+
+[MOVEMENT/LINES]
+1- When a new direction/point arrives
+ a- Verify it
+ b- Calculate a new path
+
+
+
+>> NEW [04/03/17]
+
+[VISION]
+1300x820 for everyone (slightly above 5K)
+
+[BLOCKS]
+400x400 - 12 Blocks for one player
+
+[RESEND]
+When block changes - or ~100PX
+
+[PULL]
+When block changes - or ~100PX

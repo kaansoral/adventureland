@@ -1,0 +1,8 @@
+[18/08/17]: Prepare + Launch the underground
+[19/08/17]: Game Tutorial
+[20/08/17]: Improve Code with Events
+[21/08/17]: Code Tutorial V1
+[22/08/17]: Code Documentation V1
+[23/08/17]: Winterland Event
+[24/08/17]: Sounds + Music - Re-Visit
+[25/08/17]: Standalone Client Re-Visit + Steam Research

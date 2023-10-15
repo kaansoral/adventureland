@@ -1,0 +1,16 @@
+[Kanashikoe]
+Basher+Sword=Axe
+Axe+Spear=Polearm
+Spear+Bow= Crossbow
+Bow+FireStaff=Fireshooter Bow
+Staff+Spear= Bo Staff
+CupidBow+Bow=LongBow
+vitring+strring+dexrin+intring= Ring of great joys
+[Weapon]+[Weapon]=Greater [Weapon]
+Shield+Book= Sage Orb
+Sword+Staff=Battle Staff
+
+
+
+
+Network Card + 100x Electronic Scraps + 85x Mechanical Keycaps = Ancient Computer

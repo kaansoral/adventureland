@@ -1,0 +1,128 @@
+<div class='basicsettings'>
+	{% if domain.electron %}
+		<div class="blockbutton"
+		onclick="btc(event); electron_fullscreen()">Toggle Fullscreen</div>
+	{% endif %}
+
+	{#<div class="mt4 blockbutton promode {% if domain.newcomer_ui %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('pro_mode','',{ expires:12*365}); pro_mode=false; $('.promode').hide(); $('.newcomermode').show(); $('.gamebutton.newcomermode').css('display','inline-block'); $('.proinfo').show()">
+		Pro Mode: <span style='color: green'>ON</span></div>
+	<div class="mt4 blockbutton newcomermode {% if not domain.newcomer_ui %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('pro_mode','1',{ expires:12*365}); pro_mode=true; $('.newcomermode').hide(); $('.promode').show(); $('.gamebutton.promode').css('display','inline-block'); $('.proinfo').show()">
+		Pro Mode: <span style='color: #F67D4C'>OFF</span></div>#}
+
+	<!--
+	<div class="mt4 blockbutton fastoff {%if domain.fast_mode %}hidden{% endif %}"
+		onclick="btc(event); $('.fastoff').hide(); $('.faston').show(); $('.restartneeded').show(); Cookies.set('no_fast_mode','',{ expires:12*365});">Cached/Fast Maps: <span style='color: #F54423'>OFF</span></div>
+	<div class="mt4 blockbutton faston {%if not domain.fast_mode %}hidden{% endif %}"
+		onclick="btc(event); $('.faston').hide(); $('.fastoff').show(); $('.restartneeded').show(); Cookies.set('no_fast_mode','1',{ expires:12*365});">Cached/Fast Maps: <span style='color: green'>ON</span></div>
+
+	<div class="mt4 blockbutton autoon {% if domain.auto_reload=="off" %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('manual_reload','1',{ expires:12*365}); $('.autoon').hide(); $('.autooff').show(); auto_reload='off';">Auto Reload on DC: <span style='color: green'>ON</span></div>
+	<div class="mt4 blockbutton autooff {% if domain.auto_reload=="auto" %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('manual_reload','',{ expires:12*365}); $('.autooff').hide(); $('.autoon').show(); auto_reload='auto';">Auto Reload on DC: <span style='color: #F54423'>OFF</span></div>
+	-->
+	
+
+	<div class="mt4 blockbutton musicoff {%if domain.music_on %}hidden{% endif %}"
+		onclick="btc(event); sound_on()">Music: <span style='color: gray'>OFF</span></div>
+	<div class="mt4 blockbutton musicon {%if not domain.music_on %}hidden{% endif %}"
+		onclick="btc(event); sound_off()">Music: <span style='color: gray'>ON</span> [Work in Progress]</div>
+
+	<div class="mt4 blockbutton sfxoff {% if domain.sfx_on %}hidden{% endif %}"
+		onclick="btc(event); sfx_on()">SFX: <span style='color: gray'>OFF</span></div>
+	<div class="mt4 blockbutton sfxon {% if not domain.sfx_on %}hidden{% endif %}"
+		onclick="btc(event); sfx_off()">SFX: <span style='color: gray'>ON</span> [Work in Progress]</div>
+	<!--
+	<div class="mt4 blockbutton dlineson {% if not domain.d_lines %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('d_lines_off','1',{ expires:12*365}); $('.dlineson').hide(); $('.dlinesoff').show(); d_lines=0;">Lines: ON</div>
+	<div class="mt4 blockbutton dlinesoff {% if domain.d_lines %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('d_lines_off','',{ expires:12*365}); $('.dlinesoff').hide(); $('.dlineson').show(); d_lines=1;">Lines: OFF</div>
+
+	<div class="mt4 blockbutton sdlineson {% if not domain.sd_lines %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('sd_lines_off','1',{ expires:12*365}); $('.sdlineson').hide(); $('.sdlinesoff').show(); sd_lines=0;">Green Lines: ON</div>
+	<div class="mt4 blockbutton sdlinesoff {% if domain.sd_lines %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('sd_lines_off','',{ expires:12*365}); $('.sdlinesoff').hide(); $('.sdlineson').show(); sd_lines=1;">Green Lines: OFF</div>
+	-->
+	<div class="mt4 blockbutton" onclick="btc(event); show_modal($('.performancesettings').html(),{wrap:false,styles:'width:600px',hideinbackground:true});">Performance Settings</div>
+	<div class="mt4 blockbutton" onclick="btc(event); show_modal($('.advancedsettings').html(),{wrap:false,styles:'width:600px',hideinbackground:true});">Advanced Settings</div>
+	{% if domain.electron %}
+		<div class="mt4 blockbutton promode {% if domain.newcomer_ui %}hidden{% endif %}"
+			onclick="btc(event); electron_dev_tools()">
+			Open Game Inspector</div>
+		<a class="mt4 blockbutton cancela" href="/" onclick='hide_modal(); show_alert("Signing Out")'>Sign Out to Main Menu</a>
+	{% endif %}
+
+	<div class="mt4 blockbutton" style="text-align: left">
+		Note: Feel free to email <span style="color: #36B2F8">hello@adventure.land</span> for anything, the game is in development, I love to receive emails and feedback
+	</div>
+	<div class="mt4 blockbutton restartneeded hidden" style="text-align: left">
+		You need to refresh the game for changes to be effective.
+	</div>
+
+	{#<div class="mt4 blockbutton proinfo hidden" style="text-align: left">
+		Pro Mode hides the CHAR/INV/STATS buttons. You can press your character name to open CHAR, press the inventory button to open INV and press the xp-bar to open STATS.
+	</div>#}
+
+</div>
+<div class='performancesettings hidden'>
+
+	<div class="mt4 blockbutton naoff {%if domain.new_attacks %}hidden{% endif %}"
+		onclick="btc(event); $('.naoff').hide(); $('.naon').show(); new_attacks=true; Cookies.set('no_weapons','',{ expires:12*365});">Weapon / Attack Animations: <span style='color: #F54423'>OFF</span></div>
+	<div class="mt4 blockbutton naon {%if not domain.new_attacks %}hidden{% endif %}"
+		onclick="btc(event); $('.naon').hide(); $('.naoff').show(); new_attacks=false; Cookies.set('no_weapons','1',{ expires:12*365});">Weapon / Attack Animations: <span style='color: green'>ON</span></div>
+
+	<div class="mt4 blockbutton fastoff {%if domain.fast_mode %}hidden{% endif %}"
+		onclick="btc(event); $('.fastoff').hide(); $('.faston').show(); $('.restartneeded').show(); Cookies.set('no_fast_mode','',{ expires:12*365});">Pre-Cached Maps: <span style='color: #F67D4C'>OFF</span></div>
+	<div class="mt4 blockbutton faston {%if not domain.fast_mode %}hidden{% endif %}"
+		onclick="btc(event); $('.faston').hide(); $('.fastoff').show(); $('.restartneeded').show(); Cookies.set('no_fast_mode','1',{ expires:12*365});">Pre-Cached Maps: <span style='color: green'>ON</span></div>
+	<div class="mt4 blockbutton" style="text-align: left">
+		Processes and caches the entire map into memory. Afterwards movement and animations are as smooth as possible. Turn off if your machine has low GPU memory or low processing power.
+	</div>
+	<div class="mt4 blockbutton pixelson {% if not domain.perfect_pixels %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('perfect_pixels_off','1',{ expires:12*365}); $('.pixelson').hide(); $('.pixelsoff').show(); $('.restartneeded').show()">Perfect Pixels: <span style='color: green'>ON</span></div>
+	<div class="mt4 blockbutton pixelsoff {% if domain.perfect_pixels %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('perfect_pixels_off','',{ expires:12*365}); $('.pixelsoff').hide(); $('.pixelson').show(); $('.restartneeded').show()">Perfect Pixels: <span style='color: #F67D4C'>OFF</span></div>
+	<div class="mt4 blockbutton" style="text-align: left">
+		Turn off to smooth pixels. More of a preference rather than a performance setting.
+	</div>
+	<div class="mt4 blockbutton fcs fcauto {% if domain.engine_mode %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('engine_mode','canvas',{ expires:12*365}); $('.fcs').hide(); $('.fccanvas').show(); $('.restartneeded').show()">WebGL: <span style='color: green'>AUTO</span></div>
+	<div class="mt4 blockbutton fcs fccanvas {% if domain.engine_mode!='canvas' %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('engine_mode','webgl',{ expires:12*365}); $('.fcs').hide(); $('.fcwebgl').show(); $('.restartneeded').show()">WebGL: <span style='color: #F54423'>OFF</span></div>
+	<div class="mt4 blockbutton fcs fcwebgl {% if domain.engine_mode!='webgl' %}hidden{% endif %}"
+		onclick="btc(event); Cookies.set('engine_mode','',{ expires:12*365}); $('.fcs').hide(); $('.fcauto').show(); $('.restartneeded').show()">WebGL: <span style='color: #F7B32F'>FORCED</span></div>
+	<div class="mt4 blockbutton" style="text-align: left">
+		If for some reason WebGL causes issues on your system, you can force the old HTML5 Canvas to be used.
+	</div>
+	{#<div class="mt4 blockbutton" onclick="btc(event); $('.performancesettings').hide(); $('.basicsettings').show(); position_modals()">&lt; Back</div>#}
+	<div class="mt4 blockbutton restartneeded hidden" style="text-align: left">
+		You need to refresh the game for changes to be effective.
+	</div>
+</div>
+<div class='advancedsettings hidden'>
+	<div class="mt4 blockbutton tutoff {%if domain.tutorial %}hidden{% endif %}"
+		onclick="btc(event); $('.tutoff').hide(); $('.tuton').show(); tutorial_ui=true; update_tutorial_ui(); Cookies.set('no_tutorial','',{ expires:12*365});">Tutorial: <span style='color: #F54423'>OFF</span></div>
+	<div class="mt4 blockbutton tuton {%if not domain.tutorial %}hidden{% endif %}"
+		onclick="btc(event); $('.tuton').hide(); $('.tutoff').show(); tutorial_ui=false; update_tutorial_ui(); Cookies.set('no_tutorial','1',{ expires:12*365});">Tutorial: <span style='color: green'>ON</span></div>
+
+	<div class="mt4 blockbutton"
+		onclick="btc(event); show_confirm('Reset the tutorial?','Yes!','Oh No!',function(){api_call('reset_tutorial')});">Reset Tutorial <span style='color: #F7B32F'>[!]</span></div>
+
+	<div class='windowsonly hidden'>
+		<div class="mt4 blockbutton win7on hidden"
+			onclick="btc(event); $('.win7on').hide(); $('.win7off').show(); storage_set('win7patch',false); $('.restartneeded').show()">Windows 7/8 Network Patch: <span style='color: orange'>ON</span></div>
+		<div class="mt4 blockbutton win7off"
+			onclick="btc(event); $('.win7off').hide(); $('.win7on').show(); storage_set('win7patch',true); $('.restartneeded').show()">Windows 7/8 Network Patch: <span style='color: green'>OFF</span></div>
+	</div>
+	{% if domain.electron %}
+		<div class="mt4 blockbutton httpmodeon"
+			onclick="btc(event); $('.httpmodeon').hide(); $('.httpmodeoff').show(); electron_http_mode(true); $('.restartneeded').show()">Connections: <span style='color: green'>HTTPS</span></div>
+		<div class="mt4 blockbutton httpmodeoff hidden"
+			onclick="btc(event); $('.httpmodeoff').hide(); $('.httpmodeon').show(); electron_http_mode(false); $('.restartneeded').show()">Connections: <span style='color: #F54423'>HTTP</span></div>
+	{% endif %}
+	{#<div class="mt4 blockbutton" onclick="btc(event); $('.advancedsettings').hide(); $('.basicsettings').show(); position_modals()">&lt; Back</div>#}
+	<div class="mt4 blockbutton restartneeded hidden" style="text-align: left">
+		You need to refresh the game for changes to be effective.
+	</div>
+</div>

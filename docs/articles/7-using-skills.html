@@ -1,0 +1,50 @@
+<p>In Code, skills are referenced by their keys from: <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.skills</span></p>
+<p>One example is <span class='dlabel'>"supershot"</span> you can check out: <span class='jlabel' onclick="code_eval('show_json('+$(this).html()+')')">G.skills.supershot</span></p>
+
+<div class='code'>
+// Going Invis with a Rogue
+use_skill("invis");
+
+// Casting Merchant's Luck
+use_skill("mluck",get_player("LuckyCharacter"));
+
+// Using Supershot with a Ranger
+var target=get_nearest_monster();
+if(is_in_range(target,"supershot") && !is_on_cooldown("supershot")
+	&& character.mp>=G.skills.supershot.mp)
+	use_skill("supershot",target);
+// Checks if a target is in "supershot" range, makes sure "supershot" isn't on cooldown and character has enough mana
+</div>
+
+<p>Reference functions: <span class='rlabel' onclick="render_function_reference($(this).html())">use_skill</span> <span class='rlabel' onclick="render_function_reference($(this).html())">is_in_range</span> <span class='rlabel' onclick="render_function_reference($(this).html())">is_on_cooldown</span></p>
+
+<p>Special Usage: 3-Shot</p>
+
+<div class='code'>
+var targets=[];
+for(id in parent.entities)
+	if(parent.entities[id].type=="monster" && is_in_range(parent.entities[id],"3shot") && targets.length<3)
+		targets.push(parent.entities[id]);
+
+// Use 3-Shot with a Ranger on 3 targets
+use_skill("3shot",targets);
+</div>
+
+<p>Special Usage: Controlled Burst</p>
+
+<div class='code'>
+var targets=[];
+for(id in parent.entities)
+	if(parent.entities[id].type=="monster" && is_in_range(parent.entities[id],"cburst"))
+		targets.push([parent.entities[id],100]);
+
+// Attempt to use "Controlled Burst" for 100 mana on all monsters in range using a Mage
+use_skill("cburst",targets);
+</div>
+
+
+<p>Special Usage: Blink</p>
+
+<div class='code'>
+use_skill("blink",[character.x+10,character.y+10]);
+</div>

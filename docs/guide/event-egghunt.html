@@ -1,0 +1,54 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A'>Egg Hunt on Adventure Land</p>
+
+	<p>
+		<div><div style='float:left; margin-right: 10px'><span class='eitemxbox'></span></div> Collect all 9 and craft the basket, then exchange it from Xyn for something special!</div>
+		<div style='margin-top: 10px'><span class='eitemx0'></span> <span class='eitemx1'></span> <span class='eitemx2'></span> <span class='eitemx3'></span> <span class='eitemx4'></span> <span class='eitemx5'></span> <span class='eitemx6'></span> <span class='eitemx7'></span> <span class='eitemx8'></span></div>
+	</p>
+
+	<p>
+		Collect 4 pieces of the Bunny attire to complete the set and unlock the set bonuses!
+		<div style='margin-top: -12px'><span class='eitemh0'></span> <span class='eitemh1'></span> <span class='eitemh2'></span> <span class='eitemh3'></span> <span class='eitemh4'></span> <span class='eitemh5'></span></div>
+	</p>
+
+	<p>
+		<span class='spsnowman'></span> Wabbit spawns hourly on a random map and inside a random monster pack. It's super hard to kill for 5 minutes, which should give you enough time to join the fight!
+		<div style='margin-top: 5px'><div style='float:left; margin-right: 10px'><span class='ibuff'></span></div> Each time you defeat the Wabbit, you get a 100% Luck buff for 24 hours!</div>
+	</p>
+
+	<p>
+		<span class='spjayson'></span> The crafting NPC is near the Goo's in Mainland.
+	</p>
+
+	<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+game.on("event",function(data){
+	if(data.name=="wabbit")
+	{
+		smart_move(data);
+		// Data includes only the "map"
+		// It's up to you to visit all the possible monster spawns
+	}
+});
+
+auto_craft("basketofeggs");
+
+// character.s.easterluck <- is the buff
+</div>
+
+<div style='margin-bottom: 24x'></div>
+
+
+	<script>
+		$(".eitem1").html(item_container({skin:G.items.basketofeggs.skin},{name:"basketofeggs",q:0}));
+		for(var i=0;i<9;i++)
+			$(".eitemx"+i).html(item_container({skin:G.items['egg'+i].skin},{name:'egg'+i,q:0}));
+		for(var i=0;i<6;i++)
+			$(".eitemh"+i).html(item_container({skin:G.items[G.sets.easter.items[i]].skin},{name:G.sets.easter.items[i],level:0}));
+		$(".eitemxbox").html(item_container({skin:G.items.basketofeggs.skin},{name:"basketofeggs",q:0}));
+		$(".ibuff").html(item_container({skin:"easterluck"}));
+		$(".spsnowman").html(sprite("wabbit"));
+		$(".spjayson").html(sprite("npcc"));
+	</script>
+</div>

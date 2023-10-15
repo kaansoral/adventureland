@@ -1,0 +1,109 @@
+[COMMANDS]
+cd thegame/electron
+a) electron .
+b) electron-packager . --platform=darwin --arch=x64 --out=dist/ --electron-version=3.0.9 --no-tmpdir
+c) electron-packager . --platform=mas --arch=x64 --out=dist/ --electron-version=3.0.9 --no-tmpdir
+
+[ICON]
+0) https://www.npmjs.com/package/png2icons
+1) png2icons Icon2.png mac -icns -hm
+2) png2icons Icon2.png icon -ico -hm #for Steam, needs to be a BMP ICO
+IMPORTANT) Use http://www.png2ico.com/ for Windows - One size is missing with png2icons
+
+[LIBRARIES]
+npm install electron-store --save
+npm install path --save
+npm install fs-extra --save
+
+[CERTIFICATE SUGGESTION] [27/06/20]
+Request certificates from XCode
+Create .provisionprofile from https://developer.apple.com/account/resources/profiles/list
+
+[MAS]
+[13/11/18]
+-1) security find-identity
+
+0) node ~/thegame/scripts/electron_bundle.js
+0.1) electron-packager . --platform=mas --arch=x64 --out=dist/ --electron-version=8.3.4 --overwrite --appBundleId="land.adventure.rpg" --appCategoryType="public.app-category.games" --appVersion="1.3.1" --darwin-dark-mode-support=1 --icon=mac.icns --extend-info=dist/extra-info.plist --ignore="(dist/*|info.txt|lib|greenworks.js)" [13/11/18]
+1) Copy .provisionprofile to the Contents folder of the .app renamed as embedded.provisionprofile
+1.1) cp dist/embedded.provisionprofile dist/Adventure\ Land-mas-x64/Adventure\ Land.app/Contents
+1.1) xattr -cr dist/Adventure\ Land-mas-x64/Adventure\ Land.app <<<<- fixes a new issue related to Finder attributes/references etc. [05/12/18]
+2) electron-osx-sign dist/Adventure\ Land-mas-x64/Adventure\ Land.app --provisioning-profile=dist/embedded.provisionprofile --entitlements=dist/entitlements.plist <<<<- uses Mac App Store Distribution Certificate
+3) electron-osx-flat dist/Adventure\ Land-mas-x64/Adventure\ Land.app --platform=mas <<<<- uses Mac Installer Distribution Certificate
+
+[UPLOAD MAS]
+Application Loader -> Transporter Now
+App-Specific-Password: masters.py
+
+[STEAM]
+After the build, set it live here: https://partner.steamgames.com/apps/builds/777150
+
+[MAC STEAM]
+0) node ~/thegame/scripts/electron_bundle.js
+1) electron-packager . --platform=darwin --arch=x64 --out=dist/ --electron-version=8.3.4 --overwrite --appBundleId="land.adventure.rpg" --appCategoryType="public.app-category.games" --appVersion=1.3.1 --darwin-dark-mode-support=1 --icon=mac.icns --extend-info=dist/extra-info.plist --ignore="(dist/*|info.txt)"
+
+	electron-packager . --platform=darwin --arch=x64 --out=dist/ --electron-version=13.1.4 --overwrite --appBundleId="land.adventure.rpg" --appCategoryType="public.app-category.games" --appVersion=1.4.4 --darwin-dark-mode-support=1 --icon=mac.icns --extend-info=dist/extra-info.plist --ignore="(dist/*|info.txt)"
+2) cp steam_appid.txt dist/Adventure\ Land-darwin-x64
+IMPORTANT) Open all .Framework's / Copy Versions/A folder contents to the main folders [29/06/21]
+2.X) xattr -cr dist/Adventure\ Land-darwin-x64/Adventure\ Land.app
+2.TEST) cp dist/steam.provisionprofile dist/Adventure\ Land-darwin-x64/Adventure\ Land.app/Contents/embedded.provisionprofile
+2.TEST) electron-osx-sign dist/Adventure\ Land-darwin-x64/Adventure\ Land.app --provisioning-profile=dist/steam.provisionprofile --entitlements=dist/entitlements.plist --identity="3rd Party Mac Developer Application: Kaan Soral (8PHV3WUSUP)"
+2.XX) DONT RUN THE APP BEFORE UPLOAD - might be causing the ERROR! Build for depot 777152 failed : Failure's
+[MAC UPLOAD]
+0) rm -rf ~/thegame/electron/dist/steamworks_sdk/tools/ContentBuilder/content/*
+0.1) cp -a ~/thegame/electron/dist/Adventure\ Land-darwin-x64/ ~/thegame/electron/dist/steamworks_sdk/tools/ContentBuilder/content/
+1) cd ~/thegame/electron/dist/steamworks_sdk/tools/ContentBuilder/builder_osx
+1.1) chmod +x steamcmd
+1.2) chmod +x steamcmd.sh
+2) ./steamcmd.sh
+3) login kaansoral
+4) run_app_build /Users/kaan/Desktop/PROJECTS/thegame/thegame/electron/dist/steamworks_sdk/tools/ContentBuilder/scripts/app_build_777150.vdf
+
+Test 1) codesign -dvvv --entitlements :- dist/Adventure\ Land-mas-x64/Adventure\ Land.app
+
+[WINDOWS STEAM]
+npm info electron
+npm install electron@8.3.4 -g
+electron -v
+
+cd /cygdrive/c/Users/K/Desktop/electron/
+npm install
+
+copy/paste greenworks-win64.node and .dll's from steamworks_sdk to /lib IMPORTANT: DLL's are in 2 places: steamworks/public/steam/lib and redistributable_bin
+
+echo 777150 > steam_appid.txt
+
+electron-packager . --platform=win32 --arch=ia32 --out=dist/ --electron-version=8.3.4 --app-version=1.3.0 --asar
+electron-packager . --platform=win32 --out=dist/ --electron-version=8.3.4 --app-version=1.3.0
+COPY/PASTE steam_appid.txt
+
+Icon sizes: 256 128 64 48 40 32 16 -- gold: http://icoconvert.com/image_to_icon_converter/
+To replace ICO, right click + "Open Using Resource Hacker" -> go to Icon Group, replace the icon with .ico there
+
+STEAM DEPOT UPLOAD: https://www.youtube.com/watch?v=SoNH-v6aU9Q
+TIP: Press Enter to complete tasks
+> Replace old files with new files, change version.txt
+> steamcmd.exe
+> login kaansoral
+> run_app_build C:\Users\K\Desktop\electron\dist\steamworks_sdk\tools\ContentBuilder\scripts\app_build_777150.vdf
+
+[LINUX STEAM]
+1) electron-packager . --platform=linux --arch=x64 --out=dist/ --electron-version=3.1.3 --overwrite --appVersion="1.2.9" --ignore=dist/*
+[LINUX UPLOAD]
+0) cd /home/kaan/Desktop/electron/dist/steamworks_sdk/tools/ContentBuilder/builder_linux/linux32
+0.1) chmod +x steamcmd
+1) cd /home/kaan/Desktop/electron/dist/steamworks_sdk/tools/ContentBuilder/builder_linux
+1.1) chmod +x steamcmd.sh
+2) ./steamcmd.sh
+3) run_app_build /home/kaan/Desktop/electron/dist/steamworks_sdk/tools/ContentBuilder/scripts/app_build_777150.vdf
+
+[18/08/16]
+In package.json, "productName" and "" is for npm/electron-packager
+--tmpdir=false -> https://github.com/electron-userland/electron-packager/issues/375
+
+[ELECTRON]
+1.3.3 - severe ERR_CONTENT_DECODING_FAILED and ERR_CACHE_READ_FAILURE issues
+1.4.0 - switched at [18/09/16]
+
+[BUILDS]
+b131116 [13/11/16]

@@ -1,0 +1,14 @@
+<p>Simplest way to move your character is the move method.</p>
+
+<div class='code'>
+move(100,-50); // Takes you to X: 100, Y: -50
+</div>
+
+<p>However, as you'll notice, move can't pass obstacles or chart a smart course, this is where smart_move shines.</p>
+
+<div class='code'>
+smart_move(100,-50);
+smart_move({x:100,y:-50});
+smart_move({x:100,y:-50,map:character.map});
+// These 3 all take you to X: 100, Y: -50
+</div>

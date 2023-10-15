@@ -1,0 +1,28 @@
+<p>For accessories there's an entirely different system. You can compound 3 accessories of the same level to make a higher level, stronger version. Whenever you gather 3 accessories of the same kind that you don't equip, combine them to make a stronger accessory and free up inventory space!</p>
+
+<p>You'll just need gold to buy the gear and scrolls, so leave your character with Code open so your character farms gold.</p>
+
+{% for task in tutorial_data("compound").tasks %}
+	{% if loop.first %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+	<p style='margin-top: 16px; margin-bottom: 16px; line-height: 16px'><span style='font-size: 80px; color:#4A4A4A;' class='tuttask tuttask{{task}}'>o</span> <span style='vertical-align:text-top; color: #DC4C6E'>{{task_name(task)}}</span> <span style='vertical-align:text-top; color:#85C76B; display:none' class='tuttaskd tuttaskd{{task}}'>DONE</span></p>
+	{% if task == "buycscroll0" %}
+		<p>Compound Scroll's are 6,400 gold each. <span class='elabel' onclick="code_eval('smart_move(&quot;scrolls&quot;)')">Travel to the NPC</span></p>
+		<p style='line-height: 1px;'><span class='spscrolls'></span> => <span class="eitemcscroll0"></span></p>
+	{% elif task == "compound" %}
+		<p>Visit Cue in town with 3 accessories of the same kind and a Compound Scroll.</p>
+		<p style='line-height: 1px;'><span class='spupgrade'></span> => <span class="eitemringsj"></span> + <span class="eitemringsj"></span> + <span class="eitemringsj"></span> + <span class="eitemcscroll0"></span> => <span class="eitemringsj1"></span></p>
+	{% endif %}
+	<div style='margin-bottom: 16px'></div>
+	{% if not loop.last %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+{% endfor %}
+
+<script>
+	$(".spupgrade").html(sprite(G.npcs.newupgrade.skin,{height:52}));
+	$(".spscrolls").html(sprite(G.npcs.scrolls.skin,{height:52,width:58}));
+	["ringsj"].forEach(function(e){
+		$(".eitem"+e+"1").html(item_container({skin:G.items[e].skin},{name:e,level:1}));
+	});
+	["cscroll0","ringsj"].forEach(function(e){
+		$(".eitem"+e).html(item_container({skin:G.items[e].skin}));
+	});
+</script>

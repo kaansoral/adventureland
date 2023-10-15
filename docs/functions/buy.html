@@ -1,0 +1,79 @@
+<p>
+	Arguments:
+	<div>&nbsp;<b>*</b> String - An item key name from G.items</div>
+	<div>&nbsp;<b>*</b> Integer - (Optional) Quantity</div>
+</p>
+<p>
+	Returns:
+	<div>&nbsp; <b>*</b> Promise</div>
+</p>
+
+<p>List of available key names: <span class="xlabel" onclick="code_eval($(this).html())">show_json(Object.keys(G.items))</span></p>
+
+<p>Example usages:</p>
+
+<div class='code'>
+buy("shoes");
+
+buy("hpot0",100);
+
+buy("coat").then(function(data){
+	game_log("Got a new coat at the "+data.num+"th inventory slot!");
+});
+
+buy("shoes").then(
+	function(data){
+		game_log("New shoes!");
+	},
+	function(data){
+		game_log("Can't buy shoes :(");
+	},
+);
+</div>
+
+<p>Promise Reference:</p>
+
+<span class='dlabel'>"resolve"</span>
+<div class='code'>
+{
+	name: "coat",
+	num: 0, // Inventory slot 0
+	q: 1, // Quantity
+	cost: 6000, // Gold spent
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"reject"</span>
+<div class='code'>
+{
+	reason: "distance", // Too far away from an NPC
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "not_buyable", // Can't buy this from an NPC
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "space", // No inventory space
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "cost", // Don't have enough gold
+}
+</div>
+<div style='margin-bottom: 1px'></div>
+<div class='code'>
+{
+	reason: "bank", // If operation isn't allowed inside
+}
+</div>
+
+<p></p>
+<span class='redlabel'>"source"</span>

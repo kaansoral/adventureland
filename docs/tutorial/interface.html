@@ -1,0 +1,57 @@
+<p>In this step, you are going to discover the various game interfaces! To complete each step, close the tutorial and open that interface once. Keep in mind that ESC/Escape key closes anything.</p>
+
+{% for task in tutorial_data("interface").tasks %}
+	{% if loop.first %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+	<p style='margin-top: 16px; margin-bottom: 16px; line-height: 16px'><span style='font-size: 80px; color:#4A4A4A;' class='tuttask tuttask{{task}}'>o</span> <span style='vertical-align:text-top; color:#767E92; color: #DC4C6E'>{{task_name(task)}}</span> <span style='vertical-align:text-top; color:#85C76B; display:none' class='tuttaskd tuttaskd{{task}}'>DONE</span></p>
+	{% if task == "character" %}
+		You can press your character name on the bottom center of the screen to focus your character.
+		<div class='mb15'></div>
+		<div class='gamebutton gamebutton-small'>CharacterName</div>
+	{% elif task == "inventory" %}
+		To open your inventory, press the indicator that shows your inventory status. It's in the bottom center of the screen too.
+		<div class='mb15'></div>
+		<div style="display: inline-block; background: black; padding: 2px; border: 4px solid gray; color: white; font-size: 30px; text-align: center;" class="bshadow2">
+			<div style="vertical-align: middle; height: 30px; font-size: 30px; line-height: 30px; width: 125px; background: #6A6A6A; margin-top: -2px" class="tint ptint inline-block">
+				<span class="invui ontint">INV XY/42</span>
+			</div>
+		</div>
+	{% elif task == "stats" %}
+		To see your character stats in more detail, press the XP bar on the right bottom of the screen.
+		<div class='mb15'></div>
+		<div style="background: black; padding: 2px; width: 316px; border: 5px solid gray; display: block; position: relative;" class="inline-block bshadow xpsui">
+			<div style="background: rgb(22, 109, 17); width: 50%; height: 30px;"></div>
+			<div style="position: absolute; width: 316px; top: 2px; left: 0px; height: 30px; color: white; vertical-align: middle; line-height: 30px; text-align: center; font-size: 30px" id="xpui">LV20 50%</div>
+		</div>
+	{% elif task == "skills" %}
+		You can use skills, set your skillbar, edit the keymapping from the SKILLS interface. You can open it from the top right button.
+		<div class='mb15'></div>
+		<div class='gamebutton'>SKILLS</div>
+	{% elif task == "guide" %}
+		The game guide aims to provide a complete and easy access to everything about the game. It's at the top right too.
+		<div class='mb15'></div>
+		<div class='gamebutton'>GUIDE</div>
+	{% elif task == "com" %}
+		The communicator lets you see everyone on the server you are currently in. Show you where your friends are. See all the servers and lets you switch between them. See all the merchants in the game and their items. See your own characters and deploy them. See all the chatter on all the servers. Send and receive mail. It's at the top right too.
+		<div class='mb15'></div>
+		<div class='gamebutton'>COM</div>
+	{% elif task == "code" %}
+		Oh, the CODE. Just open it once for now from the top right of the screen. We'll come back in detail :)
+		<div class='mb15'></div>
+		<div class='gamebutton'>CODE</div>
+	{% elif task == "travel" %}
+		Travel is a practical interface that let's you easily tap into the <span class='rlabel' onclick="render_function_reference($(this).html())">smart_move</span> routine of Code to travel within the game. If you want to discover the game, you can just select a random map and let TRAVEL take you there. Again, top right.
+		<div class='mb15'></div>
+		<div class='gamebutton'>TRAVEL</div>
+	{% elif task == "settings" %}
+		CONF is where you'll find games' settings and preferences. Currently it's very basic.
+		<div class='mb15'></div>
+		<div class='gamebutton'>CONF</div>
+	{% endif %}
+	<div style='margin-bottom: 16px'></div>
+	{% if not loop.last %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+{% endfor %}
+
+{#
+	Doesn't look as good as a tick
+	<span style="color: green; position: absolute; left: 0px; top: 26px; opacity: 0.9; display: none" class='tutstask tutstask{{task}}'>#</span>
+#}

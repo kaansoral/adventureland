@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEST</title>
+		<link rel="apple-touch-icon-precomposed" href="/images/favicon.png" /> <!-- 152 -->
+		<link rel="icon" href="/images/favicon.png" /> <!-- 32 -->
+		<!--[if IE]><link rel="shortcut icon" href="/images/favicon.png"><![endif]--> <!-- .ico -->
+		<meta name="msapplication-TileImage" content="/images/favicon.png"> <!-- 144 -->
+		<script src="/js/pixi/{{domain.pixi_version}}/pixi.min.js"></script>
+		{% if 1%}<script src="/js/pixi-display/{{domain.pixi_display_version}}/pixi-display.js"></script>{% endif %}
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.$=window.jQuery=module.exports;"{%endif%}></script>
+		<script src="/js/howler/{{domain.howler_version}}/howler.min.js"></script>
+		<script src="/js/libraries/bowser/bowser.16.08.16.js"{%if domain.electron%} onload="if(typeof require!=='undefined') window.bowser=module.exports;"{%endif%}></script>
+		<script src="/js/libraries/combined.js?v=2"></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<script src="/js/html.js?v={{domain.v}}"></script>
+		<script src="/js/keyboard.js?v={{domain.v}}"></script>
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+		<style>
+			body,html{
+				margin: 0px;
+				padding: 0px;
+				background: black;
+			}
+			canvas{
+				display: block;
+			}
+		</style>
+		<script>
+			document.addEventListener("DOMContentLoaded",function(event){
+				render();
+			});
+			function render()
+			{
+				//map_layer = new PIXI.DisplayGroup(0, true);
+				//chest_layer = map_layer;
+				antialias=false;
+				renderer=null;
+				width=$(window).width();
+				height=$(window).height();
+
+				if(0) renderer=new PIXI.autoDetectRenderer(width,height,{antialias: antialias, transparent: false, resolution:window.devicePixelRatio, autoResize:true});
+				else renderer=new PIXI.autoDetectRenderer(width,height,{antialias: antialias, transparent: false});
+
+				document.body.appendChild(renderer.view);
+
+				stage = new PIXI.Container();
+				stage.interactive=true;
+				//stage.displayList = new PIXI.DisplayList();
+				map=new PIXI.Container();
+				// map.parentGroup=map.displayGroup=map_layer;
+				map.interactive=true;
+				map.hitArea=new PIXI.Rectangle(-40000,-40000,40000,40000);
+
+				map.on("mousedown",function(event){ alert('map yey'); });
+				map.on("rightdown",function(event){ alert('map yay'); });
+
+				texture =PIXI.Texture.fromImage('/images/tiles/map/water.png');
+				texture.baseTexture.scaleMode=PIXI.SCALE_MODES.NEAREST;
+				tile=new PIXI.Texture(texture.baseTexture,new PIXI.Rectangle(16,16,16,16));
+				sprite=new PIXI.extras.TilingSprite(tile,16*60,16*25);
+				sprite.interactive=true;
+				//sprite.parentGroup=sprite.displayGroup=chest_layer;
+				sprite.on("mousedown",function(event){ alert('sprite yey'); });
+				sprite.on("rightdown",function(event){ alert('sprite yay'); });
+				map.addChild(sprite);
+
+				tile=new PIXI.Texture(texture.baseTexture,new PIXI.Rectangle(16,16,16,16));
+				sprite=new PIXI.extras.TilingSprite(tile,16*60,16*25);
+				sprite.x=200;
+				sprite.y=200;
+				sprite.interactive=true;
+				//sprite.parentGroup=sprite.displayGroup=chest_layer;
+				//sprite.on("mousedown",function(event){ alert('sprite2 yey'); });
+				//sprite.on("rightdown",function(event){ alert('sprite2 yay'); });
+				map.addChild(sprite);
+
+				stage.addChild(map);
+
+				draw();
+			}
+
+			function draw()
+			{
+				renderer.render(stage);
+				requestAnimationFrame(draw);
+			}
+		</script>
+	</body>
+</html>

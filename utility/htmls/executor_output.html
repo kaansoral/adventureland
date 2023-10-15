@@ -1,0 +1,26 @@
+{% import 'htmls/macros.html' as macro with context %}
+<b>Executed {{created}}" || In {{ess_ms}}ms</b><br />
+{% if output!="the_none_output_48" %}
+	<b>Output:</b>
+	<pre>{{output}}</pre>
+{% endif %}
+{% if logs %}
+	<b>Logs:</b>
+	<pre>{{logs}}</pre>
+{% endif %}
+{% if json!=None %}
+	<div id="outputjson"></div>
+	<div><b>Size:</b> {{json_size}}</div>
+	<script>
+		value=syntax_highlight(JSON.stringify(eval('({{json|escapejs}})'),undefined,4));
+		value="<pre>"+value+"</pre>";
+		$("#outputjson").html(value);
+	</script>
+{% endif %}
+{% if html_output!="the_none_output_48" %}
+	<b>HTML Output:</b>
+	<div>{{html_output|safe}}</div>
+{% endif %}
+{% if inspector_output %}
+	{{inspector_output|safe}}
+{% endif %}

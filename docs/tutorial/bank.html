@@ -1,0 +1,15 @@
+<p>The bank houses item and gold storage clerks. It's shared across your characters, provides an easy way to store/transfer items and gold. Only one of your characters can enter the bank at one time.</p>
+
+{% for task in tutorial_data("bank").tasks %}
+	{% if loop.first %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+	<p style='margin-top: 16px; margin-bottom: 16px; line-height: 16px'><span style='font-size: 80px; color:#4A4A4A;' class='tuttask tuttask{{task}}'>o</span> <span style='vertical-align:text-top; color: #DC4C6E'>{{task_name(task)}}</span> <span style='vertical-align:text-top; color:#85C76B; display:none' class='tuttaskd tuttaskd{{task}}'>DONE</span></p>
+	{% if task == "bank" %}
+		<p>The bank is to the right of the town square. <span class='elabel' onclick="code_eval('smart_move(&quot;bank&quot;)')">Move There</span></p>
+	{% elif task == "store" %}
+		<p>Store an item with one of the clerks. Two of the clerks are unlocked. You need to unlock the others with gold or shells.</p>
+	{% elif task == "deposit" %}
+		<p>Deposit gold to Mr. Rich at the end of the hallway.</p>
+	{% endif %}
+	<div style='margin-bottom: 16px'></div>
+	{% if not loop.last %}<div style='margin-left:-24px; margin-right: -24px; border-bottom: 5px solid gray'></div>{% endif %}
+{% endfor %}

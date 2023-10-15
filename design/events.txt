@@ -1,0 +1,55 @@
+Mystery House
+1) Entry room, small cozy room, just 3 doors, player picks one to enter a random room
+2) [Random] Haunted room, there are 2-4 doors, there are 5-8 ghosts inside, this is a ~large room, the player can engage ghosts or just escape, ghosts are extremely aggressive - there might be 1-2 random chests inside the room
+3) [Random] Chest room, the player got lucky, he found a chest, there are 2-3 doors to select to exit
+4) [Random] Boss room, there is a random boss inside, there are 2-3 doors to escape from
+5) [Random] Gateway room, there are 3-7 doors inside, there might or might not be a random chest too
+6) Exit room, players luck has ran out, the exit room has just one door, and that teleport the player to the entrance
+
+In (3) and (5), the chests might spawn a super strong boss, it will likely kill the player, so they shouldn’t be super tiny rooms, there should be space for a random spawning vicious monster
+
+> Survival Mode Daily Event [01/03/17]
+
+
+
+
+
+```
+The Rush
+1) Potion Zone (Monsters drop potions in this room)
+2) Scroll Zone (Monsters drop scrolls in this room/area)
+3) Item Zone (Monsters/Bosses drop accessories, weapons, armors in this area)
+4) Upgrade/Compound Zone - There is one bust or monument, players can upgrade or compound here
+Players need potions as the +100/+200 potionless bonuses are +10/+20 in this area, and they can't bring potions inside
+Players need scrolls as to leave this zone with anything, the upgraded items need to be at least +8, accessories need to be +2 (or +1, if it's rare, not sure yet)
+Players have a total of 15 minutes inside the zone
+They could choose to go after the bosses for better drops, or, they could slay normal monsters for worse accessories, weapons, armors etc.
+We could divide (3) into 2 zones, bosses and monsters, unsure yet
+```
+
+
+Anniversary:
+
+Confetti Pack - Can be thrown anywhere
+Poke Glove - Ability: Poke
+Party Hat - Random Coloured Lines
+Scroll 3 - +11
+Trinket of Faith - Good things come to those who wait - 120 MP - 2 Int/Str/Vit - 0.5 Speed
+T3/T4 armors
+Tri-Color-Ring - 5 Armor Piercing - 5 Res Piercing - 1 Int - 1 Str - 1 Int - 1 Vit
+
+Daily Events: [2X Each Day ~30mins each] [8PM-9PM]
+- Goo Brawl [PVE]
+- A/B Testing [PVP]
+- Come up with more [TODO]
+
+Daily Zones: [9PM-12PM]
+Monday - Mansion Mystery [Done]
+Tuesday - The Castle [Done]
+Wednesday - Cloudland
+Thursday - Dracul's Lair
+Friday - [?]
+Saturday - The Island with the Tall Tower
+Sunday - Pirate Ship [PVP] [Done]
+
+Everyday [12PM-1AM] - [PVP] A multi-level dungeon opens for 1 hour

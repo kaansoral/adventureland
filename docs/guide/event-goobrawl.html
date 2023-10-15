@@ -1,0 +1,33 @@
+<div style='width: 600px'>
+	<p style='font-size: 32px; color: #8A203A; text-decoration: underline dotted #B30B1A'>Goo Brawl Event</p>
+
+	<p>
+		<span class='spgoo'></span> Goo Brawl features a Zen island where you can smash funky cooperative Goo's in peace and Goo's have a chance to drop Fun Token's!
+	</p>
+
+	<p>
+		<span class='sprgoo'></span> A very rare Rainbow Goo occasionally spawns too! Has different drops and achievements!
+	</p>
+
+
+	<div style='margin-bottom: 24x'></div>
+
+	<div class='gamebutton' onclick="btc(event); join('goobrawl'); hide_modal();">Join the Event!</div>
+
+
+	<script>
+		$(".spgoo").html(sprite("goo4",{width:65,height:65,scale:2}));
+		$(".sprgoo").html(sprite("rgoo",{width:65,height:65,scale:2}));
+	</script>
+
+
+<p style='font-size: 32px; color: #216D25; text-decoration: underline dotted #B30B1A; margin-bottom: 10px'>Snippets</p>
+
+<div class='code'>
+	if(parent.S.goobrawl && character.map!="goobrawl")
+		join('goobrawl'); // Takes you there
+	// Regular goo's have "goo" ID's - they are buffed up
+	// Rainbow goo is "rgoo"
+</div>
+
+</div>

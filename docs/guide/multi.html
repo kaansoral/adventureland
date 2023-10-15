@@ -1,0 +1,48 @@
+<div class="title mt10">Browser</div> <div class="mb10"></div>
+<div>Easiest way to run Adventure Land is on browsers, however, browsers throttle Javascript performance and timing, so if your code requires heavy processing and precise timing, you will not achieve peak performance with your characters.</div>
+<div class="divider"></div>
+
+<div class="title mt10">Multiple Game Client Windows</div> <div class="mb10"></div>
+<div>Second easiest way is to just open secondary game clients, either at character selection by pressing the "> New Game Window" at the top left column, or by typing /window as a chat command.</div>
+<div class="divider"></div>
+
+<div class="title mt10">Launch Through COM</div> <div class="mb10"></div>
+<div>You can run a specific character faster by opening COM, going to the Characters tab and pressing Deploy on the character you want to run in a new window.</div>
+<div class="divider"></div>
+
+<div class="title mt10">Observe Your Characters!</div> <div class="mb10"></div>
+<div>Visit <a class="eexternal" href="https://adventure.land/comm/" target="_blank" style="border-color: #32A3B0">https://adventure.land/comm/</a> from anywhere to observe and command your characters.</div>
+<div class="divider"></div>
+
+<div class="title mt10">iFrame Characters</div> <div class="mb10"></div>
+<div>You can start a character as a bot by typing /start CHARACTERNAME in the chat window. From CODE:</div>
+<div class='code'>
+start_character("CHARACTERNAME"); // to run the character from within your Code automatically
+
+send_cm("CHARACTERNAME",{a:1,b:2,c:"something"}); // to send messages, objects to your character
+
+// On every character, implement a messaging logic like this:
+character.on("cm",function(m){
+	if(m.name=="CHARACTERNAME") // Make sure the message is from a trusted character
+		log(m.message);  // Do something with the message!
+})
+</div>
+<div class="divider"></div>
+
+<div class="title mt10">Command Line Interface a.k.a. CLI</div> <div class="mb10"></div>
+<div>This is a work in progress, but basically it's possible to run characters on a Raspberry PI etc. too, check out the Advanced article on the topic.</div>
+
+<style>
+	.title{
+		color: #406944;
+		font-size: 36px;
+		margin-top: 15px;
+	}
+	.divider{
+		margin-top: 15px;
+		height: 5px;
+		background-color: gray;
+		margin-left: -26px;
+		margin-right: -26px;
+	}
+</style>

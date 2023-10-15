@@ -1,0 +1,215 @@
+<p>Game events are ambient or global, they can either be broadcasted to the entire server or you can observe nearby happenings through these events.</p>
+
+<div class='code'>
+// Register to a single event:
+game.on("level_up",function(data){
+	game_log(data.name+" is now level "+data.level+"!");
+});
+
+// Register to all events:
+game.all(function(name,data){
+	data.event_name=name;
+	show_json(data);
+});
+
+</div>
+
+<p>Data Reference:</p>
+
+<span class='dlabel'>"event"</span>
+<div class='code'>
+{
+	name: "snowman",
+	// Some others: "pinkgoo", "wabbit", "franky", "grinch"
+	// Optional coordinates:
+	map: "winterland",
+	x: 12,
+	y: 88,
+}
+</div>
+
+<span class='dlabel'>"trade"</span>
+<div class='code'>
+{
+	seller: "SellerName",
+	buyer: "BuyerName",
+	item: {name:"staff",level:9},
+	slot: "trade8",
+}
+</div>
+
+<span class='dlabel'>"action"</span>
+<div class='code'>
+{
+	source: "attack", // Can be positive or negative
+	actor: "CharacterName", // Monster ID or Character ID
+	target: "42", // Monster ID or Character ID
+	damage: 1390,
+	projectile: "momentum",
+	eta: 50, // Arrival in milliseconds
+	pid: "abcd1234", // Projectile ID
+}
+{
+	source: "heal",
+	actor: "CharacterName",
+	target: "PartyMember",
+	heal: 1390,
+	projectile: "heal",
+	eta: 400,
+	pid: "abcd1234", // Projectile ID
+}
+{
+	source: "curse",
+	actor: "CharacterName",
+	target: "MortalEnemy",
+	projectile: "curse",
+	eta: 800,
+	pid: "abcd1234", // Projectile ID
+}
+{
+	source: "burst",
+	actor: "CharacterName",
+	target: "MortalEnemy",
+	ray: "burst",
+	instant: true,
+}
+// Warning: The formats might refine in the future [26/01/20]
+</div>
+
+<span class='dlabel'>"hit"</span>
+<div class='code'>
+{
+	source: "attack", // Can be positive or negative
+	actor: "CharacterName", // Monster ID or Character ID
+	target: "42", // Monster ID or Character ID
+	damage: 1390,
+	pid: "abcd1234", // Projectile ID
+	heal: 0, // Set if the projectile was healing
+	crit: false,
+	kill: false,
+	evade: false,
+	miss: false,
+	avoid: false, // Outrunning the projectile
+	poison: false, // Whether the attack poisoned the target
+	freeze: false, // Whether the attack freezed the target
+	stun: false, // Whether the attack stunned the target
+	reflect: 0, // Reflected damage
+	dreturn: 0, // Returned damage
+	trigger: "sugarrush", // Set when the attack triggered a condition/buff
+	condition: "curse", // Could be both a positive or negative condition for the target
+	sneak: false, // Set if this was a Rogue sneak attack
+	stacked: [], // Array of ID's - If multiple opponents staying in the same spot got hit
+	mobbing: 88, // If 4+ monsters target you, their attacks increase the mobbing intensity/damage
+	unintentional: false, // true for the non-main targets of a stacked attack
+	aoe: false, // true for uncontrollable attacks like cleave and shadowstrike
+	// Not all properties are always set, if the value is false, [] or 0 - they are usually not set
+}
+</div>
+
+<span class='dlabel'>"level_up"</span>
+<div class='code'>
+{
+	name: "CharacterName", // Character name
+	level: 72, // Characters' new level
+}
+</div>
+
+<span class='dlabel'>"death"</span>
+<div class='code'>
+{
+	id: "428", // Character Name or Monster ID 
+}
+</div>
+
+<span class='dlabel'>"shutdown"</span>
+<div class='code'>
+{
+	seconds: 20, // Server shutdown in 20 seconds 
+}
+</div>
+
+<span class='dlabel'>"sell"</span>
+<div class='code'>
+{
+	// Item sold to an NPC
+	name: "CharacterName",
+	item: {"name":"pants",level:8},
+}
+</div>
+
+<span class='dlabel'>"buy"</span>
+<div class='code'>
+{
+	// Item bought from an NPC
+	name: "CharacterName",
+	item: {"name":"pants",level:0},
+}
+</div>
+
+<span class='dlabel'>"sbuy"</span>
+<div class='code'>
+{
+	// Item bought from Ponty
+	name: "CharacterName",
+	item: {"name":"pants",level:0},
+}
+</div>
+
+<span class='dlabel'>"fbuy"</span>
+<div class='code'>
+{
+	// Item bought from Lost and Found
+	name: "CharacterName",
+	item: {"name":"pants",level:0},
+}
+</div>
+
+<span class='dlabel'>"item_sent"</span>
+<div class='code'>
+{
+	// Player to player item transfer
+	sender: "SenderName",
+	receiver: "ReceiverName",
+	item: {"name":"pants",level:0},
+}
+</div>
+
+<span class='dlabel'>"gold_sent"</span>
+<div class='code'>
+{
+	// Player to player gold transfer
+	sender: "SenderName",
+	receiver: "ReceiverName",
+	gold: 100,
+}
+</div>
+
+<span class='dlabel'>"cx_sent"</span>
+<div class='code'>
+{
+	// Player to player cosmetics transfer
+	sender: "SenderName",
+	receiver: "ReceiverName",
+	cx: "hat999",
+}
+</div>
+
+<span class='dlabel'>"mluck"</span>
+<div class='code'>
+{
+	name: "MerchantName",
+	item: {name:"staff",level:0},
+	num: 12,
+}
+</div>
+
+<span class='dlabel'>"api_response"</span>
+<div class='code'>
+{
+	type: "servers_and_characters",
+	servers: [],
+	characters: [],
+}
+</div>
+
+<p>Work in progress ...</p>
