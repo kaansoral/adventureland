@@ -1309,65 +1309,92 @@ function drop_one_thing(player,items,args)
 	player.socket.emit("drop",{"x":drop.x,"y":drop.y,"items":drop.items.length,"chest":chest,"id":drop_id,map:drop.map,owners:[player.owner]})
 }
 
-function drop_something(player,monster,share)
+function drop_something(player, monster, share = 1)
 {
 	if(monster.pet || monster.trap) return;
 	achievement_logic_monster_kill(player,monster);
-	share=(share===undefined)&&1||(share||0);
 	// console.log("share: "+share);
-	var drop_id=randomStr(30),drop,chest="chest3",hp_mult=1,drop_norm=1000,global_mult=monster.mult,monster_mult=monster.mult; // originally: G.maps[player.map] && G.maps[player.map].drop_norm [31/01/18]
+	var drop_id=randomStr(30),
+		drop,
+		chest="chest3",
+		hp_mult=1,
+		drop_norm=1000,
+		global_mult=monster.mult,
+		monster_mult=monster.mult; // originally: G.maps[player.map] && G.maps[player.map].drop_norm [31/01/18]
 	var GOLD=D.monster_gold[monster.type];
 	if(B.use_pack_golds && monster.gold) GOLD=monster.gold;
 	if(drop_norm) hp_mult=monster.max_hp/drop_norm;
 
-	drop=chests[drop_id]={items:[],cash:0};
-	drop.gold=round(1+GOLD*D.drops.gold.base*share+Math.random()*GOLD*D.drops.gold.random*share)*monster.level*monster.mult||0; // previously 0.75
+	drop = chests[drop_id] = {
+		x: monster["global"] ? player.x : monster.x,
+		y: monster["global"] ? player.y : monster.y,
+		map: monster["global"] ? player.map : monster.map,
+		items: [],
+		cash:0
+	};
+	drop.gold = round(1 + GOLD * share * (D.drops.gold.base + D.drops.gold.random * Math.random())) * monster.level * monster.mult || 0; // previously 0.75
 	if(monster.extra_gold) drop.egold=(drop.egold||0)+max(0,monster.extra_gold);
 	if(monster.outgoing) drop.egold=(drop.egold||0)+min(monster.outgoing*B.m_outgoing_gmult,G.monsters[monster.type].hp*0.048*(gameplay=="hardcore"&&50||1));
 	if(drop.egold) drop.egold*=share;
 	if(monster.difficulty===0) drop.gold=drop.egold=0;
-	drop.x=monster.x;
-	drop.y=monster.y;
-	drop.map=monster.map;
-	if(monster["global"]) drop.x=player.x,drop.y=player.y,drop.map=player.map;
 	// if(player.level<50 && mode.low49_20xglobal) global_mult=20; - Commented out after SpadarFaar discovered/used it [16/04/19]
 	// console.log(global_mult);
 	if(monster["1hp"]) global_mult*=1000;
-	if(D.drops.maps.global_static && player.tskin!="konami" && B.global_drops) D.drops.maps.global_static.forEach(function(item){
-		if(Math.random()/share/player.luckm/monster.luckx/global_mult<item[0] || mode.drop_all)
-			drop_item_logic(drop,item,is_in_pvp(player,1));
-	});
-	if(D.drops.maps.global && player.tskin!="konami" && B.global_drops) D.drops.maps.global.forEach(function(item){
-		if(Math.random()/share/player.luckm/hp_mult/monster.luckx/global_mult<item[0] || mode.drop_all)
-			drop_item_logic(drop,item,is_in_pvp(player,1));
-	});
-	if(D.drops.maps[monster.map] && player.tskin!="konami") D.drops.maps[monster.map].forEach(function(item){
-		if(Math.random()/share/player.luckm/hp_mult/monster.luckx<item[0] || mode.drop_all)
-			drop_item_logic(drop,item,is_in_pvp(player,1));
-	});
-	// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
-	if(D.drops.monsters[monster.type] && player.tskin!="konami") D.drops.monsters[monster.type].forEach(function(item){
-		if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) // /hp_mult - removed [13/07/18]
-			drop_item_logic(drop,item,is_in_pvp(player,1));
-	});
-	if(monster.drops)
-		monster.drops.forEach(function(item){
-			if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) // /hp_mult - removed [13/07/18]
+	if(player.tskin != "konami") {
+		if(D.drops.maps.global_static && B.global_drops) {
+			D.drops.maps.global_static.forEach(function(item){
+				if(Math.random()/share/player.luckm/monster.luckx/global_mult<item[0] || mode.drop_all) {
+					drop_item_logic(drop,item,is_in_pvp(player,1));
+				}
+			});
+		}
+		if(D.drops.maps.global && B.global_drops) {
+			D.drops.maps.global.forEach(function(item){
+				if(Math.random()/share/player.luckm/monster.luckx/global_mult/hp_mult<item[0] || mode.drop_all) {
+					drop_item_logic(drop,item,is_in_pvp(player,1));
+				}
+			});
+		}
+		if(D.drops.maps[monster.map]) {
+			D.drops.maps[monster.map].forEach(function(item){
+				if(Math.random()/share/player.luckm/monster.luckx/hp_mult<item[0] || mode.drop_all) {
+					drop_item_logic(drop,item,is_in_pvp(player,1));
+				}
+			});
+		}
+		// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
+		if(D.drops.monsters[monster.type]) {
+			D.drops.monsters[monster.type].forEach(function(item){
+				if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) { // /hp_mult - removed [13/07/18]
+					drop_item_logic(drop,item,is_in_pvp(player,1));
+				}
+			});
+		}
+	} else {
+		D.drops.konami.forEach((item) => {
+			if(Math.random()/share/player.luckm/monster.level<item[0] || mode.drop_all) {
 				drop_item_logic(drop,item,is_in_pvp(player,1));
+			}
 		});
-	if(player.tskin=="konami")	D.drops.konami.forEach(function(item){
-		if(Math.random()/share/player.luckm/monster.level<item[0] || mode.drop_all)
-			drop_item_logic(drop,item,is_in_pvp(player,1));
-	});
+	}
+	if(monster.drops) {
+		monster.drops.forEach(function(item){
+			if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) { // /hp_mult - removed [13/07/18]
+				drop_item_logic(drop,item,is_in_pvp(player,1));
+			}
+		});
+	}
 	if(player.p.first && !player.p.first_drop)
 	{
 		player.p.first_drop=true;
 		drop.gold+=100000;
-		drop.items.push(create_new_item("ringsj"));
-		drop.items.push(create_new_item("ringsj"));
-		drop.items.push(create_new_item("ringsj"));
-		drop.items.push(create_new_item("hpbelt"));
-		drop.items.push(create_new_item("gem0"));
+		drop.items.push(
+			create_new_item("ringsj"),
+			create_new_item("ringsj"),
+			create_new_item("ringsj"),
+			create_new_item("hpbelt"),
+			create_new_item("gem0")
+		);
 	}
 	if(Math.random()<D.drops.gold.x10) drop.gold*=10,chest="chest4"; // previously 12
 	if(Math.random()<D.drops.gold.x50) drop.gold*=50,chest="chest5"; // previously 200
