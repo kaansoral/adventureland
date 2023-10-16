@@ -1,8 +1,10 @@
+const path = require("node:path")
+
 module.exports={
-	"cfunctions_path":process.env.HOME+"/thegame/js/common_functions.js",
-	"functions_path":process.env.HOME+"/thegame/node/server_functions.js",
-	"worker_path":process.env.HOME+"/thegame/node/server_worker.js",
-	"data_path":process.env.HOME+"/thegame/node/data.js",
+	"cfunctions_path":path.resolve(__dirname, "../js/common_functions.js"),
+	"functions_path":path.resolve(__dirname, "server_functions.js"),
+	"worker_path":path.resolve(__dirname, "server_worker.js"),
+	"data_path":path.resolve(__dirname, "data.js"),
 	"base_url":"http://thegame.com",
 	"keyword":"123",
 	"master":"123",
