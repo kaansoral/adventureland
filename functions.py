@@ -282,6 +282,7 @@ def security_threat(self,domain):
 	referer=referer.replace("http://","").replace("https://","")
 	#referer="www.thegame2.com"
 	logging.info(referer)
+	if referer.startswith("127.0.0.1"): return False
 	if not (referer.startswith("%s.%s.%s/"%(domain.domain[0],domain.domain[1],domain.domain[2])) or referer.startswith("%s.%s/"%(domain.domain[1],domain.domain[2])) or referer=="%s.%s.%s"%(domain.domain[0],domain.domain[1],domain.domain[2]) or referer=="%s.%s"%(domain.domain[1],domain.domain[2])):
 		self.response.out.write("Threat detected")
 		return True
