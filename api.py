@@ -22,7 +22,7 @@ def signup_or_login_api(**args):
 	if not domain.electron and not only_login and not domain.is_sdk: jhtmle(self,"Can't signup on web"); return
 	
 	if existing and not only_signup:
-		if existing.password==password or existing.password==hash_password(password,gf(existing,"salt","5")):
+		if existing.password==hash_password(password,gf(existing,"salt","5")):
 			def login_transaction():
 				user=get_by_iid(existing.k('i'))
 				auth=get_new_auth(self,user,domain)
