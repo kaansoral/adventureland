@@ -12,6 +12,7 @@ from lxml import etree as lxmletree
 import datetime as rdatetime
 import time as rtime
 from datetime import datetime,timedelta,date
+from urlparse import urlparse
 from google.appengine.api.users import is_current_user_admin
 from google.appengine.ext.webapp import blobstore_handlers # template,util,
 from google.appengine.api import memcache,urlfetch,urlfetch_errors,mail,taskqueue,images,files,namespace_manager,search,modules,logservice
@@ -103,25 +104,33 @@ always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
 game_name="Adventure Land"
 appengine_id="twodimensionalgame"
-live_domain=["www","adventure","land"]
-sdk_domain=["www","thegame","com"]
+live_domain='adventure.land'
+sdk_domain='thegame.com'
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def gdi(self=None):
 	domain=GG()
 	if is_sdk:
-		domain.base_url=self and "http://%s"%self.request.headers.get("Host") or "http://%s.%s"%(sdk_domain[1],sdk_domain[2])
-		domain.pref_url=self and "http://%s"%self.request.headers.get("Host") or "http://%s.%s"%(sdk_domain[1],sdk_domain[2])
+		if self:
+			url=urlparse(self.request.url)
+			protocol=url.scheme
+			hostname=url.hostname
+		else:
+			protocol="http"
+			hostname=sdk_domain
+
+		domain.base_url=protocol + "://" + hostname
+		domain.pref_url=domain.base_url
 		domain.server_ip="192.168.1.125"
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
-		domain.domain=self and ["www",self.request.headers.get("Host").split(".")[0],self.request.headers.get("Host").split(".")[1]] or sdk_domain
+		domain.domain=hostname
 	else:
 		protocol="http"
 		if self and "https" in (self.request.headers.get("Cf-Visitor") or ""): protocol="https"
-		domain.base_url="%s://%s.%s"%(protocol,live_domain[1],live_domain[2])
-		domain.pref_url="https://%s.%s"%(live_domain[1],live_domain[2])
+		domain.base_url=protocol + "://" + live_domain
+		domain.pref_url=domain.base_url
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=HTTPS_MODE

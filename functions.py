@@ -279,13 +279,12 @@ def selection_info(self,user,domain):
 def security_threat(self,domain):
 	referer=self.request.headers.get('Referer') or self.request.headers.get('Origin') or ""
 	if not referer: return False
-	referer=referer.replace("http://","").replace("https://","")
-	#referer="www.thegame2.com"
-	logging.info(referer)
-	if referer.startswith("127.0.0.1"): return False
-	if not (referer.startswith("%s.%s.%s/"%(domain.domain[0],domain.domain[1],domain.domain[2])) or referer.startswith("%s.%s/"%(domain.domain[1],domain.domain[2])) or referer=="%s.%s.%s"%(domain.domain[0],domain.domain[1],domain.domain[2]) or referer=="%s.%s"%(domain.domain[1],domain.domain[2])):
+
+	referer=urlparse(referer).hostname
+	if not referer.endswith(domain.domain):
 		self.response.out.write("Threat detected")
 		return True
+	
 	# if is_production and domain.cf_always_on and not is_cloudflare(self):
 	# 	conditional_response(self,domain,response,"cloudflare")
 	# 	st_log(self,"cloudflare")
@@ -1790,28 +1789,25 @@ def log_trace(place="",logger=None):
 	logger.error("\n\n<<<<<<<<<< log_trace %s %s>>>>>>>>>>"%(exc_type,place),exc_info=sys.exc_info())
 	logger.error("\n")
 
-def get_domain(self=None,url=None):
-	if self or url:
-		if self: url=self.request.url
-		try: url=url[0:url.index("/",8)+1] #in case the url doesn't end with / [25/09/15]
-		except: pass
-		url=url.replace("http://",""); url=url.replace("https://",""); url=url.replace("/",""); url=url.split(".")
-		if len(url)==2: return ["www",url[0],url[1]]
-		return [url[-3],url[-2],url[-1]] #to prevent the www.geobird.com.test.com-like url's [25/09/15]
+def get_domain(self=None):
+	if not is_sdk:
+		return live_domain
 	else:
-		if not is_sdk: return live_domain
-		else: return sdk_domain
+		if self:
+			return (urlparse(self.request.url)).hostname
+		else:
+			return sdk_domain
 
 def get_cookie(self,name):
 	return self.request.cookies.get(name)
 
 def set_cookie(self,name,value):
-	subdomain,domainname,toplevel=get_domain(self)
-	self.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s.%s'%(domainname,toplevel),secure=secure_cookies)
+	hostname=get_domain(self)
+	self.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s'%(hostname),secure=secure_cookies)
 
 def delete_cookie(self,name):
-	subdomain,domainname,toplevel=get_domain(self)
-	self.response.delete_cookie(name,path='/',domain='.%s.%s'%(domainname,toplevel))
+	hostname=get_domain(self)
+	self.response.delete_cookie(name,path='/',domain='.%s'%(hostname))
 
 class StrLogHandler(logging.Handler):
 	def __init__(self, output):
