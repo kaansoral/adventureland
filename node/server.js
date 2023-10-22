@@ -3866,6 +3866,7 @@ io.on('connection', function (socket) {
 			if(player.q.compound) return fail_response("compound_in_progress","compound","in_progress");
 			var offering=player.items[data.offering_num];
 			if(offering && G.items[offering.name].type!="offering")  return socket.emit("game_response","compound_invalid_offering");
+			if(!scroll) return socket.emit("game_response","compound_no_scroll");
 			if(!item0 || (item0.level||0)!=data.clevel) return fail_response("no_item");
 			if(!player.computer && simple_distance(G.maps.main.compound,player)>B.sell_dist) return socket.emit("game_response",{response:"distance",place:"compound",failed:true});
 			var def=G.items[item0.name],scroll_def=G.items[scroll.name],offering_def=offering&&G.items[offering.name],grade=calculate_item_grade(def,item0);
