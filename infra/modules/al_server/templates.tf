@@ -29,6 +29,10 @@ data "template_file" "run_master_sh" {
 
 data "template_file" "run_server_sh" {
   template = file("${path.module}/templates/run-server.sh")
+  vars = {
+    region = split(var.name, "-")[0]
+    name = split(var.name, "-")[1]
+  }
 }
 
 data "template_file" "master_service" {

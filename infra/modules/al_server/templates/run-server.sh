@@ -1,3 +1,3 @@
 #!/bin/bash
 cd /opt
-node ./adventureland/node/server.js EU II 2083
+node ./adventureland/node/server.js ${region} ${name} 2083
