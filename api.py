@@ -19,8 +19,7 @@ def signup_or_login_api(**args):
 	if existing and existing.server:
 		if msince(existing.last_online)>15 and msince(gf(existing,"last_auth",really_old))>15: pass # [15/05/22]
 		else: jhtmle(self,"Can't login while inside the bank"); return
-	if not domain.electron and not only_login and not domain.is_sdk: jhtmle(self,"Can't signup on web"); return
-	
+
 	if existing and not only_signup:
 		if existing.password==hash_password(password,gf(existing,"salt","5")):
 			def login_transaction():

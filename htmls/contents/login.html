@@ -4,14 +4,8 @@
 		{% if domain.purchase_mode and not domain.electron %}
 			<div id="loginbuttons">
 				<div class="whiteheader mb4">Note: <span class='gray'>Check out the original at: <a href="http://adventure.land">http://adventure.land</a></span></div>
-				{% if domain.is_sdk %}
-					<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Signup <span style='color: #2FA6C8'>[Development Use]</span></div>
-				{% endif %}
-				<!--
-					<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Free Signup <span style='color: #2FA6C8'>[Educational Use]</span></div>
-				-->
+				<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Signup</div>
 				<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#loginlogin').show(); on_resize()">&gt; Login to the Game</div>
-				<div class="whiteheader mb4">Note: <span class='gray'>Signup requires a purchased copy</span></div>
 			</div>
 			<div id="edusignup" style="display:none">
 				<div style='border-bottom: 5px solid gray; margin-left: -10px; margin-right: -10px; font-size: 24px; padding: 16px; text-align: left; margin-bottom: 5px; background-color: #E5E5E5; color: #010805; margin-top: -10px; text-shadow:none'>
