@@ -407,7 +407,7 @@ class MapLister(webapp.RequestHandler):
 		def map_to_html(m):
 			return "<div style='margin-bottom: 2px'><a href='%s/%s' target='_blank' style='color: white; font-weight: bold; text-decoration:none'>%s</a></div>"%(url,m.id(),m.id())
 		html="<style> html{background-color:gray}</style>"
-		if is_sdk: url="http://thegame.com/admin/map_editor"
+		if is_sdk: url="%s/admin/map_editor"%(domain.base_url)
 		else: url="%s/%s"%(domain.base_url,"communitymaps")
 		if order=="key":
 			for m in Map.query().fetch(5000,keys_only=True): html+=map_to_html(m)
