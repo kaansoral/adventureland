@@ -1,0 +1,31 @@
+write_files:
+- content: |
+    ${install_sh}
+  path: /opt/install.sh
+- content: |
+    ${run_master_sh}
+  path: /opt/run-master.sh
+- content: |
+    ${run_server_sh}
+  path: /opt/run-server.sh
+- content: |
+    ${master_service}
+  path: /etc/systemd/system/adventureland-master.service
+- content: |
+    ${server_service}
+  path: /etc/systemd/system/adventureland-server.service
+- content: |
+    ${secrets_py}
+  path: /opt/secrets.py
+- content: |
+    ${variables_js}
+  path: /opt/variables.js
+
+runcmd:
+  - cd /opt
+  - sh install.sh
+  - mv -f variables.js adventureland/node/variables.js 
+  - mv -f secrets.py adventureland/secrets.py
+  - sudo systemctl daemon-reload
+  - if ${run_server}; then systemctl enable adventureland-server.service --now; fi
+  - if ${run_master}; then systemctl enable adventureland-master.service --now; fi

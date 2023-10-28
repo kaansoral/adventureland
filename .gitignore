@@ -11,3 +11,8 @@
 *.pem
 *.pub
 /scripts/test.js
+*.tfvars
+.terraform
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
