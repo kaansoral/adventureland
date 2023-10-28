@@ -41,10 +41,10 @@ data "hcloud_ssh_keys" "admin" {
 
 locals {
   secrets = {
-    base_url = "http://al.nexusnull.com"
-    keyword = random_string.keyword.result
-    master = random_string.master.result
+    base_url      = "http://al.nexusnull.com"
+    keyword       = random_string.keyword.result
+    master        = random_string.master.result
     server_master = random_string.server_master.result
-    bot_key = random_string.bot_key.result
+    bot_key       = random_string.bot_key.result
   }
 }

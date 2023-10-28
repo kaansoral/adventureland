@@ -59,6 +59,7 @@ data "template_file" "cloud_init" {
     server_service : indent(4, data.template_file.server_service.rendered)
     secrets_py: indent(4, data.template_file.secrets_py.rendered)
     variables_js: indent(4, data.template_file.variables_js.rendered)
+    volume_id: contains(hcloud_volume.storage,0)?hcloud_volume.storage[0].id:0
   }
 }
 

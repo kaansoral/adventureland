@@ -22,6 +22,10 @@ write_files:
   path: /opt/variables.js
 
 runcmd:
+  - if ${run_master}; then 
+  - mount -o discard,defaults /dev/disk/by-id/scsi-0HC_Volume_${volume_id} /mnt/volume-nbg1-1
+  - echo "/dev/disk/by-id/scsi-0HC_Volume_${volume_id} /mnt/volume-nbg1-1 ext4 discard,nofail,defaults 0 0" >> /etc/fstab
+  - fi
   - cd /opt
   - sh install.sh
   - mv -f variables.js adventureland/node/variables.js 
