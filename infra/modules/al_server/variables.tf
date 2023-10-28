@@ -17,28 +17,32 @@ variable "name" {
 
 variable "master" {
   type = object({
-    enabled  = bool
+    enabled = bool
   })
   default = {
-    enabled  = false
+    enabled = false
   }
 }
 
 variable "server" {
   type = object({
-    enabled  = bool
+    enabled = bool
+    region  = string
+    name    = string
   })
   default = {
-    enabled  = false
+    enabled = false
+    region  = "Undefined"
+    name    = "Undefined"
   }
 }
 
 variable "secrets" {
   type = object({
-    base_url = string
-    keyword = string
-    master = string
+    base_url      = string
+    keyword       = string
+    master        = string
     server_master = string
-    bot_key = string
+    bot_key       = string
   })
 }

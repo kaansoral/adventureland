@@ -4,7 +4,7 @@ data "template_file" "variables_js" {
     base_url : var.secrets.base_url,
     keyword : var.secrets.keyword,
     master : var.secrets.master,
-    server_master :  var.secrets.server_master,
+    server_master : var.secrets.server_master,
     bot_key : var.secrets.bot_key,
   }
 }
@@ -14,7 +14,7 @@ data "template_file" "secrets_py" {
   vars = {
     keyword : var.secrets.keyword,
     master : var.secrets.master,
-    server_master :  var.secrets.server_master,
+    server_master : var.secrets.server_master,
     bot_key : var.secrets.bot_key,
   }
 }
@@ -30,8 +30,8 @@ data "template_file" "run_master_sh" {
 data "template_file" "run_server_sh" {
   template = file("${path.module}/templates/run-server.sh")
   vars = {
-    region = split(var.name, "-")[0]
-    name = split(var.name, "-")[1]
+    region = var.server.region
+    name   = var.server.name
   }
 }
 
@@ -61,10 +61,14 @@ data "template_file" "cloud_init" {
     run_master : var.master.enabled,
     master_service : indent(4, data.template_file.master_service.rendered)
     server_service : indent(4, data.template_file.server_service.rendered)
-    secrets_py: indent(4, data.template_file.secrets_py.rendered)
-    variables_js: indent(4, data.template_file.variables_js.rendered)
-    volume_id: contains(hcloud_volume.storage,0)?hcloud_volume.storage[0].id:0
+    secrets_py : indent(4, data.template_file.secrets_py.rendered)
+    variables_js : indent(4, data.template_file.variables_js.rendered)
+    volume_id : var.master.enabled ? hcloud_volume.storage[0].id : 0
   }
+}
+
+output "name" {
+  value = contains(hcloud_volume.storage, 0) ? hcloud_volume.storage[0].id : 0
 }
 
 data "cloudinit_config" "master" {

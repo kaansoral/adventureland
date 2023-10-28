@@ -19,6 +19,8 @@ module "eu_1_server" {
   secrets      = local.secrets
   server = {
     enabled = true
+    region  = "EU"
+    name    = "I"
   }
 
 }
@@ -32,6 +34,8 @@ module "us_1_server" {
   secrets      = local.secrets
   server = {
     enabled = true
+    region  = "US"
+    name    = "I"
   }
 }
 
