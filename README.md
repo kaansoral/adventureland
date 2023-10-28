@@ -1,6 +1,8 @@
 # Adventure Land - The Open Source CODE MMORPG
 https://adventure.land
+
 The Source Code is now available to anyone, even for commercial use! (License applies)
+
 **Please consider supporting Adventure Land on Patreon: https://www.patreon.com/AdventureLand**
 
 ## Discussion
