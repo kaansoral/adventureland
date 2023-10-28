@@ -7,8 +7,7 @@ module.exports={
 	"data_path":path.resolve(__dirname, "data.js"),
 	"base_url":"${base_url}",
 	"keyword":"${keyword}", // server master auth key
-	"master":"${master}",  // access_master in secrets.py allows calling functions like shutdown
-	"server_master":"${server_master}", // irrelevant
+	"access_master":"${master}",  // access_master in secrets.py allows calling functions like shutdown
 	"bot_key":"${bot_key}",
 	"discord_token":"NDXXXXXXXXXXX...",
 	"apple_token":"acXXXXXXXX...",
@@ -21,3 +20,4 @@ module.exports={
 	"character_limit":3,
 	"fast_sdk":0,
 }
+
