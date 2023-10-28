@@ -1,9 +1,9 @@
 <div id="pagewrapper">
 	<div id="pagewrapped" class="loginorselection hidewithmodals">
+
 		{% if domain.purchase_mode and not domain.electron %}
 			<div id="loginbuttons">
-				<div class="whiteheader mb4"><a class='cancela' href="https://store.steampowered.com/app/777150/Adventure_Land__The_Code_MMORPG/" target="_blank">&gt; Purchase on Steam <span style='color: #85C76B'>[Live!]</span></a></div>
-				<div class="whiteheader mb4"><a class='cancela' href="https://itunes.apple.com/app/adventure-land-code-mmorpg/id1442098247?mt=12" target="_blank">&gt; Purchase on Mac App Store <span style='color: #85C76B'>[Live!]</span></a></div>
+				<div class="whiteheader mb4">Note: <span class='gray'>Check out the original at: <a href="http://adventure.land">http://adventure.land</a></span></div>
 				{% if domain.is_sdk %}
 					<div class="whiteheader mb4 clickable" onclick="$('#loginbuttons').hide(); $('#edusignup').show(); on_resize()">&gt; Signup <span style='color: #2FA6C8'>[Development Use]</span></div>
 				{% endif %}
