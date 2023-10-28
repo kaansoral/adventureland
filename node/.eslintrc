@@ -10,6 +10,7 @@
   "rules": {
     "no-constant-condition": "off",
     "no-dupe-else-if": "off",
+    "indent": "off",
     "no-empty": "warn",
     "no-inner-declarations": "warn",
     "no-unreachable": "warn",
@@ -17,7 +18,6 @@
     "no-unused-vars": "warn",
     "no-redeclare": "warn",
     "curly": "error",
-    "indent": ["error", 2],
     "prettier/prettier": "error",
     "one-var": ["error", "never"],
     "no-sequences": "error"
