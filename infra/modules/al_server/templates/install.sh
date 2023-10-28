@@ -25,8 +25,3 @@ git clone https://github.com/NexusNull/adventureland
 cd adventureland/node/
 npm install
 
-#Install DB
-cd $curdir
-mkdir storage
-cd storage
-wget https://raw.githubusercontent.com/kaansoral/adventureland-appserver/main/storage/db.rdbms
