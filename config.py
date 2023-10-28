@@ -98,8 +98,8 @@ always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
 game_name="Adventure Land"
 appengine_id="twodimensionalgame"
-live_domain=["www","adventure","land"]
-sdk_domain=["www","thegame","com"]
+live_domain=["al","nexusnull","com"]
+sdk_domain=["al","nexusnull","com"]
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def gdi(self=None):
