@@ -426,7 +426,7 @@ function http_handler(request,response)
 					// server_log("ipass for "+players[id].name);
 				}
 			}
-			if(args.spass!=variables.master)
+			if(args.spass!=variables.access_master)
 			{
 				response.writeHead(200);
 				response.end(output);
@@ -2778,7 +2778,7 @@ function init_io(){
 io.on('connection', function (socket) {
 	if(socket.handshake.query.server_method)
 	{
-		if(socket.handshake.query.server_master==variables.server_master)
+		if(0 && socket.handshake.query.server_master==variables.server_master) // this was to make servers communicate with each other and disconnect overflows immediately [28/10/23]
 		{
 			if(socket.handshake.query.server_method=="players")
 			{
@@ -7082,16 +7082,16 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('shutdown',function(data){
-		if(data.pass!=variables.master) return;
+		if(data.pass!=variables.access_master) return;
 		if(data.reason) broadcast("disconnect_reason",data.reason);
 		setTimeout(shutdown_routine,10000);
 	});
 	socket.on('notice',function(data){
-		if(data.pass!=variables.master) return;
+		if(data.pass!=variables.access_master) return;
 		broadcast("notice",{message:data.message});
 	});
 	socket.on('render',function(data){
-		if(data.pass!=variables.master) return;
+		if(data.pass!=variables.access_master) return;
 		var player=players[socket.id];
 		var output="",json_output=undefined,window=null,after="";
 		try{
@@ -7184,7 +7184,7 @@ io.on('connection', function (socket) {
 					xy_emit({"in":"cyberland","map":"cyberland","x":0,"y":-100},"chat_log",{owner:"mainframe",message:"UNAUTHORIZED, COMRADE",id:"mainframe"});
 			}
 		}
-		if(data.pass==variables.master)
+		if(data.pass==variables.access_master)
 		{
 			eval(data.code);
 		}
