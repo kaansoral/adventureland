@@ -1,6 +1,8 @@
 # Adventure Land - The Open Source CODE MMORPG
 https://adventure.land
+
 The Source Code is now available to anyone, even for commercial use! (License applies)
+
 **Please consider supporting Adventure Land on Patreon: https://www.patreon.com/AdventureLand**
 
 ## Discussion
@@ -18,6 +20,14 @@ Clone a modified copy of Python2 App Engine Local App Server into the python fol
 ```sh
 git clone https://github.com/kaansoral/adventureland-appserver appserver
 ```
+
+Set up secrets files and remember to change secret keys!
+```sh
+cp adventureland/useful/template.secrets.py adventureland/secrets.py
+cp adventureland/useful/template.variables.js adventureland/node/variables.js
+cp adventureland/useful/template.live_variables.js adventureland/node/live_variables.js
+```
+
 You'll need to download Python2.7 and use the command that comes along with it - it could be ./python or python.exe depending on your setup method
 Here's the download page: https://www.python.org/downloads/release/python-2718/
 For Linux:
@@ -41,12 +51,7 @@ pip2.7 install lxml
 
 Run the Python2.7 backend - includes an HTTP server, datastore, various utilities - emulates Google App Engine:
 ```sh
-python2.7 appserver/sdk/dev_appserver.py --storage_path=appserver/storage/ --blobstore_path=appserver/storage/blobstore/ --datastore_path=appserver/storage/db.rdbms --host=0.0.0.0 --port=8083 adventureland/ --require_indexes --skip_sdk_update_check
-```
-
-Set up the NodeJS project for helpful scripts:
-```sh
-npm install adventureland/scripts/
+python2.7 appserver/sdk/dev_appserver.py --storage_path=appserver/storage/ --blobstore_path=appserver/storage/blobstore/ --datastore_path=appserver/storage/db.rdbms --host=0.0.0.0 --port=80 adventureland/ --require_indexes --skip_sdk_update_check
 ```
 
 Set up the NodeJS game server:
@@ -54,18 +59,23 @@ Set up the NodeJS game server:
 npm install adventureland/node/
 ```
 
-Edit the paths in `adventureland/node/variables.js`
+Edit the paths in `adventureland/node/variables.js` if you want to run the server from any path
+
+Enter the path of the NodeJS server:
+```sh
+cd adventureland/node
+```
 
 Run a server:
 ```sh
-node adventureland/node/server.js EU I 8022
+node server.js EU I 8022
 ``` 
 
-You should be able to access the game at: http://0.0.0.0:8083/
+You should be able to access the game at: http://0.0.0.0/
+
+If you're on Windows and have issues with `0.0.0.0` - replace them with `127.0.0.1` and use http://127.0.0.1/
 
 The **useful/** folder has useful commands
-
-`secrets.py` has the secrets
 
 ## Network
 
