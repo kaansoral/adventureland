@@ -26,9 +26,6 @@ terraform {
     }
   }
   backend "http" {
-    address = var.state_address
-    username = var.state_username 
-    password = var.state_password 
   }
 }
 
