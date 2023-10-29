@@ -24,4 +24,3 @@ cd $curdir
 git clone https://github.com/NexusNull/adventureland
 cd adventureland/node/
 npm install
-
