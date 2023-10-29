@@ -279,7 +279,6 @@ class UnstuckPlayers(webapp.RequestHandler):
 					character.online=False
 					character.server=""
 					character.put()
-					send_email(gdi(),"kaansoral@gmail.com",html="Stuck for %s minutes"%m,title="UNSTUCK %s from %s"%(character.name,server.k()))
 
 	def post(self): self.get()
 
