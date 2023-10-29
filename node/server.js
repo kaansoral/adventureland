@@ -22,7 +22,7 @@ eval(""+fs.readFileSync(variables.cfunctions_path));
 eval(""+fs.readFileSync(variables.functions_path));
 eval(""+fs.readFileSync(variables.data_path));
 var base_url=variables.base_url,server_id="1",server_auth="123456",server_name="";
-var players={};
+var players=new Map();
 var dc_players={};
 var sockets={};
 var observers={};
@@ -128,7 +128,7 @@ var mode={
 	"low49_200xgoo":1,
 	"pve_safe_magiports":1,
 	"instant_monster_attacks":1, // #TODO: Consider dynamically sending target data instantly too
-	"drm_check":1,
+	"drm_check":0,
 	"all_roam":0,
 	"all_smart":1,
 	"prevent_external":0, // for "test" / "hardcore"
@@ -419,14 +419,16 @@ function http_handler(request,response)
 				console.log(req.info ? req.info.remoteAddress : null);
 				var ip=getClientIp(request),id=id_to_id[args.id];
 				// console.log(ip);
-				if(players[id] && players[id].ipass==args.ipass)
-				{
-					players[id].last_ip=ip;
-					players[id].last_ipass=new Date();
-					// server_log("ipass for "+players[id].name);
+				if(players.has(id)) {
+					let player = players.get(id);
+					if(player.ipass === args.ipass) {
+						player.last_ip = ip;
+						player.last_ipass = new Date();
+						// server_log("ipass for "+players.get(id).name);
+					}
 				}
 			}
-			if(args.spass!=variables.master)
+			if(args.spass!=variables.access_master)
 			{
 				response.writeHead(200);
 				response.end(output);
@@ -440,9 +442,9 @@ function http_handler(request,response)
 			{
 				var id=id_to_id[args.id];
 				server_log("cupdate for "+args.id+" socket.id: "+id);
-				if(players[id])
+				if(players.has(id))
 				{
-					var player=players[id];
+					var player=players.get(id);
 					player.cash=args.cash;
 					if(args.ncash && args.ncash!="0") player.socket.emit("game_log",{message:"Received "+args.ncash+" shells",color:colors.cash});
 					
@@ -454,9 +456,9 @@ function http_handler(request,response)
 			{
 				var id=id_to_id[args.id];
 				server_log("new_friend for "+args.id+" socket.id: "+id,1);
-				if(players[id])
+				if(players.has(id))
 				{
-					var player=players[id];
+					var player=players.get(id);
 					player.friends=parse_http_json(args.friends);
 					player.socket.emit("friend",{event:"new",name:args.name,friends:player.friends});
 					resend(player,"redata");
@@ -467,9 +469,9 @@ function http_handler(request,response)
 			{
 				var id=id_to_id[args.id];
 				server_log("lost_friend for "+args.id+" socket.id: "+id,1);
-				if(players[id])
+				if(players.has(id))
 				{
-					var player=players[id];
+					var player=players.get(id);
 					player.friends=parse_http_json(args.friends);
 					player.socket.emit("friend",{event:"lost",friends:player.friends}); // ,name:args.name
 					resend(player,"redata");
@@ -618,7 +620,12 @@ function party_to_client(oname)
 	var party={},output=0,length=0,newbies=0,odps={},c={},add=36000;
 	calculate_party(oname);
 	list.forEach(function(name){
-		var player=players[name_to_id[name]],dps_multiplier=1; if(!player) return;
+		var player_id = name_to_id[name];
+		if(!players.has(player_id)) {
+			return;
+		}
+		var player=players.get(player_id),
+			dps_multiplier=1;
 		if(player.type=="merchant") return;
 		if(player.type=="priest") dps_multiplier=1.36;
 		length+=1;
@@ -628,7 +635,12 @@ function party_to_client(oname)
 		c[player.owner]=(c[player.owner]||0)+1;
 	});
 	list.forEach(function(name){
-		var player=players[name_to_id[name]],dps_multiplier=1; if(!player) return;
+		var player_id = name_to_id[name];
+		if(!players.has(player_id)) {
+			return;
+		}
+		var player=players.get(player_id),
+			dps_multiplier=1;
 		if(player.type=="priest") dps_multiplier=1.36;
 		player.share=0;
 		if(!output) // to handle an all merchant party
@@ -656,9 +668,14 @@ function send_party_update(oname)
 {
 	var party=party_to_client(oname);
 	parties[oname].forEach(function(name){
-		var player=players[name_to_id[name]];
-		if(!player) { console.log("#X party player not found: "+oname); leave_party(oname,{name:name}); return; }
-		players[name_to_id[name]].socket.emit("party_update",{list:parties[oname],party:party});
+		var player_id = name_to_id[name];
+		if(!players.has(player_id)) {
+			console.log("#X party player not found: "+oname);
+			leave_party(oname,{name:name});
+			return;
+		}
+		var player=players.get(player_id);
+		player.socket.emit("party_update",{list:parties[oname],party:party});
 	});
 }
 
@@ -666,7 +683,11 @@ function calculate_party(oname)
 {
 	var list=parties[oname];
 	list.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player_id = name_to_id[name];
+		if(!players.has(player_id)) {
+			return;
+		}
+		var player = players.get(player_id);
 		if(player.type=="merchant") player.party_weight=0;
 		player.party_weight=20;
 	});
@@ -1309,92 +1330,65 @@ function drop_one_thing(player,items,args)
 	player.socket.emit("drop",{"x":drop.x,"y":drop.y,"items":drop.items.length,"chest":chest,"id":drop_id,map:drop.map,owners:[player.owner]})
 }
 
-function drop_something(player, monster, share = 1)
+function drop_something(player,monster,share)
 {
 	if(monster.pet || monster.trap) return;
 	achievement_logic_monster_kill(player,monster);
+	share=(share===undefined)&&1||(share||0);
 	// console.log("share: "+share);
-	var drop_id=randomStr(30),
-		drop,
-		chest="chest3",
-		hp_mult=1,
-		drop_norm=1000,
-		global_mult=monster.mult,
-		monster_mult=monster.mult; // originally: G.maps[player.map] && G.maps[player.map].drop_norm [31/01/18]
+	var drop_id=randomStr(30),drop,chest="chest3",hp_mult=1,drop_norm=1000,global_mult=monster.mult,monster_mult=monster.mult; // originally: G.maps[player.map] && G.maps[player.map].drop_norm [31/01/18]
 	var GOLD=D.monster_gold[monster.type];
 	if(B.use_pack_golds && monster.gold) GOLD=monster.gold;
 	if(drop_norm) hp_mult=monster.max_hp/drop_norm;
 
-	drop = chests[drop_id] = {
-		x: monster["global"] ? player.x : monster.x,
-		y: monster["global"] ? player.y : monster.y,
-		map: monster["global"] ? player.map : monster.map,
-		items: [],
-		cash:0
-	};
-	drop.gold = round(1 + GOLD * share * (D.drops.gold.base + D.drops.gold.random * Math.random())) * monster.level * monster.mult || 0; // previously 0.75
+	drop=chests[drop_id]={items:[],cash:0};
+	drop.gold=round(1+GOLD*D.drops.gold.base*share+Math.random()*GOLD*D.drops.gold.random*share)*monster.level*monster.mult||0; // previously 0.75
 	if(monster.extra_gold) drop.egold=(drop.egold||0)+max(0,monster.extra_gold);
 	if(monster.outgoing) drop.egold=(drop.egold||0)+min(monster.outgoing*B.m_outgoing_gmult,G.monsters[monster.type].hp*0.048*(gameplay=="hardcore"&&50||1));
 	if(drop.egold) drop.egold*=share;
 	if(monster.difficulty===0) drop.gold=drop.egold=0;
+	drop.x=monster.x;
+	drop.y=monster.y;
+	drop.map=monster.map;
+	if(monster["global"]) drop.x=player.x,drop.y=player.y,drop.map=player.map;
 	// if(player.level<50 && mode.low49_20xglobal) global_mult=20; - Commented out after SpadarFaar discovered/used it [16/04/19]
 	// console.log(global_mult);
 	if(monster["1hp"]) global_mult*=1000;
-	if(player.tskin != "konami") {
-		if(D.drops.maps.global_static && B.global_drops) {
-			D.drops.maps.global_static.forEach(function(item){
-				if(Math.random()/share/player.luckm/monster.luckx/global_mult<item[0] || mode.drop_all) {
-					drop_item_logic(drop,item,is_in_pvp(player,1));
-				}
-			});
-		}
-		if(D.drops.maps.global && B.global_drops) {
-			D.drops.maps.global.forEach(function(item){
-				if(Math.random()/share/player.luckm/monster.luckx/global_mult/hp_mult<item[0] || mode.drop_all) {
-					drop_item_logic(drop,item,is_in_pvp(player,1));
-				}
-			});
-		}
-		if(D.drops.maps[monster.map]) {
-			D.drops.maps[monster.map].forEach(function(item){
-				if(Math.random()/share/player.luckm/monster.luckx/hp_mult<item[0] || mode.drop_all) {
-					drop_item_logic(drop,item,is_in_pvp(player,1));
-				}
-			});
-		}
-		// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
-		if(D.drops.monsters[monster.type]) {
-			D.drops.monsters[monster.type].forEach(function(item){
-				if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) { // /hp_mult - removed [13/07/18]
-					drop_item_logic(drop,item,is_in_pvp(player,1));
-				}
-			});
-		}
-	} else {
-		D.drops.konami.forEach((item) => {
-			if(Math.random()/share/player.luckm/monster.level<item[0] || mode.drop_all) {
-				drop_item_logic(drop,item,is_in_pvp(player,1));
-			}
-		});
-	}
-	if(monster.drops) {
+	if(D.drops.maps.global_static && player.tskin!="konami" && B.global_drops) D.drops.maps.global_static.forEach(function(item){
+		if(Math.random()/share/player.luckm/monster.luckx/global_mult<item[0] || mode.drop_all)
+			drop_item_logic(drop,item,is_in_pvp(player,1));
+	});
+	if(D.drops.maps.global && player.tskin!="konami" && B.global_drops) D.drops.maps.global.forEach(function(item){
+		if(Math.random()/share/player.luckm/hp_mult/monster.luckx/global_mult<item[0] || mode.drop_all)
+			drop_item_logic(drop,item,is_in_pvp(player,1));
+	});
+	if(D.drops.maps[monster.map] && player.tskin!="konami") D.drops.maps[monster.map].forEach(function(item){
+		if(Math.random()/share/player.luckm/hp_mult/monster.luckx<item[0] || mode.drop_all)
+			drop_item_logic(drop,item,is_in_pvp(player,1));
+	});
+	// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
+	if(D.drops.monsters[monster.type] && player.tskin!="konami") D.drops.monsters[monster.type].forEach(function(item){
+		if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) // /hp_mult - removed [13/07/18]
+			drop_item_logic(drop,item,is_in_pvp(player,1));
+	});
+	if(monster.drops)
 		monster.drops.forEach(function(item){
-			if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) { // /hp_mult - removed [13/07/18]
+			if((!monster.temp || item[0]>0.00001) && Math.random()/share/player.luckm/monster.level/monster_mult<item[0] || mode.drop_all) // /hp_mult - removed [13/07/18]
 				drop_item_logic(drop,item,is_in_pvp(player,1));
-			}
 		});
-	}
+	if(player.tskin=="konami")	D.drops.konami.forEach(function(item){
+		if(Math.random()/share/player.luckm/monster.level<item[0] || mode.drop_all)
+			drop_item_logic(drop,item,is_in_pvp(player,1));
+	});
 	if(player.p.first && !player.p.first_drop)
 	{
 		player.p.first_drop=true;
 		drop.gold+=100000;
-		drop.items.push(
-			create_new_item("ringsj"),
-			create_new_item("ringsj"),
-			create_new_item("ringsj"),
-			create_new_item("hpbelt"),
-			create_new_item("gem0")
-		);
+		drop.items.push(create_new_item("ringsj"));
+		drop.items.push(create_new_item("ringsj"));
+		drop.items.push(create_new_item("ringsj"));
+		drop.items.push(create_new_item("hpbelt"));
+		drop.items.push(create_new_item("gem0"));
 	}
 	if(Math.random()<D.drops.gold.x10) drop.gold*=10,chest="chest4"; // previously 12
 	if(Math.random()<D.drops.gold.x50) drop.gold*=50,chest="chest5"; // previously 200
@@ -1404,7 +1398,7 @@ function drop_something(player, monster, share = 1)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
+			var current=players.get(name_to_id[name]);
 			if(current && !owners.includes(current.owner)) owners.push(current.owner)
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.items.length,"chest":chest,"id":drop_id,"party":player.party,"map":drop.map,owners:owners},{instance:player.in});
@@ -1450,8 +1444,13 @@ function drop_something_hardcore(player,target)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
-			if(current && !owners.includes(current.owner)) owners.push(current.owner)
+			var player_id = name_to_id[name];
+			if(players.has(player_id)) {
+				var current = players.get(player_id);
+				if(!owners.includes(current.owner)) {
+					owners.push(current.owner); // TODO: Convert to set?
+				}
+			}
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.pvp_items.length,"chest":"chest8","id":drop_id,"party":player.party,"map":target.map,owners:owners},{instance:player.in});
 	}
@@ -1495,7 +1494,7 @@ function drop_something_pvp(player,target)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
+			var current=players.get(name_to_id[name]);
 			if(current && !owners.includes(current.owner)) owners.push(current.owner)
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.pvp_items.length,"chest":"chest8","id":drop_id,"party":player.party,"map":target.map,owners:owners},{instance:player.in});
@@ -1530,9 +1529,8 @@ function calculate_monster_score(player,monster,share)
 	var divider=1;
 	if(!share) share=0;
 	if(monster.cooperative) divider=2;
-	for(var id in players)
+	for(var [id, current] of players)
 	{
-		var current=players[id];
 		if(current.id==player.id) continue;
 		if(current.owner==player.owner && current.type=="merchant" && simple_distance(current,player)<600) score-=0.2/divider;
 		if(current.party && current.party==player.party && current.type=="merchant" && simple_distance(current,player)<600) score-=0.1/divider;
@@ -1552,18 +1550,19 @@ function calculate_monster_score(player,monster,share)
 function issue_monster_awards(monster)
 {
 	var total=0.1;
-	for(var name in monster.points)
-	{
-		var current=players[name_to_id[name]];
-		if(current) //  && current.map==monster.map
-			total+=max(0,monster.points[name]);
+	for(var name in monster.points) {
+		var player_id = name_to_id[name];
+		if(players.has(player_id)) {
+			total += max(0,monster.points[name]);
+		}	
 	}
 	for(var name in monster.points)
 	{
-		var current=players[name_to_id[name]];
+		var player_id = name_to_id[name];
 		var share=max(0,monster.points[name])/total;
-		if(current && share>0.0025) //  && current.map==monster.map
+		if(players.has(player_id) && share>0.0025) //  && current.map==monster.map
 		{
+			var current=players.get(player_id);
 			if(monster.rbuff && G.conditions[monster.rbuff]) current.s[monster.rbuff]={ms:G.conditions[monster.rbuff].duration};
 			if(monster.cbuff) for(var i=0;i<monster.cbuff.length;i++) if(current.level<=monster.cbuff[i][0] && G.conditions[monster.cbuff[i][1]]) { current.s[monster.cbuff[i][1]]={ms:G.conditions[monster.cbuff[i][1]].duration}; break; }
 			if(G.monsters[monster.type]["1hp"]) drop_something(current,monster);
@@ -1584,8 +1583,11 @@ function issue_monster_awards(monster)
 function issue_monster_award(monster)
 {
 	if(monster.cooperative) return issue_monster_awards(monster);
-	var player=players[name_to_id[monster.target]];
-	if(!player) return;
+	var player_id = name_to_id[monster.target];
+	if(!players.has(player_id)) {
+		return;
+	}
+	var player=players.get(player_id)
 	// if(gameplay=="test" && player.level<80) player.level+=1;
 	stats.kills[monster.type]++;
 	drop_something(player,monster);
@@ -1610,7 +1612,8 @@ function issue_monster_award(monster)
 		// original: [1,1,0.8,0.7,0.65,0.5,0.4,0.3,0.3,0.3,0.3,0.3]
 		// xp=round(xp);
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]],cxp=round(xp*current.xpm*current.share);
+			var player_id = name_to_id[name];
+			var current=players.get(player_id),cxp=round(xp*current.xpm*current.share);
 			if(monster.rbuff && G.conditions[monster.rbuff]) current.s[monster.rbuff]={ms:G.conditions[monster.rbuff].duration};
 			var score=calculate_monster_score(current,monster);
 			current.p.stats.monsters[monster.type]=(current.p.stats.monsters[monster.type]||0)+1;
@@ -1775,7 +1778,7 @@ function issue_player_award(attacker,target)
 		}
 		// ,lost_shells=ceil(lost_shells/parties[attacker.party].length)
 		parties[attacker.party].forEach(function(a_name){
-			var attacker=players[name_to_id[a_name]];
+			var attacker=players.get(name_to_id[a_name]);
 			attacker.gold+=gain_gold;
 			if(attacker.type!="merchant") attacker.xp+=lost_xp;
 			attacker.socket.emit("game_log",{message:name+" pwned "+target.name,color:"#67C051"});
@@ -2588,13 +2591,15 @@ function defeat_player(player)
 	player.violations=(player.violations||0)+1;
 	if(player.s.block && player.s.block.f && !player.rip)
 	{
-		var attacker=players[name_to_id[player.s.block.f]];
-		if(attacker && attacker.name!=player.name)
-		{
-			issue_player_award(attacker,player);
-			instance_emit(attacker.in,"server_message",{message:attacker.name+" defeated "+player.name,color:"gray"});
-			if(player.map=="arena") xy_emit(npcs.pvp,"chat_log",{owner:npcs.pvp.name,message:attacker.name+" defeated "+player.name,id:"pvp"});
-			rip(player);
+		var attacker_id = name_to_id[player.s.block.f];
+		if(players.has(attacker_id)) {
+			var attacker = players.get(attacker_id);
+			if(attacker.name!=player.name) {
+				issue_player_award(attacker,player);
+				instance_emit(attacker.in,"server_message",{message:attacker.name+" defeated "+player.name,color:"gray"});
+				if(player.map=="arena") xy_emit(npcs.pvp,"chat_log",{owner:npcs.pvp.name,message:attacker.name+" defeated "+player.name,id:"pvp"});
+				rip(player);
+			}
 		}
 	}
 }
@@ -2783,7 +2788,7 @@ function is_socket_allowed(socket)
 	var loose=0;
 	for(var id in sockets)
 	{
-		if(!players[id] && get_ip(sockets[id])==get_ip(socket)) loose++;
+		if(!players.has(id) && get_ip(sockets[id])==get_ip(socket)) loose++;
 	}
 	if(loose>5) return false;
 	return true;
@@ -2793,7 +2798,7 @@ function disconnect_old_sockets(socket)
 {
 	for(var id in sockets)
 	{
-		if(id!=socket.id && !players[id] && get_ip(sockets[id])==get_ip(socket))
+		if(id!=socket.id && !players.has(id) && get_ip(sockets[id])==get_ip(socket))
 		{
 			sockets[id].emit("disconnect_reason","Too many loose connections from your network. Simply reload to play.");
 			if(sockets[id]) sockets[id].disconnect(); // emit can trigger a disconnect too, so this would throw an exception, bring down the server
@@ -2805,7 +2810,7 @@ function init_io(){
 io.on('connection', function (socket) {
 	if(socket.handshake.query.server_method)
 	{
-		if(socket.handshake.query.server_master==variables.server_master)
+		if(0 && socket.handshake.query.server_master==variables.server_master) // this was to make servers communicate with each other and disconnect overflows immediately [28/10/23]
 		{
 			if(socket.handshake.query.server_method=="players")
 			{
@@ -2834,9 +2839,9 @@ io.on('connection', function (socket) {
 				socket.total_calls++; add_call_cost(-1);
 				current_socket=socket;
 				call_modifier=({"open_chest":0.1,"skill":0.05,"target":0.5}[method])||1;
-				if(players[socket.id])
+				if(players.has(socket.id))
 				{
-					name=players[socket.id].name;
+					name=players.get(socket.id).name;
 					// if(players[socket.id].type=="merchant") climit=round(climit/3);
 					// Merchants are first class citizens now! [14/01/18]
 				}
@@ -2903,9 +2908,8 @@ io.on('connection', function (socket) {
 	socket.desktop=true;
 	if(socket.request && socket.request._query && socket.request._query.secret)
 	{
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
 			if(player.secret==socket.request._query.secret)
 			{
 				socket.player=player;
@@ -2925,7 +2929,7 @@ io.on('connection', function (socket) {
 	socket.emit('welcome',data);
 	socket.on('send_updates',function(){
 		if(observers[socket.id]) send_all_xy(observers[socket.id]);
-		if(players[socket.id]) send_all_xy(players[socket.id]);
+		if(players.has(socket.id)) send_all_xy(players.get(socket.id));
 	})
 	socket.on('loaded',function(data){
 		var observer=observers[socket.id]={
@@ -2961,16 +2965,16 @@ io.on('connection', function (socket) {
 		player.socket.emit('code_eval',data);
 	});
 	socket.on('cm',function(data){
-		var player=players[socket.id],receivers=[];
+		var player=players.get(socket.id),receivers=[];
 		if(!player || player.s.mute) return fail_response("muted");
 		data.to.forEach(function(name){
-			var p=players[name_to_id[name]];
+			var p=players.get(name_to_id[name]);
 			if(p) p.socket.emit("cm",{name:player.name,message:data.message||""}),receivers.push(name);
 		});
 		success_response("data",{locals:[],receivers:receivers});
 	});
 	socket.on('say',function(data){
-		var player=players[socket.id],message=strip_string(data.message).substr(0,1200); if(!player || player.s.mute) return fail_response("muted");
+		var player=players.get(socket.id),message=strip_string(data.message).substr(0,1200); if(!player || player.s.mute) return fail_response("muted");
 		if(data.code && player.last_say && ssince(player.last_say)<15) return fail_response("chat_slowdown");
 		if(player.last_say && mssince(player.last_say)<400) return fail_response("chat_slowdown");
 		if(!message || !message.length) return fail_response("invalid");
@@ -2987,7 +2991,7 @@ io.on('connection', function (socket) {
 			{
 				player.socket.emit("pm",{owner:player.name,to:data.name,message:message,id:player.id,xserver:true});
 				appengine_call("log_chat",{to:["",data.name],type:"xprivate",message:message,fro:player.name,author:player.owner},function(result){
-					if(result.failed && players[socket.id])
+					if(result.failed && players.get(socket.id))
 						player.socket.emit("pm",{owner:player.name,to:data.name,message:"(FAILED)",id:player.id,xserver:true});
 				});
 			}
@@ -3005,9 +3009,8 @@ io.on('connection', function (socket) {
 			{
 				broadcast("chat_log",{owner:player.name,message:message,id:player.id,p:true});
 				var owners={};
-				for(var id in players)
+				for(var [id, p] of players)
 				{
-					var p=players[id];
 					owners[p.owner]=owners[p.owner]||[];
 					owners[p.owner].push(p.name);
 				}
@@ -3026,7 +3029,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('ping_trig',function(data){ socket.emit("ping_ack",data); });
 	socket.on('target',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		reduce_call_cost();
 		player.target=data.id;
 		player.focus=data.xid;
@@ -3084,7 +3087,7 @@ io.on('connection', function (socket) {
 
 	});
 	socket.on('cx',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		// if(player.role!="gm") return socket.emit('game_log',"Cosmetics system is out of the test phase for now");
 		// console.log(data);
 		var cx=player.cx,cxl=all_cx(player);
@@ -3108,8 +3111,8 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('gm',function(data){
-		var player=players[socket.id]; if(!player || player.role!="gm") return;
-		var target=players[id_to_id[data.id]],action=data.action;
+		var player=players.get(socket.id); if(!player || player.role!="gm") return;
+		var target=players.get(id_to_id[data.id]),action=data.action;
 		if(action=="mute")
 		{
 			if(!target) return socket.emit("game_log","Player not found: "+data.id);
@@ -3178,22 +3181,22 @@ io.on('connection', function (socket) {
 		else if(action=="jump_list")
 		{
 			var ids=[];
-			for(var id in players)
-				ids.push(players[id].name);
+			for(var [id, p] of players)
+				ids.push(p.name);
 			socket.emit("gm",{action:"jump_list",ids:ids});
 		}
 		else if(action=="server_info")
 		{
 			var info=[];
-			for(var id in players)
+			for(var [id, p] of players)
 			{
-				info.push({name:players[id].name,owner:players[id].owner,ip:get_ip(players[id])});
+				info.push({name:p.name,owner:p.owner,ip:get_ip(p)});
 			}
 			//socket.emit("gm",{action:"server_info",info:info});
 		}
 	});
 	socket.on('monsterhunt',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(simple_distance(G.maps.main.ref.monsterhunter,player,true)>B.sell_dist) return fail_response("distance");
 		var hunted=[];
 		for(var id in server.s)
@@ -3246,7 +3249,7 @@ io.on('connection', function (socket) {
 		socket.emit('ccreport',{calls:socket.calls,climit:limits.calls,total:socket.total_calls});
 	});
 	socket.on('tracker',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(!player.tracker) return;
 		var data={monsters:player.p.stats.monsters,monsters_diff:player.p.stats.monsters_diff,exchanges:player.p.stats.exchanges,maps:D.drops.maps,tables:{},max:player.max_stats}; // ,computer:false
 		function register_table(table)
@@ -3299,7 +3302,7 @@ io.on('connection', function (socket) {
 		socket.emit('tracker',data)
 	});
 	socket.on('set_home',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(player.p.dt.last_homeset && hsince(player.p.dt.last_homeset)<36) return fail_response("sh_time",{hours:36-hsince(player.p.dt.last_homeset)});
 		player.p.dt.last_homeset=new Date();
 		player.p.home=region+server_name;
@@ -3307,13 +3310,13 @@ io.on('connection', function (socket) {
 		success_response("home_set",{home:player.p.home});
 	});
 	socket.on('code',function(data){
-		var player=players[socket.id]; if(!player) return;
-		if(data.run) players[socket.id].code=true;
-		else players[socket.id].code=false;
-		resend(players[socket.id],"u+cid");
+		var player=players.get(socket.id); if(!player) return;
+		if(data.run) players.get(socket.id).code=true;
+		else players.get(socket.id).code=false;
+		resend(players.get(socket.id),"u+cid");
 	});
 	socket.on('property',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(data.typing)
 		{
 			if(!player.s.typing || player.s.typing.ms<3000) reduce_call_cost();
@@ -3340,7 +3343,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('cruise',function(speed){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		player.cruise=parseInt(speed);
 		resend(player,"u+cid");
 		success_response("cruise",{speed:player.cruise});
@@ -3363,11 +3366,11 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('mail_take_item',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(mode.prevent_external) return socket.emit("game_response",{response:"not_in_this_server"});
 		if(!player.esize) return socket.emit("game_response","inv_size");
 		appengine_call("take_item_from_mail",{owner:player.owner,mid:data.id},function(result){
-			var player=players[socket.id];
+			var player=players.get(socket.id);
 			if(result.failed) return socket.emit("game_response",{response:"mail_item_already_taken"});
 			var item=JSON.parse(result.item);
 			add_item(player,item,{announce:false});
@@ -3378,7 +3381,7 @@ io.on('connection', function (socket) {
 		});
 	});
 	socket.on('mail',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(mode.prevent_external) return fail_response("not_in_this_server");
 		var item=null,retries=1;
 		if(player.gold<48000) return fail_response("gold_not_enough");
@@ -3394,7 +3397,7 @@ io.on('connection', function (socket) {
 			retries=3;
 		}
 		appengine_call("send_mail",{fro:player.name,to:data.to,subject:data.subject||"",message:data.message||"",rid:randomStr(50),retries:retries,item:item},function(result){
-			var player=players[socket.id];
+			var player=players.get(socket.id);
 			if(result.failed)
 			{
 				if(player) socket.emit("game_response",{response:"mail_failed",to:data.to,reason:result.reason,cevent:"mail_failed"});
@@ -3410,7 +3413,7 @@ io.on('connection', function (socket) {
 			}
 			if(player) socket.emit("game_response",{response:"mail_sent",to:data.to,cevent:"mail_sent"});
 		},function(){
-			var player=players[socket.id];
+			var player=players.get(socket.id);
 			if(player) socket.emit("game_response",{response:"mail_failed",reason:"coms_failure"});
 			if(item) console.log("#M unsent mail, lost item: "+item);
 		});
@@ -3418,7 +3421,7 @@ io.on('connection', function (socket) {
 		success_response("mail_sending",{sucess:false,in_progress:true,received:"unknown"});
 	});
 	socket.on('leave',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(!can_walk(player)) return fail_response("transport_failed");
 		if(0 && player.s.block || player.targets>5 || !(player.map=="jail" || player.map=="cyberland" || instances[player.in].solo))
 			return fail_response("cant_escape");
@@ -3426,7 +3429,7 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('transport',function(data){
-		var player=players[socket.id],can_reach=false; if(!player) return; // this was missing, probably caused a production exception - should be added everywhere [04/09/16]
+		var player=players.get(socket.id),can_reach=false; if(!player) return; // this was missing, probably caused a production exception - should be added everywhere [04/09/16]
 		if(!can_walk(player) || player.map=="jail") return fail_response("transport_failed");
 		var new_map=G.maps[data.to],s=data.s||0,the_door=null;
 		if(!new_map || !instances[data.to] || !instances[data.to].allow) return fail_response("cant_enter");
@@ -3485,7 +3488,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('enter',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(gameplay!="normal") return fail_response("transport_failed");
 		if(!can_walk(player) || player.map=="jail") return fail_response("transport_failed");
 		if(player.s.block || player.targets>5) return fail_response("cant_escape");
@@ -3600,7 +3603,7 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('town',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		// if(player.last.town && mssince(player.last.town)<1200) return; // bad ui experience [Unknown] - got reported and disabled [25/03/22] 
 		if(!can_walk(player) || player.map=="jail") return fail_response("transport_failed");
 		if(0 && player.s.block || player.targets>5) return fail_response("cant_escape");
@@ -3609,7 +3612,7 @@ io.on('connection', function (socket) {
 		success_response({success:false,in_progress:true})
 	});
 	socket.on('respawn',function(data){
-		var player=players[socket.id]; if(!player || !player.rip) return fail_response("invalid");
+		var player=players.get(socket.id); if(!player || !player.rip) return fail_response("invalid");
 		if(player.rip_time && ssince(player.rip_time)<B.rip_time) return fail_response("cant_respawn");
 
 		delete player.s.block;
@@ -3634,7 +3637,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('random_look',function(data){
 		return socket.emit("game_log","socket.emit('enter',{place:'cgallery'})");
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var bodies=[],heads=[],hairs=[],wings=[],hats=[];
 		if(player.rlooks==25 && !is_sdk && player.role!="gm") return;
 		if(player.role=="gm") reduce_call_cost(40);
@@ -3665,7 +3668,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('unlock',function(data){
 		return; // [27/06/18]
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(gameplay=="normal") return; // ? [27/06/18]
 		if(data.name=="code")
 		{
@@ -3692,7 +3695,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('dismantle',function(data){
-		var player=players[socket.id],check=true,items=[];
+		var player=players.get(socket.id),check=true,items=[];
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!player.computer && simple_distance(G.maps.main.ref.craftsman,player)>B.sell_dist) return fail_response("distance");
 		// if(player.esize<=0) return socket.emit("game_response","inventory_full");
@@ -3727,7 +3730,7 @@ io.on('connection', function (socket) {
 		success_response("dismantle",{name:item.name,cevent:true});
 	});
 	socket.on('craft',function(data){
-		var player=players[socket.id],check=true,items=[],quantity={},place={},space=false,p={},locked=false;
+		var player=players.get(socket.id),check=true,items=[],quantity={},place={},space=false,p={},locked=false;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		data.items.forEach(function(x){
 			if(!player.items[x[1]]) check=false;
@@ -3768,7 +3771,7 @@ io.on('connection', function (socket) {
 		success_response("craft",{num:i,name:name,cevent:true})
 	});
 	socket.on('exchange',function(data){
-		var player=players[socket.id],item=player.items[data.item_num],def=G.items[item&&item.name],suffix="";
+		var player=players.get(socket.id),item=player.items[data.item_num],def=G.items[item&&item.name],suffix="";
 		if(player.q.exchange) return fail_response("exchange_existing");
 		if(def && (def.compound||def.upgrade)) suffix=item.level||0;
 		if(!player || player.user) return fail_response("cant_in_bank");
@@ -3792,7 +3795,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('exchange_buy',function(data){
 		//console.log(JSON.stringify(data));
-		var player=players[socket.id],item=player.items[data.num],def=G.items[item&&item.name];
+		var player=players.get(socket.id),item=player.items[data.num],def=G.items[item&&item.name];
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!def || def.type!="token") return fail_response("invalid");
 		var npc=G.maps.main.ref[G.items[item.name].npc||(item.name+"s")],num=-1;
@@ -3826,7 +3829,7 @@ io.on('connection', function (socket) {
 		success_response({num:num,cevent:true});
 	});
 	socket.on('locksmith',function(data){
-		var player=players[socket.id],item=player.items[data.item_num],def=G.items[item&&item.name];
+		var player=players.get(socket.id),item=player.items[data.item_num],def=G.items[item&&item.name];
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!player.computer && simple_distance(G.maps.desertland.ref.locksmith,player)>B.sell_dist) return fail_response("distance");
 		var item=player.items[data.num];
@@ -3887,7 +3890,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('compound',function(data){
 		try{
-			var player=players[socket.id],item0=player.items[data.items[0]],item1=player.items[data.items[1]],item2=player.items[data.items[2]],scroll=player.items[data.scroll_num],result,ex="";
+			var player=players.get(socket.id),item0=player.items[data.items[0]],item1=player.items[data.items[1]],item2=player.items[data.items[2]],scroll=player.items[data.scroll_num],result,ex="";
 			if(!player || player.user) return fail_response("cant_in_bank");
 			G.maps.main.compound.name=player.name;
 			if(player.q.compound) return fail_response("compound_in_progress","compound","in_progress");
@@ -4022,7 +4025,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('upgrade',function(data){
 		try{
-			var player=players[socket.id],item=player.items[data.item_num],scroll=player.items[data.scroll_num],offering=player.items[data.offering_num],result,ex="";
+			var player=players.get(socket.id),item=player.items[data.item_num],scroll=player.items[data.scroll_num],offering=player.items[data.offering_num],result,ex="";
 			if(!player || player.user) return fail_response("cant_in_bank");
 			if(player.q.upgrade) return socket.emit("game_response","upgrade_in_progress");
 			G.maps.main.upgrade.name=player.name;
@@ -4242,7 +4245,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('equip',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		player.c={};
 		data.num=to_number(data.num);
 		if(data.num>=player.items.length) return fail_response("invalid");
@@ -4392,8 +4395,8 @@ io.on('connection', function (socket) {
 		success_response(resolve_type,resolve);
 	});
 	socket.on('misc_npc',function(data){
-		var player=players[socket.id]; if(!player) return;
-		var npc=players[data.npc]; if(!npc || !npc.npc) return;
+		var player=players.get(socket.id); if(!player) return;
+		var npc=players.get(data.npc); if(!npc || !npc.npc) return;
 		if(simple_distance(player,npc)>1000) return socket.emit("game_response","distance");
 		if(data.npc==NPC_prefix+"Marven" && npc.misc==true)
 		{
@@ -4401,7 +4404,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('unequip',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || !data.slot || !player.slots[data.slot]) return fail_response("invalid");
 		if(data.slot=="elixir") return fail_response("cant");
 		var item=player.slots[data.slot],done=false;
@@ -4415,19 +4418,19 @@ io.on('connection', function (socket) {
 		success_response("data");
 	});
 	socket.on('secondhands',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(simple_distance(G.maps.main.ref.secondhands,player)>500) return socket.emit("game_response","distance");
 		socket.emit('secondhands',csold);
 	});
 	socket.on('lostandfound',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(data=="info") return socket.emit("game_response",{response:"lostandfound_info",gold:S.gold});
 		if(!player.donation) return socket.emit("game_response","lostandfound_donate");
 		if(simple_distance(G.maps.woffice.ref.lostandfound,player)>500) return socket.emit("game_response","distance");
 		socket.emit('lostandfound',cfound);
 	})
 	socket.on('split',function(data){
-		var player=players[socket.id],num=data.num,item=player.items[data.num],quantity=min(max(parseInt(data.quantity)||0,1),item&&item.q||1);
+		var player=players.get(socket.id),num=data.num,item=player.items[data.num],quantity=min(max(parseInt(data.quantity)||0,1),item&&item.q||1);
 		if(!item) return fail_response("no_item");
 		if(!G.items[item.name].s) return fail_response("invalid");
 		quantity=min(quantity,G.items[item.name].s||1);
@@ -4453,7 +4456,7 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('sell',function(data){
-		var player=players[socket.id],num=data.num,item=player.items[data.num],quantity=min(max(parseInt(data.quantity)||0,1),item&&item.q||1),can_reach=false;
+		var player=players.get(socket.id),num=data.num,item=player.items[data.num],quantity=min(max(parseInt(data.quantity)||0,1),item&&item.q||1),can_reach=false;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!item) return fail_response("no_item");
 		if(item.name=="placeholder") return fail_response("item_placeholder");
@@ -4476,7 +4479,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('buy_shells',function(data){
 		return socket.emit("game_log","No longer possible");
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || player.user || gameplay=="hardcore" || gameplay=="test") return game_response("cant_in_bank");
 		var gold=parseInt(data.gold)||0;
 		if(gold<1000000 || gold>player.gold) return socket.emit("game_response","not_enough_gold");
@@ -4494,7 +4497,7 @@ io.on('connection', function (socket) {
 		resend(player,"reopen+nc");
 	});
 	socket.on('buy_with_cash',function(data){
-		var player=players[socket.id],name=data.name,def=G.items[data.name],quantity=min(max(parseInt(data.quantity)||0,1),def&&def.s||9999);
+		var player=players.get(socket.id),name=data.name,def=G.items[data.name],quantity=min(max(parseInt(data.quantity)||0,1),def&&def.s||9999);
 		if(!player || player.user || gameplay=="hardcore" || gameplay=="test") return fail_response("cant_in_bank");
 		var cost=def.cash*quantity;
 		if(!def.cash || def.ignore) return fail_response("invalid");
@@ -4514,7 +4517,7 @@ io.on('connection', function (socket) {
 		success_response({success:false,in_progress:true});
 	});
 	socket.on('sbuy',function(data){
-		var player=players[socket.id],done=false,npc=G.maps.main.ref.secondhands,c=S.sold,cc=csold,e="+$p",ev="secondhands",mult=2,src="scnd";
+		var player=players.get(socket.id),done=false,npc=G.maps.main.ref.secondhands,c=S.sold,cc=csold,e="+$p",ev="secondhands",mult=2,src="scnd";
 		if(data.f) npc=G.maps.woffice.ref.lostandfound,c=S.found,cc=cfound,e="+$f",ev="lostandfound",mult=4,src="lost";
 		if(!player || player.user) return game_response("cant_in_bank");
 		if(player.s.hopsickness && ev=="lostandfound") return fail_response("cant_when_sick",{goblin:true});
@@ -4543,7 +4546,7 @@ io.on('connection', function (socket) {
 		if(!done) return socket.emit("game_log","Item gone");
 	});
 	socket.on('buy',function(data){
-		var player=players[socket.id],can_reach=false;
+		var player=players.get(socket.id),can_reach=false;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		var name=data.name,quantity=min(max(parseInt(data.quantity)||0,1),G.items[name]&&G.items[name].s||9999),cost=0,added=false,done=false;
 		if(!can_buy[name] && gameplay!="test") return fail_response("buy_cant_npc");
@@ -4568,7 +4571,7 @@ io.on('connection', function (socket) {
 		success_response("buy_success",{cost:cost,num:num,name:name,q:quantity,cevent:"buy"});
 	});
 	socket.on('send',function(data){
-		var player=players[socket.id],receiver=players[name_to_id[data.name||""]],num,s_item;
+		var player=players.get(socket.id),receiver=players.get(name_to_id[data.name||""]),num,s_item;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!receiver || receiver.user) return fail_response("receiver_unavailable");
 		if((distance(receiver,player,true)>B.dist || receiver.map!=player.map)) return fail_response("distance");
@@ -4649,7 +4652,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('donate',function(data){
-		var player=players[socket.id],XPX=3.2;
+		var player=players.get(socket.id),XPX=3.2;
 		if(!player || player.user) return game_response("cant_in_bank");
 		var gold=max(1,min(parseInt(data.gold)||0,1000000000));
 		if(gold>player.gold) return socket.emit("game_response","gold_not_enough");
@@ -4667,7 +4670,7 @@ io.on('connection', function (socket) {
 		socket.emit("game_response",{response:"donate_"+response,gold:gold,xprate:XPX});
 	});
 	socket.on('destroy',function(data){
-		var player=players[socket.id],add="+nc+inv";
+		var player=players.get(socket.id),add="+nc+inv";
 		data.num=max(0,parseInt(data.num)||0);
 		if(!player.items[data.num]) return fail_response("no_item");
 		var item=player.items[data.num],name=player.items[data.num].name;
@@ -4700,7 +4703,7 @@ io.on('connection', function (socket) {
 		success_response("destroyed",{name:name,place:"destroy",cevent:"destroy"});
 	});
 	socket.on('join_giveaway',function(data){
-		var player=players[socket.id],seller=players[id_to_id[data.id]],num;
+		var player=players.get(socket.id),seller=players.get(id_to_id[data.id]),num;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!in_arr(data.slot,trade_slots)) return fail_response("invalid");
 		if(!seller || seller.npc || is_invis(seller)) return fail_response("seller_gone");
@@ -4727,7 +4730,7 @@ io.on('connection', function (socket) {
 		success_response({});
 	});
 	socket.on('trade_wishlist',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		data.q=min(9999,max(1,parseInt(data.q||1)||1));
 		if(!in_arr(data.slot,trade_slots) || !G.items[data.name] || data.name=="placeholder") return fail_response("invalid");
 		if(player.slots[data.slot] && !player.slots[data.slot].b) return fail_response("slot_occuppied");
@@ -4741,7 +4744,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('trade_sell',function(data){
 		// if(!is_sdk) return;
-		var player=players[socket.id],buyer=players[id_to_id[data.id]],num,actual=null,num=null;
+		var player=players.get(socket.id),buyer=players.get(id_to_id[data.id]),num,actual=null,num=null;
 		data.q=max(1,parseInt(data.q||1)||1);
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!in_arr(data.slot,trade_slots)) return fail_response("invalid");
@@ -4798,7 +4801,7 @@ io.on('connection', function (socket) {
 		success_response({});
 	});
 	socket.on('trade_buy',function(data){
-		var player=players[socket.id],seller=players[id_to_id[data.id]],num;
+		var player=players.get(socket.id),seller=players.get(id_to_id[data.id]),num;
 		data.q=max(1,parseInt(data.q||1)||1);
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!in_arr(data.slot,trade_slots)) return fail_response("invalid");
@@ -4843,12 +4846,12 @@ io.on('connection', function (socket) {
 		success_response({});
 	});
 	socket.on('trade_history',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		server_log("trade_history: "+player.name);
 		socket.emit('trade_history',player.p.trade_history||[]);
 	});
 	socket.on('merchant',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var initial=player.p.stand;
 		server_log("merchant: "+player.name);
 		if(data.close || player.p.stand)
@@ -4875,7 +4878,7 @@ io.on('connection', function (socket) {
 		success_response({});
 	});
 	socket.on('imove',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		data.a=max(0,parseInt(data.a)||0);
 		data.b=max(0,parseInt(data.b)||0);
 		if(data.a==data.b) return fail_response("invalid");
@@ -4901,7 +4904,7 @@ io.on('connection', function (socket) {
 		return success_response("data");
 	});
 	socket.on('bank',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(!player.user || player.mounting || player.unmounting) return fail_response("bank_unavailable");
 		var success={};
 		if(data.operation=="withdraw")
@@ -5028,7 +5031,7 @@ io.on('connection', function (socket) {
 		success_response(success);
 	});
 	socket.on('throw',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var item=player.items[data.num];
 		if(item)
 		{
@@ -5075,7 +5078,7 @@ io.on('connection', function (socket) {
 		else fail_response("no_item");
 	});
 	socket.on('poke',function(data){
-		var player=players[socket.id],level=1;
+		var player=players.get(socket.id),level=1;
 		if(!player || !player.slots.gloves || player.slots.gloves.name!="poker") return;
 		if(player.pokes>=50) return socket.emit("game_log","You are out of pokes!");
 		player.pokes=(player.pokes||0)+1;
@@ -5085,7 +5088,7 @@ io.on('connection', function (socket) {
 		xy_emit(player,"poke",{name:data.name,level:level,who:player.name});
 	});
 	socket.on('merge',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var container=player.slots[data.container];
 		var pet=player.slots[data.pet];
 		if(!container || container.type!="container" || !pet || pet.type!="container") return socket.emit("game_response","merge_mismatch");
@@ -5096,7 +5099,7 @@ io.on('connection', function (socket) {
 		resend(player,"reopen");
 	});
 	socket.on('activate',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		// console.log(JSON.stringify(data));
 		if(!player) return;
 		if(data.slot)
@@ -5192,7 +5195,9 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('booster',function(data){
-		var player=players[socket.id],item=player.items[data.num]; if(!player) return;
+		let player=players.get(socket.id);
+		if(!player) return;
+		let item=player.items[data.num];
 		server_log("booster "+data.num+" "+data.action);
 		if(!item || !in_arr(item.name,booster_items)) return fail_response("invalid");
 		if(data.action=="activate" && !item.expires)
@@ -5221,7 +5226,7 @@ io.on('connection', function (socket) {
 		// turns out 'buy_with_cash' didn't check whether an item has "ignore" or not
 		// so one could buy the stones for 1200 shells and sell them for 3600
 		// unlocking infinite gold and shells [17/01/18]
-		var player=players[socket.id],item=player.items[data.num],amount=3600;
+		var player=players.get(socket.id),item=player.items[data.num],amount=3600;
 		server_log("stone "+data.num+" "+data.action);
 		if(!item || !in_arr(item.name,["stoneofxp","stoneofgold","stoneofluck"])) return;
 		if(item.expires)
@@ -5234,7 +5239,7 @@ io.on('connection', function (socket) {
 		resend(player,"reopen+cid");
 	});
 	socket.on('emotion',function(data){
-		var player=players[socket.id]; if(!player) return;
+		let player=players.get(socket.id); if(!player) return;
 		if(!data.name) data.name=random_one(Object.keys(player.p.emx));
 		if(player.last.emotion && mssince(player.last.emotion)<2000)
 			return socket.emit("game_response","emotion_cooldown");
@@ -5244,7 +5249,7 @@ io.on('connection', function (socket) {
 		xy_emit(player,"emotion",{name:data.name,player:player.name});
 	});
 	socket.on('skill',function(data){
-		var player=players[socket.id]; if(!player) return;
+		let player=players.get(socket.id); if(!player) return;
 		var target=null,cool=true,resolve={response:"data",place:data.name,success:true},reject=null;
 		player.first=true; G.skills.attack.cooldown=player.attack_ms;
 		server_log("skill "+JSON.stringify(data));
@@ -5273,9 +5278,9 @@ io.on('connection', function (socket) {
 		{
 			if(""+parseInt(data.id)===""+data.id && G.skills[data.name].target=="player" || ""+parseInt(data.id)!==""+data.id && G.skills[data.name].target=="monster")
 				return fail_response("invalid_target",data.name,{id:data.id});
-			if(G.skills[data.name].target!="monster" && players[id_to_id[data.id]])
+			if(G.skills[data.name].target!="monster" && players.has(id_to_id[data.id]))
 			{
-				target=players[id_to_id[data.id]];
+				target=players.get(id_to_id[data.id]);
 				if(G.skills[data.name].hostile && target.name==player.name)
 					return socket.emit("game_response",{response:"no_target",place:data.name,failed:true});
 				
@@ -5637,7 +5642,7 @@ io.on('connection', function (socket) {
 			{
 				targets=[];
 				parties[player.party].forEach(function(name){
-					var current=players[name_to_id[name]];
+					var current=players.get(name_to_id[name]);
 					targets.push(current);
 				});
 			}
@@ -6094,7 +6099,7 @@ io.on('connection', function (socket) {
 		return socket.fs.skill({name:'heal',id:data.id});
 	});
 	socket.on('interaction',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(data.type=="newyear_tree")
 		{
 			var x="";
@@ -6149,7 +6154,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('mreport',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var a=0,b=0;
 		a=parseFloat(data.x)||0;
 		b=parseFloat(data.y)||0;
@@ -6158,7 +6163,7 @@ io.on('connection', function (socket) {
 	})
 	socket.on('move',function(data){
 		// if(observers[socket.id]) observers[socket.id].x=data.x,observers[socket.id].y=data.y; Old observer code [17/02/17]
-		var player=players[socket.id],current=-1,going=-1,actual=true;
+		var player=players.get(socket.id),current=-1,going=-1,actual=true;
 		var x=parseFloat(data.going_x)||0,y=parseFloat(data.going_y)||0;
 		if(data.pet) player=player.monster,actual=false;
 		if(data.key && (!player.konami || player.konami.length<20))
@@ -6216,7 +6221,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('open_chest',function(data){
-		var chest=chests[data.id],player=players[socket.id],reopen=false; if(!player) return;
+		var chest=chests[data.id],player=players.get(socket.id),reopen=false; if(!player) return;
 		var r={id:data.id,goldm:player.goldm,opener:player.name,items:[]};
 		if(chest && simple_distance(chest,player)>400) r.goldm=1,r.dry=true;
 		if(chest && msince(chest.date)>8) r.goldm=1,r.stale=true;
@@ -6280,13 +6285,13 @@ io.on('connection', function (socket) {
 						// console.log(item);
 					var pool=0,can={};
 					parties[player.party].forEach(function(name){
-						var current=players[name_to_id[name]];
+						var current=players.get(name_to_id[name]);
 						if(current && can_add_item(current,item)) pool+=current.share,can[name]=true;
 					});
 					var pool_winner=Math.random()*pool,pool_current=0,awarded=false;
 					parties[player.party].forEach(function(name){
 						if(awarded) return;
-						var current=players[name_to_id[name]];
+						var current=players.get(name_to_id[name]);
 						if(current && can[name])
 						{
 							if(pool_winner<=pool_current+current.share)
@@ -6311,13 +6316,13 @@ io.on('connection', function (socket) {
 					item.v=new Date();
 					var pool=0,can={};
 					parties[player.party].forEach(function(name){
-						var current=players[name_to_id[name]];
+						var current=players.get(name_to_id[name]);
 						if(current && current.share && can_add_item(current,item)) pool+=current.share,can[name]=true;
 					});
 					var pool_winner=Math.random()*pool,pool_current=0,awarded=false;
 					parties[player.party].forEach(function(name){
 						if(awarded) return;
-						var current=players[name_to_id[name]];
+						var current=players.get(name_to_id[name]);
 						if(current && can[name])
 						{
 							if(pool_winner<=pool_current+current.share)
@@ -6338,7 +6343,7 @@ io.on('connection', function (socket) {
 					}
 				});
 				parties[player.party].forEach(function(name){
-					var current=players[name_to_id[name]],cgold=round(chest.gold*(current.share||0)*r.goldm)+round((chest.egold||0)*(current.share||0));
+					var current=players.get(name_to_id[name]),cgold=round(chest.gold*(current.share||0)*r.goldm)+round((chest.egold||0)*(current.share||0));
 					r.gold=cgold=server_tax(cgold);
 					current.gold+=cgold;
 					if(current.t) current.t.cgold+=cgold;
@@ -6364,8 +6369,8 @@ io.on('connection', function (socket) {
 		if(gameplay=="test" && data.passphrase!="potato salad") return socket.emit("game_log","Wrong passphrase!");
 		if(observers[socket.id] && observers[socket.id].auth_engaged) return socket.emit("game_log","Authorization in progress.");
 		if(dc_players[data.character]) return socket.emit("game_log","Authorization in progress.");
-		if(!server.live || !observers[socket.id] || players[socket.id]) return;
-		if(Object.keys(players).length>=max_players)
+		if(!server.live || !observers[socket.id] || players.get(socket.id)) return;
+		if(players.size()>=max_players)
 		{
 			socket.emit("game_error","Can't accept more than "+max_players+" players at this time");
 			return;
@@ -6436,8 +6441,8 @@ io.on('connection', function (socket) {
 			// player.vision[1]=min(700,player.vision[1]);
 			player.vision=B.vision;
 
-			if(!player.verified) player.s.notverified={ms:30*60*1000};
-			else if(player.s.notverified) player.s.notverified={ms:100};
+			//if(!player.verified) player.s.notverified={ms:30*60*1000};
+			//else if(player.s.notverified) player.s.notverified={ms:100};
 
 			if(player.guild)
 			{
@@ -6457,7 +6462,7 @@ io.on('connection', function (socket) {
 			}
 			try{delete_observer(socket)}catch(e){}
 
-			players[socket.id]=player;
+			players.set(socket.id, player);
 			resume_instance(instances[player.in]);
 			instances[player.in].players[player.id]=player; pmap_add(player);
 			
@@ -6529,7 +6534,7 @@ io.on('connection', function (socket) {
 		})
 	});
 	socket.on('use',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(data.item=="hp" || data.item=="mp")
 		{
 			if(player.last.potion && mssince(player.last.potion)<0) return fail_response("not_ready");
@@ -6545,12 +6550,12 @@ io.on('connection', function (socket) {
 		success_response({})
 	});
 	socket.on('friend',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player) return;
 		server_log("friend: "+JSON.stringify(data));
 		if(data.event=="request")
 		{
-			var friend=players[name_to_id[data.name||""]];
+			var friend=players.get(name_to_id[data.name||""]);
 			if(!friend) return fail_response("friend_rleft");
 			if(in_arr(friend.owner,player.friends) || friend.owner==player.owner) return success_response("friend_already");
 			requests[player.name+"-"+friend.name]={"a":player.owner,"b":friend.owner};
@@ -6561,43 +6566,36 @@ io.on('connection', function (socket) {
 		{
 			if(!requests[data.name+"-"+player.name]) return fail_response("friend_expired");
 			appengine_call("set_friends",{user1:requests[data.name+"-"+player.name].a,user2:requests[data.name+"-"+player.name].b},function(result){
-				var player=players[socket.id];
 				if(result.failed)
 				{
-					if(player) socket.emit("game_response",{response:"friend_failed",reason:result.reason});
+					if(players.has(socket.id)) socket.emit("game_response",{response:"friend_failed",reason:result.reason});
 					return;
 				}
-				//var friend=players[name_to_id[data.name||""]];
-				//if(player)
-				//if(friend) friend.emit("friend",{event:"accepted",name:player.name});
 			},function(){
-				var player=players[socket.id];
-				if(player) socket.emit("game_response",{response:"friend_failed",reason:"coms failure"});
+				if(players.has(socket.id)) socket.emit("game_response",{response:"friend_failed",reason:"coms failure"});
 			});
 			requests[data.name+"-"+player.name]=false;
 		}
 		if(data.event=="unfriend")
 		{
 			appengine_call("not_friends",{user1:player.owner,user2:data.name},function(result){
-				var player=players[socket.id];
 				if(result.failed)
 				{
-					if(player) socket.emit("game_response",{response:"unfriend_failed",reason:result.reason});
+					if(players.has(socket.id)) socket.emit("game_response",{response:"unfriend_failed",reason:result.reason});
 					return;
 				}
 			},function(){
-				var player=players[socket.id];
-				if(player) socket.emit("game_response",{response:"unfriend_failed",reason:"coms failure"});
+				if(players.has(socket.id)) socket.emit("game_response",{response:"unfriend_failed",reason:"coms failure"});
 			});
 		}
 		success_response({success:false,in_progress:true});
 	});
 	socket.on('duel',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player) return;
 		if(data.event=="challenge")
 		{
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players.get(name_to_id[data.id||data.name]);
 			if(!invited || invited.id==player.id) return socket.emit("game_log","Invalid");
 			if(invited.duel || player.duel) return socket.emit("game_log","Already dueling");
 			invited.socket.emit("duel",{event:"chellenge",name:player.name});
@@ -6607,7 +6605,7 @@ io.on('connection', function (socket) {
 		}
 		else if(data.event=="accept")
 		{
-			var challenger=players[name_to_id[data.id||data.name]];
+			var challenger=players.get(name_to_id[data.id||data.name]);
 			if(!challenger || challenges[challenger.name]!=player.name) return socket.emit("game_log","Challenge expired");
 			if(challenger.duel || player.duel) return socket.emit("game_log","Already dueling");
 			if(is_in_pvp(challenger) || is_in_pvp(player)) return socket.emit("game_log","Can't start a duel if any of the parties are already in a pvp zone");
@@ -6651,12 +6649,12 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('party',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(data.event=="invite")
 		{
 			// if(player.party && player.party!=player.name) { socket.emit("game_log","Only the party leader can send invites"); return; }
 			if(player.party && (parties[player.party].length>=limits.party_max || player.party_length>=limits.party)) return fail_response("party_full");
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players.get(name_to_id[data.id||data.name]);
 			if(!invited || invited.id==player.id) return fail_response("invalid");
 			if(player.party && player.party==invited.party) return success_response("already_in_party");
 			// if(invited.party) { socket.emit("game_log",invited.name+" is already partying"); return; }
@@ -6668,7 +6666,7 @@ io.on('connection', function (socket) {
 		if(data.event=="request")
 		{
 			// if(player.party) { return; }
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players.get(name_to_id[data.id||data.name]);
 			if(!invited || invited.id==player.id) return fail_response("invalid");
 			if(player.party && player.party==invited.party) return success_response("already_in_party");
 			// if(!invited.party) { socket.emit("game_log",invited.name+" isn't partying"); return; }
@@ -6679,7 +6677,7 @@ io.on('connection', function (socket) {
 		}
 		if(data.event=="accept")
 		{
-			var inviter=players[name_to_id[data.name]];
+			var inviter=players.get(name_to_id[data.name]);
 			// if(player.party) { socket.emit("party_update",{list:parties[player.party],party:party_to_client(player.party)}); socket.emit("game_log","Already partying"); return; }
 			// if(!inviter || (inviter.party && inviter.party!=inviter.name)) { socket.emit("game_log","Party was disbanded"); return; }
 			if(!inviter) return fail_response("player_gone",{name:data.name})
@@ -6699,7 +6697,7 @@ io.on('connection', function (socket) {
 				parties[inviter.name]=[inviter.name];
 				resend(inviter,"nc+u+cid");
 				delete requests[inviter.name];
-				if(!players[name_to_id[data.name]]) return fail_response("player_gone",{name:data.name}); // these repetitions are all because socket.emit's can cause in-line disconnects and disband parties right after creation [07/08/20]
+				if(!players.has(name_to_id[data.name])) return fail_response("player_gone",{name:data.name}); // these repetitions are all because socket.emit's can cause in-line disconnects and disband parties right after creation [07/08/20]
 			}
 			player.party=inviter.party;
 			parties[inviter.party].push(player.name);
@@ -6710,7 +6708,7 @@ io.on('connection', function (socket) {
 		}
 		if(data.event=="raccept")
 		{
-			var requester=players[name_to_id[data.name]];
+			var requester=players.get(name_to_id[data.name]);
 			if(!requester) return fail_response("player_gone",{name:data.name});
 			// if(requester.party) { socket.emit("game_log","Already partying"); return; }
 			if(player.party && (parties[player.party].length>=limits.party_max || player.party_length>=limits.party)) return fail_response("party_full");
@@ -6721,7 +6719,7 @@ io.on('connection', function (socket) {
 				leave_party(requester.party,requester);
 				requester.socket.emit("party_update",{});
 				requester.socket.emit("game_log","Left the party");
-				if(!players[name_to_id[data.name]]) return fail_response("player_gone",{name:data.name});
+				if(!players.has(name_to_id[data.name])) return fail_response("player_gone",{name:data.name});
 			}
 			requests[requester.name][player.id]=0;
 			if(!player.party)
@@ -6752,7 +6750,7 @@ io.on('connection', function (socket) {
 			// if(player.party && player.party!=player.name) { socket.emit("game_log","Only the party leader can kick someone"); return; }
 			if(!in_arr(data.name,parties[player.party])) { socket.emit("party_update",{list:parties[player.party],party:party_to_client(player.party)}); return success_response({}); }
 			if(parties[player.party].indexOf(player.name)>parties[player.party].indexOf(data.name)) return fail_response("cant_kick");
-			var kicked=players[name_to_id[data.name]];
+			var kicked=players.get(name_to_id[data.name]);
 			if(!kicked) return fail_response("player_gone");
 			leave_party(player.party,kicked);
 			if(player.party) party_emit(player.party,"game_log",player.name+" kicked "+kicked.name);
@@ -6763,7 +6761,7 @@ io.on('connection', function (socket) {
 		success_response({});
 	});
 	socket.on('magiport',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(magiportations[data.name] && magiportations[data.name][player.name] && get_player(data.name))
 		{
 			delete magiportations[data.name][player.name];
@@ -6778,7 +6776,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('trade',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player) return;
 		if(data.event=="show" && player.p.trades!=1)
 		{
@@ -6794,13 +6792,13 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('signup',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(!signups[player.name]) disappearing_text(false_socket,npcs.bean,"+1",{color:"#4D9A59",xy:1});
 		signups[player.name]=true;
 		socket.emit("game_response",{response:"signed_up"});
 	});
 	socket.on('join',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(player.type=="merchant") return fail_response("no_merchants");
 		if(player.s.hopsickness) return fail_response("cant_when_sick");
 		if(player.user) return fail_response("cant_in_bank");
@@ -6847,7 +6845,7 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('stop',function(data){
-		var player=players[socket.id],change=false;
+		var player=players.get(socket.id),change=false;
 		if(!player) return;
 		if(!data || !data.action)
 		{
@@ -6874,7 +6872,7 @@ io.on('connection', function (socket) {
 		success_response();
 	});
 	socket.on('tarot',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		var npc=G.maps[player.map].ref.twitch;
 		if(!npc || simple_distance(npc,player)>500) return socket.emit("game_response","distance");
 		for(var name in player.s) if(name.startsWith("tarot")) return socket.emit("game_response","tarot_exists");
@@ -6882,7 +6880,7 @@ io.on('connection', function (socket) {
 	});
 	socket.on('bet',function(data){
 		if(!instances.tavern) return;
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || player.user || player.map!="tavern" && !is_sdk) return;
 		if(player.s.xshotted) return socket.emit("game_response","bet_xshot");
 		if(data.type=="roulette")
@@ -6953,7 +6951,7 @@ io.on('connection', function (socket) {
 		
 	});
 	socket.on('pet',function(data){
-		var player=players[socket.id]; if(!player) return;
+		var player=players.get(socket.id); if(!player) return;
 		if(!player.monster) player.monster=new_monster(player.in,{type:player.pet,stype:"pet",x:player.x,y:player.y,owner:player.name,name:"Skimpy"});
 	})
 	socket.on('whistle',function(data){
@@ -6976,11 +6974,11 @@ io.on('connection', function (socket) {
 		socket.emit("pvp_list",{code:data && data.code,list:plist})
 	});
 	socket.on('players',function(data){
-		var player=players[socket.id],sdata=[];
+		var player=players.get(socket.id),sdata=[];
 		if(!player) return; // || is_pvp
-		for(var id in players)
+		for(var [id, current] of players)
 		{
-			var current=players[id],mapn=current.map;
+			var mapn=current.map;
 			current.age=parseInt(ceil(hsince(new Date(current.created))/24.0));
 			if(is_pvp)
 			{
@@ -6992,7 +6990,7 @@ io.on('connection', function (socket) {
 		socket.emit("players",sdata);
 	});
 	socket.on('pets',function(data){
-		var player=players[socket.id],sdata=[];
+		var player=players.get(socket.id),sdata=[];
 		if(!player) return; // || is_pvp
 		for(var id in player.p.pets||{})
 		{
@@ -7001,7 +6999,7 @@ io.on('connection', function (socket) {
 		socket.emit("players",sdata);
 	});
 	socket.on('harakiri',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || player.rip) return;
 		defeat_player(player);
 		if(!player.rip) rip(player);
@@ -7010,14 +7008,14 @@ io.on('connection', function (socket) {
 	});
 	socket.on('deepsea',function(data){
 		return;
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || player.rip || player.tskin=="deepsea") return;
 		player.tskin="deepsea";
 		disappearing_text(player.socket,player,"ROARRRRRRR",{xy:1,size:"huge",color:"#60A975"});
 		resend(player,"u+cid");
 	});
 	socket.on('blend',function(data){
-		var player=players[socket.id],min=99999,x=null;
+		var player=players.get(socket.id),min=99999,x=null;
 		if(!player || player.rip) return;
 		for(var id in instances[player.in].monsters||{})
 		{
@@ -7031,7 +7029,7 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('legacify',function(data){
-		var player=players[socket.id];
+		var player=players.get(socket.id);
 		if(!player || player.rip) return;
 		for(var i=0;i<42;i++)
 		{
@@ -7047,7 +7045,7 @@ io.on('connection', function (socket) {
 	socket.on('disconnect',function(){
 		//#IMPORTANT: disconnect exceptions are fatal [07/08/16]
 		// console.log("disconnect!");
-		var player=players[socket.id],observer=observers[socket.id];
+		var player=players.get(socket.id),observer=observers[socket.id];
 		try{
 			delete sockets[socket.id];
 		}catch(e){};
@@ -7078,7 +7076,7 @@ io.on('connection', function (socket) {
 			}catch(e){log_trace("#X DCERRORPETS",e);}
 			
 			try{
-				delete players[socket.id];
+				players.delete(socket.id);
 				delete instances[player.in].players[player.id];
 				if(instances[player.in].solo==player.id) destroy_instance(player.in);
 				pmap_remove(player);
@@ -7109,17 +7107,17 @@ io.on('connection', function (socket) {
 		}
 	});
 	socket.on('shutdown',function(data){
-		if(data.pass!=variables.master) return;
+		if(data.pass!=variables.access_master) return;
 		if(data.reason) broadcast("disconnect_reason",data.reason);
 		setTimeout(shutdown_routine,10000);
 	});
 	socket.on('notice',function(data){
-		if(data.pass!=variables.master) return;
+		if(data.pass!=variables.access_master) return;
 		broadcast("notice",{message:data.message});
 	});
 	socket.on('render',function(data){
-		if(data.pass!=variables.master) return;
-		var player=players[socket.id];
+		if(data.pass!=variables.access_master) return;
+		var player=players.get(socket.id);
 		var output="",json_output=undefined,window=null,after="";
 		try{
 			eval(data.code);
@@ -7139,7 +7137,7 @@ io.on('connection', function (socket) {
 	socket.on('eval',function(data){
 		if(data.command)
 		{
-			var player=players[socket.id]; if(!player) return;
+			var player=players.get(socket.id); if(!player) return;
 			if(player.map!="cyberland" || player.rip) return player.socket.emit("game_log","Not connected to the mainframe");
 			if(data.command=="hello")
 			{
@@ -7211,7 +7209,7 @@ io.on('connection', function (socket) {
 					xy_emit({"in":"cyberland","map":"cyberland","x":0,"y":-100},"chat_log",{owner:"mainframe",message:"UNAUTHORIZED, COMRADE",id:"mainframe"});
 			}
 		}
-		if(data.pass==variables.master)
+		if(data.pass==variables.access_master)
 		{
 			eval(data.code);
 		}
@@ -7275,7 +7273,7 @@ function remove_monster(target,args)
 	var luckm=undefined;
 	if(target.target)
 	{
-		var player=players[name_to_id[target.target]];
+		var player=players.get(name_to_id[target.target]);
 		if(player)
 		{
 			luckm=player.luckm;
@@ -7542,7 +7540,7 @@ function step_out_of_invis(player)
 
 function reduce_targets(player,monster)
 {
-	if(is_string(player)) player=players[name_to_id[player]];
+	if(is_string(player)) player=players.get(name_to_id[player]);
 	if(!player) return;
 	player.targets--;
 	if(player.targets<0) player.targets=0;
@@ -7598,7 +7596,7 @@ function stop_pursuit(monster,args)
 	if(!args) args={};
 	if(monster.target)
 	{
-		var target=players[name_to_id[monster.target]];
+		var target=players.get(name_to_id[monster.target]);
 		if(!args.redirect && !args.force && !args.stop && target && !is_invis(target) && !target.rip && monster.a.portal && port_monster(monster,target)) return; 
 		monster.target=null;
 		if(monster.master && target && !args.redirect)
@@ -7996,7 +7994,7 @@ function update_instance(instance)
 		}
 		function attack_target_or_move()
 		{
-			var player=players[name_to_id[monster.target]];
+			var player=players.get(name_to_id[monster.target]);
 			if(player && ssince(monster.last.attacked)>20 && Math.random()>monster.rage*0.99)
 			{
 				stop_pursuit(monster,{force:true,cause:"bored"});
@@ -8607,7 +8605,7 @@ function update_instance(instance)
 		if(trap.type=="spikes")
 			for(var id in pmap_get({x:trap.position[0],y:trap.position[1],in:instance.name}))
 			{
-				var player=players[id_to_id[id]];
+				var player=players.get(id_to_id[id]);
 				if(player && !player.npc)
 				{
 					disappearing_text(player.socket,player,"-50",{color:"red",xy:1});
@@ -8638,9 +8636,9 @@ function count_unique_users()
 {
 	unique_players=0;
 	var marked={};
-	for(var id in players)
+	for(var [id, p] of players)
 	{
-		var ip=get_ip(players[id]);
+		var ip=get_ip(p);
 		if(!marked[ip]) {marked[ip]=1; unique_players++;}
 	}
 	if(is_sdk) unique_players=9;
@@ -8649,7 +8647,7 @@ function count_unique_users()
 		var instance=instances[name];
 		if(!instance.pvp) continue;
 		var initial=instance.allow,npc=npcs.pvp;
-		if(is_sdk && Object.keys(players).length>=2 || unique_players>=B.arena_limit || Object.keys(instance.players).length) // direction logic at game.js/update_sprite
+		if(is_sdk && players.size()>=2 || unique_players>=B.arena_limit || Object.keys(instance.players).length) // direction logic at game.js/update_sprite
 		{
 			if(instance.allow) continue;
 			instance.allow=true;
@@ -8861,9 +8859,8 @@ function aura_loop()
 {
 	try{
 		lrid++;
-		for(var id in players)
+		for(var [id, player] in players)
 		{
-			var player=players[id];
 			if(!player || !player.aura || (player.rid%5)!=(lrid%5)) continue;
 			for(var aid in player.aura)
 			{
@@ -8913,9 +8910,9 @@ setInterval(function(){
 		if(is_pvp) return;
 		var names=[],player;
 		total_merchants=0;
-		for(var id in players)
+		for(var [id, _] of players)
 		{
-			player=players[id];
+			player=players.get(id);
 			if(!player.npc && player.last.attack && player.map==player.in && ssince(player.last.attack)<3 && !G.maps[player.map].pvp)
 			{
 				names.push(player.name);
@@ -8942,9 +8939,8 @@ setInterval(function(){
 
 setTimeout(function(){
 	setInterval(function(){
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
 			if(player.type=="merchant" && player.p.stand)
 			{
 				var xp=1000;
@@ -8965,13 +8961,13 @@ setTimeout(function(){
 setInterval(function(){
 	try{
 		var edge=future_s(-120);
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			if(0 && players[id].last_ipass<edge)
+			if(0 && player.last_ipass<edge)
 			{
-				players[id].ban="ipass";
-				players[id].socket.emit("disconnect_reason","Failed to check in. Your network might be too slow.");
-				players[id].socket.disconnect();
+				player.ban="ipass";
+				player.socket.emit("disconnect_reason","Failed to check in. Your network might be too slow.");
+				player.socket.disconnect();
 			}
 		}
 	}catch(e){log_trace("#X ipass loop error",e);};
@@ -9003,10 +8999,9 @@ setInterval(function(){
 
 setInterval(function(){
 	try{
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
-			players[id].pdps*=0.8;
+			player.pdps*=0.8;
 			player.p.minutes++;
 			trade_slots.forEach(function(slot){
 				if(player.slots[slot] && player.slots[slot].giveaway)
@@ -9076,9 +9071,8 @@ setInterval(function(){
 
 setInterval(function(){
 	try{
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
 			player.xrange=min(25,player.xrange+5);
 		}
 	}catch(e){log_trace("#X xrange loop error",e);};
@@ -9087,9 +9081,8 @@ setInterval(function(){
 setInterval(function(){
 	try{
 		var c=new Date();
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
 			if(player.auth_id && player.p.first===undefined && !player.first_u_call)
 			{
 				function first_call(player)
@@ -9176,9 +9169,8 @@ setInterval(function(){
 
 setInterval(function(){
 	try{
-		for(var id in players)
+		for(var [id, player] of players)
 		{
-			var player=players[id];
 			if(Math.random()<1.0/(6*15)) // once every 15 hours
 			{
 				var slots=[];
@@ -9270,8 +9262,7 @@ function sync_loop()
 			}
 			player.user=result.user;
 			init_bank(player);
-			if(players[player.socket.id])
-			{
+			if(players.has(player.socket.id)) {
 				transport_player_to(player,player.mount_to,player.mount_s);
 				resend(player);
 			}
@@ -9292,16 +9283,16 @@ function sync_loop()
 			if(result.failed) { server_log("unmount_user[failed]: "+player.name+" owner: "+player.owner,1); return; }
 			delete player.unmounting;
 			player.user=null; player.cuser=null;
-			if(players[player.socket.id] && player.unmount_to)
+			if(players.has(player.socket.id) && player.unmount_to)
 			{
 				transport_player_to(player,player.unmount_to,player.unmount_s);
 			}
-			if(players[player.socket.id]) resend(player);
+			if(players.has(player.socket.id)) resend(player);
 		},function(){
 			server_log("#X SEVERE: Unmount failed for "+player.name,1);
 			delete player.unmounting;
 			delete player.unmount_call;
-			if(players[player.socket.id]) players[socket.id].socket.disconnect();
+			if(players.has(player.socket.id)) players.get(socket.id).socket.disconnect();
 		});
 	}
 	function sync_call(player)
@@ -9334,11 +9325,10 @@ function sync_loop()
 			delete player.stop_call;
 		});
 	}
-
-	for(var id in players)
+	
+	if(gameplay=="hardcore" || gameplay=="test") return;
+	for(var [id, player] of players)
 	{
-		if(gameplay=="hardcore" || gameplay=="test") return;
-		var player=players[id];
 		try{
 
 			check_for_delays(player);
@@ -9353,7 +9343,6 @@ function sync_loop()
 	}
 	for(var id in dc_players)
 	{
-		if(gameplay=="hardcore" || gameplay=="test") return;
 		var player=dc_players[id];
 		try{
 
@@ -9377,7 +9366,7 @@ function server_loop()
 		server.update_call=appengine_call("update_server",{
 			keyword:variables.keyword,
 			id:server_id,
-			players:Object.keys(players).length,
+			players:players.size(),
 			observers:Object.keys(observers).length,
 			merchants:total_merchants,
 			total_players:total_players,
@@ -9402,7 +9391,7 @@ function server_loop()
 			delete server.stop_call;
 		});
 	}
-	else if(server.stopped && (!Object.keys(dc_players).length && !Object.keys(players).length || (gameplay=="hardcore" || gameplay=="test"))) process.exit();
+	else if(server.stopped && (!Object.keys(dc_players).length && !players.size() || (gameplay=="hardcore" || gameplay=="test"))) process.exit();
 	else if(server.stopped) sync_loop();
 }
 
