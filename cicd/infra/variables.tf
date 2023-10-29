@@ -1,8 +1,13 @@
 variable "hcloud_token" {
   sensitive = true
 }
+variable "state_password" {
+  sensitive = true
+}
+variable "state_username" {
+  sensitive = true
+}
 
-variable "datacenter" {
-  type    = string
-  default = "nbg1-dc3"
+variable "state_address" {
+  sensitive = true
 }
