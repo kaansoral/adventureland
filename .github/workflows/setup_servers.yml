@@ -27,7 +27,7 @@ jobs:
           
       - name: Terraform Apply
         working-directory: ./cicd/infra
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -input=false
         env:
           TF_VAR_hcloud_token: ${{ secrets.hcloud_token }}
           TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
