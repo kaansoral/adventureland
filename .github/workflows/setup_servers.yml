@@ -1,0 +1,58 @@
+name: Deploy Infrastructure and Run Ansible
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: 1.1.0 # You can specify the version you want to use
+
+      - name: Initialize Terraform
+        working-directory: ./cicd/infra
+        run: terraform init
+        env:
+          TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
+          TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+          
+      - name: Terraform Apply
+        working-directory: ./cicd/infra
+        run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_hcloud_token: ${{ secrets.hcloud_token }}
+          TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
+          TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+          # Add any other environment variables needed for your Terraform configuration
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download Inventory Artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: terraform-output  # Specify the artifact name you used in the Terraform workflow
+#          path: inventory  # Specify the directory to download the artifact contents
+#
+#      - name: Run Ansible Playbook
+#        uses: aimerib/ansible-playwright@v2
+#        with:
+#          playbook: deploy.yml
+#          directory: ./
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          inventory: |
+#            ${{ runner.workspace }}/inventory/your-downloaded-inventory-file
+#          known_hosts: .known_hosts
+#          vault_password: ${{ secrets.VAULT_PASSWORD }}
+#          requirements: galaxy-requirements.yml
+#          options: |
+#            --verbose

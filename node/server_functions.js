@@ -2402,7 +2402,9 @@ function appengine_call(method,args,on_success,on_error)
 		request.post({url:base_url+api_path,form:data},function(err,response,body){
 			try{
 				if(err || !response || response.statusCode!=200) // node.request sends an undefined response when there is an issue ...
-				{
+				{	
+					if(method=="create_server")
+						setTimeout(()=>{process.exit(0)},5000)
 					console.log("appengine_call - unknown error "+err+" or code: "+(response&&response.statusCode)+" retries: "+args.retries+(new Date())+" on "+api_path);
 					if(method!="log_error") 
 						setTimeout(function(err,response,api_path,body){ return function(){

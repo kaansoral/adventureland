@@ -1,0 +1,13 @@
+[Unit]
+Description=${description}
+After=network.target
+Before=nextcloud-web.service
+
+[Service]
+ExecStart=${command_start}
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=default.target
+RequiredBy=network.target
