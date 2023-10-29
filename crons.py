@@ -307,8 +307,8 @@ class Hourly(webapp.RequestHandler):
 	def post(self): self.get()
 
 application = webapp.WSGIApplication([
-	('/cr/check_servers', CheckServers),
-	('/cr/hourly', Hourly),
+	#('/cr/check_servers', CheckServers),
+	#('/cr/hourly', Hourly),
 	('/cr/unstuck', UnstuckPlayers),
-	('/cr/all/([^/]*)/?', AllCron),
+	#('/cr/all/([^/]*)/?', AllCron),
 	],debug=is_sdk)
