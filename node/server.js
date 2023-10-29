@@ -128,7 +128,7 @@ var mode={
 	"low49_200xgoo":1,
 	"pve_safe_magiports":1,
 	"instant_monster_attacks":1, // #TODO: Consider dynamically sending target data instantly too
-	"drm_check":1,
+	"drm_check":0,
 	"all_roam":0,
 	"all_smart":1,
 	"prevent_external":0, // for "test" / "hardcore"
@@ -6409,8 +6409,8 @@ io.on('connection', function (socket) {
 			// player.vision[1]=min(700,player.vision[1]);
 			player.vision=B.vision;
 
-			if(!player.verified) player.s.notverified={ms:30*60*1000};
-			else if(player.s.notverified) player.s.notverified={ms:100};
+			//if(!player.verified) player.s.notverified={ms:30*60*1000};
+			//else if(player.s.notverified) player.s.notverified={ms:100};
 
 			if(player.guild)
 			{
