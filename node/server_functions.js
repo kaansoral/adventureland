@@ -287,20 +287,20 @@ function is_player_allowed(player)
 	if(is_free(player) || player.stones && 0) return true;
 	if(player.type=="merchant")
 	{
-		for(var id in players)
+		for(var [id, rplayer] of players)
 		{
-			if(players[id].stones && 0 || id==player.socket.id || is_free(player)) continue;
-			if(players[id].owner==player.owner && players[id].type=="merchant") return false;
+			if(rplayer.stones && 0 || id==player.socket.id || is_free(player)) continue;
+			if(rplayer.owner==player.owner && rplayer.type=="merchant") return false;
 		}
 		return true;
 	}
-	for(var id in players)
+	for(var [id, rplayer] of players)
 	{
-		if(players[id].stones && 0 || is_free(players[id]) || players[id].type=="merchant") continue; // was requested [28/10/16]
-		if(players[id].owner==player.owner) characters++;
-		if(players[id].name==player.name && player!=players[id]) return false; // "hardcore"
-		if(get_ip(players[id])==get_ip(player)) ips++;
-		if(player.auth_id && players[id].auth_id==player.auth_id) auths++;
+		if(rplayer.stones && 0 || is_free(rplayer) || rplayer.type=="merchant") continue; // was requested [28/10/16]
+		if(rplayer.owner==player.owner) characters++;
+		if(rplayer.name==player.name && player!=rplayer) return false; // "hardcore"
+		if(get_ip(rplayer)==get_ip(player)) ips++;
+		if(player.auth_id && rplayer.auth_id==player.auth_id) auths++;
 		if(auths>variables.character_limit) return false;
 		if(characters>variables.character_limit) return false;
 		if(ips>variables.ip_limit*ipx) return false;
@@ -321,14 +321,14 @@ function rip(player)
 function notify_friends(data)
 {
 	data.list.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player=players.get(name_to_id[name]); if(!player) return;
 		player.socket.emit("online",{name:data.name,server:data.server});
 	});
 }
 
 function check_player(player) // to check players in setTimeout's
 {
-	if(!player || !player.socket || player.dc || !players[player.socket.id]) return false;
+	if(!player || !player.socket || player.dc || !players.has(player.socket.id)) return false;
 	return true;
 }
 
@@ -922,7 +922,7 @@ function house_debt()
 	var gold=0;
 	for(var id in tavern.dice.players)
 	{
-		var player=players[id]; if(!player) continue;
+		var player=players.get(id); if(!player) continue;
 		for(var b_id in player.bets||{})
 		{
 			var bet=player.bets[b_id]; if(bet.type!="dice") continue;
@@ -968,11 +968,11 @@ function tavern_loop()
 			tavern.dice.next=future_s(1.6);
 			for(var id in tavern.dice.players)
 			{
-				var player=players[id]; if(!player) continue;
+				var player=players.get(id); if(!player) continue;
 				for(var b_id in player.bets||{})
 				{
 					var bet=player.bets[b_id]; if(bet.type!="dice") continue;
-					delete players[bet.pid].bets[bet.id];
+					delete players.get(bet.pid).bets[bet.id];
 					tavern.dice.bets.push(bet);
 					if(bet.dir=="up" && parseFloat(tavern.dice.num)>=bet.num || bet.dir=="down" && parseFloat(tavern.dice.num)<=bet.num)
 					{
@@ -994,7 +994,7 @@ function tavern_loop()
 		{
 			tavern.dice.state="suspense";
 			tavern.dice.bets.forEach(function(bet){
-				var player=players[bet.pid]; if(!player) return;
+				var player=players.get(bet.pid); if(!player) return;
 				if(bet.dir=="up" && parseFloat(tavern.dice.num)>=bet.num || bet.dir=="down" && parseFloat(tavern.dice.num)<=bet.num)
 				{
 					player.socket.emit("game_log",{"message":"Won: "+to_pretty_num(bet.win)+" gold ["+tavern.dice.num+"]","color":"gold"});
@@ -1073,7 +1073,7 @@ function tavern_loop()
 			try{
 				for(var id in tavern.roulette.players)
 				{
-					var player=players[id]; if(!player) continue;
+					var player=players.get(id); if(!player) continue;
 					for(var b_id in player.bets||{})
 					{
 						var bet=player.bets[b_id]; if(bet.type!="roulette") continue;
@@ -1081,10 +1081,10 @@ function tavern_loop()
 						if(winners[bet.odd]) totals[bet.pid]+=bet.gold*tavern.roulette.odds[bet.odd],tavern.roulette.gain-=bet.gold*tavern.roulette.odds[bet.odd];
 						else tavern.roulette.gain+=bet.gold;
 						// else totals[bet.pid]-=bet.gold;
-						if(players[bet.pid])
+						if(players.has(bet.pid))
 						{
-							delete players[bet.pid].bets[bet.id];
-							if(winners[bet.odd]) players[bet.pid].gold+=bet.gold*tavern.roulette.odds[bet.odd];
+							delete players.get(bet.pid).bets[bet.id];
+							if(winners[bet.odd]) players.get(bet.pid).gold+=bet.gold*tavern.roulette.odds[bet.odd];
 						}
 					}
 				}
@@ -1092,7 +1092,7 @@ function tavern_loop()
 			server_log("Roulette: Awards | Gain: "+to_pretty_num(tavern.roulette.gain));
 			for(var id in totals)
 			{
-				var player=players[id]; if(!player) continue;
+				var player=players.get(id); if(!player) continue;
 				if(winners["0"]) player.socket.emit("game_log",{message:"The lucky number is "+roll+" Green",color:"#2E7C2A"});
 				else if(winners["red"]) player.socket.emit("game_log",{message:"The lucky number is "+roll+" Red",color:"#911609"});
 				else player.socket.emit("game_log",{message:"The lucky number is "+roll+" Black",color:"#5C5D5D"});
@@ -1414,7 +1414,7 @@ function collect_signups(event)
 	var names=[],toggle=0;
 	for(var name in signups) names.push(name); shuffle(names);
 	names.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player=players.get(name_to_id[name]); if(!player) return;
 
 		if(event=="abtesting") player.team=(toggle==1&&"A")||"B",toggle=1-toggle;
 
@@ -1489,7 +1489,7 @@ function event_loop()
 	{
 		var m=get_monster("tiger");
 		var ps=[];
-		for(var id in players) ps.push(players[id]);
+		for(var [id, player] of players) ps.push(player);
 		var player=random_one(ps);
 		var spot=null,p=false;
 		for(var id in projectiles)
@@ -1709,10 +1709,10 @@ function event_loop()
 				if(phrase) xy_emit(monster,"chat_log",{owner:"Grinch",message:phrase,id:monster.id,color:"#418343"});
 
 
-				if(!monster.target && Math.random()<0.1*Object.keys(players).length)
+				if(!monster.target && Math.random()<0.1*players.size())
 				{
 					monster.last_attack=future_ms(1000);
-					var player=random_one(players);
+					var player=random_one(players); // TODO: fix random_one?
 					if(player.level<50 && Math.random()>0.08 || G.maps[player.map] && (G.maps[player.map].safe || G.maps[player.map].instance || G.maps[player.map].irregular)) player=null;
 					if(player && 0) // attack everyone
 						for(var pid in instances[player.in].players)
@@ -2167,7 +2167,7 @@ function consume_skill(player,name,reuse)
 
 function get_entity(name)
 {
-	if(players[name_to_id[name]]) return players[name_to_id[name]];
+	if(players.has(name_to_id[name])) return players.get(name_to_id[name]);
 	var l=[];
 	for(var iname in instances)
 	{
@@ -2179,7 +2179,7 @@ function get_entity(name)
 
 function get_player(name)
 {
-	return players[name_to_id[name]];
+	return players.get(name_to_id[name]);
 }
 
 function realm_broadcast(event,data)
@@ -2236,7 +2236,7 @@ function party_emit(name,event,data,args)
 	// console.log(parties[name]);
 	var owners=[],owner=get_player(data.owner);
 	parties[name].forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players.get(name_to_id[player_name]);
 		if(args && args.instance && player.in!=args.instance) return;
 		if(0 && in_arr(event,["disappearing_text"])) player.socket.emit(event,data); //volatile.
 		else player.socket.emit(event,data);
@@ -2256,7 +2256,7 @@ function leave_party(name,leaver)
 	var newparty=[],oldparty=parties[name];
 	if(!oldparty)  { leaver.party=null; console.log("#X NO PARTY "+name); return; } // Don't know the cause, maybe a disconnect triggering on the accept routines? [12/07/18]
 	parties[name].forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players.get(name_to_id[player_name]);
 		if(!player) { console.log("#X SHOULD'VE FOUND "+player_name); return; }
 		player.party=null;
 		if(leaver.name!=player.name) newparty.push(player_name);
@@ -2267,7 +2267,7 @@ function leave_party(name,leaver)
 	{
 		if(newparty.length)
 		{
-			var player=players[name_to_id[newparty[0]]];
+			var player=players.get(name_to_id[newparty[0]]);
 			if(!player) { console.log("#X SHOULD'VE FOUND2 "+newparty[0]); }
 			else player.party=null;
 		}
@@ -2275,14 +2275,14 @@ function leave_party(name,leaver)
 	else
 	{
 		newparty.forEach(function(player_name){
-			var player=players[name_to_id[player_name]];
+			var player=players.get(name_to_id[player_name]);
 			if(!player) { console.log("#X SHOULD'VE FOUND3 "+newparty[0]); return; }
 			player.party=newparty[0];
 		});
 	}
 	// Moved the socket routine to the end, after all party changes are made [10/07/18]
 	oldparty.forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players.get(name_to_id[player_name]);
 		if(!player || player.name==leaver.name) return;
 		newparty=newparty&&parties[newparty[0]]||[]; // During these .socket.emit's, "disconnect"'s happen, the parties can become empty, and party_to_client fails [21/08/18]
 		player.socket.emit("party_update",{message:leaver.name+" left the party",leave:1,list:newparty.length>=2&&newparty,party:newparty.length>=2&&party_to_client(newparty[0])||{}});
@@ -3686,9 +3686,9 @@ function hardcore_loop()
 {
 	if(hardcore_done) return;
 	var m=0;
-	for(var id in players)
-		if(players[id].level>m)
-			E.rewards.leader=players[id].name,m=players[id].level;
+	for(var [id, player] of players)
+		if(player.level>m)
+			E.rewards.leader=player.name,m=player.level;
 	if(E.minutes)
 		E.minutes-=1;
 	else
@@ -3732,8 +3732,8 @@ function send_hardcore_rewards()
 		if(E.rewards[r[0]])
 			appengine_call("send_mail",{subject:"HARDCORE: Congratulations!",message:"Reward for "+r[1],type:"system",rid:randomStr(50),to:E.rewards[r[0]],item:JSON.stringify(r[2]),retries:8});
 	});
-	for(var id in players)
-		save_player(players[id]);
+	for(var [id, player] of players)
+		save_player(player);
 	var sent={};
 	for(var id in P)
 	{
