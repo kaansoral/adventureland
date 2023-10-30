@@ -678,12 +678,12 @@ def character_to_info(character,user=None,ip=None,guild=None):
 def character_emit(character,method,data):
 	if character.server:
 		server=get_by_iid("server|%s"%character.server)
-		if server: server_eval_safe(server,"var p=players[name_to_id['%s']]; if(p) p.socket.emit('%s',data);"%(character.info.name,method),data=data)
+		if server: server_eval_safe(server,"var p=players[name_to_id.get('%s')]; if(p) p.socket.emit('%s',data);"%(character.info.name,method),data=data)
 
 def character_eval(character,code,data={}):
 	if character.server:
 		server=get_by_iid("server|%s"%character.server)
-		if server: server_eval_safe(server,"var player=players[name_to_id['%s']]; if(player) { %s; }"%(character.info.name,code),data=data)
+		if server: server_eval_safe(server,"var player=players[name_to_id.get('%s')]; if(player) { %s; }"%(character.info.name,code),data=data)
 
 def notify_friends(character,server_name):
 	server_list={}
