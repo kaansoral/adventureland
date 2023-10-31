@@ -21,6 +21,6 @@
     become_user: adventureland
     become: yes
     synchronize:
-      src: /adventureland
+      src: ./
       dest: /opt/adventureland
       delete: true
