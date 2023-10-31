@@ -22,6 +22,6 @@
     become: yes
     debugger: always
     synchronize:
-      src: ${{}}
+      src: ./
       dest: /opt/adventureland
       delete: true
