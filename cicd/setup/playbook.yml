@@ -20,7 +20,8 @@
   - name: Copy files
     become_user: adventureland
     become: yes
+    debugger: always
     synchronize:
-      src: ./
+      src: ${{}}
       dest: /opt/adventureland
       delete: true
