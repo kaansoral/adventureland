@@ -321,7 +321,7 @@ function rip(player)
 function notify_friends(data)
 {
 	data.list.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player=players[name_to_id.get(name)]; if(!player) return;
 		player.socket.emit("online",{name:data.name,server:data.server});
 	});
 }
@@ -1414,7 +1414,7 @@ function collect_signups(event)
 	var names=[],toggle=0;
 	for(var name in signups) names.push(name); shuffle(names);
 	names.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player=players[name_to_id.get(name)]; if(!player) return;
 
 		if(event=="abtesting") player.team=(toggle==1&&"A")||"B",toggle=1-toggle;
 
@@ -2167,7 +2167,7 @@ function consume_skill(player,name,reuse)
 
 function get_entity(name)
 {
-	if(players[name_to_id[name]]) return players[name_to_id[name]];
+	if(players[name_to_id.get(name)]) return players[name_to_id.get(name)];
 	var l=[];
 	for(var iname in instances)
 	{
@@ -2179,7 +2179,7 @@ function get_entity(name)
 
 function get_player(name)
 {
-	return players[name_to_id[name]];
+	return players[name_to_id.get(name)];
 }
 
 function realm_broadcast(event,data)
@@ -2236,7 +2236,7 @@ function party_emit(name,event,data,args)
 	// console.log(parties[name]);
 	var owners=[],owner=get_player(data.owner);
 	parties[name].forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players[name_to_id.get(player_name)];
 		if(args && args.instance && player.in!=args.instance) return;
 		if(0 && in_arr(event,["disappearing_text"])) player.socket.emit(event,data); //volatile.
 		else player.socket.emit(event,data);
@@ -2256,7 +2256,7 @@ function leave_party(name,leaver)
 	var newparty=[],oldparty=parties[name];
 	if(!oldparty)  { leaver.party=null; console.log("#X NO PARTY "+name); return; } // Don't know the cause, maybe a disconnect triggering on the accept routines? [12/07/18]
 	parties[name].forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players[name_to_id.get(player_name)];
 		if(!player) { console.log("#X SHOULD'VE FOUND "+player_name); return; }
 		player.party=null;
 		if(leaver.name!=player.name) newparty.push(player_name);
@@ -2267,7 +2267,7 @@ function leave_party(name,leaver)
 	{
 		if(newparty.length)
 		{
-			var player=players[name_to_id[newparty[0]]];
+			var player=players[name_to_id.get(newparty[0])];
 			if(!player) { console.log("#X SHOULD'VE FOUND2 "+newparty[0]); }
 			else player.party=null;
 		}
@@ -2275,14 +2275,14 @@ function leave_party(name,leaver)
 	else
 	{
 		newparty.forEach(function(player_name){
-			var player=players[name_to_id[player_name]];
+			var player=players[name_to_id.get(player_name)];
 			if(!player) { console.log("#X SHOULD'VE FOUND3 "+newparty[0]); return; }
 			player.party=newparty[0];
 		});
 	}
 	// Moved the socket routine to the end, after all party changes are made [10/07/18]
 	oldparty.forEach(function(player_name){
-		var player=players[name_to_id[player_name]];
+		var player=players[name_to_id.get(player_name)];
 		if(!player || player.name==leaver.name) return;
 		newparty=newparty&&parties[newparty[0]]||[]; // During these .socket.emit's, "disconnect"'s happen, the parties can become empty, and party_to_client fails [21/08/18]
 		player.socket.emit("party_update",{message:leaver.name+" left the party",leave:1,list:newparty.length>=2&&newparty,party:newparty.length>=2&&party_to_client(newparty[0])||{}});

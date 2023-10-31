@@ -30,7 +30,7 @@ var total_monsters=0;
 var max_players=96;
 var chests={};
 var projectiles={};
-var name_to_id={},id_to_id={};
+var name_to_id=new Map(),id_to_id={};
 var invitations={},challenges={},magiportations={},requests={},parties={},frequests={},trequests={};
 var total_moves=1,total_players=0,unique_players=0;
 var observer_map="winterland",observer_x=0,observer_y=0;
@@ -618,7 +618,7 @@ function party_to_client(oname)
 	var party={},output=0,length=0,newbies=0,odps={},c={},add=36000;
 	calculate_party(oname);
 	list.forEach(function(name){
-		var player=players[name_to_id[name]],dps_multiplier=1; if(!player) return;
+		var player=players[name_to_id.get(name)],dps_multiplier=1; if(!player) return;
 		if(player.type=="merchant") return;
 		if(player.type=="priest") dps_multiplier=1.36;
 		length+=1;
@@ -628,7 +628,7 @@ function party_to_client(oname)
 		c[player.owner]=(c[player.owner]||0)+1;
 	});
 	list.forEach(function(name){
-		var player=players[name_to_id[name]],dps_multiplier=1; if(!player) return;
+		var player=players[name_to_id.get(name)],dps_multiplier=1; if(!player) return;
 		if(player.type=="priest") dps_multiplier=1.36;
 		player.share=0;
 		if(!output) // to handle an all merchant party
@@ -656,9 +656,9 @@ function send_party_update(oname)
 {
 	var party=party_to_client(oname);
 	parties[oname].forEach(function(name){
-		var player=players[name_to_id[name]];
+		var player=players[name_to_id.get(name)];
 		if(!player) { console.log("#X party player not found: "+oname); leave_party(oname,{name:name}); return; }
-		players[name_to_id[name]].socket.emit("party_update",{list:parties[oname],party:party});
+		players[name_to_id.get(name)].socket.emit("party_update",{list:parties[oname],party:party});
 	});
 }
 
@@ -666,7 +666,7 @@ function calculate_party(oname)
 {
 	var list=parties[oname];
 	list.forEach(function(name){
-		var player=players[name_to_id[name]]; if(!player) return;
+		var player=players[name_to_id.get(name)]; if(!player) return;
 		if(player.type=="merchant") player.party_weight=0;
 		player.party_weight=20;
 	});
@@ -1377,7 +1377,7 @@ function drop_something(player,monster,share)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
+			var current=players[name_to_id.get(name)];
 			if(current && !owners.includes(current.owner)) owners.push(current.owner)
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.items.length,"chest":chest,"id":drop_id,"party":player.party,"map":drop.map,owners:owners},{instance:player.in});
@@ -1423,7 +1423,7 @@ function drop_something_hardcore(player,target)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
+			var current=players[name_to_id.get(name)];
 			if(current && !owners.includes(current.owner)) owners.push(current.owner)
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.pvp_items.length,"chest":"chest8","id":drop_id,"party":player.party,"map":target.map,owners:owners},{instance:player.in});
@@ -1468,7 +1468,7 @@ function drop_something_pvp(player,target)
 	{
 		var owners=[];
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]];
+			var current=players[name_to_id.get(name)];
 			if(current && !owners.includes(current.owner)) owners.push(current.owner)
 		});
 		party_emit(player.party,"drop",{"x":drop.x,"y":drop.y,"items":drop.pvp_items.length,"chest":"chest8","id":drop_id,"party":player.party,"map":target.map,owners:owners},{instance:player.in});
@@ -1527,13 +1527,13 @@ function issue_monster_awards(monster)
 	var total=0.1;
 	for(var name in monster.points)
 	{
-		var current=players[name_to_id[name]];
+		var current=players[name_to_id.get(name)];
 		if(current) //  && current.map==monster.map
 			total+=max(0,monster.points[name]);
 	}
 	for(var name in monster.points)
 	{
-		var current=players[name_to_id[name]];
+		var current=players[name_to_id.get(name)];
 		var share=max(0,monster.points[name])/total;
 		if(current && share>0.0025) //  && current.map==monster.map
 		{
@@ -1557,7 +1557,7 @@ function issue_monster_awards(monster)
 function issue_monster_award(monster)
 {
 	if(monster.cooperative) return issue_monster_awards(monster);
-	var player=players[name_to_id[monster.target]];
+	var player=players[name_to_id.get(monster.target)];
 	if(!player) return;
 	// if(gameplay=="test" && player.level<80) player.level+=1;
 	stats.kills[monster.type]++;
@@ -1583,7 +1583,7 @@ function issue_monster_award(monster)
 		// original: [1,1,0.8,0.7,0.65,0.5,0.4,0.3,0.3,0.3,0.3,0.3]
 		// xp=round(xp);
 		parties[player.party].forEach(function(name){
-			var current=players[name_to_id[name]],cxp=round(xp*current.xpm*current.share);
+			var current=players[name_to_id.get(name)],cxp=round(xp*current.xpm*current.share);
 			if(monster.rbuff && G.conditions[monster.rbuff]) current.s[monster.rbuff]={ms:G.conditions[monster.rbuff].duration};
 			var score=calculate_monster_score(current,monster);
 			current.p.stats.monsters[monster.type]=(current.p.stats.monsters[monster.type]||0)+1;
@@ -1748,7 +1748,7 @@ function issue_player_award(attacker,target)
 		}
 		// ,lost_shells=ceil(lost_shells/parties[attacker.party].length)
 		parties[attacker.party].forEach(function(a_name){
-			var attacker=players[name_to_id[a_name]];
+			var attacker=players[name_to_id.get(a_name)];
 			attacker.gold+=gain_gold;
 			if(attacker.type!="merchant") attacker.xp+=lost_xp;
 			attacker.socket.emit("game_log",{message:name+" pwned "+target.name,color:"#67C051"});
@@ -2561,7 +2561,7 @@ function defeat_player(player)
 	player.violations=(player.violations||0)+1;
 	if(player.s.block && player.s.block.f && !player.rip)
 	{
-		var attacker=players[name_to_id[player.s.block.f]];
+		var attacker=players[name_to_id.get(player.s.block.f)];
 		if(attacker && attacker.name!=player.name)
 		{
 			issue_player_award(attacker,player);
@@ -2937,7 +2937,7 @@ io.on('connection', function (socket) {
 		var player=players[socket.id],receivers=[];
 		if(!player || player.s.mute) return fail_response("muted");
 		data.to.forEach(function(name){
-			var p=players[name_to_id[name]];
+			var p=players[name_to_id.get(name)];
 			if(p) p.socket.emit("cm",{name:player.name,message:data.message||""}),receivers.push(name);
 		});
 		success_response("data",{locals:[],receivers:receivers});
@@ -4541,7 +4541,7 @@ io.on('connection', function (socket) {
 		success_response("buy_success",{cost:cost,num:num,name:name,q:quantity,cevent:"buy"});
 	});
 	socket.on('send',function(data){
-		var player=players[socket.id],receiver=players[name_to_id[data.name||""]],num,s_item;
+		var player=players[socket.id],receiver=players[name_to_id.get(data.name||"")],num,s_item;
 		if(!player || player.user) return fail_response("cant_in_bank");
 		if(!receiver || receiver.user) return fail_response("receiver_unavailable");
 		if((distance(receiver,player,true)>B.dist || receiver.map!=player.map)) return fail_response("distance");
@@ -5610,7 +5610,7 @@ io.on('connection', function (socket) {
 			{
 				targets=[];
 				parties[player.party].forEach(function(name){
-					var current=players[name_to_id[name]];
+					var current=players[name_to_id.get(name)];
 					targets.push(current);
 				});
 			}
@@ -6253,13 +6253,13 @@ io.on('connection', function (socket) {
 						// console.log(item);
 					var pool=0,can={};
 					parties[player.party].forEach(function(name){
-						var current=players[name_to_id[name]];
+						var current=players[name_to_id.get(name)];
 						if(current && can_add_item(current,item)) pool+=current.share,can[name]=true;
 					});
 					var pool_winner=Math.random()*pool,pool_current=0,awarded=false;
 					parties[player.party].forEach(function(name){
 						if(awarded) return;
-						var current=players[name_to_id[name]];
+						var current=players[name_to_id.get(name)];
 						if(current && can[name])
 						{
 							if(pool_winner<=pool_current+current.share)
@@ -6284,13 +6284,13 @@ io.on('connection', function (socket) {
 					item.v=new Date();
 					var pool=0,can={};
 					parties[player.party].forEach(function(name){
-						var current=players[name_to_id[name]];
+						var current=players[name_to_id.get(name)];
 						if(current && current.share && can_add_item(current,item)) pool+=current.share,can[name]=true;
 					});
 					var pool_winner=Math.random()*pool,pool_current=0,awarded=false;
 					parties[player.party].forEach(function(name){
 						if(awarded) return;
-						var current=players[name_to_id[name]];
+						var current=players[name_to_id.get(name)];
 						if(current && can[name])
 						{
 							if(pool_winner<=pool_current+current.share)
@@ -6311,7 +6311,7 @@ io.on('connection', function (socket) {
 					}
 				});
 				parties[player.party].forEach(function(name){
-					var current=players[name_to_id[name]],cgold=round(chest.gold*(current.share||0)*r.goldm)+round((chest.egold||0)*(current.share||0));
+					var current=players[name_to_id.get(name)],cgold=round(chest.gold*(current.share||0)*r.goldm)+round((chest.egold||0)*(current.share||0));
 					r.gold=cgold=server_tax(cgold);
 					current.gold+=cgold;
 					if(current.t) current.t.cgold+=cgold;
@@ -6373,7 +6373,7 @@ io.on('connection', function (socket) {
 			if(data.no_html)
 			{
 				player.afk="code";
-				try{player.controller=name_to_id[data.no_html]&&data.no_html||"";}catch(e){player.controller="";}
+				try{player.controller=name_to_id.get(data.no_html)&&data.no_html||"";}catch(e){player.controller="";}
 			}
 			if(!player.afk) player.afk=true;
 			if(gameplay=="test") player.name+=parseInt(Math.random()*10000);
@@ -6434,7 +6434,7 @@ io.on('connection', function (socket) {
 			resume_instance(instances[player.in]);
 			instances[player.in].players[player.id]=player; pmap_add(player);
 			
-			name_to_id[player.name]=socket.id;
+			name_to_id.set(player.name, socket.id);
 			id_to_id[player.id]=socket.id;
 
 			cache_player_items(player);
@@ -6523,7 +6523,7 @@ io.on('connection', function (socket) {
 		server_log("friend: "+JSON.stringify(data));
 		if(data.event=="request")
 		{
-			var friend=players[name_to_id[data.name||""]];
+			var friend=players[name_to_id.get(data.name||"")];
 			if(!friend) return fail_response("friend_rleft");
 			if(in_arr(friend.owner,player.friends) || friend.owner==player.owner) return success_response("friend_already");
 			requests[player.name+"-"+friend.name]={"a":player.owner,"b":friend.owner};
@@ -6570,7 +6570,7 @@ io.on('connection', function (socket) {
 		if(!player) return;
 		if(data.event=="challenge")
 		{
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players[name_to_id.get(data.id||data.name)];
 			if(!invited || invited.id==player.id) return socket.emit("game_log","Invalid");
 			if(invited.duel || player.duel) return socket.emit("game_log","Already dueling");
 			invited.socket.emit("duel",{event:"chellenge",name:player.name});
@@ -6580,7 +6580,7 @@ io.on('connection', function (socket) {
 		}
 		else if(data.event=="accept")
 		{
-			var challenger=players[name_to_id[data.id||data.name]];
+			var challenger=players[name_to_id.get(data.id||data.name)];
 			if(!challenger || challenges[challenger.name]!=player.name) return socket.emit("game_log","Challenge expired");
 			if(challenger.duel || player.duel) return socket.emit("game_log","Already dueling");
 			if(is_in_pvp(challenger) || is_in_pvp(player)) return socket.emit("game_log","Can't start a duel if any of the parties are already in a pvp zone");
@@ -6629,7 +6629,7 @@ io.on('connection', function (socket) {
 		{
 			// if(player.party && player.party!=player.name) { socket.emit("game_log","Only the party leader can send invites"); return; }
 			if(player.party && (parties[player.party].length>=limits.party_max || player.party_length>=limits.party)) return fail_response("party_full");
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players[name_to_id.get(data.id||data.name)];
 			if(!invited || invited.id==player.id) return fail_response("invalid");
 			if(player.party && player.party==invited.party) return success_response("already_in_party");
 			// if(invited.party) { socket.emit("game_log",invited.name+" is already partying"); return; }
@@ -6641,7 +6641,7 @@ io.on('connection', function (socket) {
 		if(data.event=="request")
 		{
 			// if(player.party) { return; }
-			var invited=players[name_to_id[data.id||data.name]];
+			var invited=players[name_to_id.get(data.id||data.name)];
 			if(!invited || invited.id==player.id) return fail_response("invalid");
 			if(player.party && player.party==invited.party) return success_response("already_in_party");
 			// if(!invited.party) { socket.emit("game_log",invited.name+" isn't partying"); return; }
@@ -6652,7 +6652,7 @@ io.on('connection', function (socket) {
 		}
 		if(data.event=="accept")
 		{
-			var inviter=players[name_to_id[data.name]];
+			var inviter=players[name_to_id.get(data.name)];
 			// if(player.party) { socket.emit("party_update",{list:parties[player.party],party:party_to_client(player.party)}); socket.emit("game_log","Already partying"); return; }
 			// if(!inviter || (inviter.party && inviter.party!=inviter.name)) { socket.emit("game_log","Party was disbanded"); return; }
 			if(!inviter) return fail_response("player_gone",{name:data.name})
@@ -6672,7 +6672,7 @@ io.on('connection', function (socket) {
 				parties[inviter.name]=[inviter.name];
 				resend(inviter,"nc+u+cid");
 				delete requests[inviter.name];
-				if(!players[name_to_id[data.name]]) return fail_response("player_gone",{name:data.name}); // these repetitions are all because socket.emit's can cause in-line disconnects and disband parties right after creation [07/08/20]
+				if(!players[name_to_id.get(data.name)]) return fail_response("player_gone",{name:data.name}); // these repetitions are all because socket.emit's can cause in-line disconnects and disband parties right after creation [07/08/20]
 			}
 			player.party=inviter.party;
 			parties[inviter.party].push(player.name);
@@ -6683,7 +6683,7 @@ io.on('connection', function (socket) {
 		}
 		if(data.event=="raccept")
 		{
-			var requester=players[name_to_id[data.name]];
+			var requester=players[name_to_id.get(data.name)];
 			if(!requester) return fail_response("player_gone",{name:data.name});
 			// if(requester.party) { socket.emit("game_log","Already partying"); return; }
 			if(player.party && (parties[player.party].length>=limits.party_max || player.party_length>=limits.party)) return fail_response("party_full");
@@ -6694,7 +6694,7 @@ io.on('connection', function (socket) {
 				leave_party(requester.party,requester);
 				requester.socket.emit("party_update",{});
 				requester.socket.emit("game_log","Left the party");
-				if(!players[name_to_id[data.name]]) return fail_response("player_gone",{name:data.name});
+				if(!players[name_to_id.get(data.name)]) return fail_response("player_gone",{name:data.name});
 			}
 			requests[requester.name][player.id]=0;
 			if(!player.party)
@@ -6725,7 +6725,7 @@ io.on('connection', function (socket) {
 			// if(player.party && player.party!=player.name) { socket.emit("game_log","Only the party leader can kick someone"); return; }
 			if(!in_arr(data.name,parties[player.party])) { socket.emit("party_update",{list:parties[player.party],party:party_to_client(player.party)}); return success_response({}); }
 			if(parties[player.party].indexOf(player.name)>parties[player.party].indexOf(data.name)) return fail_response("cant_kick");
-			var kicked=players[name_to_id[data.name]];
+			var kicked=players[name_to_id.get(data.name)];
 			if(!kicked) return fail_response("player_gone");
 			leave_party(player.party,kicked);
 			if(player.party) party_emit(player.party,"game_log",player.name+" kicked "+kicked.name);
@@ -7248,7 +7248,7 @@ function remove_monster(target,args)
 	var luckm=undefined;
 	if(target.target)
 	{
-		var player=players[name_to_id[target.target]];
+		var player=players[name_to_id.get(target.target)];
 		if(player)
 		{
 			luckm=player.luckm;
@@ -7515,7 +7515,7 @@ function step_out_of_invis(player)
 
 function reduce_targets(player,monster)
 {
-	if(is_string(player)) player=players[name_to_id[player]];
+	if(is_string(player)) player=players[name_to_id.get(player)];
 	if(!player) return;
 	player.targets--;
 	if(player.targets<0) player.targets=0;
@@ -7571,7 +7571,7 @@ function stop_pursuit(monster,args)
 	if(!args) args={};
 	if(monster.target)
 	{
-		var target=players[name_to_id[monster.target]];
+		var target=players[name_to_id.get(monster.target)];
 		if(!args.redirect && !args.force && !args.stop && target && !is_invis(target) && !target.rip && monster.a.portal && port_monster(monster,target)) return; 
 		monster.target=null;
 		if(monster.master && target && !args.redirect)
@@ -7969,7 +7969,7 @@ function update_instance(instance)
 		}
 		function attack_target_or_move()
 		{
-			var player=players[name_to_id[monster.target]];
+			var player=players[name_to_id.get(monster.target)];
 			if(player && ssince(monster.last.attacked)>20 && Math.random()>monster.rage*0.99)
 			{
 				stop_pursuit(monster,{force:true,cause:"bored"});
