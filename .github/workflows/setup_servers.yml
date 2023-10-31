@@ -40,12 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Ansible Playbook
-        uses: aimerib/ansible-playwright@v2.7.7
+        uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: cicd/setup/playbooks/deploy.yml
-          directory: ./
+          playbook: ./playbooks/deploy.yml
+          directory: ./cicd/setup
           key: ${{ secrets.HETZNER_PRIVATE_KEY }}
-          inventory: cicd/setup/inventory.yml
-          known_hosts: .known_hosts
-          options: |
-            --verbose
+          inventory: ./inventory.yml
