@@ -50,4 +50,4 @@ jobs:
           directory: ./cicd/setup
           key: ${{ secrets.HETZNER_PRIVATE_KEY }}
           options: |
-            --inventory .inventory.yml
+            --inventory inventory.yml
