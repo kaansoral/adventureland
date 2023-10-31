@@ -46,7 +46,7 @@ jobs:
       - name: Run Ansible Playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: ./playbooks/deploy.yml
+          playbook: ./playbooks.yml
           directory: ./cicd/setup
           key: ${{ secrets.HETZNER_PRIVATE_KEY }}
           inventory: ./inventory.yml
