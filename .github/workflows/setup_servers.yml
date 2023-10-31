@@ -49,4 +49,5 @@ jobs:
           playbook: ./playbooks.yml
           directory: ./cicd/setup
           key: ${{ secrets.HETZNER_PRIVATE_KEY }}
-          inventory: ./inventory.yml
+          options: |
+            --inventory .inventory.yml
