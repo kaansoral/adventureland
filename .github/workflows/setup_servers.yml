@@ -36,7 +36,7 @@ jobs:
 
       
 
-  deploy:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Run Ansible Playbook
