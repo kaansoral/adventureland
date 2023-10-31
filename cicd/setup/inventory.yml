@@ -1,9 +1,13 @@
 master-servers:
+  vars:
+    ansible_user: root
   hosts:
     master:
       ansible_host: 157.90.225.102
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 game-servers:
+  vars:
+    ansible_user: root
   hosts:
     EU_I:
       ansible_host: 128.140.75.45
