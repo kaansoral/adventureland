@@ -35,6 +35,7 @@ jobs:
           TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
           TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
   setup:
+    concurrency: staging_environment
     runs-on: ubuntu-latest
     needs: deploy
     steps:
