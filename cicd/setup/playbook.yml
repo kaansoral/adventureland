@@ -9,6 +9,16 @@
       name: adventureland
       comment: System account for adventureland
 
+  - name: Stop adventureland master
+    ansible.builtin.systemd:
+      name: adventureland-master
+      state: stopped
+      
+  - name: Stop adventureland master
+    ansible.builtin.systemd:
+      name: adventureland-server
+      state: stopped
+
   - name: Create Install Dir
     ansible.builtin.file:
       path: /opt/adventureland
