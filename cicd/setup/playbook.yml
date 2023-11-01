@@ -13,12 +13,13 @@
     ansible.builtin.systemd:
       name: adventureland-master
       state: stopped
-      
+    ignore_errors: true
   - name: Stop adventureland master
     ansible.builtin.systemd:
       name: adventureland-server
       state: stopped
-
+    ignore_errors: true
+    
   - name: Create Install Dir
     ansible.builtin.file:
       path: /opt/adventureland
