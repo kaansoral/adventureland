@@ -22,6 +22,6 @@
     become: yes
     debugger: always
     synchronize:
-      src: ./
+      src: ./../../ #This is a relative path, when the location of the playbook changes this needs to change too
       dest: /opt/adventureland
       delete: true
