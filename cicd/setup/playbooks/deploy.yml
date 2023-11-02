@@ -1,0 +1,26 @@
+---
+- name: Install Adventureland
+  hosts: master-servers
+  become: yes  # Run tasks as a superuser (root)
+
+  tasks:
+  - name: 
+    ansible.builtin.user:
+      name: adventureland
+      comment: System account for adventureland
+
+  - name: Create Install Dir
+    ansible.builtin.file:
+      path: /opt/adventureland
+      state: directory
+      owner: adventureland
+      group: adventureland
+      mode: '1777'
+
+  - name: Copy files
+    become_user: adventureland
+    become: yes
+    synchronize:
+      src: /adventureland
+      dest: /opt/adventureland
+      delete: true

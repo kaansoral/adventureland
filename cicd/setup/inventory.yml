@@ -1,0 +1,13 @@
+master-servers:
+  hosts:
+    master:
+      ansible_host: 157.90.225.102
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+game-servers:
+  hosts:
+    EU_I:
+      ansible_host: 128.140.75.45
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    US_I:
+      ansible_host: 5.78.95.83
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'

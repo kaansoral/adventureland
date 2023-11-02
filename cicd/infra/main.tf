@@ -22,7 +22,6 @@ module "eu_1_server" {
     region  = "EU"
     name    = "I"
   }
-
 }
 
 module "us_1_server" {
@@ -39,6 +38,11 @@ module "us_1_server" {
   }
 }
 
+
+output "ips" {
+  value = local.ips
+}
+
 data "hcloud_ssh_keys" "admin" {
   with_selector = "role=admin"
 }
@@ -51,4 +55,9 @@ locals {
     server_master = random_string.server_master.result
     bot_key       = random_string.bot_key.result
   }
+  ips = [
+    module.us_1_server.instance_ip,
+    module.eu_1_server.instance_ip,
+    module.master.instance_ip,
+  ]
 }

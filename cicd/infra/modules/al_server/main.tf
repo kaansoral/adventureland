@@ -35,3 +35,7 @@ resource "hcloud_volume" "storage" {
   format            = "ext4"
   delete_protection = true
 }
+
+output "instance_ip" {
+  value = hcloud_primary_ip.ip.ip_address
+}
