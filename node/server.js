@@ -7055,6 +7055,8 @@ io.on('connection', function (socket) {
 				delete instances[player.in].players[player.id];
 				if(instances[player.in].solo==player.id) destroy_instance(player.in);
 				pmap_remove(player);
+				name_to_id.delete(player.name);
+				delete id_to_id[player.id];
 			}catch(e){log_trace("#X DCERROR3 ",e);}
 
 			try{
