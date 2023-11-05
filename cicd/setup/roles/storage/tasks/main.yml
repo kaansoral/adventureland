@@ -2,7 +2,7 @@
   become: true
   block:
     - name: Get mount information for the specified volume
-      command: "mount | grep '{{ mount_point }}'"
+      shell: "mount | grep '{{ mount_point }}'"
       register: mount_info
       changed_when: false
       ignore_errors: true
