@@ -12,7 +12,7 @@
         storage_mounted: "{{ mount_info.rc == 0 }}"
 
 - name: Mount the storage volume
-  when: not volume_mounted
+  when: not storage_mounted
   become: true
   mount:
     path: "{{ mount_point }}"
