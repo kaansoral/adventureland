@@ -1,0 +1,25 @@
+- name: Check if Files Differ
+  hosts: your_servers
+  tasks:
+    - name: Get local file checksums
+      find:
+        paths: /path/to/local/files
+        recurse: yes
+        exclude_paths:
+          - /path/to/local/files/excluded_folder
+      register: local_files
+
+    - name: Get remote file checksums
+      find:
+        paths: /path/to/remote/files
+        recurse: yes
+        exclude_paths:
+          - /path/to/remote/files/excluded_folder
+      register: remote_files
+
+    - name: Compare file checksums
+      assert:
+        that:
+          - item.stat.md5 == remote_files.files[0].stat.md5
+        fail_msg: "Files are different!"
+      loop: "{{ local_files.files }}"

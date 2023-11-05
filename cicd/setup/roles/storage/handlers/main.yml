@@ -1,0 +1,8 @@
+---
+- name: Mount storage volume
+  become: true
+  mount:
+    path: "{{ mount_point }}"
+    src: "/dev/disk/by-id/scsi-0HC_Volume_{{ volume_id }}"
+    fstype: ext4  
+    state: mounted

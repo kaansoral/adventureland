@@ -2,36 +2,16 @@
 - name: Install Adventureland
   hosts: master-servers
   become: yes  # Run tasks as a superuser (root)
-
-  tasks:
-  - name: 
-    ansible.builtin.user:
-      name: adventureland
-      comment: System account for adventureland
-
-  - name: Stop adventureland master
-    ansible.builtin.systemd:
-      name: adventureland-master
-      state: stopped
-    ignore_errors: true
-  - name: Stop adventureland master
-    ansible.builtin.systemd:
-      name: adventureland-server
-      state: stopped
-    ignore_errors: true
-    
-  - name: Create Install Dir
-    ansible.builtin.file:
-      path: /opt/adventureland
-      state: directory
-      owner: adventureland
-      group: adventureland
-      mode: '1777'
-
-  - name: Copy files
-    become_user: adventureland
-    become: yes
-    synchronize:
-      src: ./../../../ #This is a relative path, when the location of the playbook changes this needs to change too
-      dest: /opt/adventureland
-      delete: true
+  roles: 
+  - storage
+  - pip
+  - appengine
+  - service
+  - adventureland-master
+  
+- name: Install Adventureland
+  hosts: game-servers
+  become: yes  # Run tasks as a superuser (root)
+  roles: 
+  - service
+  - adventureland-master
