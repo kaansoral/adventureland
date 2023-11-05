@@ -6,7 +6,8 @@
       register: mount_info
       changed_when: false
       ignore_errors: true
-
+      no_log: true
+      
     - name: Check if the volume is mounted
       set_fact:
         storage_mounted: "{{ mount_info.rc == 0 }}"

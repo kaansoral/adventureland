@@ -3,8 +3,8 @@
   hosts: master-servers
   become: yes  # Run tasks as a superuser (root)
   roles: 
-  - storage
   - dependencies
+  - storage
   - appengine
   - services
   - adventureland-master
@@ -13,5 +13,6 @@
   hosts: game-servers
   become: yes  # Run tasks as a superuser (root)
   roles: 
+  - dependencies
   - services
   - adventureland-server

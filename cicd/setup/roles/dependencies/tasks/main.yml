@@ -1,3 +1,11 @@
+---
+- name: Create sadventureland account
+  user:
+    name: adventureland
+    comment: "Adventureland System Account"
+    shell: /bin/bash
+    system: yes
+    
 - name: Install dependencies
   shell: |
     apt update

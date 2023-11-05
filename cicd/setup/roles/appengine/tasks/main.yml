@@ -1,6 +1,5 @@
 - name: Create appengine directory
   become: yes
-  become_user: root
   file:
     path: "{{ appengine_root }}"
     state: directory
