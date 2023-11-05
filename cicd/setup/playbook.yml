@@ -6,12 +6,12 @@
   - storage
   - dependencies
   - appengine
-  - service
+  - services
   - adventureland-master
   
 - name: Install Adventureland
   hosts: game-servers
   become: yes  # Run tasks as a superuser (root)
   roles: 
-  - service
+  - services
   - adventureland-server
