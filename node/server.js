@@ -730,6 +730,10 @@ function apply_stats(player,prop,args)
 	}
 }
 
+
+const STR_ARMOR_DROPOFF = 160;
+const INT_RESIST_DROPOFF = 180;
+
 function calculate_player_stats(player)
 {
 	if(player.is_npc) return;
@@ -889,8 +893,16 @@ function calculate_player_stats(player)
 	player.max_hp=max(1,player.max_hp)
 	player.max_mp+=player.int*15.0+player.level*5;
 	//player.armor+=player.str/2.0;
-	player.armor+=min(player.str,160)+max(0,player.str-160)*0.25;
-	player.resistance+=min(player.int,180)+max(0,player.int-180)*0.25;
+	if(player.str > STR_ARMOR_DROPOFF) {
+		player.armor += STR_ARMOR_DROPOFF + (player.str - STR_ARMOR_DROPOFF) / 4;
+	} else {
+		player.armor += player.str;
+	}
+	if(player.int > INT_RESIST_DROPOFF) {
+		player.resistance += INT_RESIST_DROPOFF + (player.int - INT_RESIST_DROPOFF) / 4;
+	} else {
+		player.resistance += player.int;
+	}
 	player.frequency+=min(player.level,80)/164.0+min(160,player.dex)/640.0+max(player.dex-160,0)/925.0+player.int/1575.0; // 120 635 1275 is the original mix
 	// player.frequency=9000;
 	player.attack_ms=round(1000.0/player.frequency);
@@ -909,7 +921,7 @@ function calculate_player_stats(player)
 	player.heal=0;
 	if(player.type=="priest") player.heal=player.attack;
 	player.output=max(5,player.output);
-	if(player.output) player.attack=player.attack*player.output/100.0;
+	player.attack*=player.output/100.0;
 	if(player.s.damage_received) player.attack+=player.s.damage_received.amount*4/100;
 	["attack","heal","hp","mp","max_hp","max_mp","range","mp_cost","resistance","armor"].forEach(function(prop){
 		player[prop]=round(player[prop]);
