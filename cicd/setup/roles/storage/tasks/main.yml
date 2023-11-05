@@ -12,6 +12,5 @@
         storage_mounted: "{{ mount_info.rc == 0 }}"
 
 - name: Notify handler to mount the volume if not already mounted
-  meta: notify
   when: not volume_mounted
   notify: Mount Volume
