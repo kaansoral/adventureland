@@ -1,7 +1,7 @@
 ---
 - name: Upload Game files
   ansible.posix.synchronize:
-    src: /../../../
+    src: ./../../../
     dest: /opt/adventureland
     rsync_opts:
       - "--exclude=./cicd"
