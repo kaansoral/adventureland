@@ -3,6 +3,7 @@
   ansible.posix.synchronize:
     src: ./../../../
     dest: /opt/adventureland
+    delete: true
     rsync_opts:
       - "--exclude=./cicd"
       - "--exclude=./.github"
