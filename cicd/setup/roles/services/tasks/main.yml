@@ -3,12 +3,10 @@
   template:
     src: master_server.service.j2
     dest: "/etc/systemd/system/dev_appserver.service"
-  meta: notify
   notify: Reload Services
 
 - name: Create Game Server service
   template:
     src: game_server.service.j2
     dest: "/etc/systemd/system/game_server.service"
-  meta: notify
   notify: Reload Services
