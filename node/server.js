@@ -9698,7 +9698,7 @@ function init_io() {
 					instances[player.in].players[player.id] = player;
 					pmap_add(player);
 
-					name_to_id.get(player.name) = socket.id;
+					name_to_id.set(player.name, socket.id);
 					id_to_id[player.id] = socket.id;
 
 					cache_player_items(player);
