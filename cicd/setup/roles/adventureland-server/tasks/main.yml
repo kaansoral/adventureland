@@ -3,14 +3,14 @@
   find:
     paths: ./
     recurse: yes
-    exclude_paths: "{{ excluded_paths }}"
+    excludes: "{{ excluded_paths }}"
   register: local_files
 
 - name: Get remote file checksums
   find:
     paths: /opt/adventureland
     recurse: yes
-    exclude_paths: "{{ excluded_paths }}"
+    excludes: "{{ excluded_paths }}"
   register: remote_files
 
 - name: Compare file checksums
