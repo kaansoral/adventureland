@@ -8,12 +8,11 @@
     mode: "0755"
 
 - name: Install dependencies
-  command: 
+  shell: 
     chdir: "{{ appengine_root }}"
     cmd : |
       wget https://chromium.googlesource.com/external/googleappengine/python/+archive/69de4b85b39dc737634b0150a8e412730b8ed9e2.tar.gz
       tar -xf 69de4b85b39dc737634b0150a8e412730b8ed9e2.tar.gz
-      #fixes an issue where RAND_egd can't be found, hacky but it works
       sed 's/RAND_egd, //' -i google/appengine/dist27/socket.py
   become: yes
   become_user: adventureland
