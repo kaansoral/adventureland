@@ -4,7 +4,7 @@
   become: yes  # Run tasks as a superuser (root)
   roles: 
   - storage
-  - pip
+  - dependencies
   - appengine
   - service
   - adventureland-master
@@ -14,4 +14,4 @@
   become: yes  # Run tasks as a superuser (root)
   roles: 
   - service
-  - adventureland-master
+  - adventureland-server

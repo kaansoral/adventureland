@@ -1,3 +1,4 @@
 pip_version: 2.7
 volume_id: 100034037
 mount_point: "/opt/storage"
+appengine_root: "/opt/appengine"
