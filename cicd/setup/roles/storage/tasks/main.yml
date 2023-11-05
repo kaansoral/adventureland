@@ -11,6 +11,11 @@
       set_fact:
         storage_mounted: "{{ mount_info.rc == 0 }}"
 
-- name: Notify handler to mount the volume if not already mounted
+- name: Mount the storage volume
   when: not volume_mounted
-  notify: Mount Volume
+  become: true
+  mount:
+    path: "{{ mount_point }}"
+    src: "/dev/disk/by-id/scsi-0HC_Volume_{{ volume_id }}"
+    fstype: ext4  
+    state: mounted
