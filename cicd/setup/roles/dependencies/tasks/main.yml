@@ -1,7 +1,7 @@
 - name: Install dependencies
   shell: |
     wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
-    sudo python2.7 get-pip.py
+    python2.7 get-pip.py
     pip2.7 check
     pip2.7 install lxml
   become: yes
