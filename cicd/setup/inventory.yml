@@ -12,6 +12,10 @@ game-servers:
     EU_I:
       ansible_host: 128.140.75.45
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      region: EU
+      name: I
     US_I:
       ansible_host: 5.78.95.83
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      region: US
+      name: I
