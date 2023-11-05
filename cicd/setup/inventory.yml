@@ -5,6 +5,8 @@ master-servers:
     master:
       ansible_host: 157.90.225.102
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      region: EU
+      name: Master  
 game-servers:
   vars:
     ansible_user: root
