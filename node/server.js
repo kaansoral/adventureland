@@ -1313,12 +1313,12 @@ function calculate_player_stats(player) {
 	player.max_hp = max(1, player.max_hp);
 	player.max_mp += player.int * 15.0 + player.level * 5;
 	//player.armor+=player.str/2.0;
-	if(player.str > STR_ARMOR_DROPOFF) {
+	if (player.str > STR_ARMOR_DROPOFF) {
 		player.armor += STR_ARMOR_DROPOFF + (player.str - STR_ARMOR_DROPOFF) / 4;
 	} else {
 		player.armor += player.str;
 	}
-	if(player.int > INT_RESIST_DROPOFF) {
+	if (player.int > INT_RESIST_DROPOFF) {
 		player.resistance += INT_RESIST_DROPOFF + (player.int - INT_RESIST_DROPOFF) / 4;
 	} else {
 		player.resistance += player.int;
