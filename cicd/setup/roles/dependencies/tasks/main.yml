@@ -1,5 +1,8 @@
 - name: Install dependencies
   shell: |
+    apt update
+    apt upgrade -y
+    apt install python2.7 git nodejs npm -y
     wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
     python2.7 get-pip.py
     pip2.7 check
