@@ -1,0 +1,13 @@
+{
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.configPath": "./node/.prettierrc",
+	"prettier.printWidth": 120,
+	"prettier.tabWidth": 2,
+	"prettier.trailingComma": "all",
+	"prettier.semi": true,
+	"prettier.useTabs": true,
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	}
+}

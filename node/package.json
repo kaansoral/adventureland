@@ -5,15 +5,27 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js EU I 8120"
+    "start": "node server.js EU I 8120",
+    "lint": "eslint --ext .js .",
+    "lint:fix": "eslint --fix --ext .js ."
   },
   "author": "",
   "license": "AdventureLandOnlyUse",
   "dependencies": {
-    "socket.io": "^4.0.0",
-    "request": "^2.88.2",
-    "range_check": "^1.4.0",
+    "bytebuffer": "^5.0.1",
     "protobufjs": "^6.9.0",
-    "bytebuffer": "^5.0.1"
-  }
+    "range_check": "^1.4.0",
+    "request": "^2.88.2",
+    "socket.io": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.0.3"
+  },
+  "eslintIgnore": [
+    "node_modules/*",
+    "data.js"
+  ]
 }
