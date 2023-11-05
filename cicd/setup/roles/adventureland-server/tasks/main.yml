@@ -1,23 +1,8 @@
 ---
-- name: Get local file checksums
-  find:
-    paths: ./
-    recurse: yes
-    excludes: "{{ excluded_paths }}"
-  register: local_files
-
-- name: Get remote file checksums
-  find:
-    paths: /opt/adventureland
-    recurse: yes
-    excludes: "{{ excluded_paths }}"
-  register: remote_files
-
-- name: Compare file checksums
-  assert:
-    that: "{{ item.stat.md5 == remote_files.files[0].stat.md5 }}"
-    fail_msg: "Files are different!"
-  loop: "{{ local_files.files }}"
-  loop_control:
-    label: "{{ item.path }}"
-  notify: Copy Files
+- name: Upload Game files
+  ansible.posix.synchronize:
+    src: /../../../
+    dest: /opt/adventureland
+    rsync_opts:
+      - "--exclude=./cicd"
+      - "--exclude=./.github"
