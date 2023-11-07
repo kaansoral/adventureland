@@ -707,15 +707,15 @@ def update_characters(user,reason=None,name=None,shells=0):
 				ip=server.actual_ip
 				if is_sdk: ip="0.0.0.0"
 				if not reason:
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="cupdate",spass=secrets.SERVER_MASTER,cash=user.cash,id=character.info.name,ncash=shells)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="cupdate",spass=secrets.ACCESS_MASTER,cash=user.cash,id=character.info.name,ncash=shells)
 				elif reason=="friends":
 					try: ndb.transaction(set_friends,xg=True,retries=0)
 					except: log_trace_i()
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="new_friend",spass=secrets.SERVER_MASTER,name=name,friends=user.friends,id=character.info.name)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="new_friend",spass=secrets.ACCESS_MASTER,name=name,friends=user.friends,id=character.info.name)
 				elif reason=="not_friends":
 					try: ndb.transaction(set_friends,xg=True,retries=0)
 					except: log_trace_i()
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="lost_friend",spass=secrets.SERVER_MASTER,name=name,friends=user.friends,id=character.info.name)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="lost_friend",spass=secrets.ACCESS_MASTER,name=name,friends=user.friends,id=character.info.name)
 					#character_emit(character,"friend",{"event":"update","friends":user.friends})
 			except: log_trace()
 
@@ -1045,13 +1045,13 @@ def verify_steam_installs():
 def server_eval(server,code,data={}):
 	ip=server.actual_ip
 	if is_sdk: ip="0.0.0.0"
-	return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.SERVER_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
+	return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 
 def server_eval_safe(server,code,data={}):
 	try:
 		ip=server.actual_ip
 		if is_sdk: ip="0.0.0.0"
-		return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.SERVER_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
+		return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 	except:
 		log_trace()
 		return None
