@@ -5692,6 +5692,9 @@ function init_io() {
 				if (offering && G.items[offering.name].type != "offering") {
 					return socket.emit("game_response", "compound_invalid_offering");
 				}
+				if (!scroll) {
+					return socket.emit("game_response", "compound_no_scroll");
+				}
 				if (!item0 || (item0.level || 0) != data.clevel) {
 					return fail_response("no_item");
 				}
