@@ -1,7 +1,0 @@
----
-- name: Copy Files
-  synchronize:
-    src: "{{ item.path }}"
-    dest: "/path/to/remote/files/{{ item.path | basename }}"
-  loop: "{{ local_files.files }}"
-  when: item.stat.md5 != remote_files.files[0].stat.md5

@@ -1,0 +1,4 @@
+---
+excluded_paths:
+  - /.github
+  - /cicd
