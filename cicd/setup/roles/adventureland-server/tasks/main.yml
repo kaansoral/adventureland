@@ -1,13 +1,4 @@
 ---
-- name: Upload Game files
-  ansible.posix.synchronize:
-    src: ./../../../../../
-    dest: /opt/adventureland
-    delete: true
-    rsync_opts:
-      - "--exclude=./cicd"
-      - "--exclude=./.github"
-
 - name: Enable service
   systemd:
     name: game_server
