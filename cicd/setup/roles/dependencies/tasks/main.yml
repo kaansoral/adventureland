@@ -13,6 +13,7 @@
     apt install python2.7 git nodejs npm -y
     wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
     python2.7 get-pip.py
+    rm get-pip.py
     pip2.7 check
     pip2.7 install lxml
   become: yes
