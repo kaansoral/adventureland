@@ -1,11 +1,11 @@
 ---
-- name: Create Master Server service
+- name: Create Master Server secrets
   template:
     src: secrets.py.j2
     dest: "/opt/adventureland/secrets.py"
   notify: Reload Services
 
-- name: Create Master Server service
+- name: Create Game Server secrets
   template:
     src: variables.js.j2
     dest: "/opt/adventureland/node/variables.js"
