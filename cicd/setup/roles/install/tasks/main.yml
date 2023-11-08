@@ -7,3 +7,8 @@
     rsync_opts:
       - "--exclude=./cicd"
       - "--exclude=./.github"
+      
+- name: Install npm Packages
+  shell: 
+    chdir: /opt/adventureland/node
+    cmd: npm install
