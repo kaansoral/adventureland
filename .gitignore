@@ -11,3 +11,7 @@
 *.pem
 *.pub
 /scripts/test.js
+
+# System Files
+.DS_Store
+Thumbs.db
