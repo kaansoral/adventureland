@@ -1673,6 +1673,20 @@ function create_new_item(name, quantity) {
 	return new_item;
 }
 
+function create_new_sitem(item, quantity) {
+	let s_item = create_new_item(item.name, quantity);
+	if (item.v) {
+		s_item.v = item.v;
+	}
+	if (item.data) {
+		s_item.data = item.data;
+	}
+	if (item.p) {
+		s_item.p = item.p;
+	}
+	return s_item;
+}
+
 function aadd_item(player, new_item) {
 	// admin [24/06/23]
 	add_item(player, new_item, { announce: false });
@@ -6990,13 +7004,7 @@ function init_io() {
 				}
 
 				if (item.q) {
-					s_item = create_new_item(item.name, data.q);
-					if (item.v) {
-						s_item.v = item.v;
-					}
-					if (item.data) {
-						s_item.data = item.data;
-					}
+					s_item = create_new_sitem(item, data.q);
 					num = add_item(receiver, s_item, { announce: false });
 				} else {
 					s_item = item;
@@ -7460,7 +7468,7 @@ function init_io() {
 			}
 
 			if (item.q) {
-				num = add_item(player, create_new_item(item.name, data.q), { announce: false });
+				num = add_item(player, create_new_sitem(item, data.q), { announce: false });
 			} else {
 				num = add_item(player, item, { announce: false });
 			}
