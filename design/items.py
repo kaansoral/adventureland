@@ -4517,7 +4517,6 @@ materials={
 		"name":"CX Jar",
 		"explanation":"An appearance liquified and stored inside a jar.",
 		"exclusive":True,
-		"s":True,
 		"g":1,
 	},
 	"emotionjar":{
