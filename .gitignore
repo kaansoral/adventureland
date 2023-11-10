@@ -11,3 +11,4 @@
 *.pem
 *.pub
 /scripts/test.js
+.DS_Store
