@@ -1,4 +1,4 @@
-var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
+var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
 
 if(!f.in_args("nocheck") && f.read_file("~/thegame/stack/tocheck.txt")) // nocheck doesn't work [23/01/17]
 {
