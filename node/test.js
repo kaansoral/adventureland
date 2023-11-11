@@ -1,13 +1,14 @@
-var crypto=require('crypto');
-var protobuf=require('protobufjs'),ByteBuffer=require('bytebuffer');
+var crypto = require("crypto");
+var protobuf = require("protobufjs");
+var ByteBuffer = require("bytebuffer");
 
 function symmetricDecrypt(input, key, checkHmac) {
-	var aesIv = crypto.createDecipheriv('aes-256-ecb', key, '');
+	var aesIv = crypto.createDecipheriv("aes-256-ecb", key, "");
 	aesIv.setAutoPadding(false);
 	aesIv.end(input.slice(0, 16));
 	var iv = aesIv.read();
 
-	var aesData = crypto.createDecipheriv('aes-256-cbc', key, iv);
+	var aesData = crypto.createDecipheriv("aes-256-cbc", key, iv);
 	aesData.end(input.slice(16));
 	var plaintext = aesData.read();
 
@@ -24,7 +25,7 @@ function symmetricDecrypt(input, key, checkHmac) {
 	}
 
 	return plaintext;
-};
+}
 
 function parseAppTicket(ticket) {
 	// https://github.com/SteamRE/SteamKit/blob/master/Resources/Structs/steam3_appticket.hsl
@@ -70,11 +71,16 @@ function parseAppTicket(ticket) {
 		// Start reading the ownership ticket
 		let ownershipTicketOffset = ticket.offset;
 		let ownershipTicketLength = ticket.readUint32(); // including itself, for some reason
-		if (ownershipTicketOffset + ownershipTicketLength != ticket.limit && ownershipTicketOffset + ownershipTicketLength + 128 != ticket.limit) {
+		if (
+			ownershipTicketOffset + ownershipTicketLength != ticket.limit &&
+			ownershipTicketOffset + ownershipTicketLength + 128 != ticket.limit
+		) {
 			return null;
 		}
 
-		let i, j, dlc;
+		let i;
+		let j;
+		let dlc;
 
 		details.version = ticket.readUint32();
 		details.steamID = ticket.readUint64().toString();
@@ -117,34 +123,54 @@ function parseAppTicket(ticket) {
 
 		let date = new Date();
 		details.isExpired = details.ownershipTicketExpires < date;
-		details.hasValidSignature = !!details.signature && SteamCrypto.verifySignature(ticket.slice(ownershipTicketOffset, ownershipTicketOffset + ownershipTicketLength).toBuffer(), details.signature);
+		details.hasValidSignature =
+			!!details.signature &&
+			SteamCrypto.verifySignature(
+				ticket.slice(ownershipTicketOffset, ownershipTicketOffset + ownershipTicketLength).toBuffer(),
+				details.signature,
+			);
 		details.isValid = !details.isExpired && (!details.signature || details.hasValidSignature);
 	} catch (ex) {
-		console.log("parseAppTicket: "+ex);
+		console.log("parseAppTicket: " + ex);
 		return details;
 		return null; // not a valid ticket
 	}
 
 	return details;
+}
+
+var proto = {
+	nested: {
+		EncryptedAppTicket: {
+			fields: {
+				ticketVersionNo: { type: "uint32", id: 1 },
+				crcEncryptedticket: { type: "uint32", id: 2 },
+				cbEncrypteduserdata: { type: "uint32", id: 3 },
+				cbEncryptedAppownershipticket: { type: "uint32", id: 4 },
+				encryptedTicket: { type: "bytes", id: 5 },
+			},
+		},
+	},
 };
+var proto_root = protobuf.Root.fromJSON(proto);
+var EncryptedAppTicket = proto_root.lookupType("EncryptedAppTicket");
 
-var proto={ "nested": {EncryptedAppTicket: { fields: 
-			{ ticketVersionNo: { type: 'uint32', id: 1 },
-			crcEncryptedticket: { type: 'uint32', id: 2 },
-			cbEncrypteduserdata: { type: 'uint32', id: 3 },
-			cbEncryptedAppownershipticket: { type: 'uint32', id: 4 },
-			encryptedTicket: { type: 'bytes', id: 5 } } }}};
-var proto_root=protobuf.Root.fromJSON(proto);
-var EncryptedAppTicket=proto_root.lookupType("EncryptedAppTicket");
-
-
-var outer=EncryptedAppTicket.decode(new Buffer("080110a7e59890031815204f2a80014527ad8cccd8cd9b7d3260529556004ddf0454a1c2e8543495b1eb72b3dff44d9d67555798ef44b7e3f97cf86d3bf1bc3f84a91de415c382b0d96033c8e5398f2b775bcb004f5487c651d81ef410d7d2917cbb407713397d2c29a455b6852eac7db1a0e52248585bd5440ef07de54b7519f67eefbad5420d97b77ef7e35450af","hex"));
-var decrypted=symmetricDecrypt(outer.encryptedTicket,new Buffer("8af5c487af6c7709ef1a4e6e2275fcc0a90f57ae4319de793fca3d7ed8655520","hex"));
+var outer = EncryptedAppTicket.decode(
+	new Buffer(
+		"080110a7e59890031815204f2a80014527ad8cccd8cd9b7d3260529556004ddf0454a1c2e8543495b1eb72b3dff44d9d67555798ef44b7e3f97cf86d3bf1bc3f84a91de415c382b0d96033c8e5398f2b775bcb004f5487c651d81ef410d7d2917cbb407713397d2c29a455b6852eac7db1a0e52248585bd5440ef07de54b7519f67eefbad5420d97b77ef7e35450af",
+		"hex",
+	),
+);
+var decrypted = symmetricDecrypt(
+	outer.encryptedTicket,
+	new Buffer("8af5c487af6c7709ef1a4e6e2275fcc0a90f57ae4319de793fca3d7ed8655520", "hex"),
+);
 let userData = decrypted.slice(0, outer.cbEncrypteduserdata);
 let ownershipTicketLength = decrypted.readUInt32LE(outer.cbEncrypteduserdata);
-let ownershipTicket = parseAppTicket(decrypted.slice(outer.cbEncrypteduserdata, outer.cbEncrypteduserdata + ownershipTicketLength));
+let ownershipTicket = parseAppTicket(
+	decrypted.slice(outer.cbEncrypteduserdata, outer.cbEncrypteduserdata + ownershipTicketLength),
+);
 if (ownershipTicket) {
 	ownershipTicket.userData = userData.toString();
 }
 console.log(ownershipTicket);
-

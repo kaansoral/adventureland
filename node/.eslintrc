@@ -1,0 +1,25 @@
+{
+  "extends": ["eslint:recommended", "eslint-config-prettier"],
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 10
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "no-constant-condition": "off",
+    "no-dupe-else-if": "off",
+    "indent": "off",
+    "no-empty": "warn",
+    "no-inner-declarations": "warn",
+    "no-unreachable": "warn",
+    "no-undef": "warn",
+    "no-unused-vars": "warn",
+    "no-redeclare": "warn",
+    "curly": "error",
+    "prettier/prettier": "error",
+    "one-var": ["error", "never"],
+    "no-sequences": "error"
+  }
+}
