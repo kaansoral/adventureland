@@ -3,7 +3,6 @@ resource "hcloud_server" "server" {
   image       = "debian-11"
   server_type = "cpx21"
   datacenter  = var.datacenter
-  user_data   = data.cloudinit_config.master.rendered
   ssh_keys    = var.ssh_keys
   public_net {
     ipv4         = hcloud_primary_ip.ip.id

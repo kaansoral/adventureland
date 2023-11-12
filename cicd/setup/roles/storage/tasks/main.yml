@@ -1,0 +1,22 @@
+- name: Check if storage volume is mounted
+  become: true
+  block:
+    - name: Get mount information for the specified volume
+      shell: "mount | grep '{{ mount_point }}'"
+      register: mount_info
+      changed_when: false
+      ignore_errors: true
+      no_log: true
+      
+    - name: Check if the volume is mounted
+      set_fact:
+        storage_mounted: "{{ mount_info.rc == 0 }}"
+
+- name: Mount the storage volume
+  when: not storage_mounted
+  become: true
+  mount:
+    path: "{{ mount_point }}"
+    src: "/dev/disk/by-id/scsi-0HC_Volume_{{ volume_id }}"
+    fstype: ext4  
+    state: mounted

@@ -1,0 +1,12 @@
+---
+- name: Enable service
+  systemd:
+    name: game_server
+    enabled: true
+  become: yes
+
+- name: Start or Restart service
+  systemd:
+    name: game_server
+    state: started
+  become: yes
