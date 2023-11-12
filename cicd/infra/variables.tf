@@ -3,5 +3,5 @@ variable "hcloud_token" {
 }
 
 variable "base_url" {
-  default="adventure.land"
+  default= "adventure.land"
 }

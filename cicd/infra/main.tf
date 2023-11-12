@@ -49,7 +49,7 @@ data "hcloud_ssh_keys" "admin" {
 
 locals {
   secrets = {
-    base_url      = "http://al.nexusnull.com"
+    base_url      = var.base_url
     keyword       = random_string.keyword.result
     master        = random_string.master.result
     server_master = random_string.server_master.result
