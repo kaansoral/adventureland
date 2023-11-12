@@ -6,7 +6,11 @@ master-servers:
       ansible_host: 157.90.225.102
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
       region: EU
-      name: Master  
+      name: Master
+      master: lvcbkmlnfsdpoijqwe
+      bot_key: plasdjpoiepojkqwe
+      keyword: pokokipdaspkoadsmlewqokpi
+      base_url: http://al.nexusnull.com
 game-servers:
   vars:
     ansible_user: root
@@ -16,8 +20,16 @@ game-servers:
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
       region: EU
       name: I
+      master: lvcbkmlnfsdpoijqwe
+      bot_key: plasdjpoiepojkqwe
+      keyword: pokokipdaspkoadsmlewqokpi
+      base_url: http://al.nexusnull.com
     US_I:
       ansible_host: 5.78.95.83
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
       region: US
       name: I
+      master: lvcbkmlnfsdpoijqwe
+      bot_key: plasdjpoiepojkqwe
+      keyword: pokokipdaspkoadsmlewqokpi
+      base_url: http://al.nexusnull.com
