@@ -8,5 +8,5 @@
 - name: Start or Restart service
   systemd:
     name: game_server
-    state: started
+    state: restarted
   become: yes

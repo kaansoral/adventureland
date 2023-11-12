@@ -8,6 +8,6 @@
 - name: Start or Restart service
   systemd:
     name: master_server
-    state: started
+    state: restarted
   become: yes
 
