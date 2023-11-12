@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    concurrency: staging_environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -31,6 +32,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
         env:
           TF_VAR_hcloud_token: ${{ secrets.hcloud_token }}
+          TF_VAR_base_url: ${{ secrets.TF_VAR_base_url }}
           TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
           TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
           TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
