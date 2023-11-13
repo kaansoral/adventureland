@@ -4113,7 +4113,13 @@ function init_io() {
 					} else {
 						climit = round(climit / 4);
 					}
-					if (method == "cm") {
+					if (method == "equip_batch") {
+						var cost = 1;
+						if(Array.isArray(data)) {
+							cost += data.length / 2;
+						}
+						add_call_cost(CC.equip * cost);
+					} else if (method == "cm") {
 						var add = 1;
 						var len = data.message.length;
 						var mult = 1;
@@ -6370,6 +6376,71 @@ function init_io() {
 			} catch (e) {
 				server_log("upgrade_e " + e);
 				return socket.emit("game_response", { response: "exception", place: "upgrade", failed: true });
+			}
+		});
+		socket.on("equip_batch", function (data) {
+			let player = players[socket.id];
+			if (!player) {
+				return;
+			}
+			player.c = {};
+			if (Array.isArray(data)) {
+				data.length = min(data.length, 15);
+				let resolve = [];
+				let penalty = 0;
+				for (let i = 0; i < data.length; i++) {
+					let equip_def = data[i];
+					equip_def.num = to_number(equip_def.num);
+					if (equip_def.num >= player.items.length) {
+						resolve.push("invalid");
+						break;
+					}
+					var item = player.items[equip_def.num];
+					if (!item) {
+						resolve.push("no_item");
+						break;
+					}
+					if (item.b) {
+						resolve.push("item_blocked");
+						break;
+					}
+					if (item.name == "placeholder") {
+						resolve.push("item_placeholder");
+						break;
+					}
+					var def = G.items[item.name];
+					def.iname = item.name; //just for orb name checks [08/10/16]
+					if (!def) {
+						resolve.push("no_item");
+						break;
+					}
+					var slot = equip_def.slot || def.type;
+					var comp = can_equip_item(player, def, slot);
+					if (comp == "no") {
+						resolve.push("cant_equip");
+						break;
+					}
+					slot = comp;
+					var existing = player.slots[slot];
+					player.slots[slot] = player.items[equip_def.num];
+					player.cslots[slot] = cache_item(player.slots[slot]);
+					if (existing && existing.b) {
+						existing = null;
+					}
+					player.items[equip_def.num] = existing;
+					player.citems[equip_def.num] = cache_item(existing);
+					penalty += 120;
+					resolve.push({ num: equip_def.num, slot });
+				}
+				if("penalty_cd" in player.s) {
+					player.s.penalty_cd.ms = min(player.s.penalty_cd.ms + penalty, 120000);
+				} else {
+					player.s.penalty_cd = { ms: penalty };
+				}
+				resend(player, "reopen+u+cid");
+				success_response("data", resolve);
+			} else {
+				return fail_response("invalid");
 			}
 		});
 		socket.on("equip", function (data) {
