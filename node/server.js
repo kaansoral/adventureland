@@ -3476,7 +3476,7 @@ function complete_attack(attacker, target, info) {
 						add_condition(target, c);
 					}
 				});
-				if (info.procs && attacker.a.sugarrush && Math.random() < (attacker.a.sugarrush.attr0 / 100)) {
+				if (info.procs && attacker.a.sugarrush && Math.random() < attacker.a.sugarrush.attr0 / 100) {
 					def.trigger = "sugarrush";
 					add_condition(attacker, "sugarrush");
 					disappearing_text(attacker.socket, attacker, "SUGAR RUSH!", { xy: 1, size: "huge", color: "sugar", nv: 1 }); //target.is_player&&"huge"||undefined
