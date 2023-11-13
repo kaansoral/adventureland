@@ -3300,6 +3300,7 @@ weapons={
 		"explosion":20,
 		"skin":"glolipop",
 		"ability":"sugarrush",
+		"attr0": 0.25,
 		"damage_type":"physical",
 		"upgrade":{
 			"explosion":2,
@@ -3317,6 +3318,7 @@ weapons={
 		"skin":"ololipop",
 		"damage_type":"physical",
 		"ability":"sugarrush",
+		"attr0": 0.25,
 		"upgrade":{
 			"explosion":2,
 		},
@@ -3497,6 +3499,7 @@ weapons={
 		"skin":"candycanesword",
 		"damage_type":"physical",
 		"ability":"sugarrush",
+		"attr0": 0.25,
 		"upgrade":{
 			"range":-0.5,
 		},
