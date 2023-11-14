@@ -7186,7 +7186,7 @@ function init_io() {
 					player.items[data.num] = item;
 					player.citems[data.num] = cache_item(player.items[data.num]);
 
-					const announce = !item.silent ?? true;
+					const announce = !item.silent;
 
 					if (announce && !player.stealth) {
 						broadcast("server_message", {
