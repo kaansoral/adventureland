@@ -1,5 +1,5 @@
 var secret="ac2b8964dffd4a8a961f427d1257d8f7";
-var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
+var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
 var iap = require('in-app-purchase');
 var receipt_file="/Applications/Adventure Land.app/Contents/_MASReceipt/receipt";
 //var receipt_file="/Users/kaan/Downloads/receipt";

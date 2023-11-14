@@ -1,4 +1,4 @@
-var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
+var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
 require(process.env.HOME+"/thegame/scripts/data.js");
 
 servers.forEach(function(server){
