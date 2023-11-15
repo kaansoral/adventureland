@@ -7188,6 +7188,18 @@ function init_io() {
 					item.level = 13;
 					player.items[data.num] = item;
 					player.citems[data.num] = cache_item(player.items[data.num]);
+
+					const announce = !item.silent;
+
+					if (announce && !player.stealth) {
+						broadcast("server_message", {
+							message: player.name + " received " + item_to_phrase(item),
+							color: colors.server_success,
+							item: cache_item(item),
+							type: "server_usuccess",
+							name: player.name,
+						});
+					}
 				}
 				xy_emit(G.maps.spookytown.ref.poof, "upgrade", { type: "poof", success: 1 });
 			}
