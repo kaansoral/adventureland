@@ -4115,7 +4115,7 @@ function init_io() {
 					}
 					if (method == "cm") {
 						var add = 1;
-						var len = data.message.length;
+						var len = JSON.stringify(data.message).length;
 						var mult = 1;
 						if (len > 100) {
 							add = 2;
@@ -4125,6 +4125,9 @@ function init_io() {
 							add = 10;
 						} else if (len > 50000) {
 							add = 20;
+						}
+						if (!Array.isArray(data.to)) {
+							data.to = [data.to];
 						}
 						// console.log("add: "+add+"len: "+len);
 						if (data.to.length > 1) {
