@@ -5678,6 +5678,12 @@ function init_io() {
 		socket.on("compound", function (data) {
 			try {
 				var player = players[socket.id];
+				if (!Array.isArray(data.items) || data.items.length != 3) {
+					return fail_response("no_item");
+				}
+				if (!Number.isInteger(data.items[0]) || !Number.isInteger(data.items[1]) || !Number.isInteger(data.items[2])) {
+					return fail_response("no_item");
+				}
 				var item0 = player.items[data.items[0]];
 				var item1 = player.items[data.items[1]];
 				var item2 = player.items[data.items[2]];
@@ -5698,7 +5704,7 @@ function init_io() {
 				if (!scroll) {
 					return socket.emit("game_response", "compound_no_scroll");
 				}
-				if (!item0 || (item0.level || 0) != data.clevel) {
+				if (!item0 || !item1 || !item2) {
 					return fail_response("no_item");
 				}
 				if (!player.computer && simple_distance(G.maps.main.compound, player) > B.sell_dist) {
@@ -5726,13 +5732,16 @@ function init_io() {
 				) {
 					return socket.emit("game_response", "compound_mismatch");
 				}
+				if ((item0.level || 0) != data.clevel) {
+					return fail_response("no_item");
+				}
 				if (!def.compound) {
 					return socket.emit("game_response", "compound_cant");
 				}
 				if (scroll_def.type != "cscroll" || grade > scroll_def.grade) {
 					return socket.emit("game_response", "compound_incompatible_scroll");
 				}
-				if (data.items[0] == data.items[1] || data.items[1] == data.items[2] || data.items[0] == data.items[2]) {
+				if (item0 == item1 || item1 == item2 || item0 == item2) {
 					return socket.emit("game_response", { response: "misc_fail", place: "compound", failed: true });
 				}
 				if (item0.l || item1.l || item2.l) {
