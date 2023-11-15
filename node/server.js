@@ -4126,7 +4126,7 @@ function init_io() {
 						} else if (len > 50000) {
 							add = 20;
 						}
-						if(!Array.isArray(data.to)) {
+						if (!Array.isArray(data.to)) {
 							data.to = [data.to];
 						}
 						// console.log("add: "+add+"len: "+len);
