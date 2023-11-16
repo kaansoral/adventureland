@@ -4089,13 +4089,17 @@ function init_io() {
 		}
 
 		var original_on = socket.on;
+
+		if(mode.log_all) {
+			socket.onAny((data) => {
+				console.log("'" + method + "': " + JSON.stringify(data));
+			})
+		}
+
 		socket.on = function (method, f) {
 			// takes the "f" function, the function thats sent to socket.on, wraps it into a "g" function
-			var g = function (data) {
+			var g = function (data, callback) {
 				ls_method = method;
-				if (mode.log_all) {
-					console.log("'" + method + "': " + JSON.stringify(data));
-				}
 				try {
 					var climit = limits.calls;
 					var name = "_observer";
@@ -4142,7 +4146,7 @@ function init_io() {
 						socket.emit("disconnect_reason", "limitdc");
 						socket.disconnect();
 					} else {
-						f(data);
+						f(data, callback);
 					}
 				} catch (e) {
 					try {
@@ -8039,7 +8043,7 @@ function init_io() {
 			}
 			xy_emit(player, "emotion", { name: data.name, player: player.name });
 		});
-		socket.on("skill", function (data) {
+		socket.on("skill", function (data, callback) {
 			var player = players[socket.id];
 			if (!player) {
 				return;
@@ -9129,20 +9133,28 @@ function init_io() {
 				if (!reject.response) {
 					reject.response = "data";
 				}
-				socket.emit("game_response", reject);
+				if (callback) {
+					callback(reject);
+				} else {
+					socket.emit("game_response", reject);
+				}
 			} else if (resolve) {
-				socket.emit("game_response", resolve);
+				if (callback) {
+					callback(resolve);
+				} else {
+					socket.emit("game_response", resolve);
+				}
 			}
 		});
 		socket.on("click", function (data) {
 			// You'll be missed 'click' method, the 'click' method was the first method on this server, it was used as an attack method up until [17/06/18] - at this date, there were 3 simple conditions left which checked for data.button=="right" - the game matured so that all interactions were handled client-side rather than processed server-side
 			socket.emit("game_log", "'click' method is deprecated.");
 		});
-		socket.on("attack", function (data) {
-			return socket.fs.skill({ name: "attack", id: data.id });
+		socket.on("attack", function (data, callback) {
+			return socket.fs.skill({ name: "attack", id: data.id }, callback);
 		});
-		socket.on("heal", function (data) {
-			return socket.fs.skill({ name: "heal", id: data.id });
+		socket.on("heal", function (data, callback) {
+			return socket.fs.skill({ name: "heal", id: data.id }, callback);
 		});
 		socket.on("interaction", function (data) {
 			var player = players[socket.id];

@@ -1139,6 +1139,721 @@ function init_demo()
 }
 
 var first_welcome=false;
+
+function handle_game_response(data) {
+	if(is_sdk) console.log(["game_response",data]);
+	var response=data.response||data;
+	try{
+		var cevent=false,event=false;
+		if(data.cevent) cevent=data.cevent,delete data.cevent; if(cevent===true) cevent=response;
+		if(data.event) event=data.event,delete data.event; if(event===true) event=response;
+		
+		if(data.place && data.failed)
+		{
+			if(!data.reason) data.reason=data.response;
+			reject_deferred(data.place,data);
+		}
+		else if(data.place)
+		{
+			resolve_deferred(data.place,data);
+		}
+		if(cevent) call_code_function("trigger_character_event",cevent,data);
+		if(event) call_code_function("trigger_event",event,data);
+
+	}catch(e){
+		if(is_sdk) console.error(e);
+	}
+	if(response=="upgrade_success" || response=="upgrade_fail") u_retain_t=options.retain_upgrades;
+	draw_trigger(function(){
+		if(response=="elixir"){ ui_log("Consumed the elixir","gray"); d_text("YUM",character,{color:"elixir"}); }
+		else if(response=="data"){}
+		else if(response=="invalid"){
+			d_text("INVALID",character);
+		}
+		else if(response=="error")
+		{
+			ui_error("Server error!");
+		}
+		else if(response=="storage_full")
+		{
+			ui_log("Storage is full","gray");
+			reopen();
+		}
+		else if(response=="safety_check");
+		else if(response=="inventory_full")
+		{
+			d_text("NO SPACE",character);
+			ui_log("Inventory is full","gray");
+			reopen();
+		}
+		else if(response=="home_set")
+		{
+			render_interaction({auto:true,skin:"lionsuit",message:"Set your home to: "+data.home});
+			character.home=data.home;
+		}
+		else if(response=="sh_time")
+		{
+			render_interaction({auto:true,skin:"lionsuit",message:"You can't change your home server for another "+to_pretty_float(data.hours)+" hours!"});
+		}
+		else if(response=="invalid") ui_log("Invalid","gray");
+		else if(response=="only_in_home") ui_log("You can only do this in your home server!","gray");
+		else if(response=="cant_when_sick")
+		{
+			if(data.goblin) render_interaction({auto:true,skin:G.npcs.lostandfound.skin,message:"Ugh, you're sick! Come back when you are healed!"});
+			ui_log("You can't do this when you are sick!","gray");
+		}
+		else if(response=="party_full") ui_log("The party is full","gray");
+		else if(response=="already_in_party") ui_log("Already in this party","gray");
+		else if(response=="player_gone") ui_log(data.name+" is gone","gray");
+		else if(response=="invitation_expired") ui_log("Invitation expired","gray");
+		else if(response=="request_expired") ui_log("Request expired","gray");
+		else if(response=="cant_kick") ui_log("You can't kick someone who's above you.","gray");
+		else if(response=="compound_success")
+		{
+			tut("compound");
+			ui_log("Item combination succeeded",data.up&&"#1ABEFF"||"white");
+			if(!data.stale) resolve_deferred("compound",{success:true,level:data.level,num:data.num});
+		}
+		else if(response=="compound_fail")
+		{
+			tut("compound");
+			ui_error("Item combination failed");
+			if(!data.stale) resolve_deferred("compound",{success:false,level:data.level,num:data.num});
+		}
+		else if(response=="compound_no_scroll")
+		{
+			reject_deferred("compound",{reason:"no_scroll"});
+		}
+		else if(response=="compound_in_progress")
+		{
+			ui_log("Another combination in progress","gray");
+		}
+		else if(response=="compound_invalid_offering")
+		{
+			ui_log("Offering not accepted","gray");
+			reject_deferred("compound",{reason:"offering"});
+		}
+		else if(response=="compound_mismatch")
+		{
+			ui_log("Items are different","gray");
+			reject_deferred("compound",{reason:"mismatch"});
+		}
+		else if(response=="compound_cant")
+		{
+			ui_log("Can't be combined","gray");
+			reject_deferred("compound",{reason:"not_combinable"});
+		}
+		else if(response=="compound_incompatible_scroll")
+		{
+			set_uchance("?");
+			ui_log("Incompatible scroll","gray");
+			reject_deferred("compound",{reason:"scroll"});
+		}
+		else if(response=="misc_fail")
+		{
+			ui_log(":)","#FF5D54");
+		}
+		else if(response=="upgrade_success")
+		{
+			tut("upgrade");
+			ui_log("Item upgrade succeeded","white");
+			if(!data.stale) resolve_deferred("upgrade",{success:true,level:data.level,num:data.num});
+		}
+		else if(response=="upgrade_fail")
+		{
+			tut("upgrade");
+			ui_error("Item upgrade failed");
+			if(!data.stale) resolve_deferred("upgrade",{failed:true,success:false,level:data.level,num:data.num});
+		}
+		else if(response=="upgrade_success_stat")
+		{
+			tut("addstats");
+			if(!data.stale) resolve_deferred("upgrade",{stat:true,stat_type:data.stat_type,num:data.num});
+		}
+		else if(response=="upgrade_offering_success")
+		{
+			ui_log("Offering succeeded","white");
+			if(!data.stale) resolve_deferred("upgrade",{success:true});
+		}
+		else if(response=="upgrade_no_item")
+		{
+			reject_deferred("upgrade",{reason:"no_item"});
+		}
+		else if(response=="upgrade_in_progress")
+		{
+			ui_log("Another upgrade in progress","gray");
+			reject_deferred("upgrade",{reason:"in_progress"});
+		}
+		else if(response=="mail_sending")
+		{
+			ui_log("Sending mail ...","gray");
+			hide_modal(true);
+		}
+		else if(response=="mail_failed")
+		{
+			show_alert("Mail failed, reason: "+data.reason);
+		}
+		else if(response=="mail_sent")
+		{
+			ui_log("Mail sent to "+data.to+"!","#C06978");
+		}
+		else if(response=="mail_sent")
+		{
+			ui_log("Mail sent to "+data.to+"!","#C06978");
+		}
+		else if(response=="mail_take_item_failed")
+		{
+			ui_log("Can't retrieve the item, probably you took it already","#C06978");
+			setTimeout(function(){ api_call('pull_mail'); },2000);
+			$('.takeitem').hide();
+		}
+		else if(response=="mail_item_taken")
+		{
+			ui_log("Item retrieved!","#6DAD47");
+			setTimeout(function(){ api_call('pull_mail'); },2000);
+			$('.takeitem').hide();
+		}
+		else if(response=="upgrade_no_scroll")
+		{
+			reject_deferred("upgrade",{reason:"no_scroll"});
+		}
+		else if(response=="upgrade_mismatch")
+		{
+			reject_deferred("upgrade",{reason:"mismatch"});
+		}
+		else if(response=="upgrade_invalid_offering")
+		{
+			ui_log("Offering not accepted","gray");
+			reject_deferred("upgrade",{reason:"offering"});
+		}
+		else if(response=="upgrade_cant")
+		{
+			ui_log("Can't be upgraded","gray");
+			reject_deferred("upgrade",{reason:"not_upgradeable"});
+		}
+		else if(response=="upgrade_incompatible_scroll")
+		{
+			set_uchance("?");
+			ui_log("Incompatible scroll","gray");
+			reject_deferred("upgrade",{reason:"scroll"});
+		}
+		else if(response=="upgrade_scroll_q")
+		{
+			ui_log("Need "+data.q+" scrolls","gray");
+			reject_deferred("upgrade",{reason:"scroll_quantity",need:data.q,have:data.h});
+		}
+		else if(response=="upgrade_chance" || response=="compound_chance")
+		{
+			set_uchance(data.chance);
+		}
+		else if(response=="max_level")
+		{
+			set_uchance("?");
+			ui_log("Already +"+data.level,"white");
+		}
+		else if(response=="exception")
+		{
+			ui_error("ERROR!");
+		}
+		else if(response=="got_picked") ui_log("Felt a touch","#D8866C");
+		else if(response=="picked") { yes_yes_yes(); ui_log("Got something!","#3AD585"); }
+		else if(response=="pick_failed") { no_no_no(); ui_log("Couldn't pick anything","gray"); }
+		else if(response=="nothing") ui_log("Nothing happens","gray");
+		else if(response=="inviter_gone") ui_log("Inviter gone","gray");
+		else if(response=="not_ready") d_text("NOT READY",character);
+		else if(response=="cant_equip") d_text("CAN'T EQUIP",character);
+		else if(response=="cant") d_text("CAN'T",character);
+		else if(response=="muted") d_text("MUTED",character);
+		else if(response=="cant_consume") d_text("CAN'T CONSUME",character);
+		else if(response=="giveaway") d_text("GIVEAWAY?!",character);
+		else if(response=="no_merchants") ui_log("No merchants!","gray");
+		else if(response=="join_too_late") ui_log("Too late to join","gray");
+		else if(response=="receiver_unavailable") ui_log("Receiver unavailable","gray");
+		else if(response=="no_mp")
+		{
+			d_text("NO MP",character);
+		}
+		else if(response=="friendly")
+		{
+			var safe=false,phrase="FRIENDLY";
+			if(G.maps[character.map].safe) safe=true,phrase="SAFE ZONE";
+			if(get_entity(data.id)) d_text(phrase,get_entity(data.id));
+			else d_text(phrase,character);
+			if(safe) ui_log("You can't attack in a safe zone","gray");
+		}
+		else if(response=="cooldown")
+		{
+			if(data.id && get_entity(data.id)) d_text("WAIT",get_entity(data.id));
+			else d_text("WAIT",character);
+		}
+		else if(response=="too_far") d_text("TOO FAR",data.id && get_entity(data.id) || character);
+		else if(response=="invalid_target") d_text("DOESN'T WORK",data.id && get_entity(data.id) || character);
+		else if(response=="miss")
+		{
+			if(get_entity(data.id)) d_text("MISS",get_entity(data.id));
+			else d_text("MISS",character);
+		}
+		else if(response=="disabled")
+		{
+			d_text("DISABLED",character);
+		}
+		else if(response=="attack_failed")
+		{
+			if(get_entity(data.id)) d_text("FAILED",get_entity(data.id));
+			else d_text("FAILED",character);
+			if(data.reason=="level") ui_log("Level gap higher than 10","gray");
+		}
+		else if(response=="no_skill") ui_log("Skill doesn't exist","gray");
+		else if(response=="target_alive") d_text("LOOKS LIVE?",character);
+		else if(response=="slot_occuppied") ui_log("Slot occuppied","gray");
+		else if(response=="no_target") d_text(!ctarget && "NO TARGET" || "INVALID TARGET",character);
+		else if(response=="non_friendly_target") d_text("NON FRIENDLY",character);
+		else if(response=="cant_respawn") ui_log("Can't respawn yet.","gray");
+		else if(response=="chat_slowdown") ui_log("You can't chat this fast.","gray");
+		else if(response=="not_in_party") ui_log("You are not in a party.","gray");
+		else if(response=="challenge_sent") add_chat("","Challenged "+data.name+" to duel","white");
+		else if(response=="challenge_accepted") add_chat("",data.name+" accepted the challenge!","#DF231B");
+		else if(response=="challenge_received")
+		{
+			add_challenge(data.name);
+			call_code_function("trigger_character_event","challenge",data.name);
+		}
+		else if(response=="duel_started")
+		{
+			add_duel(data.challenger,data.vs,data.id);
+			call_code_function("trigger_character_event","duel",{challenger:data.challenger,vs:data.vs,id:data.id});
+		}
+		else if(response=="no_level") { d_text("LOW LEVEL",character); }
+		else if(response=="not_in_pvp") { d_text("NO",character); }
+		else if(response=="skill_cant_incapacitated") { d_text("CAN'T USE",character); }
+		else if(response=="skill_cant_use") { d_text("CAN'T USE",character); }
+		else if(response=="skill_cant_safe") { d_text("CAN'T USE",character); }
+		else if(response=="skill_cant_item") { d_text("OUT OF AMMO",character); }
+		else if(response=="skill_cant_charges") { d_text("NO CHARGE",character); }
+		else if(response=="skill_cant_pve") { d_text("CAN'T USE",character); }
+		else if(response=="skill_cant_wtype") { ui_log("Wrong weapon","gray"); d_text("NOPE",character); }
+		else if(response=="skill_cant_slot") { ui_log("Item not equipped","gray"); d_text("NOPE",character); }
+		else if(response=="skill_cant_requirements") { ui_log("Skill requirements not met","gray"); d_text("NOPE",character); }
+		else if(response=="cruise") ui_log("Cruise speed set at "+data.speed,"gray");
+		else if(response=="exchange_existing") { d_text("WAIT",character); ui_log("Existing exchange in progress","gray"); reopen(); }
+		else if(response=="exchange_notenough") { d_text("NOT ENOUGH",character); ui_log("Need more","gray"); reopen(); }
+		else if(in_arr(response,["mistletoe_success","leather_success","candycane_success","ornament_success","seashell_success","gemfragment_success"])) { render_interaction(response); }
+		else if(in_arr(response,["donate_thx","donate_gum","donate_low"]))
+		{
+			var message;
+			if(response=="donate_thx") message="Thanks kind sir. Thanks for helping the reserve.";
+			else if(response=="donate_gum") message=to_pretty_num(data.gold)+"? "+to_pretty_num(data.gold)+"? "+to_pretty_num(data.gold)+"?! Here, take this!";
+			else if(response=="donate_low") message="They say there's no small contribution.. BUT THEY ARE OBVIOUSLY WRONG. "+to_pretty_num(data.gold)+"??!!! GET LOST";
+			ui_log("Donated "+to_pretty_num(data.gold)+" gold","gray");
+			render_interaction({auto:true,skin:"goblin",message:message});
+		}
+		else if(response=="lostandfound_info")
+		{
+			var message="Hey there! I'm in charge of taking care of our gold reserve and making sure unlooted chests are 'recycled'! ",xp=3.2;
+			if(data.gold<500000000) message+="Currently the gold reserves are low, so I'm taking a small something something out of every chest :] ",xp=4.8;
+			else if(data.gold<1000000000) message+="Currently the gold reserves are low, so I'm taking a small something out of every chest :] ",xp=4;
+			message+="Donations are always welcome, merchants get "+xp+" XP for every gold they donate!";
+			render_interaction({auto:true,skin:"goblin",message:message,button:"WHAT HAVE YOU FOUND?",onclick:function(){socket.emit('lostandfound')},button2:"DONATE",onclick2:function(){render_donate()}});
+		}
+		else if(response=="lostandfound_donate")
+		{
+			var message="Not feeling like showing my loots to cheapskates! Sorry not sorry..";
+			render_interaction({auto:true,skin:"goblin",message:message});
+		}
+		else if(response=="bet_xshot")
+		{
+			var message="Get lost critter! You can't gamble substanced here!";
+			render_interaction({auto:true,skin:"bouncer",message:message});
+			if(Math.random()<0.5) d_text("MOVE B****",get_npc('bouncer'),{color:"#F7A9C5"});
+			else d_text("GET OUT THE WAY",get_npc('bouncer'),{color:"#F7A9C5"});
+		}
+		else if(response=="cant_escape")
+		{
+			d_text("CAN'T ESCAPE",character);
+			transporting=false;
+		}
+		else if(response=="cant_enter")
+		{
+			ui_log("Can't enter","gray");
+			transporting=false;
+		}
+		else if(response=="cant_in_bank")
+		{
+			ui_log("Operation unavailable in bank","gray");
+		}
+		else if(response=="bank_unavailable") ui_log("Bank unavailable","gray");
+		else if(response=="bank_withdraw") ui_log("Withdrew "+to_pretty_num(data.gold)+" gold","gray");
+		else if(response=="bank_store") ui_log("Stored "+to_pretty_num(data.gold)+" gold","gray");
+		else if(response=="bank_new_pack")
+		{
+			if(data.gold) ui_log("Opened an account for "+to_pretty_num(data.gold)+" gold","gray");
+			else ui_log("Opened an account for "+to_pretty_num(data.shells)+" shells","gray");
+		}
+		else if(response=="locked") ui_log("Locked","gray");
+		else if(response=="seller_gone") ui_log("Seller gone","gray");
+		else if(response=="buyer_gone") ui_log("Buyer gone","gray");
+		else if(response=="item_gone") ui_log("Item gone","gray");
+		else if(response=="hmm") ui_log("Hmm.","gray");
+		else if(response=="sneaky") ui_log("Sneaky sneaky.","gray");
+		else if(response=="need_auth") ui_log("To perform this action your account needs a game client authorization","gray");
+		else if(response=="giveaway_join") ui_log(data.name+" joined your giveaway!","gray");
+		else if(response=="bank_opi")
+		{
+			ui_log("Bank connection in progress","gray");
+			transporting=false;
+		}
+		else if(response=="bank_opx")
+		{
+			if(data.name) ui_log(data.name+" is in the bank","gray");
+			else if(data.reason=="locked") ui_log("The door is locked","gray");
+			else ui_log("Bank is busy right now","gray");
+			transporting=false;
+		}
+		else if(response=="only_in_bank")
+		{
+			ui_log("Only works inside the bank","gray");
+		}
+		else if(response=="already_unlocked")
+		{
+			ui_log("Already unlocked","gray");
+		}
+		else if(response=="door_unlocked")
+		{
+			v_shake();
+			ui_log("Door unlocked!","#9D9CFF");
+		}
+		else if(response=="bank_pack_unlocked")
+		{
+			v_shake();
+			ui_log("Teller unlocked!","#9D9CFF");
+		}
+		else if(response=="transport_failed")
+		{
+			transporting=false;
+		}
+		else if(response=="loot_failed")
+		{
+			close_chests();
+			ui_log("Can't loot","gray");
+		}
+		else if(response=="no_space")
+		{
+			d_text("NO SPACE",character);
+		}
+		else if(response=="loot_no_space")
+		{
+			close_chests();
+			d_text("NO SPACE",character);
+		}
+		else if(response=="transport_cant_reach")
+		{
+			ui_log("Can't reach","gray");
+			transporting=false;
+		}
+		else if(response=="transport_cant_item")
+		{
+			ui_log("Item not found","gray");
+			transporting=false;
+		}
+		else if(response=="transport_cant_dampened")
+		{
+			ui_log("Can't transport inside a dampening field","#A772D0");
+			transporting=false;
+			v_shake_i2(character);
+		}
+		else if(response=="transport_cant_protection")
+		{
+			ui_log("The door is protected!","#A7282E");
+			transporting=false;
+		}
+		else if(response=="transport_cant_locked")
+		{
+			ui_log("The door is locked!","#A7282E");
+			transporting=false;
+		}
+		else if(response=="not_in_this_server")
+		{
+			ui_log("Not possible in this server","#7D5B93");
+		}
+		else if(response=="destroyed")
+		{
+			ui_log("Destroyed "+G.items[data.name].name,"gray");
+		}
+		else if(response=="distance") ui_log("Get closer","gray");
+		else if(response=="trade_bspace")
+		{
+			ui_log("No space on buyer","gray");
+		}
+		else if(response=="bank_restrictions")
+		{
+			ui_log("You can't buy, trade or upgrade in the bank.","gray");
+		}
+		else if(response=="tavern_too_late") ui_log("Too late to bet!","gray");
+		else if(response=="tavern_not_yet") ui_log("Not taking bets yet!","gray");
+		else if(response=="tavern_too_many_bets") ui_log("You have too many active bets","gray");
+		else if(response=="tavern_dice_exist") ui_log("You already have a bet","gray");
+		else if(response=="tavern_gold_not_enough") ui_log("Gold reserve insufficient to cover this bet","gray");
+		else if(response=="condition")
+		{
+			var def=G.conditions[data.name],from=data.from;
+			if(def.debuff)
+			{
+				ui_log("Afflicted by "+def.name,"gray");
+			}
+			else if(from)
+			{
+				ui_log(from+" buffed you with "+def.name,"gray");
+			}
+			else
+			{
+				ui_log("Buffed with "+def.name,"gray");
+			}
+		}
+		else if(response=="cx_sent")
+		{
+			ui_log("Cosmetics sent: "+data.cx,"#DB7AA9");
+			character.acx=data.acx;
+		}
+		else if(response=="cx_received")
+		{
+			ui_log("Cosmetics received: "+data.cx,"#A888DD");
+			character.acx=data.acx;
+		}
+		else if(response=="cx_new")
+		{
+			if($("#topleftcornerdialog").length)
+			{
+				var html="";
+				html+="<div style='padding: 16px; border: 5px solid gray; background: black; text-align: center; min-width: 60px'>";
+					html+="<div style='margin-bottom: 8px; margin-top: 4px'>"+cx_sprite(data.name)+"</div>";
+					html+="<div class='gamebutton' onclick='$(this).parent().remove()'>OK</div>";
+				html+="</div>";
+				$("#topleftcornerdialog").html(html);
+			}
+			else ui_log("Cosmetics: "+data.name,"#DB7AA9");
+			character.acx=data.acx;
+		}
+		else if(response=="emotion_new")
+		{
+			ui_log("Emotion: "+data.name,"#DB7AA9");
+			character.emx=data.emx;
+		}
+		else if(response=="cx_not_found")
+		{
+			ui_log("Cosmetics not found","gray");
+		}
+		else if(response=="ex_condition")
+		{
+			var def=G.conditions[data.name];
+			// ui_log(def.name+" faded away ...","gray");
+		}
+		else if(response=="buy_success")
+		{
+			ui_log("Spent "+to_pretty_num(data.cost)+" gold","gray");
+		}
+		else if(response=="buy_cant_npc")
+		{
+			ui_log("Can't buy this from an NPC","gray");
+		}
+		else if(response=="buy_cant_space" || response=="cant_space")
+		{
+			d_text("SPACE",character);
+			ui_log("No space","gray");
+		}
+		else if(response=="buy_cost")
+		{
+			d_text("INSUFFICIENT",character);
+			ui_log("Not enough gold","gray");
+		}
+		else if(response=="emotion_cant")
+		{
+			d_text("NO",character);
+		}
+		else if(response=="emotion_cooldown")
+		{
+			d_text("WAIT",character);
+		}
+		else if(response=="cant_reach") ui_log("Can't reach","gray");
+		else if(response=="no_item") ui_log("No item provided","gray");
+		else if(response=="not_enough") ui_log("Not enough","gray");
+		else if(response=="buyer_gold") ui_log("Not enough gold on buyer","gray");
+		else if(response=="dont_have_enough") ui_log("Don't have enough","gray");
+		else if(response=="op_unavailable") add_chat("","Operation unavailable","gray");
+		else if(response=="send_no_space") add_chat("","No space on receiver","gray");
+		else if(response=="send_no_item") add_chat("","Nothing to send","gray");
+		else if(response=="send_no_cx") add_chat("","Don't have or not enough","gray");
+		else if(response=="send_diff_owner") add_chat("","This is not one of ours!","gray");
+		else if(response=="insufficient_q") ui_log("There aren't that many available","gray");
+		else if(response=="signed_up") ui_log("Signed Up!","#39BB54");
+		else if(response=="item_placeholder")
+		{
+			ui_log("Slot is occupied","gray");
+		}
+		else if(response=="item_locked")
+		{
+			ui_log("Item is locked","gray");
+		}
+		else if(response=="item_blocked")
+		{
+			ui_log("Item is in use","gray");
+		}
+		else if(response=="item_received" || response=="item_sent")
+		{
+			var additional="";
+			if(data.q>1) additional="(x"+data.q+")";
+			if(response=="item_received")
+			{
+				add_chat("","Received "+G.items[data.item].name+additional+" from "+data.name,"#6AB3FF");
+				call_code_function("trigger_character_event","item_received",{name:data.item,q:data.q,num:data.num,'from':data.name});
+			}
+			else
+			{
+				add_chat("","Sent "+G.items[data.item].name+additional+" to "+data.name,"#6AB3FF");
+				call_code_function("trigger_character_event","item_sent",{name:data.item,q:data.q,num:data.num,'to':data.name});
+			}
+		}
+		else if(response=="add_item")
+		{
+			var additional="",prefix="a ";
+			if(data.item.q>1) additional="(x"+data.item.q+")",prefix="";
+			add_log("Received "+prefix+G.items[data.item.name].name+additional,"#3B9358");
+		}
+		else if(response=="gold_not_enough") ui_log("Not enough gold","gray");
+		else if(response=="gold_sent")
+		{
+			add_chat("","Sent "+to_pretty_num(data.gold)+" gold to "+data.name,colors.gold);
+			call_code_function("trigger_character_event","gold_sent",{amount:data.gold,'to':data.name});
+		}
+		else if(response=="gold_received" && !data.name) add_log("Received "+to_pretty_num(data.gold)+" gold","gray");
+		else if(response=="gold_received")
+		{
+			add_chat("","Received "+to_pretty_num(data.gold)+" gold from "+data.name,colors.gold);
+			call_code_function("trigger_character_event","gold_received",{amount:data.gold,'from':data.name});
+		}
+		else if(response=="friend_already") add_chat("","You are already friends","gray");
+		else if(response=="friend_rleft") add_chat("","Player left the server","gray");
+		else if(response=="friend_rsent") add_chat("","Friend request sent","#409BDD");
+		else if(response=="friend_expired") add_chat("","Request expired","#409BDD");
+		else if(response=="friend_failed") add_chat("","Friendship failed, reason: "+data.reason,"#409BDD");
+		else if(response=="unfriend_failed") add_chat("","Unfriend failed, reason: "+data.reason,"#409BDD");
+		else if(response=="gold_use") ui_log("Used "+to_pretty_num(data.gold)+" gold","gray");
+		else if(response=="slots_success") ui_log("Machine went crazy","#9733FF");
+		else if(response=="slots_fail") ui_log("Machine got stuck","gray");
+		else if(response=="craft")
+		{
+			var def=G.craft[data.name];
+			if(def.cost) ui_log("Spent "+to_pretty_num(def.cost)+" gold","gray");
+			ui_log("Received "+G.items[data.name].name,"white");
+		}
+		else if(response=="dismantle")
+		{
+			var def=G.dismantle[data.name];
+			if(data.level) ui_log("Spent "+to_pretty_num(data.cost||10000)+" gold","gray");
+			else ui_log("Spent "+to_pretty_num(def.cost)+" gold","gray");
+			ui_log("Dismantled "+G.items[data.name].name,"#CF5C65");
+		}
+		else if(response=="defeated_by_a_monster")
+		{
+			ui_log("Defeated by "+G.monsters[data.monster].name,"#571F1B");
+			ui_log("Lost "+to_pretty_num(data.xp)+" experience","gray");
+		}
+		else if(response=="dismantle_cant") ui_log("Can't dismantle","gray");
+		else if(response=="inv_size") ui_log("Need more empty space","gray");
+		else if(response=="craft_cant") ui_log("Can't craft","gray");
+		else if(response=="craft_cant_quantity") ui_log("Not enough materials","gray");
+		else if(response=="craft_atleast2") ui_log("You need to provide at least 2 items","gray");
+		else if(response=="target_lock")
+		{
+			ui_log("Target Acquired: "+G.monsters[data.monster].name,"#F00B22");
+		}
+		else if(response=="charm_failed")
+		{
+			ui_log("Couldn't charm ...","gray");
+		}
+		else if(response=="cooldown")
+		{
+			d_text("NOT READY",character);
+		}
+		else if(response=="blink_failed")
+		{
+			no_no_no();
+			d_text("NO",character);
+			last_blink_pressed=inception;
+		}
+		else if(response=="dash_failed")
+		{
+			no_no_no();
+			d_text("CANT",character);
+		}
+		else if(response=="magiport_sent")
+		{
+			ui_log("Magiportation request sent to "+data.id,"white");
+		}
+		else if(response=="magiport_gone")
+		{
+			ui_log("Magiporter gone","gray");
+			no_no_no(2);
+		}
+		else if(response=="magiport_failed") ui_log("Magiport failed","gray"),no_no_no(2);
+		else if(response=="revive_failed") ui_log("Revival failed","gray"),no_no_no(1);
+		else if(response=="locksmith_cant")
+		{
+			ui_log("Can't lock/unlock this item","gray")
+		}
+		else if(response=="locksmith_aunlocked")
+		{
+			ui_log("Already unlocked","gray")
+		}
+		else if(response=="locksmith_alocked")
+		{
+			ui_log("Already locked","gray")
+		}
+		else if(response=="locksmith_unsealed")
+		{
+			ui_log("Spent 250,000 gold","gray");
+			ui_log("Unsealed the item","gray");
+			ui_log("It can be unlocked in 2 days","gray")
+		}
+		else if(response=="locksmith_unsealing")
+		{
+			ui_log("It can be unlocked in "+parseInt(data.hours)+" hours","gray")
+		}
+		else if(response=="locksmith_unlocked")
+		{
+			ui_log("Spent 250,000 gold","gray");
+			ui_log("Unlocked the item","gray");
+		}
+		else if(response=="locksmith_unseal_complete")
+		{
+			ui_log("Unlocked the item","gray");
+		}
+		else if(response=="locksmith_locked")
+		{
+			ui_log("Spent 250,000 gold","gray");
+			ui_log("Locked the item","gray");
+		}
+		else if(response=="locksmith_sealed")
+		{
+			ui_log("Spent 250,000 gold","gray");
+			ui_log("Sealed the item","gray");
+		}
+		else if(response=="monsterhunt_started" || response=="monsterhunt_already")
+		{
+			if(!character.s.monsterhunt) return;
+			if(character.s.monsterhunt.c==1) $("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Alrighty then! Now go defeat "+G.monsters[character.s.monsterhunt.id].name+" and come back here!"},"return_html"));
+			else $("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Alrighty then! Now go defeat "+character.s.monsterhunt.c+" "+G.monsters[character.s.monsterhunt.id].name+"'s and come back here!"},"return_html"));
+		}
+		else if(response=="monsterhunt_merchant")
+		{
+			$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Huh? A merchant? On the hunt? Hahahahahahahaha ... Go sell cake or something ..."},"return_html"));
+		}
+		else
+		{
+			console.log("Missed game_response: "+response);
+		}
+	});
+}
+
 function init_socket(args)
 {
 	if(!args) args={};
@@ -1533,719 +2248,7 @@ function init_socket(args)
 	socket.on('skill_timeout',function(data){
 		skill_timeout(data.name,data.ms);
 	});
-	socket.on('game_response',function(data){
-		if(is_sdk) console.log(["game_response",data]);
-		var response=data.response||data;
-		try{
-			var cevent=false,event=false;
-			if(data.cevent) cevent=data.cevent,delete data.cevent; if(cevent===true) cevent=response;
-			if(data.event) event=data.event,delete data.event; if(event===true) event=response;
-			
-			if(data.place && data.failed)
-			{
-				if(!data.reason) data.reason=data.response;
-				reject_deferred(data.place,data);
-			}
-			else if(data.place)
-			{
-				resolve_deferred(data.place,data);
-			}
-			if(cevent) call_code_function("trigger_character_event",cevent,data);
-			if(event) call_code_function("trigger_event",event,data);
-
-		}catch(e){
-			if(is_sdk) console.error(e);
-		}
-		if(response=="upgrade_success" || response=="upgrade_fail") u_retain_t=options.retain_upgrades;
-		draw_trigger(function(){
-			if(response=="elixir"){ ui_log("Consumed the elixir","gray"); d_text("YUM",character,{color:"elixir"}); }
-			else if(response=="data"){}
-			else if(response=="invalid"){
-				d_text("INVALID",character);
-			}
-			else if(response=="error")
-			{
-				ui_error("Server error!");
-			}
-			else if(response=="storage_full")
-			{
-				ui_log("Storage is full","gray");
-				reopen();
-			}
-			else if(response=="safety_check");
-			else if(response=="inventory_full")
-			{
-				d_text("NO SPACE",character);
-				ui_log("Inventory is full","gray");
-				reopen();
-			}
-			else if(response=="home_set")
-			{
-				render_interaction({auto:true,skin:"lionsuit",message:"Set your home to: "+data.home});
-				character.home=data.home;
-			}
-			else if(response=="sh_time")
-			{
-				render_interaction({auto:true,skin:"lionsuit",message:"You can't change your home server for another "+to_pretty_float(data.hours)+" hours!"});
-			}
-			else if(response=="invalid") ui_log("Invalid","gray");
-			else if(response=="only_in_home") ui_log("You can only do this in your home server!","gray");
-			else if(response=="cant_when_sick")
-			{
-				if(data.goblin) render_interaction({auto:true,skin:G.npcs.lostandfound.skin,message:"Ugh, you're sick! Come back when you are healed!"});
-				ui_log("You can't do this when you are sick!","gray");
-			}
-			else if(response=="party_full") ui_log("The party is full","gray");
-			else if(response=="already_in_party") ui_log("Already in this party","gray");
-			else if(response=="player_gone") ui_log(data.name+" is gone","gray");
-			else if(response=="invitation_expired") ui_log("Invitation expired","gray");
-			else if(response=="request_expired") ui_log("Request expired","gray");
-			else if(response=="cant_kick") ui_log("You can't kick someone who's above you.","gray");
-			else if(response=="compound_success")
-			{
-				tut("compound");
-				ui_log("Item combination succeeded",data.up&&"#1ABEFF"||"white");
-				if(!data.stale) resolve_deferred("compound",{success:true,level:data.level,num:data.num});
-			}
-			else if(response=="compound_fail")
-			{
-				tut("compound");
-				ui_error("Item combination failed");
-				if(!data.stale) resolve_deferred("compound",{success:false,level:data.level,num:data.num});
-			}
-			else if(response=="compound_no_scroll")
-			{
-				reject_deferred("compound",{reason:"no_scroll"});
-			}
-			else if(response=="compound_in_progress")
-			{
-				ui_log("Another combination in progress","gray");
-			}
-			else if(response=="compound_invalid_offering")
-			{
-				ui_log("Offering not accepted","gray");
-				reject_deferred("compound",{reason:"offering"});
-			}
-			else if(response=="compound_mismatch")
-			{
-				ui_log("Items are different","gray");
-				reject_deferred("compound",{reason:"mismatch"});
-			}
-			else if(response=="compound_cant")
-			{
-				ui_log("Can't be combined","gray");
-				reject_deferred("compound",{reason:"not_combinable"});
-			}
-			else if(response=="compound_incompatible_scroll")
-			{
-				set_uchance("?");
-				ui_log("Incompatible scroll","gray");
-				reject_deferred("compound",{reason:"scroll"});
-			}
-			else if(response=="misc_fail")
-			{
-				ui_log(":)","#FF5D54");
-			}
-			else if(response=="upgrade_success")
-			{
-				tut("upgrade");
-				ui_log("Item upgrade succeeded","white");
-				if(!data.stale) resolve_deferred("upgrade",{success:true,level:data.level,num:data.num});
-			}
-			else if(response=="upgrade_fail")
-			{
-				tut("upgrade");
-				ui_error("Item upgrade failed");
-				if(!data.stale) resolve_deferred("upgrade",{failed:true,success:false,level:data.level,num:data.num});
-			}
-			else if(response=="upgrade_success_stat")
-			{
-				tut("addstats");
-				if(!data.stale) resolve_deferred("upgrade",{stat:true,stat_type:data.stat_type,num:data.num});
-			}
-			else if(response=="upgrade_offering_success")
-			{
-				ui_log("Offering succeeded","white");
-				if(!data.stale) resolve_deferred("upgrade",{success:true});
-			}
-			else if(response=="upgrade_no_item")
-			{
-				reject_deferred("upgrade",{reason:"no_item"});
-			}
-			else if(response=="upgrade_in_progress")
-			{
-				ui_log("Another upgrade in progress","gray");
-				reject_deferred("upgrade",{reason:"in_progress"});
-			}
-			else if(response=="mail_sending")
-			{
-				ui_log("Sending mail ...","gray");
-				hide_modal(true);
-			}
-			else if(response=="mail_failed")
-			{
-				show_alert("Mail failed, reason: "+data.reason);
-			}
-			else if(response=="mail_sent")
-			{
-				ui_log("Mail sent to "+data.to+"!","#C06978");
-			}
-			else if(response=="mail_sent")
-			{
-				ui_log("Mail sent to "+data.to+"!","#C06978");
-			}
-			else if(response=="mail_take_item_failed")
-			{
-				ui_log("Can't retrieve the item, probably you took it already","#C06978");
-				setTimeout(function(){ api_call('pull_mail'); },2000);
-				$('.takeitem').hide();
-			}
-			else if(response=="mail_item_taken")
-			{
-				ui_log("Item retrieved!","#6DAD47");
-				setTimeout(function(){ api_call('pull_mail'); },2000);
-				$('.takeitem').hide();
-			}
-			else if(response=="upgrade_no_scroll")
-			{
-				reject_deferred("upgrade",{reason:"no_scroll"});
-			}
-			else if(response=="upgrade_mismatch")
-			{
-				reject_deferred("upgrade",{reason:"mismatch"});
-			}
-			else if(response=="upgrade_invalid_offering")
-			{
-				ui_log("Offering not accepted","gray");
-				reject_deferred("upgrade",{reason:"offering"});
-			}
-			else if(response=="upgrade_cant")
-			{
-				ui_log("Can't be upgraded","gray");
-				reject_deferred("upgrade",{reason:"not_upgradeable"});
-			}
-			else if(response=="upgrade_incompatible_scroll")
-			{
-				set_uchance("?");
-				ui_log("Incompatible scroll","gray");
-				reject_deferred("upgrade",{reason:"scroll"});
-			}
-			else if(response=="upgrade_scroll_q")
-			{
-				ui_log("Need "+data.q+" scrolls","gray");
-				reject_deferred("upgrade",{reason:"scroll_quantity",need:data.q,have:data.h});
-			}
-			else if(response=="upgrade_chance" || response=="compound_chance")
-			{
-				set_uchance(data.chance);
-			}
-			else if(response=="max_level")
-			{
-				set_uchance("?");
-				ui_log("Already +"+data.level,"white");
-			}
-			else if(response=="exception")
-			{
-				ui_error("ERROR!");
-			}
-			else if(response=="got_picked") ui_log("Felt a touch","#D8866C");
-			else if(response=="picked") { yes_yes_yes(); ui_log("Got something!","#3AD585"); }
-			else if(response=="pick_failed") { no_no_no(); ui_log("Couldn't pick anything","gray"); }
-			else if(response=="nothing") ui_log("Nothing happens","gray");
-			else if(response=="inviter_gone") ui_log("Inviter gone","gray");
-			else if(response=="not_ready") d_text("NOT READY",character);
-			else if(response=="cant_equip") d_text("CAN'T EQUIP",character);
-			else if(response=="cant") d_text("CAN'T",character);
-			else if(response=="muted") d_text("MUTED",character);
-			else if(response=="cant_consume") d_text("CAN'T CONSUME",character);
-			else if(response=="giveaway") d_text("GIVEAWAY?!",character);
-			else if(response=="no_merchants") ui_log("No merchants!","gray");
-			else if(response=="join_too_late") ui_log("Too late to join","gray");
-			else if(response=="receiver_unavailable") ui_log("Receiver unavailable","gray");
-			else if(response=="no_mp")
-			{
-				d_text("NO MP",character);
-			}
-			else if(response=="friendly")
-			{
-				var safe=false,phrase="FRIENDLY";
-				if(G.maps[character.map].safe) safe=true,phrase="SAFE ZONE";
-				if(get_entity(data.id)) d_text(phrase,get_entity(data.id));
-				else d_text(phrase,character);
-				if(safe) ui_log("You can't attack in a safe zone","gray");
-			}
-			else if(response=="cooldown")
-			{
-				if(data.id && get_entity(data.id)) d_text("WAIT",get_entity(data.id));
-				else d_text("WAIT",character);
-			}
-			else if(response=="too_far") d_text("TOO FAR",data.id && get_entity(data.id) || character);
-			else if(response=="invalid_target") d_text("DOESN'T WORK",data.id && get_entity(data.id) || character);
-			else if(response=="miss")
-			{
-				if(get_entity(data.id)) d_text("MISS",get_entity(data.id));
-				else d_text("MISS",character);
-			}
-			else if(response=="disabled")
-			{
-				d_text("DISABLED",character);
-			}
-			else if(response=="attack_failed")
-			{
-				if(get_entity(data.id)) d_text("FAILED",get_entity(data.id));
-				else d_text("FAILED",character);
-				if(data.reason=="level") ui_log("Level gap higher than 10","gray");
-			}
-			else if(response=="no_skill") ui_log("Skill doesn't exist","gray");
-			else if(response=="target_alive") d_text("LOOKS LIVE?",character);
-			else if(response=="slot_occuppied") ui_log("Slot occuppied","gray");
-			else if(response=="no_target") d_text(!ctarget && "NO TARGET" || "INVALID TARGET",character);
-			else if(response=="non_friendly_target") d_text("NON FRIENDLY",character);
-			else if(response=="cant_respawn") ui_log("Can't respawn yet.","gray");
-			else if(response=="chat_slowdown") ui_log("You can't chat this fast.","gray");
-			else if(response=="not_in_party") ui_log("You are not in a party.","gray");
-			else if(response=="challenge_sent") add_chat("","Challenged "+data.name+" to duel","white");
-			else if(response=="challenge_accepted") add_chat("",data.name+" accepted the challenge!","#DF231B");
-			else if(response=="challenge_received")
-			{
-				add_challenge(data.name);
-				call_code_function("trigger_character_event","challenge",data.name);
-			}
-			else if(response=="duel_started")
-			{
-				add_duel(data.challenger,data.vs,data.id);
-				call_code_function("trigger_character_event","duel",{challenger:data.challenger,vs:data.vs,id:data.id});
-			}
-			else if(response=="no_level") { d_text("LOW LEVEL",character); }
-			else if(response=="not_in_pvp") { d_text("NO",character); }
-			else if(response=="skill_cant_incapacitated") { d_text("CAN'T USE",character); }
-			else if(response=="skill_cant_use") { d_text("CAN'T USE",character); }
-			else if(response=="skill_cant_safe") { d_text("CAN'T USE",character); }
-			else if(response=="skill_cant_item") { d_text("OUT OF AMMO",character); }
-			else if(response=="skill_cant_charges") { d_text("NO CHARGE",character); }
-			else if(response=="skill_cant_pve") { d_text("CAN'T USE",character); }
-			else if(response=="skill_cant_wtype") { ui_log("Wrong weapon","gray"); d_text("NOPE",character); }
-			else if(response=="skill_cant_slot") { ui_log("Item not equipped","gray"); d_text("NOPE",character); }
-			else if(response=="skill_cant_requirements") { ui_log("Skill requirements not met","gray"); d_text("NOPE",character); }
-			else if(response=="cruise") ui_log("Cruise speed set at "+data.speed,"gray");
-			else if(response=="exchange_existing") { d_text("WAIT",character); ui_log("Existing exchange in progress","gray"); reopen(); }
-			else if(response=="exchange_notenough") { d_text("NOT ENOUGH",character); ui_log("Need more","gray"); reopen(); }
-			else if(in_arr(response,["mistletoe_success","leather_success","candycane_success","ornament_success","seashell_success","gemfragment_success"])) { render_interaction(response); }
-			else if(in_arr(response,["donate_thx","donate_gum","donate_low"]))
-			{
-				var message;
-				if(response=="donate_thx") message="Thanks kind sir. Thanks for helping the reserve.";
-				else if(response=="donate_gum") message=to_pretty_num(data.gold)+"? "+to_pretty_num(data.gold)+"? "+to_pretty_num(data.gold)+"?! Here, take this!";
-				else if(response=="donate_low") message="They say there's no small contribution.. BUT THEY ARE OBVIOUSLY WRONG. "+to_pretty_num(data.gold)+"??!!! GET LOST";
-				ui_log("Donated "+to_pretty_num(data.gold)+" gold","gray");
-				render_interaction({auto:true,skin:"goblin",message:message});
-			}
-			else if(response=="lostandfound_info")
-			{
-				var message="Hey there! I'm in charge of taking care of our gold reserve and making sure unlooted chests are 'recycled'! ",xp=3.2;
-				if(data.gold<500000000) message+="Currently the gold reserves are low, so I'm taking a small something something out of every chest :] ",xp=4.8;
-				else if(data.gold<1000000000) message+="Currently the gold reserves are low, so I'm taking a small something out of every chest :] ",xp=4;
-				message+="Donations are always welcome, merchants get "+xp+" XP for every gold they donate!";
-				render_interaction({auto:true,skin:"goblin",message:message,button:"WHAT HAVE YOU FOUND?",onclick:function(){socket.emit('lostandfound')},button2:"DONATE",onclick2:function(){render_donate()}});
-			}
-			else if(response=="lostandfound_donate")
-			{
-				var message="Not feeling like showing my loots to cheapskates! Sorry not sorry..";
-				render_interaction({auto:true,skin:"goblin",message:message});
-			}
-			else if(response=="bet_xshot")
-			{
-				var message="Get lost critter! You can't gamble substanced here!";
-				render_interaction({auto:true,skin:"bouncer",message:message});
-				if(Math.random()<0.5) d_text("MOVE B****",get_npc('bouncer'),{color:"#F7A9C5"});
-				else d_text("GET OUT THE WAY",get_npc('bouncer'),{color:"#F7A9C5"});
-			}
-			else if(response=="cant_escape")
-			{
-				d_text("CAN'T ESCAPE",character);
-				transporting=false;
-			}
-			else if(response=="cant_enter")
-			{
-				ui_log("Can't enter","gray");
-				transporting=false;
-			}
-			else if(response=="cant_in_bank")
-			{
-				ui_log("Operation unavailable in bank","gray");
-			}
-			else if(response=="bank_unavailable") ui_log("Bank unavailable","gray");
-			else if(response=="bank_withdraw") ui_log("Withdrew "+to_pretty_num(data.gold)+" gold","gray");
-			else if(response=="bank_store") ui_log("Stored "+to_pretty_num(data.gold)+" gold","gray");
-			else if(response=="bank_new_pack")
-			{
-				if(data.gold) ui_log("Opened an account for "+to_pretty_num(data.gold)+" gold","gray");
-				else ui_log("Opened an account for "+to_pretty_num(data.shells)+" shells","gray");
-			}
-			else if(response=="locked") ui_log("Locked","gray");
-			else if(response=="seller_gone") ui_log("Seller gone","gray");
-			else if(response=="buyer_gone") ui_log("Buyer gone","gray");
-			else if(response=="item_gone") ui_log("Item gone","gray");
-			else if(response=="hmm") ui_log("Hmm.","gray");
-			else if(response=="sneaky") ui_log("Sneaky sneaky.","gray");
-			else if(response=="need_auth") ui_log("To perform this action your account needs a game client authorization","gray");
-			else if(response=="giveaway_join") ui_log(data.name+" joined your giveaway!","gray");
-			else if(response=="bank_opi")
-			{
-				ui_log("Bank connection in progress","gray");
-				transporting=false;
-			}
-			else if(response=="bank_opx")
-			{
-				if(data.name) ui_log(data.name+" is in the bank","gray");
-				else if(data.reason=="locked") ui_log("The door is locked","gray");
-				else ui_log("Bank is busy right now","gray");
-				transporting=false;
-			}
-			else if(response=="only_in_bank")
-			{
-				ui_log("Only works inside the bank","gray");
-			}
-			else if(response=="already_unlocked")
-			{
-				ui_log("Already unlocked","gray");
-			}
-			else if(response=="door_unlocked")
-			{
-				v_shake();
-				ui_log("Door unlocked!","#9D9CFF");
-			}
-			else if(response=="bank_pack_unlocked")
-			{
-				v_shake();
-				ui_log("Teller unlocked!","#9D9CFF");
-			}
-			else if(response=="transport_failed")
-			{
-				transporting=false;
-			}
-			else if(response=="loot_failed")
-			{
-				close_chests();
-				ui_log("Can't loot","gray");
-			}
-			else if(response=="no_space")
-			{
-				d_text("NO SPACE",character);
-			}
-			else if(response=="loot_no_space")
-			{
-				close_chests();
-				d_text("NO SPACE",character);
-			}
-			else if(response=="transport_cant_reach")
-			{
-				ui_log("Can't reach","gray");
-				transporting=false;
-			}
-			else if(response=="transport_cant_item")
-			{
-				ui_log("Item not found","gray");
-				transporting=false;
-			}
-			else if(response=="transport_cant_dampened")
-			{
-				ui_log("Can't transport inside a dampening field","#A772D0");
-				transporting=false;
-				v_shake_i2(character);
-			}
-			else if(response=="transport_cant_protection")
-			{
-				ui_log("The door is protected!","#A7282E");
-				transporting=false;
-			}
-			else if(response=="transport_cant_locked")
-			{
-				ui_log("The door is locked!","#A7282E");
-				transporting=false;
-			}
-			else if(response=="not_in_this_server")
-			{
-				ui_log("Not possible in this server","#7D5B93");
-			}
-			else if(response=="destroyed")
-			{
-				ui_log("Destroyed "+G.items[data.name].name,"gray");
-			}
-			else if(response=="distance") ui_log("Get closer","gray");
-			else if(response=="trade_bspace")
-			{
-				ui_log("No space on buyer","gray");
-			}
-			else if(response=="bank_restrictions")
-			{
-				ui_log("You can't buy, trade or upgrade in the bank.","gray");
-			}
-			else if(response=="tavern_too_late") ui_log("Too late to bet!","gray");
-			else if(response=="tavern_not_yet") ui_log("Not taking bets yet!","gray");
-			else if(response=="tavern_too_many_bets") ui_log("You have too many active bets","gray");
-			else if(response=="tavern_dice_exist") ui_log("You already have a bet","gray");
-			else if(response=="tavern_gold_not_enough") ui_log("Gold reserve insufficient to cover this bet","gray");
-			else if(response=="condition")
-			{
-				var def=G.conditions[data.name],from=data.from;
-				if(def.debuff)
-				{
-					ui_log("Afflicted by "+def.name,"gray");
-				}
-				else if(from)
-				{
-					ui_log(from+" buffed you with "+def.name,"gray");
-				}
-				else
-				{
-					ui_log("Buffed with "+def.name,"gray");
-				}
-			}
-			else if(response=="cx_sent")
-			{
-				ui_log("Cosmetics sent: "+data.cx,"#DB7AA9");
-				character.acx=data.acx;
-			}
-			else if(response=="cx_received")
-			{
-				ui_log("Cosmetics received: "+data.cx,"#A888DD");
-				character.acx=data.acx;
-			}
-			else if(response=="cx_new")
-			{
-				if($("#topleftcornerdialog").length)
-				{
-					var html="";
-					html+="<div style='padding: 16px; border: 5px solid gray; background: black; text-align: center; min-width: 60px'>";
-						html+="<div style='margin-bottom: 8px; margin-top: 4px'>"+cx_sprite(data.name)+"</div>";
-						html+="<div class='gamebutton' onclick='$(this).parent().remove()'>OK</div>";
-					html+="</div>";
-					$("#topleftcornerdialog").html(html);
-				}
-				else ui_log("Cosmetics: "+data.name,"#DB7AA9");
-				character.acx=data.acx;
-			}
-			else if(response=="emotion_new")
-			{
-				ui_log("Emotion: "+data.name,"#DB7AA9");
-				character.emx=data.emx;
-			}
-			else if(response=="cx_not_found")
-			{
-				ui_log("Cosmetics not found","gray");
-			}
-			else if(response=="ex_condition")
-			{
-				var def=G.conditions[data.name];
-				// ui_log(def.name+" faded away ...","gray");
-			}
-			else if(response=="buy_success")
-			{
-				ui_log("Spent "+to_pretty_num(data.cost)+" gold","gray");
-			}
-			else if(response=="buy_cant_npc")
-			{
-				ui_log("Can't buy this from an NPC","gray");
-			}
-			else if(response=="buy_cant_space" || response=="cant_space")
-			{
-				d_text("SPACE",character);
-				ui_log("No space","gray");
-			}
-			else if(response=="buy_cost")
-			{
-				d_text("INSUFFICIENT",character);
-				ui_log("Not enough gold","gray");
-			}
-			else if(response=="emotion_cant")
-			{
-				d_text("NO",character);
-			}
-			else if(response=="emotion_cooldown")
-			{
-				d_text("WAIT",character);
-			}
-			else if(response=="cant_reach") ui_log("Can't reach","gray");
-			else if(response=="no_item") ui_log("No item provided","gray");
-			else if(response=="not_enough") ui_log("Not enough","gray");
-			else if(response=="buyer_gold") ui_log("Not enough gold on buyer","gray");
-			else if(response=="dont_have_enough") ui_log("Don't have enough","gray");
-			else if(response=="op_unavailable") add_chat("","Operation unavailable","gray");
-			else if(response=="send_no_space") add_chat("","No space on receiver","gray");
-			else if(response=="send_no_item") add_chat("","Nothing to send","gray");
-			else if(response=="send_no_cx") add_chat("","Don't have or not enough","gray");
-			else if(response=="send_diff_owner") add_chat("","This is not one of ours!","gray");
-			else if(response=="insufficient_q") ui_log("There aren't that many available","gray");
-			else if(response=="signed_up") ui_log("Signed Up!","#39BB54");
-			else if(response=="item_placeholder")
-			{
-				ui_log("Slot is occupied","gray");
-			}
-			else if(response=="item_locked")
-			{
-				ui_log("Item is locked","gray");
-			}
-			else if(response=="item_blocked")
-			{
-				ui_log("Item is in use","gray");
-			}
-			else if(response=="item_received" || response=="item_sent")
-			{
-				var additional="";
-				if(data.q>1) additional="(x"+data.q+")";
-				if(response=="item_received")
-				{
-					add_chat("","Received "+G.items[data.item].name+additional+" from "+data.name,"#6AB3FF");
-					call_code_function("trigger_character_event","item_received",{name:data.item,q:data.q,num:data.num,'from':data.name});
-				}
-				else
-				{
-					add_chat("","Sent "+G.items[data.item].name+additional+" to "+data.name,"#6AB3FF");
-					call_code_function("trigger_character_event","item_sent",{name:data.item,q:data.q,num:data.num,'to':data.name});
-				}
-			}
-			else if(response=="add_item")
-			{
-				var additional="",prefix="a ";
-				if(data.item.q>1) additional="(x"+data.item.q+")",prefix="";
-				add_log("Received "+prefix+G.items[data.item.name].name+additional,"#3B9358");
-			}
-			else if(response=="gold_not_enough") ui_log("Not enough gold","gray");
-			else if(response=="gold_sent")
-			{
-				add_chat("","Sent "+to_pretty_num(data.gold)+" gold to "+data.name,colors.gold);
-				call_code_function("trigger_character_event","gold_sent",{amount:data.gold,'to':data.name});
-			}
-			else if(response=="gold_received" && !data.name) add_log("Received "+to_pretty_num(data.gold)+" gold","gray");
-			else if(response=="gold_received")
-			{
-				add_chat("","Received "+to_pretty_num(data.gold)+" gold from "+data.name,colors.gold);
-				call_code_function("trigger_character_event","gold_received",{amount:data.gold,'from':data.name});
-			}
-			else if(response=="friend_already") add_chat("","You are already friends","gray");
-			else if(response=="friend_rleft") add_chat("","Player left the server","gray");
-			else if(response=="friend_rsent") add_chat("","Friend request sent","#409BDD");
-			else if(response=="friend_expired") add_chat("","Request expired","#409BDD");
-			else if(response=="friend_failed") add_chat("","Friendship failed, reason: "+data.reason,"#409BDD");
-			else if(response=="unfriend_failed") add_chat("","Unfriend failed, reason: "+data.reason,"#409BDD");
-			else if(response=="gold_use") ui_log("Used "+to_pretty_num(data.gold)+" gold","gray");
-			else if(response=="slots_success") ui_log("Machine went crazy","#9733FF");
-			else if(response=="slots_fail") ui_log("Machine got stuck","gray");
-			else if(response=="craft")
-			{
-				var def=G.craft[data.name];
-				if(def.cost) ui_log("Spent "+to_pretty_num(def.cost)+" gold","gray");
-				ui_log("Received "+G.items[data.name].name,"white");
-			}
-			else if(response=="dismantle")
-			{
-				var def=G.dismantle[data.name];
-				if(data.level) ui_log("Spent "+to_pretty_num(data.cost||10000)+" gold","gray");
-				else ui_log("Spent "+to_pretty_num(def.cost)+" gold","gray");
-				ui_log("Dismantled "+G.items[data.name].name,"#CF5C65");
-			}
-			else if(response=="defeated_by_a_monster")
-			{
-				ui_log("Defeated by "+G.monsters[data.monster].name,"#571F1B");
-				ui_log("Lost "+to_pretty_num(data.xp)+" experience","gray");
-			}
-			else if(response=="dismantle_cant") ui_log("Can't dismantle","gray");
-			else if(response=="inv_size") ui_log("Need more empty space","gray");
-			else if(response=="craft_cant") ui_log("Can't craft","gray");
-			else if(response=="craft_cant_quantity") ui_log("Not enough materials","gray");
-			else if(response=="craft_atleast2") ui_log("You need to provide at least 2 items","gray");
-			else if(response=="target_lock")
-			{
-				ui_log("Target Acquired: "+G.monsters[data.monster].name,"#F00B22");
-			}
-			else if(response=="charm_failed")
-			{
-				ui_log("Couldn't charm ...","gray");
-			}
-			else if(response=="cooldown")
-			{
-				d_text("NOT READY",character);
-			}
-			else if(response=="blink_failed")
-			{
-				no_no_no();
-				d_text("NO",character);
-				last_blink_pressed=inception;
-			}
-			else if(response=="dash_failed")
-			{
-				no_no_no();
-				d_text("CANT",character);
-			}
-			else if(response=="magiport_sent")
-			{
-				ui_log("Magiportation request sent to "+data.id,"white");
-			}
-			else if(response=="magiport_gone")
-			{
-				ui_log("Magiporter gone","gray");
-				no_no_no(2);
-			}
-			else if(response=="magiport_failed") ui_log("Magiport failed","gray"),no_no_no(2);
-			else if(response=="revive_failed") ui_log("Revival failed","gray"),no_no_no(1);
-			else if(response=="locksmith_cant")
-			{
-				ui_log("Can't lock/unlock this item","gray")
-			}
-			else if(response=="locksmith_aunlocked")
-			{
-				ui_log("Already unlocked","gray")
-			}
-			else if(response=="locksmith_alocked")
-			{
-				ui_log("Already locked","gray")
-			}
-			else if(response=="locksmith_unsealed")
-			{
-				ui_log("Spent 250,000 gold","gray");
-				ui_log("Unsealed the item","gray");
-				ui_log("It can be unlocked in 2 days","gray")
-			}
-			else if(response=="locksmith_unsealing")
-			{
-				ui_log("It can be unlocked in "+parseInt(data.hours)+" hours","gray")
-			}
-			else if(response=="locksmith_unlocked")
-			{
-				ui_log("Spent 250,000 gold","gray");
-				ui_log("Unlocked the item","gray");
-			}
-			else if(response=="locksmith_unseal_complete")
-			{
-				ui_log("Unlocked the item","gray");
-			}
-			else if(response=="locksmith_locked")
-			{
-				ui_log("Spent 250,000 gold","gray");
-				ui_log("Locked the item","gray");
-			}
-			else if(response=="locksmith_sealed")
-			{
-				ui_log("Spent 250,000 gold","gray");
-				ui_log("Sealed the item","gray");
-			}
-			else if(response=="monsterhunt_started" || response=="monsterhunt_already")
-			{
-				if(!character.s.monsterhunt) return;
-				if(character.s.monsterhunt.c==1) $("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Alrighty then! Now go defeat "+G.monsters[character.s.monsterhunt.id].name+" and come back here!"},"return_html"));
-				else $("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Alrighty then! Now go defeat "+character.s.monsterhunt.c+" "+G.monsters[character.s.monsterhunt.id].name+"'s and come back here!"},"return_html"));
-			}
-			else if(response=="monsterhunt_merchant")
-			{
-				$("#merchant-item").html(render_interaction({auto:true,skin:"daisy",message:"Huh? A merchant? On the hunt? Hahahahahahahaha ... Go sell cake or something ..."},"return_html"));
-			}
-			else
-			{
-				console.log("Missed game_response: "+response);
-			}
-		});
-	});
+	socket.on('game_response', handle_game_response);
 	socket.on("gm",function(data){
 		if(data.ids && data.action=="jump_list"){
 			var buttons=[];
@@ -3418,7 +3421,7 @@ function player_attack(event,code)
 		d_text("FRIENDLY",character);
 		return rejecting_promise({reason:"friendly"});
 	}
-	socket.emit('attack',{id:ctarget.id});
+	socket.emit('attack', {id:ctarget.id}, handle_game_response);
 	return push_deferred("attack");
 }
 
@@ -3450,7 +3453,7 @@ function monster_attack(event,code)
 		draw_trigger(function(){ d_text("TOO FAR",ctarget||character); }); // Added +10 - otherwise seems unfair [17/06/18]
 		return rejecting_promise({reason:"too_far",distance:distance(this,character)});
 	}
-	socket.emit('attack',{id:this.id});
+	socket.emit('attack',{id:this.id}, handle_game_response);
 	return push_deferred("attack");
 }
 
