@@ -2153,18 +2153,42 @@ def fetch_url_async(url_u,**dct):
 		data = urllib.urlencode(dct)
 		urlfetch.make_fetch_call(rpc,url_u,payload=data,method=urlfetch.POST,headers={'Content-Type': 'application/x-www-form-urlencoded'},validate_certificate=False)
 	return rpc
+	
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
-def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="Default HTML",text="An email from the game",sender="hello@adventure.land",reply_to=""):
-	logging.info("send_email %s - %s - %s"%(email,sender,title))
-	if not reply_to: reply_to="hello@adventure.land"
-	if is_sdk:
+def send_email(domain,email="YOUR-EMAIL",title="Default Title",html="Default HTML",text="An email from the game",sender="SENDER-EMAIL",reply_to=""):
+    if not reply_to: reply_to="REPLY-TO-EMAIL"
+    if secrets.email_provider_smtp == True:
+        try:
+            smtp_client = smtplib.SMTP_SSL(secrets.smtp_server, secrets.smtp_port)
+            smtp_client.login(secrets.smtp_username, secrets.smtp_password)
+            msg = MIMEMultipart()
+            msg['From'] = sender
+            msg['To'] = email
+            msg['Subject'] = title
+            msg.add_header('Reply-To', reply_to)
+            html_part = MIMEText(html, 'html')
+            msg.attach(html_part)
+            plain_text_part = MIMEText(text, 'plain')
+            msg.attach(plain_text_part)
+            smtp_client.sendmail(secrets.smtp_username, email, msg.as_string())
+            smtp_client.quit()
+        except: log_trace() 
+        else:
+            try:
+                mail.send_mail(sender,email,title,text,html=html,reply_to=reply_to)
+            except: log_trace()
+    else:
+    	if is_sdk:
 		message=amazon_ses.EmailMessage()
 		message.subject=title
 		message.bodyHtml=html
 		message.bodyText=text
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
-		#logging.info(ses.listVerifiedEmailAddresses().members)
-		try: ses.sendEmail("pr@createandspread.com","kaansoral@gmail.com",message)
+		try: ses.sendEmail("YOUR-EMAIL",email,message)
 		except amazon_ses.AmazonError,e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
@@ -2174,8 +2198,7 @@ def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="De
 		message.bodyHtml=html
 		message.bodyText=text
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
-		#logging.info(ses.listVerifiedEmailAddresses().members)
-		try: ses.sendEmail("hello@adventure.land",email,message)
+		try: ses.sendEmail("YOUR-EMAIL",email,message)
 		except amazon_ses.AmazonError,e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
