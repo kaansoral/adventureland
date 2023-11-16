@@ -1,5 +1,5 @@
 var image_size=require('image-size'),fs=require('fs');
-var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
+var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
 var images=[];
 
 [["/images/tiles/monsters/","monsters",".png"],["/images/tiles/characters/","characters",".png"],["/images/tiles/characters/tribes/","tribes",".png"],["/images/tiles/characters/npcs/","npcs",".png"],["/images/tiles/map/","map",".png"],["/images/tiles/examples/","examples",".png"],["/images/tiles/examples/","examples_gif",".gif"],["/images/sprites/animations/","animations",".png"],["/images/sprites/emblems/","emblems",".png"],["/images/sprites/weather/","weather",".png"],["/images/tiles/animations/","new animations",".png"]].forEach(function(fext){
