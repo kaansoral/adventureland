@@ -2159,8 +2159,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
-def send_email(domain,email="YOUR-EMAIL",title="Default Title",html="Default HTML",text="An email from the game",sender="SENDER-EMAIL",reply_to=""):
-    if not reply_to: reply_to="REPLY-TO-EMAIL"
+def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="Default HTML",text="An email from the game",sender="hello@adventure.land",reply_to=""):
+    logging.info("send_email %s - %s - %s"%(email,sender,title))
+    if not reply_to: reply_to="hello@adventure.land"
     if secrets.email_provider_smtp == True:
         try:
             smtp_client = smtplib.SMTP_SSL(secrets.smtp_server, secrets.smtp_port)
@@ -2188,7 +2189,8 @@ def send_email(domain,email="YOUR-EMAIL",title="Default Title",html="Default HTM
 		message.bodyHtml=html
 		message.bodyText=text
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
-		try: ses.sendEmail("YOUR-EMAIL",email,message)
+		#logging.info(ses.listVerifiedEmailAddresses().members)
+		try: ses.sendEmail("pr@createandspread.com","kaansoral@gmail.com",message)
 		except amazon_ses.AmazonError,e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
@@ -2198,7 +2200,8 @@ def send_email(domain,email="YOUR-EMAIL",title="Default Title",html="Default HTM
 		message.bodyHtml=html
 		message.bodyText=text
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
-		try: ses.sendEmail("YOUR-EMAIL",email,message)
+		#logging.info(ses.listVerifiedEmailAddresses().members)
+		try: ses.sendEmail("hello@adventure.land",email,message)
 		except amazon_ses.AmazonError,e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
