@@ -5684,7 +5684,7 @@ function init_io() {
 				if (!scroll) {
 					return socket.emit("game_response", "compound_no_scroll");
 				}
-				if (!item0 || !item1 || !item2 || (item0.level || 0) != data.clevel) {
+				if (!item0 || !item1 || !item2) {
 					return fail_response("no_item");
 				}
 				if (!player.computer && simple_distance(G.maps.main.compound, player) > B.sell_dist) {
