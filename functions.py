@@ -2154,15 +2154,15 @@ def fetch_url_async(url_u,**dct):
 		urlfetch.make_fetch_call(rpc,url_u,payload=data,method=urlfetch.POST,headers={'Content-Type': 'application/x-www-form-urlencoded'},validate_certificate=False)
 	return rpc
 	
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-
 def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="Default HTML",text="An email from the game",sender="hello@adventure.land",reply_to=""):
     logging.info("send_email %s - %s - %s"%(email,sender,title))
     if not reply_to: reply_to="hello@adventure.land"
-    if secrets.email_provider_smtp == True:
+    smtp_enabled = getattr(secrets, 'email_provider_smtp', False) is True
+    if smtp_enabled:
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.application import MIMEApplication
         try:
             smtp_client = smtplib.SMTP_SSL(secrets.smtp_server, secrets.smtp_port)
             smtp_client.login(secrets.smtp_username, secrets.smtp_password)
