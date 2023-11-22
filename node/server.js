@@ -1237,9 +1237,9 @@ function calculate_player_stats(player) {
 			apply_stats(
 				player,
 				class_def.offhand[def.wtype] ||
-					class_def.offhand[def.type] || {
-						no_range: !player.slots.mainhand,
-					},
+				class_def.offhand[def.type] || {
+					no_range: !player.slots.mainhand,
+				},
 			);
 		}
 		if (prop.set) {
@@ -1968,8 +1968,8 @@ function drop_something(player, monster, share) {
 	drop = chests[drop_id] = { items: [], cash: 0 };
 	drop.gold =
 		round(1 + GOLD * D.drops.gold.base * share + Math.random() * GOLD * D.drops.gold.random * share) *
-			monster.level *
-			monster.mult || 0; // previously 0.75
+		monster.level *
+		monster.mult || 0; // previously 0.75
 	if (monster.extra_gold) {
 		drop.egold = (drop.egold || 0) + max(0, monster.extra_gold);
 	}
@@ -2945,7 +2945,7 @@ function commence_attack(attacker, target, atype) {
 		if (
 			attacker.in != target.in ||
 			distance(attacker, target, true) >
-				attacker.range * G.skills.mentalburst.range_multiplier + G.skills.mentalburst.range_bonus
+			attacker.range * G.skills.mentalburst.range_multiplier + G.skills.mentalburst.range_bonus
 		) {
 			attacker.socket.emit("game_response", { response: "too_far", id: target.id, dist: dist });
 			return { failed: true, reason: "too_far", place: atype, id: target.id, dist: dist };
@@ -3368,9 +3368,9 @@ function complete_attack(attacker, target, info) {
 			if (first) {
 				o_attack = attack = -ceil(
 					B.heal_multiplier *
-						attack *
-						(0.9 + Math.random() * 0.2) *
-						damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
+					attack *
+					(0.9 + Math.random() * 0.2) *
+					damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
 				);
 				if (target.s.poisoned) {
 					attack = round(attack * 0.25);
@@ -4179,7 +4179,7 @@ function init_io() {
 						} else {
 							try {
 								socket.emit("game_error", "ERROR!");
-							} catch (e) {}
+							} catch (e) { }
 						}
 					} catch (e) {
 						log_trace("limit_calls", e);
@@ -6157,22 +6157,22 @@ function init_io() {
 					grace = max(
 						0,
 						min(new_level + 1, (item.grace || 0) + min(3, player.p.ugrace[new_level] / 4.5) + item_def.igrace) +
-							min(6, S.ugrace[new_level] / 3.0) +
-							player.p.ograce / 3.2,
+						min(6, S.ugrace[new_level] / 3.0) +
+						player.p.ograce / 3.2,
 					);
 					server_log(
 						"Grace num: " +
-							grace +
-							"\nItem: " +
-							(item.grace || 0) +
-							"\nPlayer: " +
-							min(3, player.p.ugrace[new_level] / 4.5) +
-							"\nDef: " +
-							item_def.igrace +
-							"\nOgrace:" +
-							player.p.ograce / 3.2 +
-							"\nS.ugrace: " +
-							min(6, S.ugrace[new_level] / 3.0),
+						grace +
+						"\nItem: " +
+						(item.grace || 0) +
+						"\nPlayer: " +
+						min(3, player.p.ugrace[new_level] / 4.5) +
+						"\nDef: " +
+						item_def.igrace +
+						"\nOgrace:" +
+						player.p.ograce / 3.2 +
+						"\nS.ugrace: " +
+						min(6, S.ugrace[new_level] / 3.0),
 					);
 					grace = (probability * grace) / new_level + grace / 1000.0;
 					server_log("Grace-prob: " + grace);
@@ -8072,178 +8072,191 @@ function init_io() {
 			xy_emit(player, "emotion", { name: data.name, player: player.name });
 		});
 		socket.on("skill", function (data) {
-			var player = players[socket.id];
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
-			var target = null;
+			server_log("skill " + JSON.stringify(data));
+
 			var cool = true;
 			var resolve = { response: "data", place: data.name, success: true };
 			var reject = null;
 			player.first = true;
 			G.skills.attack.cooldown = player.attack_ms;
-			server_log("skill " + JSON.stringify(data));
+
 			if (is_disabled(player)) {
 				return fail_response("disabled", data.name);
 			}
+
 			if ((player.tskin == "konami" || is_silenced(player)) && data.name != "attack") {
-				return socket.emit("game_response", { response: "skill_cant_incapacitated", place: data.name, failed: true });
+				return fail_response("skill_cant_incapacitated", data.name);
 			}
-			if (!G.skills[data.name]) {
-				return socket.emit("game_response", { response: "no_skill", place: data.name, failed: true });
+
+			const gSkill = G.skills[data.name];
+			if (!gSkill) {
+				return fail_response("no_skill", data.name);
 			}
+
 			if (
-				G.skills[data.name].mp &&
-				player.mp < (G.skills[data.name].mp * (100 - (player.mp_reduction || 0))) / 100.0 &&
+				gSkill.mp &&
+				player.mp < (gSkill.mp * (100 - (player.mp_reduction || 0))) / 100.0 &&
 				!(player.role == "gm" && data.name == "blink")
 			) {
-				return socket.emit("game_response", { response: "no_mp", place: data.name, failed: true });
+				return fail_response("no_mp", data.name);
 			}
-			if (G.skills[data.name].level && player.level < G.skills[data.name].level) {
-				return socket.emit("game_response", { response: "no_level", place: data.name, failed: true });
+
+			if (gSkill.level && player.level < gSkill.level) {
+				return fail_response("no_level", data.name);
 			}
-			if (
-				(G.skills[data.name].cooldown || G.skills[data.name].reuse_cooldown) &&
-				player.last[data.name] &&
-				mssince(player.last[data.name]) < (G.skills[data.name].cooldown || G.skills[data.name].reuse_cooldown)
-			) {
-				return socket.emit("game_response", {
-					response: "cooldown",
+
+			let cooldown;
+			let lastUse;
+			if (gSkill.share) {
+				// This skill shares a cooldown with another skill, use that skill's cooldown
+				cooldown = G.skills[gSkill.share].cooldown * (gSkill.cooldown_multiplier || 1)
+				lastUse = player.last[gSkill.share]
+			} else {
+				cooldown = gSkill.cooldown || gSkill.reuse_cooldown;
+				lastUse = player.last[data.name];
+			}
+			if (cooldown && lastUse && mssince(lastUse) < cooldown) {
+				return fail_response("cooldown", {
 					skill: data.name,
-					place: data.name,
 					id: data.id,
-					ms: (G.skills[data.name].cooldown || G.skills[data.name].reuse_cooldown) - mssince(player.last[data.name]),
-					failed: true,
+					ms: cooldown - mssince(lastUse),
 				});
 			}
+
 			if (
-				G.skills[data.name].share &&
-				player.last[G.skills[data.name].share] &&
-				mssince(player.last[G.skills[data.name].share]) <
-					G.skills[G.skills[data.name].share].cooldown * (G.skills[data.name].cooldown_multiplier || 1)
+				gSkill.class &&
+				!in_arr(player.type, gSkill.class)
+				&& player.role != "gm"
 			) {
-				return socket.emit("game_response", {
-					response: "cooldown",
-					skill: data.name,
-					place: data.name,
-					failed: true,
-					id: data.id,
-					ms:
-						G.skills[G.skills[data.name].share].cooldown * (G.skills[data.name].cooldown_multiplier || 1) -
-						mssince(player.last[G.skills[data.name].share]),
-				});
+				return fail_response("skill_cant_use", data.name);
 			}
-			if (G.skills[data.name].class && !in_arr(player.type, G.skills[data.name].class) && player.role != "gm") {
-				return socket.emit("game_response", { response: "skill_cant_use", place: data.name, failed: true });
+
+			if (gSkill.wtype && player.role != "gm") {
+				let canUse;
+				if (!player.slots.mainhand) {
+					canUse = false
+				} else if (is_array(gSkill.wtype)) {
+					canUse = in_arr(G.items[player.slots.mainhand.name].wtype, gSkill.wtype)
+				} else {
+					canUse = G.items[player.slots.mainhand.name].wtype == gSkill.wtype
+				}
+				if (!canUse) {
+					return fail_response("skill_cant_wtype", data.name)
+				}
 			}
-			if (
-				G.skills[data.name].wtype &&
-				!is_array(G.skills[data.name].wtype) &&
-				(!player.slots.mainhand || G.items[player.slots.mainhand.name].wtype != G.skills[data.name].wtype) &&
-				player.role != "gm"
-			) {
-				return socket.emit("game_response", { response: "skill_cant_wtype", place: data.name, failed: true });
+
+			const gMap = G.maps[player.map];
+			if (gSkill.hostile && gMap.safe) {
+				return fail_response("skill_cant_safe", data.name);
 			}
-			if (
-				is_array(G.skills[data.name].wtype) &&
-				(!player.slots.mainhand || !in_arr(G.items[player.slots.mainhand.name].wtype, G.skills[data.name].wtype)) &&
-				player.role != "gm"
-			) {
-				return socket.emit("game_response", { response: "skill_cant_wtype", place: data.name, failed: true });
-			}
-			if (G.skills[data.name].hostile && G.maps[player.map].safe) {
-				return socket.emit("game_response", { response: "skill_cant_safe", place: data.name, failed: true });
-			}
-			if (G.skills[data.name].target) {
-				if (
-					("" + parseInt(data.id) === "" + data.id && G.skills[data.name].target == "player") ||
-					("" + parseInt(data.id) !== "" + data.id && G.skills[data.name].target == "monster")
-				) {
+
+			// TODO: Figure out other target variables later in this on("skill") function so we can change this to 'let'
+			var target;
+			if (gSkill.target) {
+				const isMonster = "" + parseInt(data.id) === "" + data.id
+				const isPlayer = !isMonster
+				const canTargetMonster = gSkill.target == "monster" || gSkill.target === true
+				const canTargetPlayer = gSkill.target == "player" || gSkill.target === true
+				if ((isMonster && !canTargetMonster) || (isPlayer && !canTargetPlayer)) {
 					return fail_response("invalid_target", data.name, { id: data.id });
 				}
-				if (G.skills[data.name].target != "monster" && players[id_to_id[data.id]]) {
+				if (isPlayer && players[id_to_id[data.id]]) {
 					target = players[id_to_id[data.id]];
-					if (G.skills[data.name].hostile && target.name == player.name) {
-						return socket.emit("game_response", { response: "no_target", place: data.name, failed: true });
+					if (gSkill.hostile && target.name == player.name) {
+						// Prevent casting the skill on oneself
+						return fail_response("no_target", data.name)
 					}
-				} else if (G.skills[data.name].target != "player" && instances[player.in].monsters[data.id]) {
+				} else if (isMonster && instances[player.in].monsters[data.id]) {
 					target = instances[player.in].monsters[data.id];
 				} else {
+					// TODO: Consider adding game_response, too
 					return socket.emit("disappear", { id: data.id, place: data.name, reason: "not_there" });
 				}
-
 				if (
 					is_invis(target) ||
-					(!G.skills[data.name].global && (target.map != player.map || distance(target, player, true) > B.max_vision))
+					(!gSkill.global && distance(target, player) > B.max_vision)
 				) {
+					// TODO: Consider adding game_response, too
 					return socket.emit("disappear", { id: data.id, place: data.name, reason: "not_there" });
 				}
 			}
-			if (G.skills[data.name].requirements) {
-				for (var requirement in G.skills[data.name].requirements) {
-					if (!player[requirement] || player[requirement] < G.skills[data.name].requirements[requirement]) {
-						return socket.emit("game_response", {
-							response: "skill_cant_requirements",
-							place: data.name,
-							failed: true,
-						});
+
+			if (gSkill.requirements) {
+				for (const requirement in gSkill.requirements) {
+					if (
+						!player[requirement] ||
+						player[requirement] < gSkill.requirements[requirement]
+					) {
+						return fail_response("skill_cant_requirements", data.name);
 					}
 				}
 			}
-			if (G.skills[data.name].slot) {
-				var found = false;
-				var charges = false;
-				G.skills[data.name].slot.forEach(function (p) {
-					if (player.slots[p[0]] && player.slots[p[0]].name == p[1]) {
-						if (G.items[player.slots[p[0]].name].charge) {
-							if ((player.slots[p[0]].charges || 0) < G.items[player.slots[p[0]].name].charge) {
-								charges = true;
-								return;
-							}
-							player.slots[p[0]].charges -= G.items[player.slots[p[0]].name].charge;
-							player.cslots[p[0]] = cache_item(player.slots[p[0]]);
-						}
-						found = true;
+
+			if (gSkill.slot) {
+				let found = false;
+				let noCharge = false;
+				for (const [slotName, itemName] of gSkill.slot) {
+					const slotItem = player.slots[slotName]
+					if (!slotItem || slotItem.name !== itemName) continue;
+					found = true;
+
+					const gItem = G.items[itemName]
+					if (!gItem.charge) continue;
+					// This skill requires a charge, check the charge level
+					if ((slotItem.charges || 0) < gItem.charge) {
+						noCharge = true;
+						continue;
 					}
-				});
-				if (charges) {
-					return socket.emit("game_response", { response: "skill_cant_charges", place: data.name, failed: true });
+					// Charge is sufficient, use this item for the skill
+					slotItem.charges -= gItem.charge;
+					player.cslots[slotName] = cache_item(slotItem);
+					noCharge = false;
+					break;
 				}
 				if (!found) {
-					return socket.emit("game_response", { response: "skill_cant_slot", place: data.name, failed: true });
+					return fail_response("skill_cant_slot", data.name);
+				}
+				if (noCharge) {
+					return fail_response("skill_cant_charges", data.name);
 				}
 			}
+
 			if (player.s.invincible) {
 				delete player.s.invincible;
 				player.to_resend = "u+cid";
 			}
+
 			if (data.name == "attack" || data.name == "heal") {
-				var attack = commence_attack(player, target, data.name);
+				const attack = commence_attack(player, target, data.name);
 				if (!attack.failed) {
 					resolve = attack;
 				} else {
 					reject = attack;
 					cool = false;
 				}
-			}
-			if (data.name == "invis" && !player.s.invis) {
+			} else if (data.name == "invis" && !player.s.invis) {
 				if (player.s.marked) {
-					return socket.emit("game_response", { response: "skill_cant_use", place: data.name, failed: true });
+					return fail_response("skill_cant_use", data.name);
 				}
 				player.s.invis = { ms: 999999999999999 };
 				xy_emit(player, "disappear", { id: player.id, invis: true, reason: "invis" });
 				player.to_resend = " ";
 			}
+
 			if (data.name == "pickpocket") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				player.c[data.name] = {
 					ms:
-						G.skills[data.name].duration_min +
-						Math.random() * (G.skills[data.name].duration_max - G.skills[data.name].duration_min),
+						gSkill.duration_min +
+						Math.random() * (gSkill.duration_max - gSkill.duration_min),
 					target: target.name,
 				};
 				player.to_resend = "u+cid";
@@ -8252,7 +8265,7 @@ function init_io() {
 			if (data.name == "fishing" || data.name == "mining") {
 				var direction = 0;
 				var the_zone = null;
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				(G.maps[player.map].zones || []).forEach(function (zone) {
 					if (zone.type != data.name || the_zone) {
 						return;
@@ -8276,8 +8289,8 @@ function init_io() {
 					xy_emit(player, "ui", { type: data.name + "_start", name: player.name, direction: direction });
 					player.c[data.name] = {
 						ms:
-							G.skills[data.name].duration_min +
-							Math.random() * (G.skills[data.name].duration_max - G.skills[data.name].duration_min),
+							gSkill.duration_min +
+							Math.random() * (gSkill.duration_max - gSkill.duration_min),
 						drop: the_zone.drop,
 					};
 				}
@@ -8285,7 +8298,7 @@ function init_io() {
 				player.to_resend = "u+cid";
 			}
 			if (data.name == "light") {
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				xy_emit(player, "light", { name: player.name });
 				player.to_resend = "u+cid";
 			}
@@ -8295,7 +8308,7 @@ function init_io() {
 			}
 			if (data.name == "dash") {
 				//console.log(data);
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				var x = parseFloat(data.x) || 0;
 				var y = parseFloat(data.y) || 0;
 				var point = true;
@@ -8330,18 +8343,18 @@ function init_io() {
 				}
 			}
 			if (data.name == "hardshell" || data.name == "power" || data.name == "xpower") {
-				consume_mp(player, G.skills[data.name].mp);
-				player.s[G.skills[data.name].condition] = {
-					ms: G.skills[data.name].duration || G.conditions[G.skills[data.name].condition].duration,
+				consume_mp(player, gSkill.mp);
+				player.s[gSkill.condition] = {
+					ms: gSkill.duration || G.conditions[gSkill.condition].duration,
 				};
 				player.to_resend = "u+cid";
 			}
 			if (data.name == "mshield") {
-				consume_mp(player, G.skills[data.name].mp);
-				if (player.s[G.skills[data.name].condition]) {
-					delete player.s[G.skills[data.name].condition];
+				consume_mp(player, gSkill.mp);
+				if (player.s[gSkill.condition]) {
+					delete player.s[gSkill.condition];
 				} else {
-					player.s[G.skills[data.name].condition] = { ms: 999999999 };
+					player.s[gSkill.condition] = { ms: 999999999 };
 				}
 				player.to_resend = "u+cid";
 			}
@@ -8351,13 +8364,13 @@ function init_io() {
 				data.name == "massproduction" ||
 				data.name == "massproductionpp"
 			) {
-				consume_mp(player, G.skills[data.name].mp);
-				player.s[G.skills[data.name].condition] = { ms: G.conditions[G.skills[data.name].condition].duration };
+				consume_mp(player, gSkill.mp);
+				player.s[gSkill.condition] = { ms: G.conditions[gSkill.condition].duration };
 				xy_emit(player, "ui", { type: data.name, name: player.name });
 				player.to_resend = "u+cid";
 			}
 			if (data.name == "throw") {
-				if (distance(player, target, true) > G.skills[data.name].range + player.level) {
+				if (distance(player, target, true) > gSkill.range + player.level) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				if (target.s.invincible || target.immune) {
@@ -8408,7 +8421,7 @@ function init_io() {
 					target.hp = max(1, target.hp - damage);
 					disappearing_text({}, target, "-" + damage, { color: "red", xy: 1 });
 				}
-				consume_mp(player, G.skills[data.name].mp, target);
+				consume_mp(player, gSkill.mp, target);
 				xy_emit(player, "ui", { type: "throw", from: player.name, to: target.id, item: item.name });
 				player.to_resend = "u+cid+reopen";
 				if (target.is_player) {
@@ -8423,7 +8436,7 @@ function init_io() {
 					return socket.emit("game_response", { response: "skill_cant_item", place: data.name, failed: true });
 				}
 				consume_one(player, data.num);
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				player.s.phasedout = { ms: G.conditions.phasedout.duration };
 				player.to_resend = "u+cid+reopen";
 			}
@@ -8432,7 +8445,7 @@ function init_io() {
 					return socket.emit("game_response", { response: "skill_cant_item", place: data.name, failed: true });
 				}
 				consume_one(player, data.num);
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				player.s.poisonous = { ms: G.skills.pcoat.cooldown };
 				player.to_resend = "u+cid+reopen";
 			}
@@ -8448,7 +8461,7 @@ function init_io() {
 				}
 			}
 			if (data.name == "snowball") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				var found = false;
@@ -8479,14 +8492,14 @@ function init_io() {
 				if (target.s.invincible) {
 					return socket.emit("game_response", { response: "target_invincible", place: data.name, failed: true });
 				}
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				add_condition(target, "tangled", { ms: G.skills["entangle"].duration });
 				target.abs = true;
 				target.moving = false;
 				xy_emit(player, "ui", { type: "entangle", from: player.name, to: target.id });
-				consume_mp(player, G.skills[data.name].mp, target);
+				consume_mp(player, gSkill.mp, target);
 				add_pdps(player, target, 4000);
 				if (data.name == "entangle") {
 					consume_one(player, data.num);
@@ -8504,7 +8517,7 @@ function init_io() {
 				if (target.s.invincible) {
 					return socket.emit("game_response", { response: "target_invincible", place: data.name, failed: true });
 				}
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				if (!is_in_pvp(player) && !is_same(player, target, 1)) {
@@ -8513,7 +8526,7 @@ function init_io() {
 				add_condition(target, "fingered", { ms: G.skills["4fingers"].duration });
 				add_condition(target, "stunned", { duration: G.skills["4fingers"].duration - 2000 });
 				xy_emit(player, "ui", { type: "4fingers", from: player.name, to: target.name });
-				consume_mp(player, G.skills[data.name].mp, target);
+				consume_mp(player, gSkill.mp, target);
 				add_pdps(player, target, 1000);
 				resend(target, "u+cid");
 				player.to_resend = "u+cid";
@@ -8560,7 +8573,7 @@ function init_io() {
 				if (!player.items[data.num] || player.items[data.num].name != "essenceoflife") {
 					return socket.emit("game_response", { response: "skill_cant_item", place: data.name, failed: true });
 				}
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				if (!target.rip) {
@@ -8586,7 +8599,7 @@ function init_io() {
 				var times = 0;
 				var attack = null;
 				var c_resolve = null;
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				player.first_burst = true;
 				player.halt = true;
 				if (is_array(data.targets)) {
@@ -8666,15 +8679,15 @@ function init_io() {
 				}
 			}
 			if (data.name == "darkblessing" || data.name == "warcry") {
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				for (var id in instances[player.in].players) {
 					var target = instances[player.in].players[id];
 					if (
 						!target.npc &&
-						distance(player, target, true) < G.skills[data.name].range &&
+						distance(player, target, true) < gSkill.range &&
 						(!(G.maps[player.map].pvp || is_pvp) || is_same(player, target, 1))
 					) {
-						target.s[G.skills[data.name].condition] = { ms: G.skills[data.name].duration, f: player.name };
+						target.s[gSkill.condition] = { ms: gSkill.duration, f: player.name };
 						resend(target, "u+cid");
 						add_pdps(player, target, 500);
 					}
@@ -8727,7 +8740,7 @@ function init_io() {
 						// if(times==1 && attack==null) times=40;
 					});
 				}
-				consume_mp(player, G.skills[data.name].mp, reftarget);
+				consume_mp(player, gSkill.mp, reftarget);
 				player.halt = false;
 				player.to_resend = "u+cid";
 				if (!c_resolve) {
@@ -8766,7 +8779,7 @@ function init_io() {
 				list.sort(function (a, b) {
 					return a.dist - b.dist;
 				});
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				xy_emit(player, "ui", { type: "track", name: player.name });
 				socket.emit("track", list);
 				player.to_resend = "u+cid";
@@ -8794,23 +8807,23 @@ function init_io() {
 						ids.push(id);
 					}
 				}
-				consume_mp(player, G.skills[data.name].mp, target);
+				consume_mp(player, gSkill.mp, target);
 				xy_emit(player, "ui", { type: "agitate", name: player.name, ids: ids });
 				player.to_resend = "u+cid";
 				add_pdps(player, null, 1000);
 			}
 			if (data.name == "absorb") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				var ids = [];
 				if (is_same(player, target, 1)) {
-					consume_mp(player, G.skills[data.name].mp);
+					consume_mp(player, gSkill.mp);
 				} else {
-					if (player.mp < G.skills[data.name].mp * 6 || player.level < 75) {
+					if (player.mp < gSkill.mp * 6 || player.level < 75) {
 						return socket.emit("game_response", { response: "non_friendly_target", place: data.name, failed: true });
 					}
-					consume_mp(player, G.skills[data.name].mp * 6);
+					consume_mp(player, gSkill.mp * 6);
 					if (Math.random() < 0.95) {
 						consume_skill(player, data.name);
 						resend(player, "u+cid");
@@ -8862,14 +8875,14 @@ function init_io() {
 						}
 					}
 				}
-				consume_mp(player, G.skills[data.name].mp, reftarget);
+				consume_mp(player, gSkill.mp, reftarget);
 				xy_emit(player, "ui", { type: "stomp", name: player.name, ids: ids });
 				player.to_resend = "u+cid";
 				resolve = { response: "data", place: data.name, success: true, ids: ids };
 			}
 			if (data.name == "scare") {
 				var ids = [];
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				for (var id in instances[player.in].monsters) {
 					var target = instances[player.in].monsters[id];
 					if (target.target == player.name) {
@@ -8892,7 +8905,7 @@ function init_io() {
 				if (target.is_player && !is_in_pvp(player) && !is_same(player, target, 1)) {
 					return socket.emit("game_response", { response: "skill_cant_pve", place: data.name, failed: true });
 				}
-				consume_mp(player, G.skills[data.name].mp, target);
+				consume_mp(player, gSkill.mp, target);
 				add_condition(target, "marked");
 				if (target.is_player) {
 					resend(target, "u+cid");
@@ -8904,7 +8917,7 @@ function init_io() {
 				player.to_resend = "u+cid";
 			}
 			if (data.name == "charm") {
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				if (Math.random() > 0.01) {
 					socket.emit("game_response", "charm_failed");
 					xy_emit(player, "ui", { type: "charm", name: player.name, id: target.id, fail: true });
@@ -8932,7 +8945,7 @@ function init_io() {
 				for (var id in instances[player.in].monsters) {
 					var target = instances[player.in].monsters[id];
 					var dist = distance(player, target);
-					if (dist < G.skills[data.name].range) {
+					if (dist < gSkill.range) {
 						attack = commence_attack(player, target, data.name);
 						if (!attack || !attack.projectile) {
 							continue;
@@ -8952,7 +8965,7 @@ function init_io() {
 					for (var id in instances[player.in].players) {
 						var target = instances[player.in].players[id];
 						var dist = distance(player, target);
-						if (dist < G.skills[data.name].range && !target.npc && !is_same(player, target, 1)) {
+						if (dist < gSkill.range && !target.npc && !is_same(player, target, 1)) {
 							attack = commence_attack(player, target, data.name);
 							if (!attack || !attack.projectile) {
 								continue;
@@ -8970,7 +8983,7 @@ function init_io() {
 						}
 					}
 				}
-				consume_mp(player, G.skills[data.name].mp, reftarget);
+				consume_mp(player, gSkill.mp, reftarget);
 				xy_emit(player, "ui", { type: data.name, name: player.name, ids: ids });
 				player.halt = false;
 				if (c_resolve) {
@@ -8979,7 +8992,7 @@ function init_io() {
 			}
 			if (data.name == "magiport") {
 				var pported = false;
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				if (!is_pvp && mode.pve_safe_magiports) {
 					if (!magiportations[player.name]) {
 						magiportations[player.name] = {};
@@ -9015,7 +9028,7 @@ function init_io() {
 					player.s.blink.d = data.direction;
 				}
 				if (player.role != "gm") {
-					consume_mp(player, G.skills[data.name].mp);
+					consume_mp(player, gSkill.mp);
 				}
 				// xy_emit(player,"ui",{type:"blinking",name:player.name});
 				resend(player, "u+cid");
@@ -9046,37 +9059,37 @@ function init_io() {
 					player.s.blink.d = data.direction;
 				}
 				if (player.role != "gm") {
-					consume_mp(player, G.skills[data.name].mp);
+					consume_mp(player, gSkill.mp);
 				}
 				// xy_emit(player,"ui",{type:"blinking",name:player.name});
 				player.to_resend = "u+cid";
 				// #TODO: Appear animation for non-self's [21/05/18]
 			}
 			if (data.name == "mluck") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				if (
-					!target.s[G.skills[data.name].condition] ||
-					!target.s[G.skills[data.name].condition].strong ||
-					target.s[G.skills[data.name].condition].f == player.name
+					!target.s[gSkill.condition] ||
+					!target.s[gSkill.condition].strong ||
+					target.s[gSkill.condition].f == player.name
 				) {
-					target.s[G.skills[data.name].condition] = { ms: G.conditions.mluck.duration, f: player.name };
+					target.s[gSkill.condition] = { ms: G.conditions.mluck.duration, f: player.name };
 				}
 				if (target.owner == player.owner) {
-					target.s[G.skills[data.name].condition].strong = true;
+					target.s[gSkill.condition].strong = true;
 				}
 				xy_emit(player, "ui", { type: "mluck", from: player.name, to: target.name });
 				resend(target, "u+cid");
 				resend(player, "u+cid");
 			}
 			if (data.name == "rspeed") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
-				consume_mp(player, G.skills[data.name].mp);
-				target.s[G.skills[data.name].condition] = { ms: G.conditions.rspeed.duration, f: player.name };
+				consume_mp(player, gSkill.mp);
+				target.s[gSkill.condition] = { ms: G.conditions.rspeed.duration, f: player.name };
 				xy_emit(player, "ui", { type: "rspeed", from: player.name, to: target.name });
 				resend(target, "u+cid");
 				resend(player, "u+cid");
@@ -9085,11 +9098,11 @@ function init_io() {
 				}
 			}
 			if (data.name == "reflection") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
-				consume_mp(player, G.skills[data.name].mp);
-				target.s[G.skills[data.name].condition] = { ms: G.conditions.reflection.duration, f: player.name };
+				consume_mp(player, gSkill.mp);
+				target.s[gSkill.condition] = { ms: G.conditions.reflection.duration, f: player.name };
 				xy_emit(player, "ui", { type: "reflection", from: player.name, to: target.name });
 				resend(target, "u+cid");
 				resend(player, "u+cid");
@@ -9098,7 +9111,7 @@ function init_io() {
 				}
 			}
 			if (data.name == "energize") {
-				if (distance(player, target, true) > G.skills[data.name].range) {
+				if (distance(player, target, true) > gSkill.range) {
 					return socket.emit("game_response", { response: "too_far", place: data.name, failed: true });
 				}
 				if (!player.mp) {
@@ -9116,7 +9129,7 @@ function init_io() {
 				}
 				disappearing_text(player.socket, player, "-" + mp, { color: "mana", xy: 1 });
 				disappearing_text(target.socket, target, "+" + mp, { color: "mana", xy: 1 });
-				target.s[G.skills[data.name].condition] = { ms: G.conditions[G.skills[data.name].condition].duration };
+				target.s[gSkill.condition] = { ms: G.conditions[gSkill.condition].duration };
 				xy_emit(player, "ui", { type: "energize", from: player.name, to: target.name });
 				resend(target, "u+cid");
 				resend(player, "u+cid");
@@ -9137,7 +9150,7 @@ function init_io() {
 				} else if (player.level >= 50) {
 					rate = 0.86;
 				}
-				consume_mp(player, G.skills[data.name].mp);
+				consume_mp(player, gSkill.mp);
 				xy_emit(player, "ui", { type: "alchemy", name: player.name });
 				for (var i = 0; i < player.isize; i++) {
 					if (!player.items[i] || player.items[i].l) {
@@ -9296,21 +9309,21 @@ function init_io() {
 					if (current === undefined || current >= 2 || going === undefined || going >= 2) {
 						server_log(
 							"#C cheater: " +
-								player.name +
-								" current: " +
-								current +
-								"[" +
-								data.x +
-								"," +
-								data.x +
-								"] going: " +
-								going +
-								"[" +
-								player.going_x +
-								"," +
-								player.going_y +
-								"] at " +
-								player.map,
+							player.name +
+							" current: " +
+							current +
+							"[" +
+							data.x +
+							"," +
+							data.x +
+							"] going: " +
+							going +
+							"[" +
+							player.going_x +
+							"," +
+							player.going_y +
+							"] at " +
+							player.map,
 							1,
 						);
 						appengine_log("violation", "move_line: " + player.name + " afk: " + player.afk + " code: " + player.code);
@@ -9716,7 +9729,7 @@ function init_io() {
 					}
 					try {
 						delete_observer(socket);
-					} catch (e) {}
+					} catch (e) { }
 
 					players[socket.id] = player;
 					resume_instance(instances[player.in]);
@@ -10494,7 +10507,7 @@ function init_io() {
 				socket.emit("tavern", { event: "info", edge: house_edge(), max: parseInt((S.gold - house_debt()) * 0.4) });
 			}
 		});
-		socket.on("play", function (data) {});
+		socket.on("play", function (data) { });
 		socket.on("pet", function (data) {
 			var player = players[socket.id];
 			if (!player) {
@@ -10648,7 +10661,7 @@ function init_io() {
 			var observer = observers[socket.id];
 			try {
 				delete sockets[socket.id];
-			} catch (e) {}
+			} catch (e) { }
 			if (player) {
 				player.dc = true;
 				try {
@@ -11960,7 +11973,7 @@ function update_instance(instance) {
 			if (player && player.in == monster.in && !player.rip && !is_invis(player)) {
 				if (
 					distance(player, monster, true) >
-						min(monster.range / 1.6, 240) + min(100, monster.attack / 5.0) + 160 + ((mode.all_smart && 320) || 1) &&
+					min(monster.range / 1.6, 240) + min(100, monster.attack / 5.0) + 160 + ((mode.all_smart && 320) || 1) &&
 					!monster.walk_once
 				) {
 					stop_pursuit(monster, { cause: "exceeds_range" });
@@ -12590,7 +12603,7 @@ function update_instance(instance) {
 				if (def.withdrawal) {
 					add_condition(player, def.withdrawal);
 				}
-			} catch (e) {}
+			} catch (e) { }
 			player.slots.elixir = null;
 			player.cslots.elixir = null;
 			resend(player, "reopen+u+cid");
@@ -13246,7 +13259,7 @@ setInterval(function () {
 										retries: 5,
 										item: mitem,
 									},
-									function (result) {},
+									function (result) { },
 									function () {
 										console.log("#M unsent giveaway, lost item: " + mitem);
 									},
@@ -13413,7 +13426,7 @@ setInterval(function () {
 					(monster.extra_gold || 0) +
 					((min(min(2400, target.attack) / 220.0 + monster.attack / 1.2, 55) + 19) *
 						((gameplay == "hardcore" && 100) || 1)) /
-						(max((target.targets - 1) * (target.targets - 1), 1) || 1);
+					(max((target.targets - 1) * (target.targets - 1), 1) || 1);
 			}
 		}
 	} catch (e) {
@@ -13604,7 +13617,7 @@ function sync_loop() {
 					server_log("#X SEVERE: sync notingame disconnect for " + player.name, 1);
 					try {
 						player.socket.disconnect();
-					} catch (e) {}
+					} catch (e) { }
 				}
 				delete player.sync_call;
 			},
@@ -13636,13 +13649,13 @@ function sync_loop() {
 			function (result) {
 				server_log(
 					"stop_character: " +
-						player.name +
-						" owner: " +
-						player.owner +
-						" bank: " +
-						bank +
-						" result: " +
-						JSON.stringify(result),
+					player.name +
+					" owner: " +
+					player.owner +
+					" bank: " +
+					bank +
+					" result: " +
+					JSON.stringify(result),
 					1,
 				);
 				if (result.done) {
