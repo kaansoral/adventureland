@@ -8235,23 +8235,28 @@ function init_io() {
 				if (!item || item.name != gSkill.consume) {
 					return fail_response("skill_cant_item", data.name);
 				}
+
+				// Consume the item
+				consume_one(player, data.num)
+				player.to_resend = "u+cid+reopen";
 			}
 
 			if ([
 				"attack",
+				"burst",
 				"heal",
+				"mentalburst",
+				"piercingshot",
+				"poisonarrow",
+				"purify",
 				"quickpunch",
 				"quickstab",
-				"smash",
-				"mentalburst",
-				"purify",
-				"taunt",
-				"supershot",
-				"zapperzap",
-				"burst",
-				"piercingshot",
 				"selfheal",
-				"snowball"
+				"smash",
+				"snowball",
+				"supershot",
+				"taunt",
+				"zapperzap",
 			].includes(data.name)) {
 				const attack = commence_attack(player, target, data.name);
 				if (!attack.failed) {
@@ -8429,15 +8434,11 @@ function init_io() {
 					target.cid++;
 				}
 			} else if (data.name == "phaseout") {
-				consume_one(player, data.num);
 				consume_mp(player, gSkill.mp);
 				player.s.phasedout = { ms: G.conditions.phasedout.duration };
-				player.to_resend = "u+cid+reopen";
 			} else if (data.name == "pcoat") {
-				consume_one(player, data.num);
 				consume_mp(player, gSkill.mp);
 				player.s.poisonous = { ms: G.skills.pcoat.cooldown };
-				player.to_resend = "u+cid+reopen";
 			} else if (data.name == "curse") {
 				//#TODO: last_curse variable + check for multiple curses
 				var attack = commence_attack(player, target, "curse");
@@ -8458,10 +8459,6 @@ function init_io() {
 				xy_emit(player, "ui", { type: "entangle", from: player.name, to: target.id });
 				consume_mp(player, gSkill.mp, target);
 				add_pdps(player, target, 4000);
-				if (data.name == "entangle") {
-					consume_one(player, data.num);
-					player.to_resend = "u+cid+reopen";
-				}
 				if (target.is_monster) {
 					target.u = true;
 					target.cid++;
@@ -8483,24 +8480,10 @@ function init_io() {
 				add_pdps(player, target, 1000);
 				resend(target, "u+cid");
 				player.to_resend = "u+cid";
-			} else if (data.name == "poisonarrow") {
-				const attack = commence_attack(player, target, data.name);
-				if (!attack.failed) {
-					resolve = attack;
-				} else {
-					reject = attack;
-					cool = false;
-				}
-
-				consume_one(player, data.num);
-				player.to_resend = "reopen";
 			} else if (data.name == "revive") {
 				if (!target.rip) {
 					return fail_response("target_alive", data.name);
 				}
-
-				consume_one(player, data.num);
-				player.to_resend = "reopen";
 
 				if (target.hp != target.max_hp) {
 					reject = { response: "data", place: data.name, reason: "hp" };
@@ -8826,10 +8809,6 @@ function init_io() {
 				player.to_resend = "u+cid";
 			} else if (data.name == "cleave" || data.name == "shadowstrike") {
 				player.to_resend = "u+cid";
-				if (data.name == "shadowstrike") {
-					consume_one(player, data.num);
-					player.to_resend = "u+cid+reopen";
-				}
 				player.halt = true;
 				var ids = [];
 				var reftarget = null;
