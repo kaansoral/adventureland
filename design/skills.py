@@ -145,7 +145,7 @@ skills={
 	"snowball":{
 		"type":"skill",
 		"skin":"snowball",
-		"inventory":["snowball"],
+		"consume":"snowball",
 		"name":"Snowball",
 		"explanation":"Throw a snowball at someone!",
 		"condition":"frozen",

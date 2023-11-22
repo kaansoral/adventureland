@@ -8216,13 +8216,26 @@ function init_io() {
 
 			// Consume item check
 			if (gSkill.consume) {
-				const item = player.items[data.num]
+				let item;
+				if(data.num === undefined || data.num === null) {
+					// No item was provided, search for one
+					for (let i = player.isize - 1; i >= 0; i--) {
+						const potentialItem = player.items[i]
+						if(!potentialItem) continue
+						if(potentialItem.name !== gSkill.consume) continue
+
+						// We found the item
+						data.num = i
+						item = potentialItem
+						break
+					}
+				} else {
+					item = player.items[data.num]
+				}
 				if (!item || item.name != gSkill.consume) {
 					return fail_response("skill_cant_item", data.name);
 				}
 			}
-
-			// TODO: Can we consume_mp here?
 
 			if ([
 				"attack",
@@ -8237,7 +8250,8 @@ function init_io() {
 				"zapperzap",
 				"burst",
 				"piercingshot",
-				"selfheal"
+				"selfheal",
+				"snowball"
 			].includes(data.name)) {
 				const attack = commence_attack(player, target, data.name);
 				if (!attack.failed) {
@@ -8430,25 +8444,6 @@ function init_io() {
 				if (!attack.failed) {
 					resolve = attack;
 					add_pdps(player, null, player.attack / 2);
-				} else {
-					reject = attack;
-					cool = false;
-				}
-			} else if (data.name == "snowball") {
-				let found = false;
-				for (let i = player.isize - 1; i >= 0; i--) {
-					if (player.items[i] && player.items[i].name == "snowball") {
-						consume_one(player, i);
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return fail_response("skill_cant_item", data.name);
-				}
-				const attack = commence_attack(player, target, "snowball");
-				if (!attack.failed) {
-					resolve = attack;
 				} else {
 					reject = attack;
 					cool = false;
