@@ -1237,9 +1237,9 @@ function calculate_player_stats(player) {
 			apply_stats(
 				player,
 				class_def.offhand[def.wtype] ||
-				class_def.offhand[def.type] || {
-					no_range: !player.slots.mainhand,
-				},
+					class_def.offhand[def.type] || {
+						no_range: !player.slots.mainhand,
+					},
 			);
 		}
 		if (prop.set) {
@@ -1968,8 +1968,8 @@ function drop_something(player, monster, share) {
 	drop = chests[drop_id] = { items: [], cash: 0 };
 	drop.gold =
 		round(1 + GOLD * D.drops.gold.base * share + Math.random() * GOLD * D.drops.gold.random * share) *
-		monster.level *
-		monster.mult || 0; // previously 0.75
+			monster.level *
+			monster.mult || 0; // previously 0.75
 	if (monster.extra_gold) {
 		drop.egold = (drop.egold || 0) + max(0, monster.extra_gold);
 	}
@@ -3333,9 +3333,9 @@ function complete_attack(attacker, target, info) {
 			if (first) {
 				o_attack = attack = -ceil(
 					B.heal_multiplier *
-					attack *
-					(0.9 + Math.random() * 0.2) *
-					damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
+						attack *
+						(0.9 + Math.random() * 0.2) *
+						damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
 				);
 				if (target.s.poisoned) {
 					attack = round(attack * 0.25);
@@ -4144,7 +4144,7 @@ function init_io() {
 						} else {
 							try {
 								socket.emit("game_error", "ERROR!");
-							} catch (e) { }
+							} catch (e) {}
 						}
 					} catch (e) {
 						log_trace("limit_calls", e);
@@ -6122,22 +6122,22 @@ function init_io() {
 					grace = max(
 						0,
 						min(new_level + 1, (item.grace || 0) + min(3, player.p.ugrace[new_level] / 4.5) + item_def.igrace) +
-						min(6, S.ugrace[new_level] / 3.0) +
-						player.p.ograce / 3.2,
+							min(6, S.ugrace[new_level] / 3.0) +
+							player.p.ograce / 3.2,
 					);
 					server_log(
 						"Grace num: " +
-						grace +
-						"\nItem: " +
-						(item.grace || 0) +
-						"\nPlayer: " +
-						min(3, player.p.ugrace[new_level] / 4.5) +
-						"\nDef: " +
-						item_def.igrace +
-						"\nOgrace:" +
-						player.p.ograce / 3.2 +
-						"\nS.ugrace: " +
-						min(6, S.ugrace[new_level] / 3.0),
+							grace +
+							"\nItem: " +
+							(item.grace || 0) +
+							"\nPlayer: " +
+							min(3, player.p.ugrace[new_level] / 4.5) +
+							"\nDef: " +
+							item_def.igrace +
+							"\nOgrace:" +
+							player.p.ograce / 3.2 +
+							"\nS.ugrace: " +
+							min(6, S.ugrace[new_level] / 3.0),
 					);
 					grace = (probability * grace) / new_level + grace / 1000.0;
 					server_log("Grace-prob: " + grace);
@@ -8078,8 +8078,8 @@ function init_io() {
 			let lastUse;
 			if (gSkill.share) {
 				// This skill shares a cooldown with another skill, use that skill's cooldown
-				cooldown = G.skills[gSkill.share].cooldown * (gSkill.cooldown_multiplier || 1)
-				lastUse = player.last[gSkill.share]
+				cooldown = G.skills[gSkill.share].cooldown * (gSkill.cooldown_multiplier || 1);
+				lastUse = player.last[gSkill.share];
 			} else {
 				cooldown = gSkill.cooldown || gSkill.reuse_cooldown;
 				lastUse = player.last[data.name];
@@ -8092,25 +8092,21 @@ function init_io() {
 				});
 			}
 
-			if (
-				gSkill.class &&
-				!in_arr(player.type, gSkill.class)
-				&& player.role != "gm"
-			) {
+			if (gSkill.class && !in_arr(player.type, gSkill.class) && player.role != "gm") {
 				return fail_response("skill_cant_use", data.name);
 			}
 
 			if (gSkill.wtype && player.role != "gm") {
 				let canUse;
 				if (!player.slots.mainhand) {
-					canUse = false
+					canUse = false;
 				} else if (is_array(gSkill.wtype)) {
-					canUse = in_arr(G.items[player.slots.mainhand.name].wtype, gSkill.wtype)
+					canUse = in_arr(G.items[player.slots.mainhand.name].wtype, gSkill.wtype);
 				} else {
-					canUse = G.items[player.slots.mainhand.name].wtype == gSkill.wtype
+					canUse = G.items[player.slots.mainhand.name].wtype == gSkill.wtype;
 				}
 				if (!canUse) {
-					return fail_response("skill_cant_wtype", data.name)
+					return fail_response("skill_cant_wtype", data.name);
 				}
 			}
 
@@ -8121,10 +8117,10 @@ function init_io() {
 
 			var target;
 			if (gSkill.target) {
-				const isMonster = "" + parseInt(data.id) === "" + data.id
-				const isPlayer = !isMonster
-				const canTargetMonster = gSkill.target == "monster" || gSkill.target === true
-				const canTargetPlayer = gSkill.target == "player" || gSkill.target === true
+				const isMonster = "" + parseInt(data.id) === "" + data.id;
+				const isPlayer = !isMonster;
+				const canTargetMonster = gSkill.target == "monster" || gSkill.target === true;
+				const canTargetPlayer = gSkill.target == "player" || gSkill.target === true;
 				if ((isMonster && !canTargetMonster) || (isPlayer && !canTargetPlayer)) {
 					return fail_response("invalid_target", data.name, { id: data.id });
 				}
@@ -8132,7 +8128,7 @@ function init_io() {
 					target = players[id_to_id[data.id]];
 					if (gSkill.hostile && target.name == player.name) {
 						// Prevent casting the skill on oneself
-						return fail_response("no_target", data.name)
+						return fail_response("no_target", data.name);
 					}
 				} else if (isMonster && instances[player.in].monsters[data.id]) {
 					target = instances[player.in].monsters[data.id];
@@ -8140,10 +8136,7 @@ function init_io() {
 					// TODO: Consider adding game_response, too
 					return socket.emit("disappear", { id: data.id, place: data.name, reason: "not_there" });
 				}
-				if (
-					is_invis(target) ||
-					(!gSkill.global && distance(target, player) > B.max_vision)
-				) {
+				if (is_invis(target) || (!gSkill.global && distance(target, player) > B.max_vision)) {
 					// TODO: Consider adding game_response, too
 					return socket.emit("disappear", { id: data.id, place: data.name, reason: "not_there" });
 				}
@@ -8151,10 +8144,7 @@ function init_io() {
 
 			if (gSkill.requirements) {
 				for (const requirement in gSkill.requirements) {
-					if (
-						!player[requirement] ||
-						player[requirement] < gSkill.requirements[requirement]
-					) {
+					if (!player[requirement] || player[requirement] < gSkill.requirements[requirement]) {
 						return fail_response("skill_cant_requirements", data.name);
 					}
 				}
@@ -8164,12 +8154,16 @@ function init_io() {
 				let found = false;
 				let noCharge = false;
 				for (const [slotName, itemName] of gSkill.slot) {
-					const slotItem = player.slots[slotName]
-					if (!slotItem || slotItem.name !== itemName) continue;
+					const slotItem = player.slots[slotName];
+					if (!slotItem || slotItem.name !== itemName) {
+						continue;
+					}
 					found = true;
 
-					const gItem = G.items[itemName]
-					if (!gItem.charge) continue;
+					const gItem = G.items[itemName];
+					if (!gItem.charge) {
+						continue;
+					}
 					// This skill requires a charge, check the charge level
 					if ((slotItem.charges || 0) < gItem.charge) {
 						noCharge = true;
@@ -8196,68 +8190,78 @@ function init_io() {
 
 			// Range check
 			if (target && (gSkill.range || gSkill.use_range)) {
-				let range = gSkill.range || player.range
-				if (gSkill.range_multiplier) range *= gSkill.range_multiplier
-				if (gSkill.range_bonus) range += gSkill.range_bonus
-
-				if (data.name == "throw") {
-					range += player.level
+				let range = gSkill.range || player.range;
+				if (gSkill.range_multiplier) {
+					range *= gSkill.range_multiplier;
+				}
+				if (gSkill.range_bonus) {
+					range += gSkill.range_bonus;
 				}
 
-				const dist = distance(player, target)
+				if (data.name == "throw") {
+					range += player.level;
+				}
+
+				const dist = distance(player, target);
 				if (dist > range + player.xrange) {
-					return fail_response("too_far", data.name, { dist: dist, id: target.id, place: data.name })
+					return fail_response("too_far", data.name, { dist: dist, id: target.id, place: data.name });
 				}
 				if (dist > range) {
 					// xrange was used, reduce it by however much we used
-					player.xrange -= dist - range
+					player.xrange -= dist - range;
 				}
 			}
 
 			// Consume item check
 			if (gSkill.consume) {
 				let item;
-				if(data.num === undefined || data.num === null) {
+				if (data.num === undefined || data.num === null) {
 					// No item was provided, search for one
 					for (let i = player.isize - 1; i >= 0; i--) {
-						const potentialItem = player.items[i]
-						if(!potentialItem) continue
-						if(potentialItem.name !== gSkill.consume) continue
+						const potentialItem = player.items[i];
+						if (!potentialItem) {
+							continue;
+						}
+						if (potentialItem.name !== gSkill.consume) {
+							continue;
+						}
 
 						// We found the item
-						data.num = i
-						item = potentialItem
-						break
+						data.num = i;
+						item = potentialItem;
+						break;
 					}
 				} else {
-					item = player.items[data.num]
+					item = player.items[data.num];
 				}
 				if (!item || item.name != gSkill.consume) {
 					return fail_response("skill_cant_item", data.name);
 				}
 
 				// Consume the item
-				consume_one(player, data.num)
+				consume_one(player, data.num);
 				player.to_resend = "u+cid+reopen";
 			}
 
-			if ([
-				"attack",
-				"burst",
-				"heal",
-				"mentalburst",
-				"piercingshot",
-				"poisonarrow",
-				"purify",
-				"quickpunch",
-				"quickstab",
-				"selfheal",
-				"smash",
-				"snowball",
-				"supershot",
-				"taunt",
-				"zapperzap",
-			].includes(data.name)) {
+			if (
+				[
+					"attack",
+					"burst",
+					"heal",
+					"mentalburst",
+					"piercingshot",
+					"poisonarrow",
+					"purify",
+					"quickpunch",
+					"quickstab",
+					"selfheal",
+					"smash",
+					"snowball",
+					"supershot",
+					"taunt",
+					"zapperzap",
+				].includes(data.name)
+			) {
 				const attack = commence_attack(player, target, data.name);
 				if (!attack.failed) {
 					resolve = attack;
@@ -8275,9 +8279,7 @@ function init_io() {
 			} else if (data.name == "pickpocket") {
 				consume_mp(player, gSkill.mp);
 				player.c[data.name] = {
-					ms:
-						gSkill.duration_min +
-						Math.random() * (gSkill.duration_max - gSkill.duration_min),
+					ms: gSkill.duration_min + Math.random() * (gSkill.duration_max - gSkill.duration_min),
 					target: target.name,
 				};
 				player.to_resend = "u+cid";
@@ -8308,9 +8310,7 @@ function init_io() {
 				} else {
 					xy_emit(player, "ui", { type: data.name + "_start", name: player.name, direction: direction });
 					player.c[data.name] = {
-						ms:
-							gSkill.duration_min +
-							Math.random() * (gSkill.duration_max - gSkill.duration_min),
+						ms: gSkill.duration_min + Math.random() * (gSkill.duration_max - gSkill.duration_min),
 						drop: the_zone.drop,
 					};
 				}
@@ -9160,21 +9160,21 @@ function init_io() {
 					if (current === undefined || current >= 2 || going === undefined || going >= 2) {
 						server_log(
 							"#C cheater: " +
-							player.name +
-							" current: " +
-							current +
-							"[" +
-							data.x +
-							"," +
-							data.x +
-							"] going: " +
-							going +
-							"[" +
-							player.going_x +
-							"," +
-							player.going_y +
-							"] at " +
-							player.map,
+								player.name +
+								" current: " +
+								current +
+								"[" +
+								data.x +
+								"," +
+								data.x +
+								"] going: " +
+								going +
+								"[" +
+								player.going_x +
+								"," +
+								player.going_y +
+								"] at " +
+								player.map,
 							1,
 						);
 						appengine_log("violation", "move_line: " + player.name + " afk: " + player.afk + " code: " + player.code);
@@ -9580,7 +9580,7 @@ function init_io() {
 					}
 					try {
 						delete_observer(socket);
-					} catch (e) { }
+					} catch (e) {}
 
 					players[socket.id] = player;
 					resume_instance(instances[player.in]);
@@ -10358,7 +10358,7 @@ function init_io() {
 				socket.emit("tavern", { event: "info", edge: house_edge(), max: parseInt((S.gold - house_debt()) * 0.4) });
 			}
 		});
-		socket.on("play", function (data) { });
+		socket.on("play", function (data) {});
 		socket.on("pet", function (data) {
 			var player = players[socket.id];
 			if (!player) {
@@ -10512,7 +10512,7 @@ function init_io() {
 			var observer = observers[socket.id];
 			try {
 				delete sockets[socket.id];
-			} catch (e) { }
+			} catch (e) {}
 			if (player) {
 				player.dc = true;
 				try {
@@ -11824,7 +11824,7 @@ function update_instance(instance) {
 			if (player && player.in == monster.in && !player.rip && !is_invis(player)) {
 				if (
 					distance(player, monster, true) >
-					min(monster.range / 1.6, 240) + min(100, monster.attack / 5.0) + 160 + ((mode.all_smart && 320) || 1) &&
+						min(monster.range / 1.6, 240) + min(100, monster.attack / 5.0) + 160 + ((mode.all_smart && 320) || 1) &&
 					!monster.walk_once
 				) {
 					stop_pursuit(monster, { cause: "exceeds_range" });
@@ -12454,7 +12454,7 @@ function update_instance(instance) {
 				if (def.withdrawal) {
 					add_condition(player, def.withdrawal);
 				}
-			} catch (e) { }
+			} catch (e) {}
 			player.slots.elixir = null;
 			player.cslots.elixir = null;
 			resend(player, "reopen+u+cid");
@@ -13110,7 +13110,7 @@ setInterval(function () {
 										retries: 5,
 										item: mitem,
 									},
-									function (result) { },
+									function (result) {},
 									function () {
 										console.log("#M unsent giveaway, lost item: " + mitem);
 									},
@@ -13277,7 +13277,7 @@ setInterval(function () {
 					(monster.extra_gold || 0) +
 					((min(min(2400, target.attack) / 220.0 + monster.attack / 1.2, 55) + 19) *
 						((gameplay == "hardcore" && 100) || 1)) /
-					(max((target.targets - 1) * (target.targets - 1), 1) || 1);
+						(max((target.targets - 1) * (target.targets - 1), 1) || 1);
 			}
 		}
 	} catch (e) {
@@ -13468,7 +13468,7 @@ function sync_loop() {
 					server_log("#X SEVERE: sync notingame disconnect for " + player.name, 1);
 					try {
 						player.socket.disconnect();
-					} catch (e) { }
+					} catch (e) {}
 				}
 				delete player.sync_call;
 			},
@@ -13500,13 +13500,13 @@ function sync_loop() {
 			function (result) {
 				server_log(
 					"stop_character: " +
-					player.name +
-					" owner: " +
-					player.owner +
-					" bank: " +
-					bank +
-					" result: " +
-					JSON.stringify(result),
+						player.name +
+						" owner: " +
+						player.owner +
+						" bank: " +
+						bank +
+						" result: " +
+						JSON.stringify(result),
 					1,
 				);
 				if (result.done) {
