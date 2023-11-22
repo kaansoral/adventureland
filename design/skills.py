@@ -741,6 +741,7 @@ skills={
 		"damage_multiplier":1.5,
 		"cooldown":30000,
 		"range_multiplier":3,
+		"range_bonus":20,
 		"mp":400,
 		"target":True,
 		"hostile":True,
