@@ -54,9 +54,9 @@ resource "local_file" "remote_state" {
 locals {
   secrets = {
     base_url      = var.base_url
-    keyword       = random_string.keyword.result
-    master        = random_string.master.result
-    bot_key       = random_string.bot_key.result
+    keyword       = random_password.keyword.result
+    master        = random_password.master.result
+    bot_key       = random_password.bot_key.result
   }
   servers = [
     module.us_1_server.details,
