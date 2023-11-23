@@ -104,7 +104,7 @@ class Selector(webapp.RequestHandler): #NOTICE: << Publicly available at /commun
 		if not name: 
 			whtml(self,"utility/htmls/imagesets/select-imageset.html",domain=gdi(self),imagesets=imagesets)
 			return
-		# TODO: Render alist of image sets that you can choose instead of redirecting
+		
 		name=name.split("/")[0]
 		file=imagesets[name]["file"]
 		size=imagesets[name]["size"]

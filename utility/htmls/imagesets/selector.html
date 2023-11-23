@@ -4,26 +4,119 @@
 		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"></script>
 		<script src="/js/common_functions.js?v={{domain.v}}"></script>
 		<script src="/js/functions.js?v={{domain.v}}"></script>
-		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
-		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css"/>
+		<script src="/data.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
 		<style>
-			html,body{
-				background:black;
+			html,
+			body {
+				background: black;
 			}
-			body{
+			body {
 				overflow-y: scroll;
+			}
+			.sprite {
+				display: inline-block;
+				border: 2px solid gray;
+				margin: 2px;
+			}
+
+			.has-position {
+				border-color: yellow;
+			}
+
+			.has-item {
+				border-color: red;
 			}
 		</style>
 		<script>
-			var mode="alert";
-			function clicked(x,y)
-			{
-				if(mode=="alert") alert(x+","+y);
-				else
-				{
-					$(".element"+x+y).attr("class","clickable element"+x+y+" rotate"+mode);
+			// Wait for DOM to load
+			$(function () {
+				// TODO: prepare / show a little items.py snippet for easy copy paste?
+				const current_itemset = "{{name}}";
+
+				const itemsBySkin = {};
+				for (const itemKey in G.items) {
+					const item = G.items[itemKey];
+					if (!item.skin) continue;
+					item.id = itemKey;
+
+					if (!itemsBySkin[item.skin]) {
+						itemsBySkin[item.skin] = [];
+					}
+
+					itemsBySkin[item.skin].push(item);
 				}
-			}
+
+				// lookup table to look up skin name in G.positions by x,y coordinates
+				const skinByXY = {};
+				for (const skin in G.positions) {
+					const [itemset, x, y] = G.positions[skin];
+					let key = itemset == "" ? "pack_20" : itemset; // html.js item_container defaults to pack_20 if no itemset is specified
+					if (!skinByXY[key]) {
+						skinByXY[key] = [];
+					}
+
+					if (!skinByXY[key][x]) {
+						skinByXY[key][x] = [];
+					}
+
+					if (!skinByXY[key][x][y]) {
+						skinByXY[key][x][y] = [];
+					}
+
+					skinByXY[key][x][y].push(skin);
+				}
+
+				const itemset_skins = skinByXY[current_itemset];
+
+				// loop all sprites on this sprite sheet and enhance them with info in regards to usage.
+				const sprites = $(".sprite");
+
+				for (const element of sprites) {
+					const x = element.dataset.x;
+					const y = element.dataset.y;
+					const skins = itemset_skins[x][y] ?? [];
+
+					let hasPosition = false;
+					let hasItem = false;
+					let title = [`${x},${y}`];
+					for (const skin of skins) {
+						const position = G.positions[skin];
+						if (position) {
+							const [itemset, x2, y2] = position;
+							hasPosition = true;
+							title.push(`G.positions.${skin} = [${itemset},${x2},${y2}]`);
+						}
+
+						const items = itemsBySkin[skin] ?? [];
+						for (const item of items) {
+							title.push(`G.items.${item.id} = ${item.name}`);
+							hasItem = true;
+						}
+
+						title.push("");
+					}
+
+					if (hasPosition) {
+						$(element).addClass("has-position");
+					}
+
+					if (hasItem) {
+						$(element).addClass("has-item");
+					}
+
+					$(element).attr("title", title.join("\n"));
+				}
+
+				var mode = "alert";
+				function clicked(x, y) {
+					if (mode == "alert") alert(x + "," + y);
+					else {
+						$(".element" + x + y).attr("class", "clickable element" + x + y + " rotate" + mode);
+					}
+				}
+			});
 		</script>
 	</head>
 	<body>
@@ -40,18 +133,28 @@
 				<div class="gamebutton clickable" onclick="mode=14">14</div>
 			</div>
 		</div>
-		<div style='color: white; background-color: black; padding: 2px; font-size: 0px'>
+		<div style="color: white; background-color: black; padding: 2px; font-size: 0px">
 			{% for y in ys %}
-				<div>
-					{% for x in xs%}
-						<div style='display:inline-block; border: 2px solid gray; margin: 2px; height: {{size*scale+6}}px; width: {{size*scale+6}}px; overflow: hidden'
-							class="clickable element{{x}}{{y}}" onclick="clicked({{x}},{{y}})">
-							<div style="margin-left: 3px; margin-top: 3px; width: {{size*scale}}px; height: {{size*scale}}px; overflow: hidden">
-								<img style='width: {{width*scale}}px; height: {{height*scale}}px; margin-left: -{{x*size*scale}}px; margin-top: -{{y*size*scale}}px;' src='{{file}}' />
-							</div>
-						</div>
-					{% endfor %}
+			<div>
+				{% for x in xs%}
+				<div
+					style="height: {{size*scale+6}}px; width: {{size*scale+6}}px; overflow: hidden"
+					class="sprite clickable element{{x}}{{y}}"
+					onclick="clicked({{x}},{{y}})"
+					data-x="{{x}}"
+					data-y="{{y}}"
+				>
+					<div
+						style="margin-left: 3px; margin-top: 3px; width: {{size*scale}}px; height: {{size*scale}}px; overflow: hidden"
+					>
+						<img
+							style="width: {{width*scale}}px; height: {{height*scale}}px; margin-left: -{{x*size*scale}}px; margin-top: -{{y*size*scale}}px;"
+							src="{{file}}"
+						/>
+					</div>
 				</div>
+				{% endfor %}
+			</div>
 			{% endfor %}
 		</div>
 	</body>
