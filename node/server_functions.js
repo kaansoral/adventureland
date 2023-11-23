@@ -420,7 +420,7 @@ function rip(player) {
 
 function notify_friends(data) {
 	data.list.forEach(function (name) {
-		var player = players[name_to_id[name]];
+		var player = players[name_to_id.get(name)];
 		if (!player) {
 			return;
 		}
@@ -1828,7 +1828,7 @@ function collect_signups(event) {
 	}
 	shuffle(names);
 	names.forEach(function (name) {
-		var player = players[name_to_id[name]];
+		var player = players[name_to_id.get(name)];
 		if (!player) {
 			return;
 		}
@@ -2841,8 +2841,8 @@ function consume_skill(player, name, reuse) {
 }
 
 function get_entity(name) {
-	if (players[name_to_id[name]]) {
-		return players[name_to_id[name]];
+	if (players[name_to_id.get(name)]) {
+		return players[name_to_id.get(name)];
 	}
 	var l = [];
 	for (var iname in instances) {
@@ -2854,7 +2854,7 @@ function get_entity(name) {
 }
 
 function get_player(name) {
-	return players[name_to_id[name]];
+	return players[name_to_id.get(name)];
 }
 
 function realm_broadcast(event, data) {
@@ -2931,7 +2931,7 @@ function party_emit(name, event, data, args) {
 	var owners = [];
 	var owner = get_player(data.owner);
 	parties[name].forEach(function (player_name) {
-		var player = players[name_to_id[player_name]];
+		var player = players[name_to_id.get(player_name)];
 		if (args && args.instance && player.in != args.instance) {
 			return;
 		}
@@ -2967,7 +2967,7 @@ function leave_party(name, leaver) {
 		return;
 	} // Don't know the cause, maybe a disconnect triggering on the accept routines? [12/07/18]
 	parties[name].forEach(function (player_name) {
-		var player = players[name_to_id[player_name]];
+		var player = players[name_to_id.get(player_name)];
 		if (!player) {
 			console.log("#X SHOULD'VE FOUND " + player_name);
 			return;
@@ -2983,7 +2983,7 @@ function leave_party(name, leaver) {
 	}
 	if (newparty.length < 2) {
 		if (newparty.length) {
-			var player = players[name_to_id[newparty[0]]];
+			var player = players[name_to_id.get(newparty[0])];
 			if (!player) {
 				console.log("#X SHOULD'VE FOUND2 " + newparty[0]);
 			} else {
@@ -2992,7 +2992,7 @@ function leave_party(name, leaver) {
 		}
 	} else {
 		newparty.forEach(function (player_name) {
-			var player = players[name_to_id[player_name]];
+			var player = players[name_to_id.get(player_name)];
 			if (!player) {
 				console.log("#X SHOULD'VE FOUND3 " + newparty[0]);
 				return;
@@ -3002,7 +3002,7 @@ function leave_party(name, leaver) {
 	}
 	// Moved the socket routine to the end, after all party changes are made [10/07/18]
 	oldparty.forEach(function (player_name) {
-		var player = players[name_to_id[player_name]];
+		var player = players[name_to_id.get(player_name)];
 		if (!player || player.name == leaver.name) {
 			return;
 		}

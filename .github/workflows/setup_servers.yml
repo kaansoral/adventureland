@@ -1,0 +1,46 @@
+name: Deploy Infrastructure and Run Ansible
+
+on:
+  push:
+    branches:
+      - main
+      - ansible-test
+
+jobs:
+  deploy:
+    concurrency: staging_environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: 1.1.0 # You can specify the version you want to use
+
+      - name: Initialize Terraform
+        working-directory: ./cicd/infra
+        run: terraform init
+        env:
+          TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
+          TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+          
+      - name: Terraform Apply
+        working-directory: ./cicd/infra
+        run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_hcloud_token: ${{ secrets.hcloud_token }}
+          TF_VAR_base_url: ${{ secrets.TF_VAR_base_url }}
+          TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
+          TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+      
+      - name: Run Ansible Playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ./cicd/setup/playbook.yml
+          key: ${{ secrets.HETZNER_PRIVATE_KEY }}
+          options: |
+            --inventory ./cicd/setup/inventory.yml
