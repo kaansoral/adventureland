@@ -76,7 +76,7 @@
 				for (const element of sprites) {
 					const x = element.dataset.x;
 					const y = element.dataset.y;
-					const skins = itemset_skins[x][y] ?? [];
+					const skins = itemset_skins[x] && itemset_skins[x][y] ? itemset_skins[x][y] : [];
 
 					let hasPosition = false;
 					let hasItem = false;
