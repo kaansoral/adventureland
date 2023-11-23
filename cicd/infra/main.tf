@@ -48,7 +48,7 @@ resource "local_file" "remote_state" {
     master_server = module.master
     game_servers = local.servers
   })
-  filename = "inventory.yml"
+  filename = "cicd/setup/inventory.yml"
 }
 
 locals {
