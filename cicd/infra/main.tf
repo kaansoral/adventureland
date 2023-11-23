@@ -47,12 +47,21 @@ data "hcloud_ssh_keys" "admin" {
   with_selector = "role=admin"
 }
 
+resource "template_file" "inventory" {
+  template = "./templates/inventory.tpl"
+  vars = {
+    base_url = local.secrets.base_url
+    keyword = local.secrets.keyword
+    master = local.secrets.master
+    bot_key = local.secrets.bot_key
+  }
+}
+
 locals {
   secrets = {
     base_url      = var.base_url
     keyword       = random_string.keyword.result
     master        = random_string.master.result
-    server_master = random_string.server_master.result
     bot_key       = random_string.bot_key.result
   }
   ips = [
