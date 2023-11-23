@@ -6464,7 +6464,7 @@ function init_io() {
 					player.s.penalty_cd = { ms: penalty };
 				}
 				resend(player, "reopen+u+cid");
-				success_response("data", resolve);
+				success_response("data", { slots: resolve });
 			} else {
 				return fail_response("invalid");
 			}
