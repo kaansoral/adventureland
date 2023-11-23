@@ -4129,7 +4129,7 @@ function init_io() {
 					}
 					if (method == "equip_batch") {
 						var cost = 1;
-						if(Array.isArray(data)) {
+						if (Array.isArray(data)) {
 							cost += data.length / 2;
 						}
 						add_call_cost(CC.equip * cost);
@@ -6458,7 +6458,7 @@ function init_io() {
 					penalty += 120;
 					resolve.push({ num: equip_def.num, slot });
 				}
-				if("penalty_cd" in player.s) {
+				if ("penalty_cd" in player.s) {
 					player.s.penalty_cd.ms = min(player.s.penalty_cd.ms + penalty, 120000);
 				} else {
 					player.s.penalty_cd = { ms: penalty };
