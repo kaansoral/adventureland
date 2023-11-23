@@ -39,7 +39,7 @@ data "hcloud_ssh_keys" "admin" {
   with_selector = "role=admin"
 }
 
-resource "local_file" "remote_state" {
+resource "local_file" "inventory" {
   content  = templatefile("./templates/inventory.tpl", {
     base_url = local.secrets.base_url
     keyword = local.secrets.keyword
@@ -48,7 +48,7 @@ resource "local_file" "remote_state" {
     master_server = module.master
     game_servers = local.servers
   })
-  filename = "cicd/setup/invedntory.yml"
+  filename = "../setup/inventory.yml"
 }
 
 locals {
