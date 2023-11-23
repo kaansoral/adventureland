@@ -1,19 +1,19 @@
-resource "random_string" "bot_key" {
+resource "random_password" "bot_key" {
   length  = 32
   special = false
 }
 
-resource "random_string" "server_master" {
+resource "random_password" "server_master" {
   length  = 32
   special = false
 }
 
-resource "random_string" "master" {
+resource "random_password" "master" {
   length  = 32
   special = false
 }
 
-resource "random_string" "keyword" {
+resource "random_password" "keyword" {
   length  = 32
   special = false
 }
