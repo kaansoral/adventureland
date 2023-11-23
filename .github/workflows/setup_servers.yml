@@ -36,7 +36,10 @@ jobs:
           TF_HTTP_ADDRESS: ${{ secrets.TF_HTTP_ADDRESS }}
           TF_HTTP_USERNAME: ${{ secrets.TF_HTTP_USERNAME }}
           TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: inventory
+          path: cicd/setup/inventory.yml
   setup:
     concurrency: staging_environment
     runs-on: ubuntu-latest
@@ -45,6 +48,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - uses: actions/download-artifact@master
+        with:
+          name: inventory
+          path: cicd/setup/inventory.yml
+      
       - name: Run Ansible Playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
