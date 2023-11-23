@@ -25,7 +25,9 @@
 				border-color: yellow;
 			}
 
-			.has-item {
+			.has-item,
+			.has-condition,
+			.has-skill {
 				border-color: red;
 			}
 		</style>
@@ -35,18 +37,25 @@
 				// TODO: prepare / show a little items.py snippet for easy copy paste?
 				const current_itemset = "{{name}}";
 
-				const itemsBySkin = {};
-				for (const itemKey in G.items) {
-					const item = G.items[itemKey];
-					if (!item.skin) continue;
-					item.id = itemKey;
+				function mapBySkin(dictionary) {
+					const bySkin = {};
+					for (const key in dictionary) {
+						const value = dictionary[key];
+						if (!value.skin) continue;
+						value.id = key;
 
-					if (!itemsBySkin[item.skin]) {
-						itemsBySkin[item.skin] = [];
+						if (!bySkin[value.skin]) {
+							bySkin[value.skin] = [];
+						}
+
+						bySkin[value.skin].push(value);
 					}
-
-					itemsBySkin[item.skin].push(item);
+					return bySkin;
 				}
+
+				const itemsBySkin = mapBySkin(G.items);
+				const conditionsBySkin = mapBySkin(G.conditions);
+				const skillsBySkin = mapBySkin(G.skills);
 
 				// lookup table to look up skin name in G.positions by x,y coordinates
 				const skinByXY = {};
@@ -80,6 +89,8 @@
 
 					let hasPosition = false;
 					let hasItem = false;
+					let hasCondition = false;
+					let hasSkill = false;
 					let title = [`${x},${y}`];
 					for (const skin of skins) {
 						const position = G.positions[skin];
@@ -95,6 +106,18 @@
 							hasItem = true;
 						}
 
+						const conditions = conditionsBySkin[skin] ?? [];
+						for (const item of conditions) {
+							title.push(`G.conditions.${item.id} = ${item.name}`);
+							hasCondition = true;
+						}
+
+						const skills = skillsBySkin[skin] ?? [];
+						for (const item of skills) {
+							title.push(`G.skills.${item.id} = ${item.name}`);
+							hasSkill = true;
+						}
+
 						title.push("");
 					}
 
@@ -104,6 +127,14 @@
 
 					if (hasItem) {
 						$(element).addClass("has-item");
+					}
+
+					if (hasCondition) {
+						$(element).addClass("has-condition");
+					}
+
+					if (hasSkill) {
+						$(element).addClass("has-skill");
 					}
 
 					$(element).attr("title", title.join("\n"));
