@@ -36,13 +36,3 @@ variable "server" {
     name    = "Undefined"
   }
 }
-
-variable "secrets" {
-  type = object({
-    base_url      = string
-    keyword       = string
-    master        = string
-    server_master = string
-    bot_key       = string
-  })
-}

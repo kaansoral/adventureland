@@ -17,7 +17,7 @@ game-servers:
   vars:
     ansible_user: root
   hosts:
-%{ for server in servers ~}
+%{ for server in game_servers ~}
     ${server.region}_${server.name}:
       ansible_host: ${server.ip}
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'

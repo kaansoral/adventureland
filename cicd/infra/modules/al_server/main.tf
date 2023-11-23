@@ -35,6 +35,10 @@ resource "hcloud_volume" "storage" {
   delete_protection = true
 }
 
-output "instance_ip" {
-  value = hcloud_primary_ip.ip.ip_address
+output "details" {
+  value = {
+    ip: hcloud_primary_ip.ip.ip_address
+    name: var.server.name
+    region: var.server.region
+  }
 }
