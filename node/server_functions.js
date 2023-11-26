@@ -4189,6 +4189,176 @@ function rphash2(x, y) {
 	return x + "|" + y;
 }
 
+function real_bsearch_start(arr, value) {
+	var start = 0;
+	var count = arr.length;
+	var step;
+	var current;
+
+	while (count > 0) {
+		current = start;
+		step = Math.floor(count / 2);
+		current += step;
+		if (arr[current][0] < value) {
+			start = ++current;
+			count -= step + 1;
+		} else {
+			count = step;
+		}
+	}
+	return start;
+}
+
+function stripped_can_move_baseless(monster, x_lines, y_lines, xstart = -1, ystart = -1) {
+	var x0 = monster.x;
+	var y0 = monster.y;
+	var x1 = monster.going_x;
+	var y1 = monster.going_y;
+
+	const minx = Math.min(x0, x1);
+	const maxx = Math.max(x0, x1);
+	const miny = Math.min(y0, y1);
+	const maxy = Math.max(y0, y1);
+
+	if (xstart === -1) {
+		xstart = real_bsearch_start(x_lines, minx);
+	}
+	for (var i = xstart; i < x_lines.length; i++) {
+		const [lx, ly0, ly1] = x_lines[i];
+		if (maxx < lx) {
+			break;
+		}
+		if (x1 == x0) {
+			if (lx == x1 && Math.max(miny, ly0) <= Math.min(maxy, ly1)) {
+				return false;
+			}
+		} else {
+			let AREA_MID = (lx - x0) * (y1 - y0);
+			let AREA_LOWER = (ly0 - y0) * (x1 - x0);
+			let AREA_UPPER = (ly1 - y0) * (x1 - x0);
+			if ((AREA_LOWER <= AREA_MID && AREA_MID <= AREA_UPPER) || (AREA_UPPER <= AREA_MID && AREA_MID <= AREA_LOWER)) {
+				return false;
+			}
+		}
+	}
+	if (ystart === -1) {
+		ystart = real_bsearch_start(y_lines, miny);
+	}
+	for (var i = ystart; i < y_lines.length; i++) {
+		const [ly, lx0, lx1] = y_lines[i];
+		if (maxy < ly) {
+			break;
+		}
+		if (y1 == y0) {
+			if (ly == y1 && Math.max(minx, lx0) <= Math.min(maxx, lx1)) {
+				return false;
+			}
+		} else {
+			let AREA_MID = (ly - y0) * (x1 - x0);
+			let AREA_LOWER = (lx0 - x0) * (y1 - y0);
+			let AREA_UPPER = (lx1 - x0) * (y1 - y0);
+			if ((AREA_LOWER <= AREA_MID && AREA_MID <= AREA_UPPER) || (AREA_UPPER <= AREA_MID && AREA_MID <= AREA_LOWER)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+function stripped_can_move_based(monster, base) {
+	var GEO = G.geometry[monster.map] || {};
+
+	var x0 = monster.x;
+	var y0 = monster.y;
+	var x1 = monster.going_x;
+	var y1 = monster.going_y;
+
+	var minx = Math.min(x0, x1);
+	var miny = Math.min(y0, y1);
+
+	const x_lines = GEO.x_lines || [];
+	const y_lines = GEO.y_lines || [];
+
+	const x0a_ind = real_bsearch_start(x_lines, minx - base.h);
+	const y0a_ind = real_bsearch_start(y_lines, miny - base.v);
+
+	if (
+		!stripped_can_move_baseless(
+			{ x: x0 - base.h, y: y0 - base.v, going_x: x1 - base.h, going_y: y1 - base.v },
+			x_lines,
+			y_lines,
+			x0a_ind,
+			y0a_ind,
+		)
+	) {
+		return false;
+	}
+
+	const x0b_ind = real_bsearch_start(x_lines, minx + base.h);
+	if (
+		!stripped_can_move_baseless(
+			{ x: x0 + base.h, y: y0 - base.v, going_x: x1 + base.h, going_y: y1 - base.v },
+			x_lines,
+			y_lines,
+			x0b_ind,
+			y0a_ind,
+		)
+	) {
+		return false;
+	}
+
+	const y0b_ind = real_bsearch_start(y_lines, miny + base.vn);
+	if (
+		!stripped_can_move_baseless(
+			{ x: x0 - base.h, y: y0 + base.vn, going_x: x1 - base.h, going_y: y1 + base.vn },
+			x_lines,
+			y_lines,
+			x0a_ind,
+			y0b_ind,
+		)
+	) {
+		return false;
+	}
+
+	if (
+		!stripped_can_move_baseless(
+			{ x: x0 + base.h, y: y0 + base.vn, going_x: x1 + base.h, going_y: y1 + base.vn },
+			x_lines,
+			y_lines,
+			x0b_ind,
+			y0b_ind,
+		)
+	) {
+		return false;
+	}
+	// fence logic, orphan lines - at the destination, checks whether we can move from one rectangle point to the other, if we can't move, it means a line penetrated the rectangle
+	// [20/07/18]
+	var px0 = base.h;
+	var px1 = -base.h; // going left
+	if (x1 > x0) {
+		px0 = -base.h;
+		px1 = base.h;
+	} // going right
+	var py0 = base.vn;
+	var py1 = -base.v; // going up
+	if (y1 > y0) {
+		py0 = -base.v;
+		py1 = base.vn;
+	} // going down
+
+	if (
+		!stripped_can_move_baseless({ x: x1 + px1, y: y1 + py0, going_x: x1 + px1, going_y: y1 + py1 }, x_lines, y_lines)
+	) {
+		return false;
+	}
+	if (
+		!stripped_can_move_baseless({ x: x1 + px0, y: y1 + py1, going_x: x1 + px1, going_y: y1 + py1 }, x_lines, y_lines)
+	) {
+		return false;
+	}
+	return true;
+}
+
 var amap_data = {};
 var amap_step = 8;
 function server_bfs2(map) {
@@ -4231,14 +4401,16 @@ function server_bfs2(map) {
 		].forEach(function (m) {
 			if (
 				!done &&
-				can_move({
-					map: map,
-					x: x,
-					y: y,
-					going_x: current[0] + m[0] * xmult,
-					going_y: current[1] + m[1] * xmult,
-					base: base,
-				})
+				stripped_can_move_based(
+					{
+						map: map,
+						x: x,
+						y: y,
+						going_x: current[0] + m[0] * xmult,
+						going_y: current[1] + m[1] * xmult,
+					},
+					base,
+				)
 			) {
 				push(current[0] + m[0], current[1] + m[1], level);
 				done = true;
@@ -4263,14 +4435,16 @@ function server_bfs2(map) {
 			[-amap_step, 0],
 		].forEach(function (m) {
 			if (
-				can_move({
-					map: map,
-					x: current[0],
-					y: current[1],
-					going_x: current[0] + m[0] * xmult,
-					going_y: current[1] + m[1] * xmult,
-					base: base,
-				})
+				stripped_can_move_based(
+					{
+						map: map,
+						x: current[0],
+						y: current[1],
+						going_x: current[0] + m[0] * xmult,
+						going_y: current[1] + m[1] * xmult,
+					},
+					base,
+				)
 			) {
 				push(current[0] + m[0], current[1] + m[1]);
 			}
