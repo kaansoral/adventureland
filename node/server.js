@@ -8905,7 +8905,7 @@ function init_io() {
 			}
 			if (data.name == "charm") {
 				consume_mp(player, G.skills[data.name].mp);
-				if (Math.random() > 0.01) {
+				if (Math.random() > attacker.a.charm.attr0 / 100) {
 					socket.emit("game_response", "charm_failed");
 					xy_emit(player, "ui", { type: "charm", name: player.name, id: target.id, fail: true });
 				} else {
