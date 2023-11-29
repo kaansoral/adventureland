@@ -7177,19 +7177,19 @@ function init_io() {
 			var add = "+nc+inv";
 			data.num = max(0, parseInt(data.num) || 0);
 			if (!player.items[data.num]) {
-				return fail_response("no_item");
+				return fail_response("no_item", { num: data.num });
 			}
 			var item = player.items[data.num];
 			var name = player.items[data.num].name;
 			data.q = min(max(parseInt(data.q) || 0, 1), (item && item.q) || 1);
 			if (item.name == "placeholder") {
-				return fail_response("item_placeholder");
+				return fail_response("item_placeholder", { num: data.num });
 			}
 			if (item.l) {
-				return fail_response("item_locked");
+				return fail_response("item_locked", { num: data.num });
 			}
 			if (item.b) {
-				return fail_response("item_blocked");
+				return fail_response("item_blocked", { num: data.num });
 			}
 			if (item.level != 13) {
 				consume(player, data.num, data.q);
@@ -7221,7 +7221,7 @@ function init_io() {
 				xy_emit(G.maps.spookytown.ref.poof, "upgrade", { type: "poof", success: 1 });
 			}
 			resend(player, "reopen" + add);
-			success_response("destroyed", { name: name, place: "destroy", cevent: "destroy" });
+			success_response("destroyed", { name: name, num: num, cevent: "destroy" });
 		});
 		socket.on("join_giveaway", function (data) {
 			var player = players[socket.id];
