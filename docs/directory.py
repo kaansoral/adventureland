@@ -63,7 +63,6 @@ docs={
 		"sell",
 		"consume",
 		"equip",
-		"equip_batch",
 		"unequip",
 		"lock_item",
 		"seal_item",
@@ -161,7 +160,6 @@ docs={
 		"is_array",
 	],
 	"documented":[
-		"equip_batch",
 		"attack",
 		"heal",
 		"buy",

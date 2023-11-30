@@ -1613,10 +1613,6 @@ function init_socket(args)
 				ui_error("Item combination failed");
 				if(!data.stale) resolve_deferred("compound",{success:false,level:data.level,num:data.num});
 			}
-			else if(response=="compound_no_scroll")
-			{
-				reject_deferred("compound",{reason:"no_scroll"});
-			}
 			else if(response=="compound_in_progress")
 			{
 				ui_log("Another combination in progress","gray");

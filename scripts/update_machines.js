@@ -1,4 +1,4 @@
-var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
+var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
 require(process.env.HOME+"/thegame/scripts/data.js");
 
 f.execso("node ~/gscripts/prepare_server.js;");

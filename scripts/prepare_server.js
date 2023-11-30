@@ -1,4 +1,4 @@
-var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
+var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
 f.execs("rm -rf ~/deploy/server");
 f.execs("mkdir ~/deploy/server");
 f.execs("cp -r ~/thegame/node/* ~/deploy/server");

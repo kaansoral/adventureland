@@ -1491,7 +1491,7 @@ def create_server_api(**args):
 	if keyword!=secrets.SERVER_MASTER: jhtml(self,{"failed":1}); return
 	actual_ip=ip=self.request.remote_addr; server_name="XX"
 	if is_sdk: actual_ip=ip=domain.server_ip
-	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
+	if domain.https_mode: ip="%s.%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain[1],live_domain[2])
 	lat,lon=(self.request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
 	try: lat,lon=float(lat),float(lon)
 	except: lat,lon=0,0
