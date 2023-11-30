@@ -74,7 +74,10 @@
       rsync_opts:
         - "--exclude=./cicd"
         - "--exclude=./.github"
-        
+
+  - name: own game files
+    command: chown adventureland:adventureland -R /opt/adventureland
+
   - name: create secrets
     template:
       src: secrets.py.j2
@@ -136,7 +139,7 @@
         - "--exclude=./.github"
 
   - name: own game files
-    command: chown adventureland:adventureland /opt/adventureland
+    command: chown adventureland:adventureland -R /opt/adventureland
 
   - name: install npm packages
     shell: 
