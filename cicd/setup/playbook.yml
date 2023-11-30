@@ -75,11 +75,10 @@
         - "--exclude=./cicd"
         - "--exclude=./.github"
         
-  - name: create master secrets
+  - name: create secrets
     template:
       src: secrets.py.j2
       dest: "/opt/adventureland/secrets.py"
-    notify: Reload Services
 
   - name: create master service
     template:
