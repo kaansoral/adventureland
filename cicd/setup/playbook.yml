@@ -75,11 +75,6 @@
         - "--exclude=./cicd"
         - "--exclude=./.github"
         
-  - name: install npm packages
-    shell: 
-      chdir: /opt/adventureland/node
-      cmd: npm install
-
   - name: create master secrets
     template:
       src: secrets.py.j2
