@@ -147,6 +147,11 @@
       cmd: npm install
     become_user: adventureland
 
+  - name: create secrets
+    template:
+      src: variables.js.j2
+      dest: "/opt/adventureland/node/variables.js"
+
   - name: create game server service
     template:
       src: game-server.service.j2
