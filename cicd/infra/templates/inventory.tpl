@@ -27,4 +27,7 @@ game-servers:
       bot_key: ${bot_key}
       keyword: ${keyword}
       base_url: ${base_url}
+      excluded_paths:
+      - /.github
+      - /cicd
 %{ endfor ~}

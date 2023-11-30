@@ -1,22 +1,171 @@
 ---
-- name: Install Adventureland
+- name: setup adventureland master
   hosts: master-servers
   become: yes  # Run tasks as a superuser (root)
-  roles: 
-  - dependencies
-  - storage
-  - appengine
-  - services
-  - install
-  - settings
-  - adventureland-master
-  
-- name: Install Adventureland
+  tasks:
+  - name: Create adventureland account
+    user:
+      name: adventureland
+      comment: "Adventureland System Account"
+      shell: /bin/bash
+      system: yes
+
+  - name: install dependencies
+    become: yes
+    shell: |
+      apt update
+      apt upgrade -y
+      apt install python2.7 git nodejs npm -y
+      wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+      python2.7 get-pip.py
+      rm get-pip.py
+      pip2.7 check
+      pip2.7 install lxml
+    
+  - name: Gather facts about storage
+    become: true
+    block:
+      - name: Get mount information for the specified volume
+        shell: "mount | grep '{{ mount_point }}'"
+        register: mount_info
+        changed_when: false
+        ignore_errors: true
+        no_log: true
+        
+      - name: Check if the volume is mounted
+        set_fact:
+          storage_mounted: "{{ mount_info.rc == 0 }}"
+
+  - name: Mount the storage volume
+    when: not storage_mounted
+    become: true
+    mount:
+      path: "{{ mount_point }}"
+      src: "/dev/disk/by-id/scsi-0HC_Volume_{{ volume_id }}"
+      fstype: ext4  
+      state: mounted
+
+  - name: Create appengine directory
+    become: yes
+    file:
+      path: "{{ appengine_root }}"
+      state: directory
+      owner: adventureland
+      group: adventureland
+      mode: "0755"
+
+  - name: Install dependencies
+    shell: 
+      chdir: "{{ appengine_root }}"
+      cmd : |
+        rm -rf -- *
+        wget https://chromium.googlesource.com/external/googleappengine/python/+archive/69de4b85b39dc737634b0150a8e412730b8ed9e2.tar.gz
+        tar -xf 69de4b85b39dc737634b0150a8e412730b8ed9e2.tar.gz
+        rm 69de4b85b39dc737634b0150a8e412730b8ed9e2.tar.gz
+        sed 's/RAND_egd, //' -i google/appengine/dist27/socket.py
+    become: yes
+    become_user: adventureland
+
+  - name: upload Game files
+    ansible.posix.synchronize:
+      src: ./../../../../../
+      dest: /opt/adventureland
+      delete: true
+      rsync_opts:
+        - "--exclude=./cicd"
+        - "--exclude=./.github"
+        
+  - name: install npm packages
+    shell: 
+      chdir: /opt/adventureland/node
+      cmd: npm install
+
+  - name: create master secrets
+    template:
+      src: secrets.py.j2
+      dest: "/opt/adventureland/secrets.py"
+    notify: Reload Services
+
+  - name: create master service
+    template:
+      src: master-server.service.j2
+      dest: "/etc/systemd/system/master-server.service"
+
+  - name: reload Services
+    command: systemctl daemon-reload
+
+  - name: Enable service
+    systemd:
+      name: master-server
+      enabled: true
+    become: yes
+
+  - name: restart service
+    systemd:
+      name: master-server
+      state: restarted
+    become: yes
+
+  - name: reload services
+    command: systemctl daemon-reload
+
+- name: setup adventureland game server
   hosts: game-servers
   become: yes  # Run tasks as a superuser (root)
-  roles: 
-  - dependencies
-  - services
-  - install
-  - settings
-  - adventureland-server
+  tasks:
+  - name: Create adventureland account
+    user:
+      name: adventureland
+      comment: "Adventureland System Account"
+      shell: /bin/bash
+      system: yes
+
+  - name: install dependencies
+    become: yes
+    shell: |
+      apt update
+      apt upgrade -y
+      apt install python2.7 git nodejs npm -y
+      wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+      python2.7 get-pip.py
+      rm get-pip.py
+      pip2.7 check
+      pip2.7 install lxml
+
+  - name: upload game files
+    ansible.posix.synchronize:
+      src: ./../../../../../
+      dest: /opt/adventureland
+      delete: true
+      rsync_opts:
+        - "--exclude=./cicd"
+        - "--exclude=./.github"
+
+  - name: own game files
+    command: chown adventureland:adventureland /opt/adventureland
+
+  - name: install npm packages
+    shell: 
+      chdir: /opt/adventureland/node
+      cmd: npm install
+    become_user: adventureland
+
+  - name: create game server service
+    template:
+      src: game-server.service.j2
+      dest: "/etc/systemd/system/game-server.service"
+
+  - name: reload services
+    command: systemctl daemon-reload
+
+  - name: Enable service
+    systemd:
+      name: game-server
+      enabled: true
+    become: yes
+
+  - name: start or restart service
+    systemd:
+      name: game-server
+      state: restarted
+    become: yes

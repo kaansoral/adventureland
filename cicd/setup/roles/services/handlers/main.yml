@@ -1,3 +1,0 @@
----
-- name: Reload Services
-  command: systemctl daemon-reload
