@@ -11,6 +11,7 @@
 *.pem
 *.pub
 /scripts/test.js
+.DS_Store
 *.tfvars
 .terraform
 .terraform.lock.hcl

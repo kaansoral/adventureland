@@ -550,6 +550,26 @@ function consume(num) // consumes or uses an inventory item
 	return parent.push_deferred("equip");
 }
 
+function equip_batch(data) {
+	if (!Array.isArray(data)) {
+		game_log("Can't equip_batch non-array");
+		return rejecting_promise({reason:"invalid"});
+	}
+	if (data.length > 15) {
+		game_log("Can't equip_batch more than 15 items");
+		return rejecting_promise({reason:"invalid"});
+	}
+	for (let i = 0; i < data.length; i++) {
+		let num = data[i].num;
+		if (num < 0) {
+			game_log("Can't equip "+num);
+			return rejecting_promise({reason:"invalid"});
+		}
+	}
+	parent.socket.emit("equip_batch", data);
+	return parent.push_deferred("equip_batch");
+}
+
 function equip(num,slot) // slot is optional
 {
 	if(num<0)
