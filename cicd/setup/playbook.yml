@@ -3,10 +3,10 @@
   hosts: master-servers
   become: yes  # Run tasks as a superuser (root)
   tasks:
-  - name: Create adventureland account
+  - name: Create adventureland user
     user:
       name: adventureland
-      comment: "Adventureland System Account"
+      comment: "adventureland system user"
       shell: /bin/bash
       system: yes
 
@@ -68,7 +68,7 @@
 
   - name: upload Game files
     ansible.posix.synchronize:
-      src: ./../../../../../
+      src: ./../../../
       dest: /opt/adventureland
       delete: true
       rsync_opts:
@@ -107,10 +107,10 @@
   hosts: game-servers
   become: yes  # Run tasks as a superuser (root)
   tasks:
-  - name: Create adventureland account
-    user:
+  - name: Create adventureland user
+    user: 
       name: adventureland
-      comment: "Adventureland System Account"
+      comment: "adventureland system user"
       shell: /bin/bash
       system: yes
 
@@ -128,7 +128,7 @@
 
   - name: upload game files
     ansible.posix.synchronize:
-      src: ./../../../../../
+      src: ./../../../
       dest: /opt/adventureland
       delete: true
       rsync_opts:
