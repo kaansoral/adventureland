@@ -72,6 +72,26 @@ class Character(ndb.Expando):
 	has_scatter=ndb.BooleanProperty(indexed=False)
 	k=k_factory; _pre_put_hook=pre_put_hook
 
+class Pet(ndb.Expando):
+	realm=ndb.StringProperty(default="main")
+	name=ndb.StringProperty()
+	type=ndb.StringProperty()
+	level=ndb.IntegerProperty(default=1)
+	worth=ndb.IntegerProperty(default=0) #total gold worth
+	xp=ndb.IntegerProperty(default=0)
+	owner=ndb.StringProperty()
+	created=ndb.DateTimeProperty(auto_now_add=True)
+	info=ndb.PickleProperty()
+	online=ndb.BooleanProperty(default=False)
+	server=ndb.StringProperty()
+	last_sync=ndb.DateTimeProperty(auto_now_add=True)
+	last_online=ndb.DateTimeProperty(auto_now_add=True)
+	to_backup=ndb.BooleanProperty(default=False)
+	#utilities
+	random_number=ndb.IntegerProperty() #for cron scaling
+	has_scatter=ndb.BooleanProperty(indexed=False)
+	k=k_factory; _pre_put_hook=pre_put_hook
+
 class Server(ndb.Expando):
 	created=ndb.DateTimeProperty(auto_now_add=True)
 	last_update=ndb.DateTimeProperty(auto_now_add=True)
