@@ -284,7 +284,7 @@ def security_threat(self,domain):
 	logging.info(referer)
 	if referer.startswith("127.0.0.1"): return False
 	if referer.startswith("0.0.0.0"): return False
-	if not (referer.startswith("%s.%s.%s/"%(domain.domain[0],domain.domain[1],domain.domain[2])) or referer.startswith("%s.%s/"%(domain.domain[1],domain.domain[2])) or referer=="%s.%s.%s"%(domain.domain[0],domain.domain[1],domain.domain[2]) or referer=="%s.%s"%(domain.domain[1],domain.domain[2])):
+	if not (referer.startswith(domain.domain) or referer.startswith("%s.%s.%s/"%(domain.domain[0],domain.domain[1],domain.domain[2])) or referer.startswith("%s.%s/"%(domain.domain[1],domain.domain[2])) or referer=="%s.%s.%s"%(domain.domain[0],domain.domain[1],domain.domain[2]) or referer=="%s.%s"%(domain.domain[1],domain.domain[2])):
 		self.response.out.write("Threat detected")
 		return True
 	# if is_production and domain.cf_always_on and not is_cloudflare(self):
