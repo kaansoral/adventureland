@@ -22,6 +22,18 @@ module "eu_1_server" {
   }
 }
 
+module "eu_2_server" {
+  name         = "EU-II"
+  source       = "./modules/al_server"
+  datacenter   = "nbg1-dc3"
+  hcloud_token = var.hcloud_token
+  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
+  server = {
+    enabled = true
+    region  = "EU"
+    name    = "II"
+  }
+}
 module "us_1_server" {
   name         = "US-I"
   source       = "./modules/al_server"
@@ -61,5 +73,6 @@ locals {
   servers = [
     module.us_1_server.details,
     module.eu_1_server.details,
+    module.eu_2_server.details,
   ]
 }
