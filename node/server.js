@@ -8011,7 +8011,7 @@ function init_io() {
 				return;
 			}
 			server_log("booster " + data.num + " " + data.action);
-			if (!item || !in_arr(item.name, booster_items)) {
+			if (!item || !booster_items.includes(item.name)) {
 				return fail_response("invalid");
 			}
 			if (data.action == "activate" && !item.expires) {
@@ -8019,7 +8019,7 @@ function init_io() {
 				item.expires.setDate(item.expires.getDate() + 30 + (item.level || 0) * 2);
 				//item.expires.setMinutes(item.expires.getMinutes()+2);
 			} else if (data.action == "shift") {
-				if (!in_arr(data.to, booster_items)) {
+				if (!booster_items.includes(data.to)) {
 					return fail_response("invalid");
 				}
 				player.xpm = player.goldm = player.luckm = 1;
@@ -8043,7 +8043,7 @@ function init_io() {
 			var item = player.items[data.num];
 			var amount = 3600;
 			server_log("stone " + data.num + " " + data.action);
-			if (!item || !in_arr(item.name, ["stoneofxp", "stoneofgold", "stoneofluck"])) {
+			if (!item || !["stoneofxp", "stoneofgold", "stoneofluck"].includes(item.name)) {
 				return;
 			}
 			if (item.expires) {
