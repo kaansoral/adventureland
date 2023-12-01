@@ -7,7 +7,7 @@ steam_publisher_web_apikey="F9XXXXXXXXXXXX..."
 sdk_password="123"
 amazon_ses_user='AKXXXXXXXX...'
 amazon_ses_key='aAXXXXXXXXX...'
-
+base_url="adventure.land"
 #Master Passwords
 ACCESS_MASTER="123" #this key is the master key of all servers, gives access to data/eval/render, most juicy key [03/08/17]
 BOT_MASTER="123" #this key lets bots identify themselves as bots [03/08/17]
