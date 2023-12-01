@@ -22,110 +22,6 @@ module "eu_1_server" {
   }
 }
 
-module "eu_2_server" {
-  name         = "EU-II"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "II"
-  }
-}
-
-module "eu_3_server" {
-  name         = "EU-III"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "III"
-  }
-}
-
-module "eu_4_server" {
-  name         = "EU-IV"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IV"
-  }
-}
-
-module "eu_5_server" {
-  name         = "EU-V"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "V"
-  }
-}
-
-module "eu_6_server" {
-  name         = "EU-VI"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "VI"
-  }
-}
-
-module "eu_7_server" {
-  name         = "EU-VII"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "VII"
-  }
-}
-
-module "eu_8_server" {
-  name         = "EU-IIX"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IIX"
-  }
-}
-
-module "eu_9_server" {
-  name         = "EU-IX"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IX"
-  }
-}
-
 module "us_1_server" {
   name         = "US-I"
   source       = "./modules/al_server"
@@ -165,13 +61,5 @@ locals {
   servers = [
     module.us_1_server.details,
     module.eu_1_server.details,
-    module.eu_2_server.details,
-    module.eu_3_server.details,
-    module.eu_4_server.details,
-    module.eu_5_server.details,
-    module.eu_6_server.details,
-    module.eu_7_server.details,
-    module.eu_8_server.details,
-    module.eu_9_server.details,
   ]
 }
