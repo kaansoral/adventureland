@@ -6,7 +6,7 @@ resource "hcloud_server" "server" {
   ssh_keys    = var.ssh_keys
   public_net {
     ipv4         = hcloud_primary_ip.ip.id
-    ipv6_enabled = true
+    ipv6_enabled = false
   }
 }
 
