@@ -141,9 +141,5 @@ locals {
     module.eu_5_server.details,
     module.eu_6_server.details,
     module.eu_7_server.details,
-    module.eu_8_server.details,
-    module.eu_9_server.details,
-    module.eu_10_server.details,
-
   ]
 }
