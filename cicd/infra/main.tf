@@ -96,45 +96,6 @@ module "eu_7_server" {
   }
 }
 
-module "eu_8_server" {
-  name         = "EU-IIIIIIII"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IIIIIIII"
-  }
-}
-
-module "eu_9_server" {
-  name         = "EU-IIIIIIIII"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IIIIIIIII"
-  }
-}
-
-module "eu_10_server" {
-  name         = "EU-IIIIIIIIII"
-  source       = "./modules/al_server"
-  datacenter   = "nbg1-dc3"
-  hcloud_token = var.hcloud_token
-  ssh_keys     = data.hcloud_ssh_keys.admin.ssh_keys.*.name
-  server = {
-    enabled = true
-    region  = "EU"
-    name    = "IIIIIIIIII"
-  }
-}
-
 module "us_1_server" {
   name         = "US-I"
   source       = "./modules/al_server"
