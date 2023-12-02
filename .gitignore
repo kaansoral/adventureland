@@ -16,3 +16,5 @@
 .terraform.lock.hcl
 *.tfstate
 *.tfstate.backup
+.vscode
+.idea
