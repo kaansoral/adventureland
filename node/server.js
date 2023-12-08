@@ -8797,7 +8797,7 @@ function init_io() {
 				player.to_resend = "u+cid";
 			} else if (data.name == "charm") {
 				consume_mp(player, gSkill.mp);
-				if (Math.random() > 0.01) {
+				if (Math.random() > attacker.a.charm.attr0 / 100) {
 					socket.emit("game_response", "charm_failed");
 					xy_emit(player, "ui", { type: "charm", name: player.name, id: target.id, fail: true });
 				} else {

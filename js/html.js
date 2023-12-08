@@ -3192,6 +3192,11 @@ function render_item(selector,args)
 				html+=bold_prop_line("Ability","Sugar Rush","#D64770");
 				html+="<div style='color: #C3C3C3'>"+"Trigger a Sugar Rush on attack with "+prop.attr0+"% chance. Gain 240 Attack Speed for 10 seconds!</div>";
 			}
+			else if(item.ability=="charm")
+			{
+				html+=bold_prop_line("Ability","Charm","#D64770");
+				html+="<div style='color: #C3C3C3'>"+"Charm an enemy with "+prop.attr0+"% chance. Activate the ability from the 'SKILLS' system.</div>";
+			}
 			else if(item.ability=="restore_mp")
 			{
 				html+=bold_prop_line("Ability","Restore MP","#5D9ED9");
