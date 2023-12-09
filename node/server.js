@@ -8085,7 +8085,7 @@ function init_io() {
 				lastUse = player.last[data.name];
 			}
 			if (cooldown && lastUse && mssince(lastUse) < cooldown) {
-				return fail_response("cooldown", {
+				return fail_response("cooldown", data.name, {
 					skill: data.name,
 					id: data.id,
 					ms: cooldown - mssince(lastUse),
@@ -8204,7 +8204,7 @@ function init_io() {
 
 				const dist = distance(player, target);
 				if (dist > range + player.xrange) {
-					return fail_response("too_far", data.name, { dist: dist, id: target.id, place: data.name });
+					return fail_response("too_far", data.name, { dist: dist, id: target.id });
 				}
 				if (dist > range) {
 					// xrange was used, reduce it by however much we used
