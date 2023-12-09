@@ -13,10 +13,10 @@ drops={
 		
 		],
 		"global":[
-			#[0.00001,"ornament"],
-			#[0.00003,"mistletoe"],
-			#[0.00001,"candycane"],
-			#[0.000001,"open","xN"],
+			[0.00001,"ornament"],
+			[0.00003,"mistletoe"],
+			[0.00001,"candycane"],
+			[0.000001,"open","xN"],
 			#[0.00006,"ornament"],
 			#[0.00018,"mistletoe"],
 			#[0.00005,"candycane"],
