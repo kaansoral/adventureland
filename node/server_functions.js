@@ -2712,7 +2712,7 @@ function add_condition(target, condition, args) {
 	}
 	if (condition == "woven") {
 		C.s = min((target.is_monster && 20) || 5, (target.s.woven && target.s.woven.s + 1) || 1);
-		C.speed = -3 * condition.s;
+		C.speed = -3 * C.s;
 	}
 	duration = max((target.s[condition] && target.s[condition].ms) || 0, duration);
 	if (target.stresistance && def && def.debuff) {
