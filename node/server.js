@@ -7186,7 +7186,7 @@ function init_io() {
 				xy_emit(G.maps.spookytown.ref.poof, "upgrade", { type: "poof", success: 1 });
 			}
 			resend(player, "reopen" + add);
-			success_response("destroyed", { name: name, num: num, cevent: "destroy" });
+			success_response("destroyed", { name: name, num: data.num, cevent: "destroy" });
 		});
 		socket.on("join_giveaway", function (data) {
 			var player = players[socket.id];
@@ -8797,7 +8797,7 @@ function init_io() {
 				player.to_resend = "u+cid";
 			} else if (data.name == "charm") {
 				consume_mp(player, gSkill.mp);
-				if (Math.random() > attacker.a.charm.attr0 / 100) {
+				if (Math.random() > player.a.charm.attr0 / 100) {
 					socket.emit("game_response", "charm_failed");
 					xy_emit(player, "ui", { type: "charm", name: player.name, id: target.id, fail: true });
 				} else {
