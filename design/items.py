@@ -4787,7 +4787,7 @@ scrolls={
 		"stat":"evasion",
 		"name":"Evasion Scroll",
 		"explanation":"Adds Evasion to an armor with a Special Stat attribute.",
-		"evasion":2,
+		"multiplier":2,
 		"s":True,
 		"g":8000,
 	},
