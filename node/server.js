@@ -3413,12 +3413,7 @@ function complete_attack(attacker, target, info) {
 				o_attack = attack = ceil(attack);
 
 				if (info.conditions.includes("frozen") && !target.immune && target.hp > attack) {
-					if (Math.random() < target.fzresistance / 100.0) {
-						xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
-					} else {
-						add_condition(target, "frozen");
-						disappearing_text(target.socket, target, "FREEZE!", { xy: 1, size: "huge", color: "freeze", nv: 1 }); //target.is_player&&"huge"||undefined
-					}
+					add_condition(target, "frozen");
 				}
 
 				if (info.conditions.includes("burned") && !target.immune && target.hp > attack) {
@@ -3434,13 +3429,9 @@ function complete_attack(attacker, target, info) {
 					add_condition(target, "woven");
 				}
 
-				if (
-					info.conditions.includes("stunned") &&
-					target.hp > attack &&
-					add_condition(target, "stunned", { duration: 2000 })
-				) {
-					disappearing_text(target.socket, target, "STUN!", { xy: 1, size: "huge", color: "stun", nv: 1 });
-				} //target.is_player&&"huge"||undefined
+				if (info.conditions.includes("stunned") && target.hp > attack) {
+					add_condition(target, "stunned", { duration: 2000 });
+				}
 
 				if (info.procs && target.a.putrid) {
 					add_condition(attacker, "poisoned");
