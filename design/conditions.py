@@ -307,7 +307,7 @@ conditions={
 		"ui":True,
 		"blocked":True,
 		"debuff":True,
-		"tag":"physical"
+		"tag":"stun"
 		"duration":3200,
 	},
 	"deepfreezed":{
