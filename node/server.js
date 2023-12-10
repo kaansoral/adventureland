@@ -9232,14 +9232,6 @@ function init_io() {
 				return fail_response("loot_failed");
 			}
 			try {
-				if (chest && !chest.pvp && chest.gold > 100000000 && !player.stealth) {
-					broadcast("server_message", {
-						message: player.name + " looted " + to_pretty_num(server_tax(round(chest.gold * r.goldm), true)) + " gold",
-						color: "gold",
-						type: "server_gold",
-						name: player.name,
-					});
-				}
 				if (chest && player.owner && chest.owners && !in_arr(player.owner, chest.owners) && !W.chest[player.owner]) {
 					W.chest[player.owner] = new Date();
 					server_log("SEVERE - Cross Loot from " + player.name + " not from " + chest.owners.toString());
@@ -9249,6 +9241,15 @@ function init_io() {
 					all_items.concat(chest.pvp_items);
 					if (!can_add_items(player, all_items)) {
 						return fail_response("loot_no_space");
+					}
+					if (chest && !chest.pvp && chest.gold > 100000000 && !player.stealth) {
+						broadcast("server_message", {
+							message:
+								player.name + " looted " + to_pretty_num(server_tax(round(chest.gold * r.goldm), true)) + " gold",
+							color: "gold",
+							type: "server_gold",
+							name: player.name,
+						});
 					}
 					delete chests[data.id]; // The add_shells routine was at the top, so when inventory was full, attempting to open the chest gave shells infinitely, repeated lesson, always remove before adding, or exceptions [11/07/18]
 					if (chest && chest.cash) {
@@ -9310,6 +9311,15 @@ function init_io() {
 					r.party = true;
 					var chest = chests[data.id];
 					var reopen = {};
+					if (chest && !chest.pvp && chest.gold > 100000000 && !player.stealth) {
+						broadcast("server_message", {
+							message:
+								player.name + " looted " + to_pretty_num(server_tax(round(chest.gold * r.goldm), true)) + " gold",
+							color: "gold",
+							type: "server_gold",
+							name: player.name,
+						});
+					}
 					delete chests[data.id];
 					if (chest && chest.cash) {
 						add_shells(player, chest.cash, "chest", true, "override");
