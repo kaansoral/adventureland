@@ -4162,6 +4162,7 @@ function init_io() {
 			pvp: is_pvp,
 			gameplay: gameplay,
 			info: (instances[socket.first_map] && instances[socket.first_map].info) || {},
+			version: G.version,
 		};
 		socket.first_map = socket.first_in = observer_map;
 		socket.first_x = observer_x;
