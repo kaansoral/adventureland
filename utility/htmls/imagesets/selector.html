@@ -140,14 +140,14 @@
 					$(element).attr("title", title.join("\n"));
 				}
 
-				var mode = "alert";
-				function clicked(x, y) {
-					if (mode == "alert") alert(x + "," + y);
-					else {
-						$(".element" + x + y).attr("class", "clickable element" + x + y + " rotate" + mode);
-					}
-				}
 			});
+			var mode = "alert";
+			function clicked(x, y) {
+				if (mode == "alert") alert(x + "," + y);
+				else {
+					$(".element" + x + y).attr("class", "clickable element" + x + y + " rotate" + mode);
+				}
+			}
 		</script>
 	</head>
 	<body>
