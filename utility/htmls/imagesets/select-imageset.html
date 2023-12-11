@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="/js/jquery/jquery-{{domain.jquery_version}}.min.js"></script>
+		<script src="/js/common_functions.js?v={{domain.v}}"></script>
+		<script src="/js/functions.js?v={{domain.v}}"></script>
+		<link href="/css/index.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<link href="/css/common.css?v={{domain.v}}" rel="stylesheet" type="text/css" />
+		<style>
+			html,
+			body {
+				background: black;
+			}
+			body {
+				overflow-y: scroll;
+			}
+		</style>
+		<script>
+			var mode = "alert";
+			function clicked(x, y) {
+				if (mode == "alert") alert(x + "," + y);
+				else {
+					$(".element" + x + y).attr("class", "clickable element" + x + y + " rotate" + mode);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<ul>
+			{% for key,imageset in imagesets.items() %}
+			<li><a href="./{{key}}">{{key}} {{imageset.file}}</a></li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>

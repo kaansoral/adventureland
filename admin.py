@@ -101,7 +101,10 @@ class MapEditor(webapp.RequestHandler):
 class Selector(webapp.RequestHandler): #NOTICE: << Publicly available at /communityselector! >> [10/10/16]
 	@ndb.toplevel
 	def get(self,name):
-		if not name: self.redirect("/admin/selector/pack_1a"); return
+		if not name: 
+			whtml(self,"utility/htmls/imagesets/select-imageset.html",domain=gdi(self),imagesets=imagesets)
+			return
+		
 		name=name.split("/")[0]
 		file=imagesets[name]["file"]
 		size=imagesets[name]["size"]
@@ -110,7 +113,7 @@ class Selector(webapp.RequestHandler): #NOTICE: << Publicly available at /commun
 		xs=[]; ys=[]
 		for i in xrange(width/size): xs.append(i)
 		for j in xrange(height/size): ys.append(j)
-		whtml(self,"utility/htmls/selector.html",domain=gdi(self),name=name,file=file,size=size,width=width,height=height,xs=xs,ys=ys,scale=3)
+		whtml(self,"utility/htmls/imagesets/selector.html",domain=gdi(self),name=name,file=file,size=size,width=width,height=height,xs=xs,ys=ys,scale=3)
 	def post(self,name): self.get(name)
 
 class PhotoUpload(blobstore_handlers.BlobstoreUploadHandler):
