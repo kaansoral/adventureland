@@ -2664,23 +2664,27 @@ function add_condition(target, condition, args) {
 	}
 	var response = { response: "condition", name: condition, cevent: true };
 	var duration = args.duration || args.ms || def.duration;
-	if (def.tag === "stun") {
-		if (Math.random() < (target.phresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "stun_resist", id: target.id });
-		}
-	} else if (def.tag === "burn") {
-		if (Math.random() < (target.firesistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
-		}
-	} else if (def.tag === "poison") {
-		if (Math.random() < (target.pnresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
-		}
-	} else if (def.tag === "freeze") {
-		if (Math.random() < (target.fzresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
+	if (def.defense) {
+		if (Math.random() < (target[def.defense] || 0) / 100.0) {
+			return xy_emit(target, "ui", { type: condition + "_resist", id: target.id });
 		}
 	}
+	// if (def.tag === "stun") {
+	// 	if (Math.random() < (target.phresistance || 0) / 100.0) {
+	// 	}
+	// } else if (def.tag === "burn") {
+	// 	if (Math.random() < (target.firesistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
+	// 	}
+	// } else if (def.tag === "poison") {
+	// 	if (Math.random() < (target.pnresistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
+	// 	}
+	// } else if (def.tag === "freeze") {
+	// 	if (Math.random() < (target.fzresistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
+	// 	}
+	// }
 	if (duration == undefined) {
 		duration = 1000;
 	}
