@@ -307,7 +307,7 @@ conditions={
 		"ui":True,
 		"blocked":True,
 		"debuff":True,
-		"defense":"phresistance"
+		"defense":"phresistance",
 		"duration":3200,
 	},
 	"deepfreezed":{
