@@ -2495,22 +2495,22 @@ function init_socket(args)
 					sender.a_direction=sender.direction=data.direction;
 				}
 			}
-			else if(data.type=="poison_resist")
+			else if(data.type=="poisoned_resist")
 			{
 				var target=get_entity(data.id);
 				if(target) d_text("RESIST!",target,{color:"#68B84B"});
 			}
-			else if(data.type=="freeze_resist")
+			else if(data.type=="frozen_resist"||data.type=="deepfreezed_resist")
 			{
 				var target=get_entity(data.id);
 				if(target) d_text("RESIST!",target,{color:"#66C1C8"});
 			}
-			else if(data.type=="fire_resist")
+			else if(data.type=="burned_resist")
 			{
 				var target=get_entity(data.id);
 				if(target) d_text("RESIST!",target,{color:"#B22F1A"});
 			}
-			else if(data.type=="stun_resist")
+			else if(data.type=="stunned_resist")
 			{
 				var target=get_entity(data.id);
 				if(target) d_text("RESIST!",target,{color:"crit"});
