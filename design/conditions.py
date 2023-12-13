@@ -307,7 +307,7 @@ conditions={
 		"ui":True,
 		"blocked":True,
 		"debuff":True,
-		"tag":"stun"
+		"defense":"phresistance"
 		"duration":3200,
 	},
 	"deepfreezed":{
@@ -317,7 +317,7 @@ conditions={
 		"ui":True,
 		"blocked":True,
 		"debuff":True,
-		"tag":"freeze",
+		"defense":"fzresistance",
 	},
 	"invincible":{
 		"name":"Invincible",
@@ -332,7 +332,7 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"duration":5000,
-		"tag":"freeze",
+		"defense":"fzresistance",
 	},
 	"burned":{
 		"name":"Burned",
@@ -340,7 +340,7 @@ conditions={
 		"interval":210,
 		"ui":True,
 		"debuff":True,
-		"tag":"burn",
+		"defense":"firesistance",
 	},
 	"shocked":{
 		"name":"Shocked",
@@ -364,7 +364,7 @@ conditions={
 		"duration":4000,
 		"blocked":True,
 		"debuff":True,
-		"tag":"dark",
+		# "defense":"bmresistance",
 	},
 	"easterluck":{
 		"skin":"easterluck",
@@ -483,7 +483,7 @@ conditions={
 		"potionsm":0.5,
 		"healm":0.25,
 		"debuff":True,
-		"tag":"poison",
+		"defense":"pnresistance",
 	},
 	"cursed":{
 		"name":"Cursed",
@@ -493,7 +493,7 @@ conditions={
 		"speed":-20,
 		"duration":5000,
 		"debuff":True,
-		"tag":"dark",
+		# "defense":"bmresistance",
 	},
 	"dampened":{
 		"name":"Dampened",
