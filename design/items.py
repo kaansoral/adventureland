@@ -3928,11 +3928,11 @@ for name in weapons.keys():
 		current["upgrade"]["range"]=1
 		current["attack"]=20+(tier-1)*6
 		current["upgrade"]["attack"]=4+(tier-1)*1.1
-	if current.get("wtype")=="bow":
+	if current.get("wtype")=="bow": #Bows are underperforming compared to Dual-Wield
 		current["range"]=55+(tier-1)*10
 		current["upgrade"]["range"]=4+current["range"]*4.0/60
-		current["attack"]=20+(tier-1)*6
-		current["upgrade"]["attack"]=4+(tier-1)*0.8
+		current["attack"]=(20+(tier-1)*6)*1.25 #Increase base attack by 25% 11/12/23
+		current["upgrade"]["attack"]=(4+(tier-1)*0.8)*1.25 #Increase upgrade scaling by 25% 11/12/23
 		current["projectile"]=current.get("projectile","arrow")
 	if current.get("wtype")=="staff":
 		current["range"]=50+(tier-1)*6
@@ -3957,8 +3957,8 @@ for name in weapons.keys():
 	if current.get("wtype")=="crossbow": #Like 1.4X Bow's
 		current["range"]=85+(tier-1)*16
 		current["upgrade"]["range"]=4+current["range"]*4.0/60
-		current["attack"]=30+(tier-1)*7
-		current["upgrade"]["attack"]=5.5+(tier-1)*0.8
+		current["attack"]=(30+(tier-1)*7)*1.25 #Match the Bow changes 11/12/23
+		current["upgrade"]["attack"]=(5.5+(tier-1)*0.8)*1.25 #Match the Bow Changes 11/12/23
 		current["projectile"]=current.get("projectile","arrow")
 	if current.get("wtype")=="wand":
 		current["range"]=30+(tier-1)*5
