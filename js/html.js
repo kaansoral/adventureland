@@ -370,10 +370,9 @@ function render_character_sheet()
 		if(character.ctype=="merchant") html+="<div><span style='color:gray'>Tax:</span> "+(character.tax*100)+"%</div>";
 		if(character.ctype=="priest")
 		{
-			html+="<div><span style='color:gray'>Heal:</span> "+character.attack+"</div>";
-			html+="<div><span style='color:gray'>Attack:</span> "+round(character.attack*0.4)+"</div>";
+			html+="<div><span style='color:gray'>Heal:</span> "+character.heal+"</div>";
 		}
-		else html+="<div><span style='color:gray'>Attack:</span> "+character.attack+"</div>";
+		html+="<div><span style='color:gray'>Attack:</span> "+character.attack+"</div>";
 		html+="<div><span style='color:gray'>Attack Speed:</span> "+round(character.frequency*100)+"</div>";
 		html+="<div><span style='color:gray'>Strength:</span> "+character.str+"</div>";
 		html+="<div><span style='color:gray'>Intelligence:</span> "+character['int']+"</div>";
