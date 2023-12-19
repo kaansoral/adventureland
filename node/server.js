@@ -8255,7 +8255,6 @@ function init_io() {
 					"purify",
 					"quickpunch",
 					"quickstab",
-					"selfheal",
 					"smash",
 					"snowball",
 					"supershot",
@@ -8264,6 +8263,14 @@ function init_io() {
 				].includes(data.name)
 			) {
 				const attack = commence_attack(player, target, data.name);
+				if (!attack.failed) {
+					resolve = attack;
+				} else {
+					reject = attack;
+					cool = false;
+				}
+			} else if (data.name == "selfheal") {
+				const attack = commence_attack(player, player, data.name);
 				if (!attack.failed) {
 					resolve = attack;
 				} else {
