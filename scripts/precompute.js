@@ -1,5 +1,5 @@
 var image_size=require('image-size'),fs=require('fs');
-var path=require("path"),f=require(path.resolve(__dirname, "functions.js"));
+var f=require(process.env.HOME+"/thegeobird/scripts/functions.js");
 var images={};
 
 var data=f.read_file("~/thegame/design/sprites.py");

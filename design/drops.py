@@ -21,8 +21,8 @@ drops={
 			#[0.00018,"mistletoe"],
 			#[0.00005,"candycane"],
 			#[0.00001,"open","xN"],
-			#[0.00005,"candy0"], #originally 4X [11/10/19]
-			#[0.00125,"candy1"], #originally 4X [11/10/19]
+			[0.00005,"candy0"], #originally 4X [11/10/19]
+			[0.00125,"candy1"], #originally 4X [11/10/19]
 			#[0.000015,"goldenegg"], #originally 0.000005
 			#[0.000001,"5bucks"],
 			#[0.0002,"gift0"],

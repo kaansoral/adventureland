@@ -12,7 +12,6 @@ from lxml import etree as lxmletree
 import datetime as rdatetime
 import time as rtime
 from datetime import datetime,timedelta,date
-from urlparse import urlparse
 from google.appengine.api.users import is_current_user_admin
 from google.appengine.ext.webapp import blobstore_handlers # template,util,
 from google.appengine.api import memcache,urlfetch,urlfetch_errors,mail,taskqueue,images,files,namespace_manager,search,modules,logservice
@@ -36,15 +35,10 @@ from libraries import stripe
 from libraries import amazon_ses
 #from libraries import get_image_size
 
-if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
-	is_sdk=True; is_production=is_appengine=False
-	stripe.verify_ssl_certs = False
-	stripe.api_key=secrets.stripe_test_api_key
-	stripe_pkey=secrets.stripe_test_pkey
-else:
-	is_sdk=False; is_production=is_appengine=True
-	stripe.api_key=secrets.stripe_pkey #secret-key
-	stripe_pkey=secrets.stripe_api_key #publishable-key
+
+is_sdk=False; is_production=is_appengine=True
+stripe.api_key=secrets.stripe_pkey #secret-key
+stripe_pkey=secrets.stripe_api_key #publishable-key
 steam_web_apikey=secrets.steam_web_apikey #for domain adventure.land: https://partner.steamgames.com/doc/webapi_overview/auth#create_publisher_key
 steam_publisher_web_apikey=secrets.steam_publisher_web_apikey #from: https://partner.steamgames.com/pub/group/48241/61965/
 
@@ -80,11 +74,12 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=781
+game_version=779
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Last Update [November 8th]",
-	"Adventure Land is now open source!",
+	"Halloween Event!",
+	"Last Update [October 13th]",
+	"Open sourcing the game this weekend!",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
@@ -103,33 +98,26 @@ always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
 game_name="Adventure Land"
 appengine_id="twodimensionalgame"
-live_domain='adventure.land'
-sdk_domain='thegame.com'
+live_domain=secrets.base_url
+sdk_domain=secrets.base_url
+
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def gdi(self=None):
 	domain=GG()
 	if is_sdk:
-		if self:
-			url=urlparse(self.request.url)
-			protocol=url.scheme
-			hostname=url.hostname
-		else:
-			protocol="http"
-			hostname=sdk_domain
-
-		domain.base_url=protocol + "://" + hostname
-		domain.pref_url=domain.base_url
+		domain.base_url=self and "http://%s"%self.request.headers.get("Host") or "http://%s.%s"%(sdk_domain[1],sdk_domain[2])
+		domain.pref_url=self and "http://%s"%self.request.headers.get("Host") or "http://%s.%s"%(sdk_domain[1],sdk_domain[2])
 		domain.server_ip="192.168.1.125"
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
-		domain.domain=hostname
+		domain.domain=self and ["www",self.request.headers.get("Host").split(".")[0],self.request.headers.get("Host").split(".")[1]] or sdk_domain
 	else:
 		protocol="http"
 		if self and "https" in (self.request.headers.get("Cf-Visitor") or ""): protocol="https"
-		domain.base_url=protocol + "://" + live_domain
-		domain.pref_url=domain.base_url
+		domain.base_url="%s://%s.%s"%(protocol,live_domain[1],live_domain[2])
+		domain.pref_url="https://%s.%s"%(live_domain[1],live_domain[2])
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=HTTPS_MODE

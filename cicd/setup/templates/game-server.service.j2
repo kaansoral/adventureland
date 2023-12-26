@@ -1,0 +1,11 @@
+[Unit]
+Description=Adventureland Game Server
+
+[Service]
+ExecStart=/usr/bin/node ./server.js {{ region }} {{ name }} 2083
+WorkingDirectory=/opt/adventureland/node
+User=adventureland
+Group=adventureland
+
+[Install]
+WantedBy=multi-user.target

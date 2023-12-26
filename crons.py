@@ -279,7 +279,6 @@ class UnstuckPlayers(webapp.RequestHandler):
 					character.online=False
 					character.server=""
 					character.put()
-					send_email(gdi(),"kaansoral@gmail.com",html="Stuck for %s minutes"%m,title="UNSTUCK %s from %s"%(character.name,server.k()))
 
 	def post(self): self.get()
 
@@ -307,8 +306,8 @@ class Hourly(webapp.RequestHandler):
 	def post(self): self.get()
 
 application = webapp.WSGIApplication([
-	('/cr/check_servers', CheckServers),
-	('/cr/hourly', Hourly),
+	#('/cr/check_servers', CheckServers),
+	#('/cr/hourly', Hourly),
 	('/cr/unstuck', UnstuckPlayers),
-	('/cr/all/([^/]*)/?', AllCron),
+	#('/cr/all/([^/]*)/?', AllCron),
 	],debug=is_sdk)
