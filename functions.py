@@ -279,12 +279,14 @@ def selection_info(self,user,domain):
 def security_threat(self,domain):
 	referer=self.request.headers.get('Referer') or self.request.headers.get('Origin') or ""
 	if not referer: return False
-
-	referer=urlparse(referer).hostname
-	if not referer.endswith(domain.domain):
+	referer=referer.replace("http://","").replace("https://","")
+	#referer="www.thegame2.com"
+	logging.info(referer)
+	if referer.startswith("127.0.0.1"): return False
+	if referer.startswith("0.0.0.0"): return False
+	if not (referer.startswith(domain.domain) or referer.startswith("%s.%s.%s/"%(domain.domain[0],domain.domain[1],domain.domain[2])) or referer.startswith("%s.%s/"%(domain.domain[1],domain.domain[2])) or referer=="%s.%s.%s"%(domain.domain[0],domain.domain[1],domain.domain[2]) or referer=="%s.%s"%(domain.domain[1],domain.domain[2])):
 		self.response.out.write("Threat detected")
 		return True
-	
 	# if is_production and domain.cf_always_on and not is_cloudflare(self):
 	# 	conditional_response(self,domain,response,"cloudflare")
 	# 	st_log(self,"cloudflare")
@@ -676,12 +678,12 @@ def character_to_info(character,user=None,ip=None,guild=None):
 def character_emit(character,method,data):
 	if character.server:
 		server=get_by_iid("server|%s"%character.server)
-		if server: server_eval_safe(server,"var p=players[name_to_id['%s']]; if(p) p.socket.emit('%s',data);"%(character.info.name,method),data=data)
+		if server: server_eval_safe(server,"var p=players[name_to_id.get('%s')]; if(p) p.socket.emit('%s',data);"%(character.info.name,method),data=data)
 
 def character_eval(character,code,data={}):
 	if character.server:
 		server=get_by_iid("server|%s"%character.server)
-		if server: server_eval_safe(server,"var player=players[name_to_id['%s']]; if(player) { %s; }"%(character.info.name,code),data=data)
+		if server: server_eval_safe(server,"var player=players[name_to_id.get('%s')]; if(player) { %s; }"%(character.info.name,code),data=data)
 
 def notify_friends(character,server_name):
 	server_list={}
@@ -707,15 +709,15 @@ def update_characters(user,reason=None,name=None,shells=0):
 				ip=server.actual_ip
 				if is_sdk: ip="0.0.0.0"
 				if not reason:
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="cupdate",spass=secrets.ACCESS_MASTER,cash=user.cash,id=character.info.name,ncash=shells)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="cupdate",spass=secrets.SERVER_MASTER,cash=user.cash,id=character.info.name,ncash=shells)
 				elif reason=="friends":
 					try: ndb.transaction(set_friends,xg=True,retries=0)
 					except: log_trace_i()
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="new_friend",spass=secrets.ACCESS_MASTER,name=name,friends=user.friends,id=character.info.name)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="new_friend",spass=secrets.SERVER_MASTER,name=name,friends=user.friends,id=character.info.name)
 				elif reason=="not_friends":
 					try: ndb.transaction(set_friends,xg=True,retries=0)
 					except: log_trace_i()
-					fetch_url("http://%s:%s"%(ip,server.port),aevent="lost_friend",spass=secrets.ACCESS_MASTER,name=name,friends=user.friends,id=character.info.name)
+					fetch_url("http://%s:%s"%(ip,server.port),aevent="lost_friend",spass=secrets.SERVER_MASTER,name=name,friends=user.friends,id=character.info.name)
 					#character_emit(character,"friend",{"event":"update","friends":user.friends})
 			except: log_trace()
 
@@ -1045,13 +1047,13 @@ def verify_steam_installs():
 def server_eval(server,code,data={}):
 	ip=server.actual_ip
 	if is_sdk: ip="0.0.0.0"
-	return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
+	return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.SERVER_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 
 def server_eval_safe(server,code,data={}):
 	try:
 		ip=server.actual_ip
 		if is_sdk: ip="0.0.0.0"
-		return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
+		return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.SERVER_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 	except:
 		log_trace()
 		return None
@@ -1789,25 +1791,28 @@ def log_trace(place="",logger=None):
 	logger.error("\n\n<<<<<<<<<< log_trace %s %s>>>>>>>>>>"%(exc_type,place),exc_info=sys.exc_info())
 	logger.error("\n")
 
-def get_domain(self=None):
-	if not is_sdk:
-		return live_domain
+def get_domain(self=None,url=None):
+	if self or url:
+		if self: url=self.request.url
+		try: url=url[0:url.index("/",8)+1] #in case the url doesn't end with / [25/09/15]
+		except: pass
+		url=url.replace("http://",""); url=url.replace("https://",""); url=url.replace("/",""); url=url.split(".")
+		if len(url)==2: return ["www",url[0],url[1]]
+		return [url[-3],url[-2],url[-1]] #to prevent the www.geobird.com.test.com-like url's [25/09/15]
 	else:
-		if self:
-			return (urlparse(self.request.url)).hostname
-		else:
-			return sdk_domain
+		if not is_sdk: return live_domain
+		else: return sdk_domain
 
 def get_cookie(self,name):
 	return self.request.cookies.get(name)
 
 def set_cookie(self,name,value):
-	hostname=get_domain(self)
-	self.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s'%(hostname),secure=secure_cookies)
+	subdomain,domainname,toplevel=get_domain(self)
+	self.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s.%s'%(domainname,toplevel),secure=secure_cookies)
 
 def delete_cookie(self,name):
-	hostname=get_domain(self)
-	self.response.delete_cookie(name,path='/',domain='.%s'%(hostname))
+	subdomain,domainname,toplevel=get_domain(self)
+	self.response.delete_cookie(name,path='/',domain='.%s.%s'%(domainname,toplevel))
 
 class StrLogHandler(logging.Handler):
 	def __init__(self, output):

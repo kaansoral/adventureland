@@ -14,3 +14,12 @@
 # System Files
 .DS_Store
 Thumbs.db
+# Terraform secrets
+*.tfvars
+.terraform
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+**/.terraform
+# Editor files
+.idea

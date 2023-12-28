@@ -5,7 +5,7 @@ def signup_or_login_api(**args):
 	#time.sleep(10)
 	self,domain,email,password,only_login,only_signup,mobile=gdmuld(args,"self","domain","email","password","only_login","only_signup","mobile")
 	logging.info("Signup or Login")
-	
+
 	try: email=purify_email(email)
 	except: return jhtmle(self,"Invalid Email")
 
@@ -20,7 +20,7 @@ def signup_or_login_api(**args):
 		if msince(existing.last_online)>15 and msince(gf(existing,"last_auth",really_old))>15: pass # [15/05/22]
 		else: jhtmle(self,"Can't login while inside the bank"); return
 	if not domain.electron and not only_login and not domain.is_sdk: jhtmle(self,"Can't signup on web"); return
-	
+
 	if existing and not only_signup:
 		if existing.password==hash_password(password,gf(existing,"salt","5")):
 			def login_transaction():
@@ -48,7 +48,7 @@ def signup_or_login_api(**args):
 	if not email: return jhtmle(self,"No Email Entered")
 
 	if only_login: return jhtmle(self,"Email Not Found In Records")
-	
+
 	signupth=get_signupth()
 	ip=get_ip_info(self)
 	referrer=get_referrer(self,ip)
@@ -79,7 +79,7 @@ def signup_or_login_api(**args):
 	user=ndb.transaction(signup_transaction,xg=True,retries=12)
 
 	if not user: return jhtmle(self,"Signup Failed")
-	
+
 	user,auth=user
 	set_cookie(self,"auth","%s-%s"%(user.k(),auth))
 	send_verification_email(domain,user)
@@ -227,12 +227,12 @@ def servers_and_characters_api(**args):
 
 	characters_data=get_characters(user)
 	characters=characters_to_client(characters_data)
-	
+
 	servers_data=get_servers()
 	servers=servers_to_client(domain,servers_data)
 
 	mail=gf(user_data,"mail",0)
-	
+
 	logging.info("servers_and_characters")
 	jhtml(self,[{"type":"servers_and_characters","servers":servers,"characters":characters,"tutorial":data_to_tutorial(user_data),"code_list":gf(user_data,"code_list",{}),"mail":mail,"rewards":gf(user,"rewards",[])}])
 
@@ -379,7 +379,7 @@ def load_map_api(**args):
 def load_article_api(**args):
 	#logging.info(col)
 	self,domain,user,name,func,tutorial,guide,url=gdmuld(args,"self","domain","user","name","func","tutorial","guide","url")
-	if tutorial: jjson(self,{"type":"article","html":shtml("docs/tutorial/%s.html"%name),"tutorial":tutorial,"url":url}) 
+	if tutorial: jjson(self,{"type":"article","html":shtml("docs/tutorial/%s.html"%name),"tutorial":tutorial,"url":url})
 	elif guide:
 		from docs.directory import docs
 		col=[]; prev=None; next=None; found=False
@@ -401,9 +401,9 @@ def load_article_api(**args):
 				break
 			prev=col[i]
 		#logging.info([prev,next])
-		try: jjson(self,{"type":"article","html":shtml("docs/guide/%s.html"%name),"guide":guide,"url":url,"prev":found and prev,"next":found and next}) 
+		try: jjson(self,{"type":"article","html":shtml("docs/guide/%s.html"%name),"guide":guide,"url":url,"prev":found and prev,"next":found and next})
 		except: jjson(self,{"type":"article","html":shtml("docs/articles/%s.html"%name),"url":url,"prev":found and prev,"next":found and next})
-	elif func: jjson(self,{"type":"article","html":shtml("docs/functions/%s.html"%name),"func":name,"url":url}) 
+	elif func: jjson(self,{"type":"article","html":shtml("docs/functions/%s.html"%name),"func":name,"url":url})
 	else: jjson(self,{"type":"article","html":shtml("docs/articles/%s.html"%name),"url":url})
 	jhtml(self)
 
@@ -577,7 +577,7 @@ def rename_character_api(**args):
 	if character.owner!=user.k(): return jhtmle(self,"You don't own that character.")
 	if is_in_game(character): return jhtmle(self,"Character is in game.")
 	if hsince(gf(character,"last_rename",really_old))<32: return jhtmle(self,"You can rename once every 32 hours!")
-	
+
 	if not nname or not is_name_xallowed(nname): return jhtmle(self,"Invalid name")
 	if get_character(nname,phrase_check=True): return jhtmle(self,"%s is used"%nname)
 
@@ -591,7 +591,7 @@ def rename_character_api(**args):
 	else:
 		if not gf(character,"last_rename",None) and (character.level<60 or hsince(character.created)<72): price=0
 		price=640
-		
+
 	if user.cash<price: return jhtmle(self,"Not enough shells")
 
 	def rename_character_transaction():
@@ -800,7 +800,7 @@ def is_first_api(**args):
 	self,domain,user,server,auth_id=gdmuld(args,"self","domain","user","server","auth_id")
 	if not server: jhtml(self,{"failed":1,"reason":"noserver"}); return
 	if not user: jhtml(self,{"failed":1,"reason":"nouser"}); return
-	
+
 	def first_transaction():
 		markedphrase=get_by_iid("markedphrase|%s"%dgt("auth",auth_id))
 		if markedphrase: return False
@@ -1083,7 +1083,7 @@ def pull_messages_api(**args):
 def log_chat_api(**args):
 	self,domain,server,fro,to,type,message,author=gdmuld(args,"self","domain","server","fro","to","type","message","author")
 	if not server: return jhtml(self,{"failed":1,"reason":"noserver"})
-	
+
 	if type=="server":
 		Message(owner="~%s"%server.k(),author=author,fro=fro,type="server",info=cGG(message=message),server=server.k()).put()
 		Message(owner="~global",author=author,fro=fro,type="server",info=cGG(message=message),server=server.k()).put()

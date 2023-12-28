@@ -10,7 +10,7 @@ drops={
 	},
 	"maps":{
 		"global_static":[
-		
+
 		],
 		"global":[
 			[0.00001,"ornament"],

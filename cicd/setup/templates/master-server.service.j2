@@ -1,0 +1,17 @@
+[Unit]
+Description=Adventureland Master Server
+
+[Service]
+ExecStart=/usr/bin/python2.7 ./appengine/dev_appserver.py \
+  --storage_path=./storage/ \
+  --blobstore_path=./storage/blobstore/ \
+  --datastore_path=./storage/db.rdbms \
+  --host=0.0.0.0 --port=80 ./adventureland \
+  --require_indexes --skip_sdk_update_check
+WorkingDirectory=/opt/
+User=adventureland
+Group=adventureland
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

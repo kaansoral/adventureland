@@ -619,7 +619,7 @@ function on_disappear(data)
 	// console.log("disappear: "+data.id);
 	if(future_entities.players[data.id]) delete future_entities.players[data.id]; // moving these outside the `if(entities[data.id])` condition should fix the non-disappearing entities issues [03/02/17]
 	if(future_entities.monsters[data.id]) delete future_entities.monsters[data.id];
-	
+
 	if(entities[data.id])
 	{
 		if(data.invis) assassin_smoke(entities[data.id].real_x,entities[data.id].real_y);
@@ -825,7 +825,7 @@ function update_overlays()
 		if(!topleft_npc) reset_topleft(ctarget);
 		if(topright_npc=="character" && !cached("chcid",character.cid)) render_character_sheet();
 	}
-	
+
 
 	var c=new Date(),h=c.getUTCHours(),m=c.getUTCMinutes();
 	if(S.schedule && S.schedule.time_offset) h=(24+S.schedule.time_offset+h)%24;
@@ -942,7 +942,7 @@ function the_game(demo)
 		delete stage.cfilter_bw;
 		regather_filters(stage);
 	}
-	
+
 	//stage.addChild(inner_stage);
 	/* end secondary level */
 
@@ -981,7 +981,7 @@ function the_game(demo)
 			if (this.worldAlpha <= 0 || !this.renderable) {
 				return;
 			}
-		 
+
 			renderer._activeLayer = null; // < -- this is my temporary change
 			this.containerRenderWebGL(renderer);
 			renderer._activeLayer = this._activeParentLayer; // < -- and this one too
@@ -1374,7 +1374,7 @@ function init_socket(args)
 		new_game_logic();
 		// ipass=data.ipass;
 		// setInterval(function(){ if(game_loaded) $.getJSON(location.protocol+"//"+server_addr+":"+(parseInt(server_port)+40)+"/character?checkin=1&ipass="+ipass+"&id="+character.id+"&callback=?"); },30000); // + "?" = JSONP
-		
+
 		// api_call("load_gcode",{file:"/examples/hardcore.js",run:true});
 		try{
 			var data=storage_get("code_cache"),the_code="",to_run=false;
@@ -1540,7 +1540,7 @@ function init_socket(args)
 			var cevent=false,event=false;
 			if(data.cevent) cevent=data.cevent,delete data.cevent; if(cevent===true) cevent=response;
 			if(data.event) event=data.event,delete data.event; if(event===true) event=response;
-			
+
 			if(data.place && data.failed)
 			{
 				if(!data.reason) data.reason=data.response;
@@ -2294,7 +2294,7 @@ function init_socket(args)
 			else sfx("chat");
 			add_chat(data.owner,data.message,data.color,is_number(data.id)&&data.id||undefined);
 			call_code_function("trigger_event","chat",{from:data.owner,message:data.message});
-		}); 
+		});
 	});
 	socket.on('emotion',function(data){
 		draw_trigger(function(){
@@ -2811,7 +2811,7 @@ function init_socket(args)
 			add_pmchat(data.to||data.owner,data.owner,data.message,data.xserver);
 			if(in_arr(cid,docked)) add_chat(data.owner,data.message,"#CD7879");
 			call_code_function("trigger_character_event","pm",{from:data.owner,message:data.message});
-		}); 
+		});
 	});
 	socket.on('partym',function(data){
 		draw_trigger(function(){
@@ -2828,7 +2828,7 @@ function init_socket(args)
 			add_partychat(data.owner,data.message);
 			if(in_arr("party",docked)) add_chat(data.owner,data.message,"#46A0C6");
 			call_code_function("trigger_character_event","partym",{from:data.owner,message:data.message});
-		}); 
+		});
 	});
 	socket.on('drop',function(data){
 		draw_trigger(function(){ chest=add_chest(data); });
@@ -3018,7 +3018,7 @@ function init_socket(args)
 			if(!data.args) data.args={};
 			if(data.args.sz) data.args.size=data.args.sz;
 			if(data.args.c) data.args.color=data.args.c;
-			
+
 			var entity=(data.id && get_entity(data.id));
 
 			// if(data.message=="+50" && entity && entity.me) add_log("Regenerated 50 HP","gray");
@@ -3046,7 +3046,7 @@ function init_socket(args)
 		handle_entities(data);
 	});
 	socket.on('poke',function(data){
-		draw_trigger(function(){ 
+		draw_trigger(function(){
 			var entity=get_entity(data.name);
 			if(entity)
 			{
@@ -3222,7 +3222,7 @@ function npc_right_click(event){
 	if(this.role=="events")
 	{
 		if(character.home!=server_region+server_identifier)
-		{	
+		{
 			render_interaction({auto:true,skin:"lionsuit",message:"This is not your home server. You are a resident of "+character.home+". Would you like to set this server as your home?",button:"Yes!",onclick:function(){ socket.emit('set_home'); push_deferred('set_home'); }});
 		}
 		else
@@ -3603,10 +3603,10 @@ function update_sprite(sprite)
 	if(sprite.type=="character" || sprite.type=="monster") effects_logic(sprite);
 
 	if(is_demo) demo_entity_logic(sprite);
-	
+
 	if(sprite.stype=="full") // walk
 	{
-		
+
 		var aa=false,i=1,j=0; var original=sprite.i;
 		if(sprite.type=="monster" && G.monsters[sprite.mtype].aa) aa=true;
 
@@ -3635,7 +3635,7 @@ function update_sprite(sprite)
 		// if(sprite.moving) set_direction(sprite); should be before stop_logic, for short moves - moved [17/11/16]
 
 		if(sprite.direction!==undefined) j=sprite.direction;
-		
+
 		if(!aa && sprite.s && sprite.s.stunned) i=1;
 		else if(sprite.walking) i=sequence[sprite.walking%sequence.length];
 		else if(sprite.last_stop && mssince(sprite.last_stop)<(sprite.s&&sprite.s.dash&&5||180)) i=sequence[sprite.last_walking%sequence.length];
@@ -3930,7 +3930,7 @@ function update_sprite(sprite)
 					sprite.texture=textures[sprite.mtype][sprite.cskin];
 				}
 				if(sprite.spinning<new Date()) sprite.spinning=false;
-			}	
+			}
 		}
 	}
 
@@ -4144,10 +4144,10 @@ function start_filter(sprite,ftype,args)
 	else if(ftype=="rcolor")
 	{
 		filter=new PIXI.filters.ColorMatrixFilter();
-		
+
 		//filter.matrix=[Math.random(),Math.random(),Math.random(),Math.random(),Math.random(),Math.random(),Math.random(),Math.random(),Math.random()];
 		// filter.colorTone(5,5,"#7B1297","#D7BA36");
-		
+
 		// if(Math.random()<0.5) filter.brightness(Math.random(),true);
 		// if(Math.random()<0.5) filter.saturate(Math.random(),true);
 		// if(Math.random()<0.2) filter.desaturate();
@@ -4555,7 +4555,7 @@ function cosmetics_logic(sprite)
 			needed.push("weap2n"+sprite.slots.offhand.name);
 		}
 	}
-	
+
 	for(var cid in sprite.cxc)
 		if(!in_arr(cid,needed))
 		{
@@ -5050,7 +5050,7 @@ function add_npc(npc,position,npc_id) // not used anymore [07/09/22]
 		}
 	}
 	sprite.on('mousedown',npc_right_click).on('touchstart',npc_right_click).on('rightdown',npc_right_click);
-	//#GTODO: Maybe focus with a story / name 
+	//#GTODO: Maybe focus with a story / name
 	sprite.onrclick=npc_right_click;
 	return sprite;
 }
@@ -5189,7 +5189,7 @@ function get_npc(n_id)
 	if(!n_id) return null;
 	if(entities[n_id]) return entities[n_id];
 	for(var id in entities)
-		if(entities[id].npc==n_id) 
+		if(entities[id].npc==n_id)
 			return entities[id];
 	return null;
 }
@@ -5360,7 +5360,7 @@ function create_map()
 		if(dtile) dtile.destroy(),dtile=null;
 		if(tiles) tiles.destroy(),tiles=null;
 		(window.rtextures||[]).forEach(function(t){if(t) t.destroy(true); }); // Live and learn experience, .destroy() was a major memory leak: https://github.com/pixijs/pixi.js/issues/4163 [18/07/17]
-		(window.dtextures||[]).forEach(function(t){if(t) t.destroy(true); });	
+		(window.dtextures||[]).forEach(function(t){if(t) t.destroy(true); });
 		// #GTODO: Maybe only destroy groups and NPC's that are not re-used
 		// map.destroy({children:true}); // added children:true - exception [20/08/16] #PIXI
 	}
@@ -5370,7 +5370,7 @@ function create_map()
 	if(dtile_size && is_array(dtile_size)) dtile_size=dtile_size[0];
 
 	wtile_name=G.maps[current_map].weather;
-	
+
 	map=new PIXI.Container();
 	map.map_name=current_map;
 	//var filter=new PIXI.filters.ColorMatrixFilter()
@@ -5518,7 +5518,7 @@ function create_map()
 			map.addChild(ftile3);
 		}
 		window.tiles=new PIXI.Sprite(rtextures[0]);
-		tiles.x=GEO.min_x;	
+		tiles.x=GEO.min_x;
 		tiles.y=GEO.min_y;
 		if(dtile_size) map.addChild(dtile);
 		map.addChild(tiles);
@@ -5795,7 +5795,7 @@ function retile_the_map()
 		if(mdraw_mode=="redraw" || entity.x>max_x || entity.y>max_y || entity.x+entity.width<min_x || entity.y+entity.height<min_y)
 		{
 			entity.to_delete=true;
-			r++; 
+			r++;
 		}
 		else
 		{
@@ -5865,7 +5865,7 @@ function retile_the_map()
 			if(entity.textures) entity.texture=entity.textures[last_water_frame],water_tiles.push(entity);
 			entity.x=tile[1];
 			entity.y=tile[2];
-			if(mdraw_mode!="redraw") entity.parentGroup=entity.displayGroup=map_layer,entity.zOrder=-(i+1); 
+			if(mdraw_mode!="redraw") entity.parentGroup=entity.displayGroup=map_layer,entity.zOrder=-(i+1);
 			entity.tid='p'+i;
 			map.addChild(entity);
 			map_tiles.push(entity);
@@ -5980,7 +5980,7 @@ function load_game(c)
 		});
 
 		for(name in G.animations) generate_textures(name,"animation");
-		
+
 		set_status("Resources Loaded");
 
 		resources_loaded=true;
@@ -6064,7 +6064,7 @@ function draw(arg1,manual_draw) {
 	draw_timeouts_logic(2); stop_timer("draw","timeouts");
 
 	calculate_fps();
-	
+
 	if(!(character && mouse_only) && 0) // disabled map movement for now, server needs to be updated at each move and stuff [24/07/16]
 	{
 		var speed=map.speed;
@@ -6075,9 +6075,9 @@ function draw(arg1,manual_draw) {
 		if(left_pressed>right_pressed) map.real_x-=speed;
 		if(up_pressed<down_pressed) map.real_y+=speed;
 		if(up_pressed>down_pressed) map.real_y-=speed;
-		
+
 	}
-	
+
 	var cframe_ms=frame_ms,mframe_ms=frame_ms;
 	if(clean_house) draw_entities(),mframe_ms=0;
 	process_entities();
@@ -6086,7 +6086,7 @@ function draw(arg1,manual_draw) {
 
 	if(gtest && character) map.real_x-=0.1,map.real_y-=0.001;
 
-	
+
 	// cframe_ms=min(2000,cframe_ms); // so the game won't freeze after a lengthy sleep - no need [26/07/16]
 	//console.log(cframe_ms); console.log(map.x+" "+map.y);
 	if(cframe_ms>(is_sdk&&200||10000)) console.log("cframe_ms is "+cframe_ms);
