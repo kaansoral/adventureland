@@ -38,8 +38,12 @@ handlers:
   static_dir: js
 - url: /api.*
   script: api.application
+- url: /admin.*
+  script: admin.application
+  login: admin
 - url: /cr/.*
   script: crons.application
+  login: admin
 - url: /tasks.*
   script: tasks.application
 - url: /test.*
