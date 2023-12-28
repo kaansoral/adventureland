@@ -22,5 +22,4 @@ Thumbs.db
 *.tfstate.backup
 **/.terraform
 # Editor files
-.vscode
 .idea
