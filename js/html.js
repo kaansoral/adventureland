@@ -2789,7 +2789,7 @@ function render_useful_links()
 		html+='<div class="mt4 blockbutton" style="text-align: left; margin-bottom: 4px">A very practical website to play with Javascript in a Console.</div>';
 		html+="<a class='gamebutton eexternal' style='display: block; margin-bottom: 4px; border-color: #4B95B2' target='_blank' href='https://www.codecademy.com/learn/learn-javascript'>Code Academy: Javascript</a>";
 		html+='<div class="mt4 blockbutton" style="text-align: left; margin-bottom: 4px">Code Academy\'s Javascript course - If you want to learn Javascript properly first, Code Academy\'s refined course will hopefully be more helpful :]</div>';
-		html+="<a class='gamebutton eexternal' style='display: block; margin-bottom: 4px; border-color: #4B95B2' target='_blank' href='https://github.com/kaansoral/adventureland/blob/master/runner_functions.js'>Adventure Land's Github</a>";
+		html+="<a class='gamebutton eexternal' style='display: block; margin-bottom: 4px; border-color: #4B95B2' target='_blank' href='https://github.com/kaansoral/adventureland'>Adventure Land's Github</a>";
 		html+='<div class="mt4 blockbutton" style="text-align: left; margin-bottom: 4px">#TODO: Create a gallery of player\'s Github repos</div>';
 		html+="<a class='gamebutton eexternal' style='display: block; margin-bottom: 4px; border-color: #4B95B2' target='_blank' href='https://discord.gg/X3QyCJd'>#code_beginner on Discord</a>";
 
