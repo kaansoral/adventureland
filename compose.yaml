@@ -1,0 +1,44 @@
+services:
+  appserver:
+    build: .
+    ports:
+      - "80:8080"
+      - "8000:8000"
+    volumes:
+      - adventureland_data:/adventureland
+    restart: always
+    networks:
+      - adventureland-net
+
+  client-eu1:
+    entrypoint: ["./client_entrypoint.sh", "EU", "1", "8022"]
+    ports:
+      - "8022:8022"
+    expose:
+      - "8022"
+    depends_on:
+      appserver:
+        condition: service_started
+      
+    restart: always
+    build: .
+    volumes:
+      - adventureland_data:/adventureland
+    networks:
+      - adventureland-net
+
+
+volumes:
+  adventureland_data:
+    name: adventureland_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./
+
+networks:
+  adventureland-net:
+    name: adventureland-net
+    driver: bridge
+      
