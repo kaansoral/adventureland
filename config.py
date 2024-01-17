@@ -29,13 +29,12 @@ class mj2u(jinja2.Undefined):
 j2_loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 class GG(): pass
 
-import secrets
+import secrets_data as secrets
 
 from libraries.country_to_latlon import c_to_ll
 from libraries import stripe
 from libraries import amazon_ses
 #from libraries import get_image_size
-
 if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
 	is_sdk=True; is_production=is_appengine=False
 	stripe.verify_ssl_certs = False
@@ -45,6 +44,7 @@ else:
 	is_sdk=False; is_production=is_appengine=True
 	stripe.api_key=secrets.stripe_pkey #secret-key
 	stripe_pkey=secrets.stripe_api_key #publishable-key
+
 steam_web_apikey=secrets.steam_web_apikey #for domain adventure.land: https://partner.steamgames.com/doc/webapi_overview/auth#create_publisher_key
 steam_publisher_web_apikey=secrets.steam_publisher_web_apikey #from: https://partner.steamgames.com/pub/group/48241/61965/
 
@@ -100,13 +100,13 @@ ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudf
 	"195.201.181.245":"eud1",
 	"158.69.23.127":"usd1",
 }
-HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
-always_amazon_ses=True
+HTTPS_MODE=secrets.https_mode #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
+always_amazon_ses=secrets.always_amazon_ses
 SCREENSHOT_MODE=is_sdk and False
-game_name="Adventure Land"
-appengine_id="twodimensionalgame"
-live_domain='adventure.land'
-sdk_domain='thegame.com'
+game_name=secrets.game_name
+appengine_id=secrets.appengine_id
+live_domain=secrets.live_domain
+sdk_domain=secrets.sdk_domain
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def gdi(self=None):
@@ -119,10 +119,14 @@ def gdi(self=None):
 		else:
 			protocol="http"
 			hostname=sdk_domain
-
-		domain.base_url=protocol + "://" + hostname
+		
+		if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
+			domain.base_url=secrets.base_url
+		else:
+			domain.base_url=protocol + "://" + hostname
+		
 		domain.pref_url=domain.base_url
-		domain.server_ip="192.168.1.125"
+		domain.server_ip=secrets.server_ip
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
@@ -136,6 +140,7 @@ def gdi(self=None):
 		domain.stripe_enabled=False
 		domain.https_mode=HTTPS_MODE
 		domain.domain=live_domain
+	
 	domain.imagesets=imagesets #for caching [12/07/20]
 	domain.sales=SALES
 	domain.ip_to_subdomain=ip_to_subdomain

@@ -19,3 +19,12 @@ MAC_APPLICATION_LOADER="aaaa-bbbb-cccc-..."
 ssh-keygen -o #Doesn't work
 ssh-keygen -t rsa -b 4096
 """
+
+https_mode = False # Set to false if you dont want to run the server in https mode.
+always_amazon_ses = False # Set to true if you want to always use amazon ses for emails.
+game_name = "Adventure land" # "Adventure Land"
+appengine_id = "twodimensionalgame" # "twodimensionalgame"
+live_domain = "0.0.0.0" # "adventure.land"
+sdk_domain = "0.0.0.0" # "thegame.com"
+base_url = "http://appserver:8080" # Base server url. Location of the dev appserver. This is defined in the dockerFile or defined how you manually start the dev appserver
+server_ip = "0.0.0.0"
