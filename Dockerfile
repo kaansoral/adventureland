@@ -18,7 +18,7 @@ RUN set -uex; \
 
 
 # Install dependencies
-RUN apt-get install python2.7 git wget python-setuptools libxml2-dev libxslt-dev python2-dev cmake build-essential zlib1g-dev git -y && \
+RUN apt-get install python2.7 git wget python-setuptools libxml2-dev libxslt-dev python2-dev cmake build-essential zlib1g-dev -y && \
     wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2.7 get-pip.py && \
     pip2 check && \

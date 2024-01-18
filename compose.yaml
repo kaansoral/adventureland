@@ -6,9 +6,15 @@ services:
       - "8000:8000"
     volumes:
       - adventureland_data:/adventureland
-    restart: always
     networks:
       - adventureland-net
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://appserver:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
 
   client-eu1:
     entrypoint: ["./client_entrypoint.sh", "EU", "1", "8022"]
@@ -18,14 +24,14 @@ services:
       - "8022"
     depends_on:
       appserver:
-        condition: service_started
+        condition: service_healthy
       
-    restart: always
     build: .
     volumes:
       - adventureland_data:/adventureland
     networks:
       - adventureland-net
+    restart: on-failure
 
 
 volumes:

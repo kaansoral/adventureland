@@ -19,6 +19,5 @@ if [ -z $3 ]; then
 fi
 npm install --silent ./node/
 npm install --silent ./scripts/ 
-sleep 30
-echo "Trying to start client"
+echo "Starting client"
 node ./node/server.js $1 $2 $3
