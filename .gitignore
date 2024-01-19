@@ -17,3 +17,5 @@ Thumbs.db
 node_modules
 appserver
 secrets_data.py
+package-lock.json
+package.json
