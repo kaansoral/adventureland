@@ -18,7 +18,7 @@ services:
     stop_signal: SIGINT
 
   client-dev1:
-    entrypoint: ["./client_entrypoint.sh", "EU", "I", "8022"]
+    entrypoint: ["./client_entrypoint.sh", "EU", "I", "8022"] # region (EU, US, ASIA), server (I, II, III), port
     ports:
       - "8022:8022"
     expose:
@@ -35,7 +35,7 @@ services:
     stop_signal: SIGINT
 
   client-dev2:
-    entrypoint: ["./client_entrypoint.sh", "EU", "II", "8023"]
+    entrypoint: ["./client_entrypoint.sh", "EU", "II", "8023"] # region (EU, US, ASIA), server (I, II, III), port
     ports:
       - "8023:8023"
     expose:
