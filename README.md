@@ -1,14 +1,14 @@
 # Adventure Land - The Open Source CODE MMORPG
 
-https://adventure.land
+<https://adventure.land>
 
 The Source Code is now available to anyone, even for commercial use! (License applies)
 
-**Please consider supporting Adventure Land on Patreon: https://www.patreon.com/AdventureLand**
+**Please consider supporting Adventure Land on Patreon: <https://www.patreon.com/AdventureLand>**
 
 ## Discussion
 
-Consider using the #development channel on Discord or messaging me directly on Discord as it's an easy way to communicate: https://discord.gg/hz25Kz9FsH
+Consider using the #development channel on Discord or messaging me directly on Discord as it's an easy way to communicate: <https://discord.gg/hz25Kz9FsH>
 
 ## Installation
 
@@ -18,13 +18,7 @@ Clone the game files into the adventureland folder:
 git clone https://github.com/kaansoral/adventureland adventureland
 ```
 
-Clone a modified copy of Python2 App Engine Local App Server into the python folder along with an initialized database with map files:
-
-```sh
-git clone https://github.com/kaansoral/adventureland-appserver appserver
-```
-
-Set up secrets files and remember to change secret keys!
+Set up secrets files and remember to change secret keys! (This is default setup for a docker installation.)
 
 ```sh
 cp adventureland/useful/template.secrets.py adventureland/secrets.py
@@ -32,8 +26,26 @@ cp adventureland/useful/template.variables.js adventureland/node/variables.js
 cp adventureland/useful/template.live_variables.js adventureland/node/live_variables.js
 ```
 
+Now you have the option to run the game locally through docker or through a local installation.
+To run the game locally through docker you need to have [Docker](https://docs.docker.com/get-docker) installed on your machine and have it running.
+Once you have Docker installed and running, you can run the following command to start the game within the adventureland folder:
+
+```sh
+docker-compose up 
+# if you have permission errors, try with sudo docker-compose up
+# if you want to run it in the background, use docker-compose up -d
+```
+
+To run the game locally through a local installation follow the instructions below.
+
+Clone a modified copy of Python2 App Engine Local App Server into the python folder along with an initialized database with map files:
+
+```sh
+git clone https://github.com/kaansoral/adventureland-appserver appserver
+```
+
 You'll need to download Python2.7 and use the command that comes along with it - it could be ./python or python.exe depending on your setup method
-Here's the download page: https://www.python.org/downloads/release/python-2718/
+Here's the download page: <https://www.python.org/downloads/release/python-2718/>
 For Linux:
 
 ```sh
@@ -47,7 +59,7 @@ sudo python2.7 get-pip.py
 pip2.7 check
 ```
 
-For MacOS pyenv makes sense as it prevents clash between Python versions and allows local versioning by just adding a .python-version to the folder https://github.com/pyenv/pyenv
+For MacOS pyenv makes sense as it prevents clash between Python versions and allows local versioning by just adding a .python-version to the folder <https://github.com/pyenv/pyenv>
 
 Make sure to install lxml afterwards:
 
@@ -81,14 +93,9 @@ Run a server:
 node server.js EU I 8022
 ```
 
-You should be able to access the game at: http://0.0.0.0/
+### Networking
 
-If you're on Windows and have issues with `0.0.0.0` - replace them with `127.0.0.1` and use http://127.0.0.1/
-
-The **useful/** folder has useful commands
-
-## Network
-
+When not running through docker you need to do the following aswell.
 Add these to your /etc/hosts file:
 
 ```sh
@@ -102,39 +109,47 @@ And setup nginx with a conf such as:
 worker_processes  3;
 
 events {
-	worker_connections  2048;
+ worker_connections  2048;
 }
 
 http {
-	include mime.types;
-	default_type application/octet-stream;
+ include mime.types;
+ default_type application/octet-stream;
 
-	sendfile on;
+ sendfile on;
 
-	keepalive_timeout 0;
-	proxy_read_timeout 200;
-	proxy_connect_timeout 30;
-	proxy_send_timeout 200;
+ keepalive_timeout 0;
+ proxy_read_timeout 200;
+ proxy_connect_timeout 30;
+ proxy_send_timeout 200;
 
-	server {
-		listen 8080;
-		server_name thegame.com;
-		location / {
-			proxy_set_header X-Real-IP $remote_addr;
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_set_header X-Forwarded-Proto $scheme;
-			proxy_set_header Host $http_host;
-			proxy_redirect off;
-			proxy_pass http://localhost:8083;
-			expires -1;
-		}
-	}
+ server {
+  listen 8080;
+  server_name thegame.com;
+  location / {
+   proxy_set_header X-Real-IP $remote_addr;
+   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto $scheme;
+   proxy_set_header Host $http_host;
+   proxy_redirect off;
+   proxy_pass http://localhost:8083;
+   expires -1;
+  }
+ }
 
-	include servers/*;
+ include servers/*;
 }
 ```
 
 This way you can run multiple different projects at once and reach them using a local url of your choice, my choice was thegame.com
+
+## Playing the game
+
+You should be able to access the game at: <http://0.0.0.0/>
+
+If you're on Windows and have issues with `0.0.0.0` - replace them with `127.0.0.1` and use <http://127.0.0.1/>
+
+The **useful/** folder has useful commands
 
 If you choose to go live with the development server, make sure to block external access to every `login: admin` url you see in **app.yaml**. You could do this via a custom authentication or via nginx etc.
 
@@ -144,7 +159,7 @@ This repository is the live version of the game. Any changes made will be live w
 
 Content additions are very welcome, if you inspect the map data, there are many zones created yet not integrated. I'd be very happy to guide potential contributors in adopting and authoring a new zone, a new event, a new monster, a new mechanic and so on.
 
-I will include graphical assets, new item images manually. Please email them to hello@adventure.land
+I will include graphical assets, new item images manually. Please email them to <hello@adventure.land>
 
 ## Suggestions
 
@@ -162,12 +177,12 @@ As you might notice, several eslint rules have been marked as warnings instead o
 
 ## Freelancers
 
-Adventure Land's map designer is available for freelance work or for hire. Contact: markjlacandula@gmail.com
+Adventure Land's map designer is available for freelance work or for hire. Contact: <markjlacandula@gmail.com>
 
-I'm also available for working freelance on an hourly basis. Contact: hello@adventure.land
+I'm also available for working freelance on an hourly basis. Contact: <hello@adventure.land>
 
 If you have specific requirements, for example a unique cloud architecture in mind, I can help you find someone within our community that can handle the job. If you are an artist/designer and looking for a programmer to work on a game with, our Discord is also a good place to find someone!
 
 ## License
 
-https://github.com/kaansoral/adventureland/blob/master/LICENSE
+<https://github.com/kaansoral/adventureland/blob/master/LICENSE>
