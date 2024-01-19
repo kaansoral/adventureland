@@ -1302,7 +1302,8 @@ def start_character_api(**args):
 			data["code_slot"]=code_slot
 			data["code_version"]=code_version
 		return jhtml(self,data)
-	if is_in_game(character): jhtml(self,{"failed":1,"reason":"ingame"}); return
+	# If dev enviroment, don't check for ingame incase of a bug etc.
+	if is_in_game(character) and not os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'): jhtml(self,{"failed":1,"reason":"ingame"}); return
 	if not is_sdk and ssince(gf(character,"last_start",really_old))<40: jhtml(self,{"failed":1,"reason":"wait_%d_seconds"%(40-ssince(gf(character,"last_start",really_old)))}); return
 	add_event(character,"start",["activity"],self=self,info=cGG(message="%s [LV.%s] logged into %s %s"%(character.info.name,character.level,server.region,server.name),server=server.k('i')),async=True)
 	if user.guild: guild=get_by_iid_async("guild|%s"%user.guild)
@@ -1524,7 +1525,7 @@ def create_server_api(**args):
 	data={}
 	server=get_by_iid("server|%s%s"%(region,server_name))
 	if server:
-		if server.online and msince(server.last_update)<12: return jhtml(self,{"exists":True});
+		if server.online and msince(server.last_update)<12 and not os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'): return jhtml(self,{"exists":True});
 		data=server.info.data
 	server=Server(key=ndb.Key(Server,"%s%s"%(region,server_name)),info=cGG(players=0,observers=0,total_players=0,lat=lat,lon=lon,pvp=pvp,data=data),name=server_name,region=region,version=to_str(game_version),ip=ip,actual_ip=actual_ip,port=int(port),online=True,gameplay=gameplay)
 	server.info.auth=randomStr(20)
