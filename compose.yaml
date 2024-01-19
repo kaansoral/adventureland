@@ -17,12 +17,29 @@ services:
     restart: on-failure
     stop_signal: SIGINT
 
-  client-eu1:
-    entrypoint: ["./client_entrypoint.sh", "EU", "1", "8022"]
+  client-dev1:
+    entrypoint: ["./client_entrypoint.sh", "EU", "I", "8022"]
     ports:
       - "8022:8022"
     expose:
       - "8022"
+    depends_on:
+      appserver:
+        condition: service_healthy
+    build: .
+    volumes:
+      - adventureland_data:/adventureland
+    networks:
+      - adventureland-net
+    restart: on-failure
+    stop_signal: SIGINT
+
+  client-dev2:
+    entrypoint: ["./client_entrypoint.sh", "EU", "II", "8023"]
+    ports:
+      - "8023:8023"
+    expose:
+      - "8023"
     depends_on:
       appserver:
         condition: service_healthy
