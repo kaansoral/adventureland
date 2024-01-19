@@ -3,7 +3,6 @@ module.exports = {
   functions_path: "./server/server_functions.js",
   worker_path: "./server/server_worker.js",
   data_path: "./server/data.js",
-  base_url: "https://yourappspoturldontincludedashes.appspot.com",
   keyword: "123",
   access_master: "123",
   bot_key: "123",
@@ -15,4 +14,5 @@ module.exports = {
   close_timeout: 24000,
   ip_limit: 3,
   character_limit: 3,
+  base_url: "https://yourappspoturldontincludedashes.appspot.com",
 };
