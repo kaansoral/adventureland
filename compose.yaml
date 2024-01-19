@@ -15,6 +15,7 @@ services:
       retries: 3
       start_period: 30s
     restart: on-failure
+    stop_signal: SIGINT
 
   client-eu1:
     entrypoint: ["./client_entrypoint.sh", "EU", "1", "8022"]
@@ -25,13 +26,13 @@ services:
     depends_on:
       appserver:
         condition: service_healthy
-      
     build: .
     volumes:
       - adventureland_data:/adventureland
     networks:
       - adventureland-net
     restart: on-failure
+    stop_signal: SIGINT
 
 
 volumes:

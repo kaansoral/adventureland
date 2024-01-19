@@ -20,4 +20,4 @@ cp ./useful/template.live_variables.js ./node/live_variables.js
 
 npm install --silent ./scripts/
 
-python appserver/sdk/dev_appserver.py --storage_path=appserver/storage/ --blobstore_path=appserver/storage/blobstore/ --datastore_path=appserver/storage/db.rdbms --admin_host=0.0.0.0 --host=0.0.0.0 --port=8080 ./ --require_indexes --skip_sdk_update_check
+exec python appserver/sdk/dev_appserver.py --storage_path=appserver/storage/ --blobstore_path=appserver/storage/blobstore/ --datastore_path=appserver/storage/db.rdbms --admin_host=0.0.0.0 --host=0.0.0.0 --port=8080 ./ --require_indexes --skip_sdk_update_check

@@ -1,4 +1,5 @@
 #!/bin/bash
+export SERVER_SOFTWARE="Dev"
 
 cp ./useful/template.variables.js ./node/variables.js && \
 cp ./useful/template.live_variables.js ./node/live_variables.js
@@ -20,4 +21,5 @@ fi
 npm install --silent ./node/
 npm install --silent ./scripts/ 
 echo "Starting client"
-node ./node/server.js $1 $2 $3
+
+exec node ./node/server.js $1 $2 $3
