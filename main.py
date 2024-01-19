@@ -1,6 +1,6 @@
 from config import *
 from functions import *
-from admin import CommunityMapEditor,Selector,Items
+from admin import CommunityMapEditor,ArtistMapEditor,Selector,Items
 from api import load_code_api
 
 class MainHandler(webapp.RequestHandler):
@@ -481,6 +481,7 @@ application = webapp.WSGIApplication([
 	('/docs/?(.*)',DocsHandler),
 	('/map/(.*)/?(.*)',ResortEditor),
 	('/communitymaps/?(.*)', CommunityMapEditor),
+	('/editmap/?(.*)', ArtistMapEditor),
 	('/communityselector/?(.*)', Selector),
 	('/communityitems', Items),
 	('/shells', PaymentsHandler),

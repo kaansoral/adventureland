@@ -247,7 +247,7 @@ maps={
 		"key":"jayson_bank",
 		"key":"jayson_bank0",
 		#"key":"jayson_bank_xmas",
-		"key":"jayson_bank0.Xmas", #xmas
+		#"key":"jayson_bank0.Xmas", #xmas
 		"name":"The Bank",
 		"npcs":[
 			{"id":"goldnpc","position":[1,-416]},
@@ -543,8 +543,8 @@ maps={
 		"key":"jayson_ALMap2_v2",
 		#"key":"jayson_ALMap2_v2.Xmas",
 		#"key":"jayson_ALMap2_v2.CNewYear",
-		"key":"jayson_ALMap2_v2_xmas", #xmas
-		#"key":"jayson_ALMap2_v2.lunarNewYear",
+		#"key":"jayson_ALMap2_v2_xmas", #xmas
+		"key":"jayson_ALMap2_v2.lunarNewYear",
 		"name":"Mainland",
 		"npcs":[
 			#{"id":"newupgrade","position":[-203,-174]},
@@ -585,7 +585,7 @@ maps={
 			{"id":"pvptokens","position":[159,403]},
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
-			{"id":"newyear_tree","position":[64,-88]}, #xmas
+			#{"id":"newyear_tree","position":[64,-88]}, #xmas
 		],
 		"monsters":[
 			#square
@@ -1035,7 +1035,7 @@ maps={
 			{"id":"citizen1","position":[0,-5]},
 			{"id":"citizen5","position":[0,-5]},
 			{"id":"citizen6","position":[0,-5]},
-			{"id":"mistletoe","position":[94,-181,2]}, #xmas
+			#{"id":"mistletoe","position":[94,-181,2]}, #xmas
 		],
 		"monsters":[
 		],
@@ -1162,8 +1162,8 @@ maps={
 		"npcs":[
 			{"id":"leathermerchant","position":[262,-48.5]},
 			{"id":"transporter","position":[-73,-393]},
-			{"id":"santa","position":[1242,-1631]}, #xmas
-			{"id":"ornaments","position":[-137,-193,1]}, #xmas
+			#{"id":"santa","position":[1242,-1631]}, #xmas
+			#{"id":"ornaments","position":[-137,-193,1]}, #xmas
 			{"id":"guard","position":[1065,-2015]},
 			{"id":"citizen7","position":[-15,5]},
 			{"id":"citizen8","position":[-15,5]},
@@ -1173,7 +1173,7 @@ maps={
 		"monsters":[
 			{"type":"stompy","boundary":[30,-2954,836,-2536],"count":1},
 			{"type":"wolf","boundary":[30,-2954,836,-2536],"count":7},
-			{"type":"rudolph","boundary":[1065,-1598,1418,-1449],"count":1}, #xmas
+			#{"type":"rudolph","boundary":[1065,-1598,1418,-1449],"count":1}, #xmas
 			{"type":"arcticbee","boundary":[682,-967,1482,-779],"count":10,"grow":True},
 			{"type":"wolfie","boundary":[-367,-2234,29,-1819],"count":4},
 			{"type":"wolfie","boundary":[236,-2232,460,-1847],"count":3},

@@ -169,8 +169,8 @@ var mode = {
 };
 var events = {
 	// SEASONS
-	holidayseason: true,
-	lunarnewyear: false,
+	holidayseason: false,
+	lunarnewyear: true,
 	valentines: false,
 	pinkgoo: 0, // every N minutes - 60
 	snowman: 20 * 60, // 1200 normally - 60 - at sprocess_game_data
@@ -10496,6 +10496,12 @@ function init_io() {
 					resend(player, "u+cid");
 				}
 			}
+		});
+		socket.on("skin",function(data){
+			var player = players[socket.id];
+			if(player.role!="gm") return;
+			player.tskin=data.name;
+			resend(player, "u+cid");
 		});
 		socket.on("legacify", function (data) {
 			var player = players[socket.id];

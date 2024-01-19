@@ -78,6 +78,31 @@ class CommunityMapEditor(webapp.RequestHandler):
 		copy_map(name,"test")
 		self.response.out.write(to_pretty_num(olen(map.info.data)))
 
+class ArtistMapEditor(webapp.RequestHandler):
+	# from /admin/executor set the user.info.map_editor flag to True for artists, this also unlocks the interface in the game menu
+	@ndb.toplevel
+	def get(self,name):
+		if not name: return
+		name=name.split("/")[0]
+		domain=gdi(self); user=get_user(self,domain)
+		if not user or not gf(user,"map_editor"): return self.response.out.write("Not Permitted!")
+		map=get_by_iid("map|%s"%name)
+		whtml(self,"utility/htmls/map_editor.html",domain=domain,name="main",map=map,tilesets=tilesets,community=1)
+	@ndb.toplevel
+	def post(self,name):
+		data=self.request.get("data")
+		name=name.split("/")[0]
+		domain=gdi(self); user=get_user(self,domain)
+		if not user or not gf(user,"map_editor"): return self.response.out.write("Not Permitted!")
+		map=get_by_iid("map|%s"%name)
+		if not map: map=Map(key=ndb.Key(Map,name),info=GG())
+		map.info.data=json.loads(data)
+		process_map(map)
+		map.updated=datetime.now()
+		map.put()
+		copy_map(name,"test")
+		self.response.out.write(to_pretty_num(olen(map.info.data)))
+
 class MapEditor(webapp.RequestHandler):
 	@ndb.toplevel
 	def get(self,name):

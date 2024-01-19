@@ -2092,7 +2092,7 @@ function event_loop() {
 			["holidayseason", "grinch"],
 			["holidayseason", "snowman"],
 			["lunarnewyear", "dragold"],
-			["lunarnewyear", "tiger", true],
+			//["lunarnewyear", "tiger", true],
 			["valentines", "pinkgoo", true],
 			["egghunt", "wabbit", true],
 		];
