@@ -27,6 +27,9 @@ cp adventureland/useful/template.live_variables.js adventureland/node/live_varia
 ```
 
 Now you have the option to run the game locally through docker or through a local installation.
+
+### Run via docker
+
 To run the game locally through docker you need to have [Docker](https://docs.docker.com/get-docker) installed on your machine and have it running.
 Once you have Docker installed and running, you can run the following command to start the game within the adventureland folder:
 
@@ -35,6 +38,10 @@ docker-compose up
 # if you have permission errors, try with sudo docker-compose up
 # if you want to run it in the background, use docker-compose up -d
 ```
+
+If you want to reset the database, delete the appserver folder and rebuild the docker container.
+
+### Run via local installation
 
 To run the game locally through a local installation follow the instructions below.
 
