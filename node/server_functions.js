@@ -3462,7 +3462,10 @@ function exchange(player, name, args) {
 						G.items[item.name].compound ||
 						character_slots.includes(G.items[item.name].type))
 				) {
-					item.p = "glitched";
+					add_item_property(item, "glitched");
+				}
+				if (drop[4]) {
+					add_item_property(item, drop[4]);
 				}
 				if (name == "glitch") {
 					args.phrase = "Glitched";
