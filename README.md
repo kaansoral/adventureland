@@ -18,7 +18,7 @@ Clone the game files into the adventureland folder:
 git clone https://github.com/kaansoral/adventureland adventureland
 ```
 
-Set up secrets files and remember to change secret keys! (This is default setup for a docker installation.)
+Set up secrets files and remember to change secret keys! (This is default setup for a docker installation. Change this to the other default values if you're not running through docker)
 
 ```sh
 cp adventureland/useful/template.secrets.py adventureland/secrets.py
