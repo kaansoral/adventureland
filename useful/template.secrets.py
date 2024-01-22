@@ -26,5 +26,5 @@ game_name = "Adventure land" # Default "Adventure Land"
 appengine_id = "twodimensionalgame" # Default "twodimensionalgame"
 live_domain = "0.0.0.0" # Default "adventure.land"
 sdk_domain = "0.0.0.0" # Default "thegame.com"
-base_url = "http://appserver:8080" # Base server url. Location of the dev appserver. This is defined in the dockerFile or defined how you manually start the dev appserver
+base_url = "http://appserver:8080" # Base server url. Location of the dev appserver. This is defined in the dockerFile or defined how you manually start the dev appserver # Default "http://thegame.com"
 server_ip = "0.0.0.0" # Default "192.168.1.125"

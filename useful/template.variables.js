@@ -18,5 +18,5 @@ module.exports = {
   ip_limit: 3,
   character_limit: 3,
   fast_sdk: 0,
-  base_url: "http://appserver:8080", // Base server url. Location of the dev appserver. This is defined in the dockerFile or defined how you manually start the dev appserver
+  base_url: "http://appserver:8080", // Base server url. Location of the dev appserver. This is defined in the dockerFile or defined how you manually start the dev appserver # Default "http://thegame.com"
 };
