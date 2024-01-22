@@ -1205,7 +1205,7 @@ def select_server(self,user,servers):
 
 def get_servers(no_cache=False):
 	servers=memcache.get("servers")
-	if len(servers) == 0 or no_cache:
+	if not servers or no_cache:
 		servers=[]
 		for server in Server.query(Server.online == True):
 			if msince(server.last_update)<5:

@@ -21,8 +21,6 @@ services:
     entrypoint: ["./client_entrypoint.sh", "EU", "I", "8022"] # region (EU, US, ASIA), server (I, II, III), port
     ports:
       - "8022:8022"
-    expose:
-      - "8022"
     depends_on:
       appserver:
         condition: service_healthy
@@ -38,8 +36,6 @@ services:
     entrypoint: ["./client_entrypoint.sh", "EU", "II", "8023"] # region (EU, US, ASIA), server (I, II, III), port
     ports:
       - "8023:8023"
-    expose:
-      - "8023"
     depends_on:
       appserver:
         condition: service_healthy
