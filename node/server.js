@@ -10497,10 +10497,12 @@ function init_io() {
 				}
 			}
 		});
-		socket.on("skin",function(data){
+		socket.on("skin", function (data) {
 			var player = players[socket.id];
-			if(player.role!="gm") return;
-			player.tskin=data.name;
+			if (player.role != "gm") {
+				return;
+			}
+			player.tskin = data.name;
 			resend(player, "u+cid");
 		});
 		socket.on("legacify", function (data) {
