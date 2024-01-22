@@ -1819,7 +1819,20 @@ function render_item_help(container,name,level,pure)
 			}
 		}
 	}
+	
 	var items=[];
+
+	function recur_replace(table) {
+		for (let [idx, drop_item] of table.entries()) {
+			if (drop_item[1] === 'open') table.splice(idx, 1, ...G.drops[drop_item[2]])
+		}
+
+		return table
+	}
+	/*
+	[21/01/24] The below isn't sufficient to show that the Crossbow can be obtained from `lostearring1`. `lostearring1`'s droptable only includes an opened `weaponbox`
+	But because `lostearring1` doesn't directly & shallowly show that it drops a Crossbow, Crossbow's only source is `weaponbox`
+	This can lead to confusion. Instead, a recursive expansion of auto-opened drop tables is peformed
 	for(var iname in G.items)
 	{
 		if(!G.items[iname].e) continue;
@@ -1843,6 +1856,32 @@ function render_item_help(container,name,level,pure)
 			}
 		}
 	}
+	New to-render function below
+	*/
+	for (let iname in G.items) {
+		// Early continue if item isn't exchangeable
+		if (!G.items[iname].e) continue
+
+		var levels = [0]
+		var item = G.items[iname]
+		if (item.upgrade || item.compound) levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+		for (let lvl = 0; lvl < levels.length; lvl++) {
+			var temp_name = `${iname}${lvl ? lvl : ''}`
+
+			// Early continue if drop table doesn't exist
+			if (!G.drops[temp_name]) continue
+
+			var table = G.drops[temp_name]
+			var true_table = recur_replace(table)
+
+			for (let drop_table_item of true_table) {
+				if (drop_table_item[1] === name) items.push([iname, lvl])
+			}
+
+		}
+	}
+
 	var tokens=[];
 	for(var tname in G.tokens)
 	{
