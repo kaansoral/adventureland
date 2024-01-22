@@ -1872,7 +1872,8 @@ function render_item_help(container,name,level,pure)
 			// Early continue if drop table doesn't exist
 			if (!G.drops[temp_name]) continue
 
-			var table = G.drops[temp_name]
+			// shallow copy of G.drops[temp_name], otherwise we mutate it
+			var table = [...G.drops[temp_name]]
 			var true_table = recur_replace(table)
 
 			for (let drop_table_item of true_table) {
