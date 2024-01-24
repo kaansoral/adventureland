@@ -714,7 +714,7 @@ drops={
 		[0.1,"dragondagger",None,None,"lucky"],
 		[0.3,"lmace",None,None,"lucky"],
 		[1,"oxhelmet",None,None,"lucky"],
-		[1000.1,"cdragon",None,None,"lucky"],
+		[0.1,"cdragon",None,None,"lucky"],
 	],
 	"eastereggs":[
 		[1,"egg0"],
