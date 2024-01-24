@@ -1,0 +1,47 @@
+<p>
+	Arguments:
+	<div>&nbsp;<b>*</b> Array - An array of equip definitions</div>
+</p>
+<p>
+	Returns:
+	<div>&nbsp; <b>*</b> Promise</div>
+</p>
+
+<p>Example usages:</p>
+
+<div class='code'>
+equip_batch([{ num: 0, slot: "chest" }, { num: 1, slot: "orb" }]);
+equip_batch([{ num: 0, slot: "chest" }, { num: 1, slot: "orb" }]).then(
+	function(data){
+		game_log("Yes!"); // Not all items may have been equipped. All this means is that you send the correct layout of data.
+	}, 
+    function(data) {
+    	game_log("equip_batch failed: " + data.reason);
+	},
+);
+</div>
+
+<p>Promise Reference:</p>
+
+<span class='dlabel'>"resolve"</span>
+<div class='code'>
+{
+	place: "equip_batch",
+    response: "data",
+    slots: [{ num: 0, slot: "chest" }, "no_item"] // Note that even though equipping the orb failed, we still received a success response.
+}
+</div>
+<div style='margin-bottom: 10px'></div>
+
+<span class='dlabel'>"reject"</span>
+<div class='code'>
+{
+	place: "equip_batch",
+    failed: true,
+    response: "invalid",
+    reason: "invalid", // You didn't send an array.
+}
+</div>
+
+<p></p>
+<span class='redlabel'>"source"</span>
