@@ -471,9 +471,6 @@ function is_map_pvp(map, allow_safe) {
 }
 
 function is_same(player1, player2, party) {
-	if (is_sdk && player1.name != player2.name) {
-		return false;
-	}
 	if (player1.name == player2.name) {
 		return true;
 	}
