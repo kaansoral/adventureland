@@ -74,7 +74,7 @@ def serve_server_and_character_selection(name="",region="",sname=""):
 		return request.response.set_data("<div style='color: gray'>Build expired</dov>")
 	if not domain.https_mode:
 		if not request.headers.get("Cf-Visitor") and request.scheme=="https" or request.headers.get("Cf-Visitor") and "https" in request.headers.get("Cf-Visitor"):
-			return request.redirect(request.url.replace("https","http"))
+			return redirect(request.url.replace("https","http"))
 	servers=get_servers()
 	user=get_user(request,domain)
 	code=request.values.get("code")
@@ -101,7 +101,7 @@ def serve_server_selection(region="",sname=""):
 		return request.response.set_data("<div style='color: gray'>Build expired</dov>")
 	if not domain.https_mode:
 		if not request.headers.get("Cf-Visitor") and request.scheme=="https" or request.headers.get("Cf-Visitor") and "https" in request.headers.get("Cf-Visitor"):
-			return request.redirect(request.url.replace("https","http"))
+			return redirect(request.url.replace("https","http"))
 	servers=get_servers()
 	user=get_user(request,domain)
 	for server in servers:
@@ -211,7 +211,7 @@ def serve_datajs():
 @app.route('/shells')
 def serve_shells():
 	if not request.headers.get("Cf-Visitor") and request.scheme=="http" or request.headers.get("Cf-Visitor") and "https" not in request.headers.get("Cf-Visitor"):
-		if not is_sdk: return request.redirect(request.url.replace("http","https"))
+		if not is_sdk: return redirect(request.url.replace("http","https"))
 	domain=gdi(request); user=get_user(request,domain)
 	#if security_threat(request,domain): return #commented out [23/04/20]
 	servers=get_servers(); server=select_server(request,user,servers)
@@ -358,7 +358,7 @@ def server_main(name=""):
 				logging.info("Referrer is %s"%referrer.k())
 				set_cookie(request,"referrer",referrer.k())
 				ip=get_ip_info(request); ip.referrer=referrer.k(); put_ip_info(ip)
-			return request.response.redirect("/")
+			return redirect("/")
 		if not user and name.startswith("c/") and len(name.split("/"))>1: #unused [19/11/18]
 			char=name.split("/")[1]
 			char=get_character(char)
@@ -368,6 +368,6 @@ def server_main(name=""):
 				ip=get_ip_info(request); ip.referrer=char.owner; put_ip_info(ip)
 		if not domain.https_mode:
 			if not request.headers.get("Cf-Visitor") and request.scheme=="https" or request.headers.get("Cf-Visitor") and "https" in request.headers.get("Cf-Visitor"):
-				return request.redirect(request.url.replace("https","http"))
+				return redirect(request.url.replace("https","http"))
 		render_selection(request,user,domain)
 	return request.response
