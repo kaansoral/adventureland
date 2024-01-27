@@ -1,0 +1,64 @@
+services:
+  appserver:
+    build: .
+    ports:
+      - "80:8080"
+      - "8000:8000"
+    volumes:
+      - adventureland_data:/adventureland
+    networks:
+      - adventureland-net
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://appserver:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    stop_signal: SIGINT
+
+  client-dev1:
+    entrypoint: ["./client_entrypoint.sh", "EU", "I", "8022"] # region (EU, US, ASIA), server (I, II, III), port
+    ports:
+      - "8022:8022"
+    depends_on:
+      appserver:
+        condition: service_healthy
+    build: .
+    volumes:
+      - adventureland_data:/adventureland
+    networks:
+      - adventureland-net
+    restart: on-failure
+    stop_signal: SIGINT
+
+  client-dev2:
+    entrypoint: ["./client_entrypoint.sh", "EU", "II", "8023"] # region (EU, US, ASIA), server (I, II, III), port
+    ports:
+      - "8023:8023"
+    depends_on:
+      appserver:
+        condition: service_healthy
+    build: .
+    volumes:
+      - adventureland_data:/adventureland
+    networks:
+      - adventureland-net
+    restart: on-failure
+    stop_signal: SIGINT
+
+
+volumes:
+  adventureland_data:
+    name: adventureland_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./
+
+networks:
+  adventureland-net:
+    name: adventureland-net
+    driver: bridge
+      

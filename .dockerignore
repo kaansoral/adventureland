@@ -1,0 +1,31 @@
+**/logs.db
+**/logs.db-journal
+**/xsrf
+
+# Ignore system and hidden files
+.*
+!.gitignore
+
+# Ignore unnecessary project files
+node_modules/
+*.log
+npm-debug.log*
+
+# Ignore development and build files
+.DS_Store
+.vscode/
+.idea/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+*.sqlite
+*.log
+*.tmp
+*.swp
+Thumbs.db
+ehthumbs.db
+desktop.ini
+**/node_modules
