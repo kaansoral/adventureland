@@ -1,0 +1,34 @@
+version: 4 #2-new UI | 3-new font dynamics | 4-python3
+runtime: python312
+app_engine_apis: true
+threadsafe: true
+api_version: 1
+builtins:
+- deferred: on
+
+#F2/F4: same warmup handler performance [14/10/14]
+instance_class: F2
+automatic_scaling:
+  min_idle_instances: 0
+  max_idle_instances: 1
+  min_pending_latency: 6000ms
+  max_pending_latency: 12000ms
+
+default_expiration: "4d"
+
+handlers:
+- url: /favicon\.ico
+  static_files: images/favicon.ico
+  upload: favicon\.ico
+- url: /css
+  static_dir: css
+- url: /images
+  static_dir: images
+- url: /img/
+  static_dir: images/screenshots
+- url: /sounds
+  static_dir: sounds
+- url: /js
+  static_dir: js
+- url: .*
+  script: auto

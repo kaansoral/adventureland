@@ -2,8 +2,8 @@ import calendar
 import datetime
 import platform
 import time
-import urllib
-import urlparse
+#import urllib
+#import urlparse
 import warnings
 
 import libraries.stripe

@@ -1,6 +1,8 @@
 import sys
 import unittest2
 
+if 1/2 != 0: basestring=str
+
 from mock import Mock, patch
 
 import libraries.stripe

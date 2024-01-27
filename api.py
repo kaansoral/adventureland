@@ -87,7 +87,7 @@ def signup_or_login_api(**args):
 		{"type":"success","message":"Signup Complete!" },
 		selection_info(self,user,domain),
 		])
-	add_event(user,"signup",["new","noteworthy"],self=self,info=cGG(message="Signup %s"%(user.info.email)),async=True)
+	add_event(user,"signup",["new","noteworthy"],self=self,info=cGG(message="Signup %s"%(user.info.email)),_async=True)
 	increase_signupth()
 
 	try:
@@ -503,7 +503,7 @@ def create_character_api(**args):
 		{"type":"success","message":"%s is alive!"%name },
 		selection_info(self,owner,domain),
 		])
-	add_event(owner,"new_character",["characters","noteworthy"],self=self,info=cGG(message="New Character %s from %s"%(character.info.name,user.info.email)),backup=True,async=True)
+	add_event(owner,"new_character",["characters","noteworthy"],self=self,info=cGG(message="New Character %s from %s"%(character.info.name,user.info.email)),backup=True,_async=True)
 	increase_characterth()
 
 def sort_characters_api(**args):
@@ -846,8 +846,8 @@ def cli_time_api(**args):
 	if result:
 		logging.info(result)
 		return jhtmlm(self,"Purchased 7 more days of CLI time for %s shells! You have: %.2d"%(amount,-dsince(result.cli_time)))
-		if amount>0: add_event(result,"bill",["cashflow"],self=self,info=cGG(message="%s [%s] spent %s shells for: %s"%(name,user.k(),amount,reason),amount=amount,reason=reason),async=True)
-		else: add_event(result,"ishells",["cashflow"],self=self,info=cGG(message="%s [%s] received %s shells from: %s"%(name,user.k(),-amount,reason),amount=-amount,reason=reason),async=True)
+		if amount>0: add_event(result,"bill",["cashflow"],self=self,info=cGG(message="%s [%s] spent %s shells for: %s"%(name,user.k(),amount,reason),amount=amount,reason=reason),_async=True)
+		else: add_event(result,"ishells",["cashflow"],self=self,info=cGG(message="%s [%s] received %s shells from: %s"%(name,user.k(),-amount,reason),amount=-amount,reason=reason),_async=True)
 		try: deferred.defer(update_characters,result)
 		except: log_trace()
 	else:
@@ -870,8 +870,8 @@ def bill_user_api(**args):
 	if result:
 		logging.info(result)
 		jhtml(self,{"done":1,"cash":result.cash})
-		if amount>0: add_event(result,"bill",["cashflow"],self=self,info=cGG(message="%s [%s] spent %s shells for: %s"%(name,user.k(),amount,reason),amount=amount,reason=reason),async=True)
-		else: add_event(result,"ishells",["cashflow"],self=self,info=cGG(message="%s [%s] received %s shells from: %s"%(name,user.k(),-amount,reason),amount=-amount,reason=reason),async=True)
+		if amount>0: add_event(result,"bill",["cashflow"],self=self,info=cGG(message="%s [%s] spent %s shells for: %s"%(name,user.k(),amount,reason),amount=amount,reason=reason),_async=True)
+		else: add_event(result,"ishells",["cashflow"],self=self,info=cGG(message="%s [%s] received %s shells from: %s"%(name,user.k(),-amount,reason),amount=-amount,reason=reason),_async=True)
 		try: deferred.defer(update_characters,result)
 		except: log_trace()
 	else:
@@ -1021,7 +1021,7 @@ def send_mail_api(**args):
 	if fro and not frop or not top: return jhtml(self,{"failed":1,"reason":"nocharacter","return":True})
 	if fro: user1=get_by_iid_async("user|%s"%frop.owner);
 	user2=get_by_iid("user|%s"%top.owner)
-	ud2=get_user_data(user2,async=True); c2=Mail.query(Mail.owner==user2.k(),Mail.read==False).fetch_async(98,keys_only=True)
+	ud2=get_user_data(user2,_async=True); c2=Mail.query(Mail.owner==user2.k(),Mail.read==False).fetch_async(98,keys_only=True)
 	if fro: user1=user1.get_result()
 	if not server: return jhtml(self,{"failed":1,"reason":"noserver"})
 	if fro and not user1 or not user2: return jhtml(self,{"failed":1,"reason":"nouser","return":True})
@@ -1183,7 +1183,7 @@ def stripe_payment_api(**args): #TODO: Patch for .server checks [10/07/18]
 			currency="usd",
 			description="%s SHELLS for %s USD"%(shells,usd),
 			source=token)
-		add_event(user,"stripe",["payments","cashflow"],self=self,info=cGG(message="STRIPE! %s spent %s USD!"%(user.name,usd),usd=usd,token=token,response=response),async=True)
+		add_event(user,"stripe",["payments","cashflow"],self=self,info=cGG(message="STRIPE! %s spent %s USD!"%(user.name,usd),usd=usd,token=token,response=response),_async=True)
 		def stripe_transaction():
 			element=get_by_iid(user.k('i'))
 			element.cash+=int(shells)
@@ -1191,7 +1191,7 @@ def stripe_payment_api(**args): #TODO: Patch for .server checks [10/07/18]
 			return element
 		result=ndb.transaction(stripe_transaction,xg=True,retries=120)
 		if result:
-			add_event(result,"shells",["cashflow"],self=self,info=cGG(message="STRIPE! %s received %s SHELLS!"%(user.name,shells),usd=usd,token=token),async=True)
+			add_event(result,"shells",["cashflow"],self=self,info=cGG(message="STRIPE! %s received %s SHELLS!"%(user.name,shells),usd=usd,token=token),_async=True)
 			jfunc(self,"stripe_result",["success",result.cash])
 			jhtmls(self,"You received %s SHELLS!"%shells)
 			try: deferred.defer(add_cash,result.k(),int(shells),referrer=True,only_referrer=True)
@@ -1304,7 +1304,7 @@ def start_character_api(**args):
 		return jhtml(self,data)
 	if is_in_game(character): jhtml(self,{"failed":1,"reason":"ingame"}); return
 	if not is_sdk and ssince(gf(character,"last_start",really_old))<40: jhtml(self,{"failed":1,"reason":"wait_%d_seconds"%(40-ssince(gf(character,"last_start",really_old)))}); return
-	add_event(character,"start",["activity"],self=self,info=cGG(message="%s [LV.%s] logged into %s %s"%(character.info.name,character.level,server.region,server.name),server=server.k('i')),async=True)
+	add_event(character,"start",["activity"],self=self,info=cGG(message="%s [LV.%s] logged into %s %s"%(character.info.name,character.level,server.region,server.name),server=server.k('i')),_async=True)
 	if user.guild: guild=get_by_iid_async("guild|%s"%user.guild)
 	def start_character_transaction():
 		element=get_by_iid(character.k('i'))
@@ -1380,7 +1380,7 @@ def stop_character_api(**args):
 	if result:
 		character=result
 		jhtml(self,{"done":1,"name":character.info.name})
-		add_event(character,"stop",["activity"],self=self,info=cGG(message="%s [LV.%s] logged out of %s %s"%(character.info.name,character.level,server.region,server.name),server=server.k('i')),async=True)
+		add_event(character,"stop",["activity"],self=self,info=cGG(message="%s [LV.%s] logged out of %s %s"%(character.info.name,character.level,server.region,server.name),server=server.k('i')),_async=True)
 	else:
 		jhtml(self,{"failed":1,"reason":"unknown"})
 
@@ -1490,10 +1490,10 @@ def reload_server_api(**args):
 def create_server_api(**args):
 	self,domain,keyword,port,region,pvp,gameplay,sname=gdmuld(args,"self","domain","keyword","port","region","pvp","gameplay","name")
 	if keyword!=secrets.SERVER_MASTER: jhtml(self,{"failed":1}); return
-	actual_ip=ip=self.request.remote_addr; server_name="XX"
+	actual_ip=ip=request.remote_addr; server_name="XX"
 	if is_sdk: actual_ip=ip=domain.server_ip
 	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
-	lat,lon=(self.request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
+	lat,lon=(request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
 	try: lat,lon=float(lat),float(lon)
 	except: lat,lon=0,0
 
@@ -1685,7 +1685,6 @@ def delete_map_api(**args):
 	jhtml(self,[{"type":"success","message":"Done!"},selection_info(self,user,domain)])
 
 def test_api(**args):
-	asdfdfsa=dsfafsd
 	self,user,server,domain=gdmuld(args,"self","user","server","domain")
 	logging.info("test")
 	jfunc(self,"alert",["lol"])
@@ -1705,34 +1704,34 @@ def simplify_args_for_logging(args):
 	except:
 		return args
 
-class APICall(webapp.RequestHandler):
-	@ndb.toplevel
-	def post(self):
-		domain=gdi(self)
-		server=get_server(self,domain)
-		args,method=gdmul(self,"arguments","method")
-		if security_threat(self,domain): return
-		user=get_user(self,domain,api_override=(server and method and method!="start_character")) # only "start_character" has an auth check, the rest doesn't re-check user auths #IMPORTANT! [09/08/20]
-		method="%s_api"%method
-		if args: args=json.loads(args)
-		if not args: args={}
-		logging.info("\n\nAPI Method Called: %s Arguments: %s\n"%(method,simplify_args_for_logging(args)))
-		#logging.info(self.request.cookies.get("auth"))
-		if not user and method not in ["log_error_api","signup_or_login_api","load_article_api","get_server_api","test_api","create_server_api","stop_server_api","update_server_api","reload_server_api","set_friends_api","not_friends_api","password_reminder_api","server_event_api","reset_password_api","ban_user_api","send_mail_api","log_chat_api","take_item_from_mail_api","broadcast_api"]:
-			if self.request.get("server_auth"): jhtml(self,{"failed":1,"reason":"nouser"}); return
-			jhtml(self,[{"type":"func","func":"add_log","args":["Not logged in."]}]); return
-		function=globals().get(method)
-		args["domain"]=domain
-		args["user"]=user
-		args["server"]=server
-		args["self"]=self
-		if user and not server and gf(user,"blocked_until",really_old)>datetime.now() and method not in ["logout_api_X"]: return jhtml(self,[{"type":"func","func":"add_log","args":["Blocked"]}])
-		if function: function(**args)
-		else:
-			if args.get("dataType")=="json": jhtml(self,[{"type":"ui_log","message":"Invalid method"}])
-			else: logging.error("no function")
-		safe_commit(user); safe_commit(server); domain_routine(domain)
+@app.route('/api', methods=['POST'])
+@app.route('/api/<name>', methods=['POST'])
+@app.route('/api/<name>/<extra>', methods=['POST'])
+@ndb.toplevel
+def server_api(name="",extra=""):
+	self=request # [26/01/24] easier for now
+	domain=gdi(self)
+	server=get_server(self,domain)
+	args,method=gdmul(self,"arguments","method")
+	if security_threat(self,domain): return "security_threat"
+	user=get_user(self,domain,api_override=(server and method and method!="start_character")) # only "start_character" has an auth check, the rest doesn't re-check user auths #IMPORTANT! [09/08/20]
+	method="%s_api"%method
+	if args: args=json.loads(args)
+	if not args: args={}
+	logging.info("\n\nAPI Method Called: %s Arguments: %s\n"%(method,simplify_args_for_logging(args)))
+	if not user and method not in ["log_error_api","signup_or_login_api","load_article_api","get_server_api","test_api","create_server_api","stop_server_api","update_server_api","reload_server_api","set_friends_api","not_friends_api","password_reminder_api","server_event_api","reset_password_api","ban_user_api","send_mail_api","log_chat_api","take_item_from_mail_api","broadcast_api"]:
+		if self.values.get("server_auth"): jhtml(self,{"failed":1,"reason":"nouser"}); return "nouser"
+		jhtml(self,[{"type":"func","func":"add_log","args":["Not logged in."]}]); return "notloggedin"
+	function=globals().get(method)
+	args["domain"]=domain
+	args["user"]=user
+	args["server"]=server
+	args["self"]=self
+	if user and not server and gf(user,"blocked_until",really_old)>datetime.now() and method not in ["logout_api_X"]: return jhtml(self,[{"type":"func","func":"add_log","args":["Blocked"]}])
+	if function: function(**args)
+	else:
+		if args.get("dataType")=="json": jhtml(self,[{"type":"ui_log","message":"Invalid method"}])
+		else: logging.error("no function")
+	safe_commit(user); safe_commit(server); domain_routine(domain)
+	return request.response
 
-application = webapp.WSGIApplication([
-	('/api.*',APICall),
-    ],debug=is_sdk)

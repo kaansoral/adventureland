@@ -4,6 +4,8 @@ import textwrap
 import warnings
 import email
 
+if 1/2 != 0: basestring=str
+
 from libraries.stripe import error, util
 
 

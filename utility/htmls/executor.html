@@ -61,7 +61,7 @@
 		</div>
 		<script>
 			var codemirror = CodeMirror(function(current){$("#code").replaceWith(current);},{
-				value: "domain=gdi(self); user=get_user(self,domain); user_data=get_user_data(user)\n",
+				value: "domain=gdi(request); user=get_user(request,domain); user_data=get_user_data(user)\n",
 				mode:  "python",
 				indentUnit:4,
 				indentWithTabs:true,

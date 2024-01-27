@@ -164,6 +164,10 @@ def all_user_cron(num): #<<NEW
 			user.banned=True
 			user.put()
 
+def all_user_cron(num): #<<NEW
+	for user in User.query(User.random_number==num):
+		logging.info(user.info.email)
+
 def all_character_cron(num):
 	for character in Character.query(Character.random_number==num):
 		if gf(character,"map") in ["main","batcave"]:
@@ -214,7 +218,7 @@ def all_cbackup_cron(num):
 			element=get_by_iid(character.k('i'))
 			element.to_backup=False
 			element.put()
-		rpcs.append(backup_item(character,async=True))
+		rpcs.append(backup_item(character,_async=True))
 		rpcs.append(ndb.transaction_async(backup_transaction,retries=0))
 	for rpc in rpcs: rpc.wait()
 
@@ -225,7 +229,7 @@ def all_process_cron(num):
 			element=get_by_iid(character.k('i'))
 			element.to_backup=False
 			element.put()
-		rpcs.append(backup_item(character,async=True))
+		rpcs.append(backup_item(character,_async=True))
 		rpcs.append(ndb.transaction_async(backup_transaction,retries=0))
 	for rpc in rpcs: rpc.wait()
 
@@ -236,79 +240,80 @@ def all_ubackup_cron(num):
 			element=get_by_iid(user.k('i'))
 			element.to_backup=False
 			element.put()
-		rpcs.append(backup_item(user,async=True))
+		rpcs.append(backup_item(user,_async=True))
 		rpcs.append(ndb.transaction_async(backup_transaction,retries=0))
 	for rpc in rpcs: rpc.wait()
 
-class AllCron(webapp.RequestHandler):
-	@ndb.toplevel
-	def get(self,mname):
-		if mname=="user":
-			for n in range(1,101):
-				deferred.defer(all_user_cron,n,_queue="important")
-		if mname=="mail":
-			for n in range(1,101):
-				deferred.defer(all_mail_cron,n,_queue="important")
-		if mname=="character":
-			for n in range(1,101):
-				deferred.defer(all_character_cron,n,_queue="important")
-		if mname=="backups":
-			#originally, backups were on-access, but they need to be all at the same time, so a reversal restores the ~whole state of the game [19/11/18]
-			for n in range(1,101):
-				deferred.defer(all_ubackup_cron,n,_queue="important")
-				deferred.defer(all_cbackup_cron,n,_queue="important")
-		if mname=="process_backups":
-			for n in range(1,101):
-				deferred.defer(all_process_cron,n,_queue="important")
-	def post(self,mname): self.get(mname)
+@app.route('/cr/all/<mname>',methods=['GET','POST'])
+@ndb.toplevel
+def serve_all_cron(mname=""):
+	domain=gdi(request); user=get_user(request,domain)
+	if not (user and getattr(user,"admin",False) or request.headers.get('X-AppEngine-Cron')): return "no permission"
+	if mname=="user":
+		for n in range(1,101):
+			deferred.defer(all_user_cron,n,_queue="important")
+	if mname=="mail":
+		for n in range(1,101):
+			deferred.defer(all_mail_cron,n,_queue="important")
+	if mname=="character":
+		for n in range(1,101):
+			deferred.defer(all_character_cron,n,_queue="important")
+	if mname=="backups":
+		#originally, backups were on-access, but they need to be all at the same time, so a reversal restores the ~whole state of the game [19/11/18]
+		for n in range(1,101):
+			deferred.defer(all_ubackup_cron,n,_queue="important")
+			deferred.defer(all_cbackup_cron,n,_queue="important")
+	if mname=="process_backups":
+		for n in range(1,101):
+			deferred.defer(all_process_cron,n,_queue="important")
+	return ""
 
-class CheckServers(webapp.RequestHandler):
-	@ndb.toplevel
-	def get(self): check_servers()
-	def post(self): self.get()
+@app.route('/cr/check_servers',methods=['GET','POST'])
+@ndb.toplevel
+def serve_server_checker():
+	domain=gdi(request); user=get_user(request,domain)
+	if not (user and getattr(user,"admin",False) or request.headers.get('X-AppEngine-Cron')): return "no permission"
+	check_servers()
+	return ""
 
-class UnstuckPlayers(webapp.RequestHandler):
-	@ndb.toplevel
-	def get(self):
-		servers=get_servers()
-		for server in servers:
-			if msince(server.created)>10: #no widespread network issue
-				characters=Character.query(Character.online==True, Character.server == server.k(), Character.last_sync < datetime.now()-timedelta(minutes=30)).fetch()
-				for character in characters:
-					m=msince(character.last_sync)
-					character.online=False
-					character.server=""
-					character.put()
-					send_email(gdi(),"kaansoral@gmail.com",html="Stuck for %s minutes"%m,title="UNSTUCK %s from %s"%(character.name,server.k()))
+@app.route('/cr/unstuck',methods=['GET','POST'])
+@ndb.toplevel
+def serve_unstuck():
+	domain=gdi(request); user=get_user(request,domain)
+	if not (user and getattr(user,"admin",False) or request.headers.get('X-AppEngine-Cron')): return "no permission"
+	servers=get_servers()
+	for server in servers:
+		if msince(server.created)>10: #no widespread network issue
+			characters=Character.query(Character.online==True, Character.server == server.k(), Character.last_sync < datetime.now()-timedelta(minutes=30)).fetch()
+			for character in characters:
+				m=msince(character.last_sync)
+				character.online=False
+				character.server=""
+				character.put()
+				send_email(gdi(),"kaansoral@gmail.com",html="Stuck for %s minutes"%m,title="UNSTUCK %s from %s"%(character.name,server.k()))
+	return ""
 
-	def post(self): self.get()
-
-class Hourly(webapp.RequestHandler):
-	@ndb.toplevel
-	def get(self):
-		deferred.defer(verify_steam_installs)
-		return
+@app.route('/cr/hourly',methods=['GET','POST'])
+@ndb.toplevel
+def serve_hourly():
+	domain=gdi(request); user=get_user(request,domain)
+	if not (user and getattr(user,"admin",False) or request.headers.get('X-AppEngine-Cron')): return "no permission"
+	deferred.defer(verify_steam_installs)
+	return ""
+	if random.randrange(0,20)==2:
+		user=get_by_iid("user|%s"%get_character("Wizard").owner)
 		if random.randrange(0,20)==2:
-			user=get_by_iid("user|%s"%get_character("Wizard").owner)
-			if random.randrange(0,20)==2:
-				add_cash(user,100*random.randrange(1,50))
-			else:
-				add_cash(user,200)
+			add_cash(user,100*random.randrange(1,50))
+		else:
+			add_cash(user,200)
+	if random.randrange(0,20)==2:
+		user=get_by_iid("user|%s"%get_character("Oragon").owner)
 		if random.randrange(0,20)==2:
-			user=get_by_iid("user|%s"%get_character("Oragon").owner)
-			if random.randrange(0,20)==2:
-				add_cash(user,100*random.randrange(1,50))
-			else:
-				add_cash(user,200)
-		#user=get_by_iid("user|%s"%get_character("Trexnamedtod").owner)
-		#add_cash(user,25)
-		#user=get_by_iid("user|%s"%get_character("Emerald").owner)
-		#add_cash(user,5)
-	def post(self): self.get()
-
-application = webapp.WSGIApplication([
-	('/cr/check_servers', CheckServers),
-	('/cr/hourly', Hourly),
-	('/cr/unstuck', UnstuckPlayers),
-	('/cr/all/([^/]*)/?', AllCron),
-	],debug=is_sdk)
+			add_cash(user,100*random.randrange(1,50))
+		else:
+			add_cash(user,200)
+	#user=get_by_iid("user|%s"%get_character("Trexnamedtod").owner)
+	#add_cash(user,25)
+	#user=get_by_iid("user|%s"%get_character("Emerald").owner)
+	#add_cash(user,5)
+	return ""

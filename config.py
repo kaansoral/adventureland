@@ -3,25 +3,49 @@ from __future__ import with_statement
 # Python3 compatibility [06/01/24]
 from __future__ import print_function
 import os,logging,cgi
-if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
+if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev') or not os.getenv('GAE_ENV', '').startswith('standard'):
 	try:
 		from google.appengine.tools.dev_appserver import HardenedModulesHook
 		HardenedModulesHook._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
 	except: pass
-import sys,json,random,time,re,math,copy,base64,cPickle,jinja2,types,urllib,operator,pickle,unicodedata
+import sys,json,random,time,re,math,copy,base64,jinja2,types,urllib,operator,pickle,unicodedata
 import gc as gbc
 from lxml import etree as lxmletree
 import datetime as rdatetime
 import time as rtime
 from datetime import datetime,timedelta,date
-from urlparse import urlparse
 from google.appengine.api.users import is_current_user_admin
-from google.appengine.ext.webapp import blobstore_handlers # template,util,
-from google.appengine.api import memcache,urlfetch,urlfetch_errors,mail,taskqueue,images,files,namespace_manager,search,modules,logservice
-from google.appengine.ext import webapp,ndb,blobstore,deferred
+if 1/2 == 0: #python2
+	from urlparse import urlparse
+	urlencode=urllib.urlencode
+	# webapp/blobstore_handlers is for photo upload and resort tileset upload - so that the python2 sdk still retains upload capabilities [27/01/24]
+	from google.appengine.ext import webapp,vendor
+	from google.appengine.ext.webapp import blobstore_handlers
+	from google.appengine.api import files,logservice # I don't think these were originally used
+	vendor.add('lib')
+	from libraries import stripe
+	from libraries import amazon_ses
+	import cPickle
+else: #python3
+	basestring=str
+	xrange=range
+	from urllib.parse import urlparse
+	urlencode= urllib.parse.urlencode
+	from google.appengine.api import wrap_wsgi_app
+	from libraries import stripe3 as stripe
+	from libraries import amazon_ses3 as amazon_ses
+	import _pickle as cPickle
+from google.appengine.api import memcache,urlfetch,urlfetch_errors,mail,taskqueue,images,namespace_manager,search,modules
+from google.appengine.ext import ndb,blobstore,deferred
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.runtime.apiproxy_errors import DeadlineExceededError as DeadlineExceededError2
 from google.appengine.datastore.datastore_query import Cursor
+
+from flask import Flask, render_template, request, make_response 
+
+app = Flask(__name__)
+if 1/2 != 0:
+	app.wsgi_app = wrap_wsgi_app(app.wsgi_app, use_deferred=True)
 
 class mj2u(jinja2.Undefined):
 	def __str__(self): 0 and logging.info("Non existing variable"); return ""
@@ -34,11 +58,9 @@ class GG(): pass
 import secrets
 
 from libraries.country_to_latlon import c_to_ll
-from libraries import stripe
-from libraries import amazon_ses
 #from libraries import get_image_size
 
-if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
+if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev') or not os.getenv('GAE_ENV', '').startswith('standard'):
 	is_sdk=True; is_production=is_appengine=False
 	stripe.verify_ssl_certs = False
 	stripe.api_key=secrets.stripe_test_api_key
@@ -82,12 +104,12 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=785
+game_version=786
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Lunar New Year Event",
 	"Last Update [19th of January]",
-	"Adding Python3 compatibility",
+	"Switched to Python3",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
@@ -110,11 +132,18 @@ live_domain='adventure.land'
 sdk_domain='thegame.com'
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
-def gdi(self=None):
+def init_request(request):
+	if request and not getattr(request,"response",None):
+		request.response=make_response("")
+		# this way cookies etc. can be set from the request object ahead of time
+		# otherwise the Flask flow is limiting as it doesn't let you do these things from function calls ahead of response creation [25/01/24]
+
+def gdi(request=None):
+	init_request(request)
 	domain=GG()
 	if is_sdk:
-		if self:
-			url=urlparse(self.request.url)
+		if request:
+			url=urlparse(request.url)
 			protocol=url.scheme
 			hostname=url.hostname
 		else:
@@ -130,7 +159,7 @@ def gdi(self=None):
 		domain.domain=hostname
 	else:
 		protocol="http"
-		if self and "https" in (self.request.headers.get("Cf-Visitor") or ""): protocol="https"
+		if request and "https" in (request.headers.get("Cf-Visitor") or ""): protocol="https"
 		domain.base_url=protocol + "://" + live_domain
 		domain.pref_url=domain.base_url
 		domain.stripe_pkey=stripe_pkey
@@ -186,56 +215,56 @@ def gdi(self=None):
 	domain.access_master=secrets.ACCESS_MASTER
 	domain.servers=[]
 	domain.characters=[]
-	try: domain.scale=int(float(self and self.request.get("scale") or 2))
+	try: domain.scale=int(float(request and request.values.get("scale") or 2))
 	except: domain.scale=2
-	try: domain.times=int(self and self.request.get("times") or 0)
+	try: domain.times=int(request and request.values.get("times") or 0)
 	except: domain.times=0
-	domain.load_character=self and self.request.get("load") or ""
+	domain.load_character=request and request.values.get("load") or ""
 	domain.electron=False
 	domain.platform="web"
 	domain.update_notes=update_notes
-	if self:
-		if "Electron" in self.request.headers.get("User-Agent",""):
+	if request:
+		if "Electron" in request.headers.get("User-Agent",""):
 			domain.electron=True
-			if self.request.get("buildid") and "win32" in self.request.get("buildid"): domain.platform="steam"
-			if self.request.get("buildid") and "darwin" in self.request.get("buildid"): domain.platform="mac"
-			if self.request.cookies.get("music")!="off": domain.music_on=True
-			if self.request.cookies.get("sfx")!="off": domain.sfx_on=True
-		domain.url=self.request.url
-		domain.section=self.request.get("section")
-		if self.request.get("test_clicks"): domain.test_clicks=True; domain.pixi_version="4.0.2"
-		if self.request.get("no_cache"): domain.v=100000+random.randrange(0,100000000)
-		if self.request.get("no_html"): domain.no_html=True
-		if self.request.get("no_html")=="bot": domain.no_html="bot"
-		if self.request.get("is_bot"): domain.is_bot=True
-		if self.request.get("is_cli"): domain.is_cli=True
-		if self.request.get("recording_mode"): domain.recording_mode=True; domain.boost=20; domain.sfx_on=False; domain.music_on=False
-		if self.request.get("no_graphics") or domain.no_html:
+			if request.values.get("buildid") and "win32" in request.values.get("buildid"): domain.platform="steam"
+			if request.values.get("buildid") and "darwin" in request.values.get("buildid"): domain.platform="mac"
+			if request.cookies.get("music")!="off": domain.music_on=True
+			if request.cookies.get("sfx")!="off": domain.sfx_on=True
+		domain.url=request.url
+		domain.section=request.values.get("section")
+		if request.values.get("test_clicks"): domain.test_clicks=True; domain.pixi_version="4.0.2"
+		if request.values.get("no_cache"): domain.v=100000+random.randrange(0,100000000)
+		if request.values.get("no_html"): domain.no_html=True
+		if request.values.get("no_html")=="bot": domain.no_html="bot"
+		if request.values.get("is_bot"): domain.is_bot=True
+		if request.values.get("is_cli"): domain.is_cli=True
+		if request.values.get("recording_mode"): domain.recording_mode=True; domain.boost=20; domain.sfx_on=False; domain.music_on=False
+		if request.values.get("no_graphics") or domain.no_html:
 			domain.no_graphics=True;
 			domain.pixi_version="fake" #NOGTODO is the hashtag
 			domain.pixi_fversion="?v=%s"%game_version
-		if self.request.get("borders") or self.request.get("border_mode"): domain.border_mode=True
-		if self.request.cookies.get("perfect_pixels_off") and not SCREENSHOT_MODE:
+		if request.values.get("borders") or request.values.get("border_mode"): domain.border_mode=True
+		if request.cookies.get("perfect_pixels_off") and not SCREENSHOT_MODE:
 			domain.perfect_pixels=False
-		if self.request.cookies.get("d_lines_off"):
+		if request.cookies.get("d_lines_off"):
 			domain.d_lines=False
-		if self.request.cookies.get("no_tutorial"):
+		if request.cookies.get("no_tutorial"):
 			domain.tutorial=False
-		if self.request.cookies.get("no_fast_mode"):
+		if request.cookies.get("no_fast_mode"):
 			domain.fast_mode=False
-		if self.request.get("engine") or self.request.cookies.get("engine_mode"):
-			domain.engine_mode=self.request.get("engine") or self.request.cookies.get("engine_mode")
-		if self.request.cookies.get("sd_lines_off"):
+		if request.values.get("engine") or request.cookies.get("engine_mode"):
+			domain.engine_mode=request.values.get("engine") or request.cookies.get("engine_mode")
+		if request.cookies.get("sd_lines_off"):
 			domain.sd_lines=False
-		if self.request.cookies.get("pro_mode"):
+		if request.cookies.get("pro_mode"):
 			domain.newcomer_ui=False
-		if self.request.cookies.get("no_weapons"):
+		if request.cookies.get("no_weapons"):
 			domain.new_attacks=False
-		if self.request.cookies.get("manual_reload"):
+		if request.cookies.get("manual_reload"):
 			domain.auto_reload="off"
 		else:
 			domain.auto_reload="auto"
-		if self.request.scheme=="https" or self.request.headers.get("Cf-Visitor") and self.request.headers.get("Cf-Visitor").find("https")!=-1:
+		if request.scheme=="https" or request.headers.get("Cf-Visitor") and request.headers.get("Cf-Visitor").find("https")!=-1:
 			domain.https=True
 	return domain
 secure_cookies=False #not is_sdk

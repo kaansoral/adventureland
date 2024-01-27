@@ -20,6 +20,10 @@ f.execs("cp ~/deploy/thegame_appengine/stack/update_notes.txt ~/deploy/thegame_a
 f.execs("rm -rf ~/deploy/thegame_appengine/stack");
 f.execs("mkdir ~/deploy/thegame_appengine/stack");
 f.execs("cp ~/deploy/thegame_appengine/design/update_notes.txt ~/deploy/thegame_appengine/stack/update_notes.txt");
+f.execs("cp -f ~/deploy/thegame_appengine/python3/app.yaml ~/deploy/thegame_appengine/app.yaml");
+f.execs("cp -f ~/deploy/thegame_appengine/python3/requirements.txt ~/deploy/thegame_appengine/requirements.txt");
+f.execs("rm -rf ~/deploy/thegame_appengine/lib");
+f.execs("rm -rf ~/deploy/thegame_appengine/python3");
 f.execs("rm -rf ~/deploy/thegame_appengine/origin");
 f.execs("rm -rf ~/deploy/thegame_appengine/electron");
 f.execs("find ~/deploy/thegame_appengine/ -name '*.pxm' -delete");
@@ -28,7 +32,7 @@ f.execs("cp ~/deploy/thegame_appengine/js/runner_functions.js ~/deploy/thegame_a
 f.execs("cp ~/deploy/thegame_appengine/js/runner_compat.js ~/deploy/thegame_appengine/htmls/contents/codes/runner_compat.js");
 f.execs("cp ~/deploy/thegame_appengine/js/common_functions.js ~/deploy/thegame_appengine/htmls/contents/codes/common_functions.js");
 
-f.write_file("~/deploy/thegame_appengine/app.yaml",f.read_file("~/thegame/app.yaml").replace("application:","#application:").replace("version:","#version:"));
+// f.write_file("~/deploy/thegame_appengine/app.yaml",f.read_file("~/thegame/app.yaml").replace("application:","#application:").replace("version:","#version:"));
 
 to_minify={
 	// "js":["game.js","keyboard.js","html.js","functions.js","common_functions.js"],

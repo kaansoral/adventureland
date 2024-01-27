@@ -1016,8 +1016,8 @@ for s in bodysets:
 	}
 	last=0
 	nmap={0:"a",1:"b",2:"c",3:"d",4:"e",5:"f",6:"g",7:"h"}
-	for i in xrange(2):
-		for j in xrange(4):
+	for i in range(2):
+		for j in range(4):
 			if last<s[3]:
 				sprites[s[0]]["matrix"][i][j]="%s%s"%(s[0],nmap[last])
 				last+=1
@@ -1062,7 +1062,7 @@ for s in rowsets:
 		"columns":s[2],
 		"matrix":[[None]*s[2]],
 	}
-	for i in xrange(s[2]):
+	for i in range(s[2]):
 		name="%s%.2d"%(s[0],i)
 		if s[1]=="hat": name=name.replace("hats","hat")
 		if i<s[3]:
@@ -1070,16 +1070,16 @@ for s in rowsets:
 		else:
 			sprites[s[0]]["matrix"][0][i]=None
 
-for i in xrange(42):
+for i in range(42):
 	sprites["makeup1"]["matrix"][0].append("makeup1%.2d"%i)
 
-#for i in xrange(25):
+#for i in range(25):
 #	sprites["hairdo2"]["matrix"][0].append("hair2%.2d"%i)
 
-# for i in xrange(41):
+# for i in range(41):
 # 	sprites["hairs2"]["matrix"][0].append("hair2%.2d"%i)
 
-# for i in xrange(41):
+# for i in range(41):
 # 	sprites["hairs3"]["matrix"][0].append("hair3%.2d"%i)
 
 imagesets={

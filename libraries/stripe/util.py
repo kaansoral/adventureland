@@ -10,13 +10,19 @@ try:
     # When cStringIO is available
     import cStringIO as StringIO
 except ImportError:
-    import StringIO
+    try:
+        import StringIO
+    except:
+        from io import StringIO #for Python 3
 
 try:
     from urlparse import parse_qsl
 except ImportError:
     # Python < 2.6
-    from cgi import parse_qsl
+    try:
+        from cgi import parse_qsl
+    except:
+        from urllib.parse import parse_qsl #for Python 3
 
 try:
     import json

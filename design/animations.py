@@ -538,7 +538,10 @@ animations={
 	},
 }
 
-from projectiles import projectiles
+try:
+	from projectiles import projectiles
+except:
+	from design.projectiles import projectiles
 for id in projectiles:
-	if projectiles[id].has_key("animation") and animations[projectiles[id]["animation"]].has_key("speed"):
+	if "animation" in projectiles[id] and "speed" in animations[projectiles[id]["animation"]]:
 		animations[projectiles[id]["animation"]]["speed"]=projectiles[id]["speed"]

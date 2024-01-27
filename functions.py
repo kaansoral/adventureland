@@ -218,7 +218,7 @@ def process_map(map):
 			if placement[1]+width>max_x: max_x=placement[1]+width
 			if placement[2]+height>max_y: max_y=placement[2]+height
 	for tile in data.get("tiles",[]):
-		if not marked.has_key(current):
+		if current not in marked:
 			logging.info("%s is unused"%current)
 		else:
 			marked[current]=last
@@ -259,8 +259,7 @@ def render_selection(self,user,domain,level=80,server=None):
 	if domain.is_cli and (not user or not user.cli_time or user.cli_time<datetime.now()) and level>=70:
 		domain.is_cli=False; domain.harakiri=True
 	start=datetime.now(); logging.info("User data in: %s"%ssince(start))
-	#if domain.no_html=="bot" and self.request.get("auth"): set_cookie(self,"auth",self.request.get("auth"))
-	whtml(self,"htmls/index.html",domain=domain,user=user,user_data=data,server=server,servers=servers,total=total,characters=characters)
+	return whtml(self,"htmls/index.html",domain=domain,user=user,user_data=data,server=server,servers=servers,total=total,characters=characters)
 
 def render_comm(self,user,domain):
 	servers=get_servers(); server=select_server(self,user,servers); total=0; characters=[]; data={}
@@ -270,19 +269,19 @@ def render_comm(self,user,domain):
 		characters=get_characters(user)
 		domain.characters=characters_to_client(characters)
 		data=get_user_data(user);
-	whtml(self,"htmls/comm.html",domain=domain,user=user,user_data=data,server=server,servers=servers,total=total,characters=characters)
+	return whtml(self,"htmls/comm.html",domain=domain,user=user,user_data=data,server=server,servers=servers,total=total,characters=characters)
 
 def selection_info(self,user,domain):
 	servers=get_servers(); server=select_server(self,user,servers)
 	return {"type":"content","html":shtml("htmls/contents/selection.html",user=user,domain=domain,server=server,servers=servers,characters=get_characters(user))}
 
-def security_threat(self,domain):
-	referer=self.request.headers.get('Referer') or self.request.headers.get('Origin') or ""
+def security_threat(request,domain):
+	referer=request.headers.get('Referer') or request.headers.get('Origin') or ""
 	if not referer: return False
 
 	referer=urlparse(referer).hostname
 	if not referer.endswith(domain.domain):
-		self.response.out.write("Threat detected")
+		request.response.set_data("Threat detected")
 		return True
 	
 	# if is_production and domain.cf_always_on and not is_cloudflare(self):
@@ -299,7 +298,7 @@ def disable_email(email,logging=None):
 	user.put()
 	logging.info("Disabled emails for %s"%user)
 
-def get_user(self=None,domain=None,email=None,phrase_check=False,api_override=None):
+def get_user(request=None,domain=None,email=None,phrase_check=False,api_override=None):
 	if email:
 		try:
 			email=purify_email(email)
@@ -311,11 +310,11 @@ def get_user(self=None,domain=None,email=None,phrase_check=False,api_override=No
 			return User.query(User.email == email).get()
 		except:
 			logTrace()
-	elif self:
-		auth=get_cookie(self,"auth") or self.request.get("auth")
+	elif request:
+		auth=get_cookie(request,"auth") or request.values.get("auth")
 		if auth:
 			id,auth=auth.replace('"',"").split("-")
-			get_user_data(id,async=True) #trigger the get
+			get_user_data(id,_async=True) #trigger the get
 			user=get_by_iid("user|%s"%id)
 			if user and (api_override or auth in gf(user,"auths",[])):
 				return user
@@ -357,9 +356,9 @@ def ip_in_range(ip,net):
 		log_trace()
 		return False
 
-def get_ip(self):
-	ip=self.request.remote_addr
-	cloudflare_ip=self.request.headers.get("CF-Connecting-IP")
+def get_ip(request):
+	ip=request.remote_addr
+	cloudflare_ip=request.headers.get("CF-Connecting-IP")
 	cloudflare_ranges=[
 		'103.21.244.0/22',
 		'103.22.200.0/22',
@@ -389,10 +388,10 @@ def get_ip(self):
 			if ip.find(":")==-1 and ip_in_range(ip,crange): return cloudflare_ip
 		for crange in cloudflare_ranges_v6:
 			if ip.find(":")!=-1 and ip.startswith(crange[:7]): return cloudflare_ip #not sure 9 or 7 [25/08/13]
-	return self.request.remote_addr
+	return request.remote_addr
 
-def get_country(self):
-	return self.request.headers.get("Cf-Ipcountry") or self.request.headers.get("X-Appengine-Country") or "XX"
+def get_country(request):
+	return request.headers.get("Cf-Ipcountry") or request.headers.get("X-Appengine-Country") or "XX"
 
 def get_character(id,phrase_check=False):
 	if id.isdigit() and get_by_iid("character|%s"%id): return get_by_iid("character|%s"%id)
@@ -417,9 +416,9 @@ def process_user_data(user,data):
 	calculate_tutorial_step(data)
 	return data
 
-def get_user_data(user,async=False):
+def get_user_data(user,_async=False):
 	if hasattr(user,"k"): user=user.k()
-	if async:
+	if _async:
 		return get_by_iid_async("infoelement|userdata-%s"%user)
 	else:
 		data=get_by_iid("infoelement|userdata-%s"%user)
@@ -431,7 +430,7 @@ def delete_user_data(user):
 	ndb.Key(InfoElement,"userdata-%s"%user).delete()
 
 def reset_tutorial(user):
-	data=get_user_data(user,async=False)
+	data=get_user_data(user,_async=False)
 	data.info.completed_tasks=[] #completed tutorial tasks
 	data.info.tutorial_step=0 #tutorial step
 	data.put()
@@ -455,7 +454,7 @@ def remove_ip_exception(ip_a):
 	ip.put()
 
 def get_ip_info(ip):
-	if type(ip) not in types.StringTypes: ip=get_ip(ip)
+	if not is_string(ip): ip=get_ip(ip)
 	info=get_by_iid("ip|%s"%ip)
 	if not info: info=IP(key=ndb.Key(IP,ip),info=cGG(users=[],characters=[],metrics={},last_decay=datetime.now()))
 	decay_ip_info(info)
@@ -493,11 +492,11 @@ def servers_to_client(domain,servers_data):
 		servers.append({"name":server.name,"region":server.region,"players":server.info.players,"key":server.k(),"addr":domain.https and server.ip or server.actual_ip,"port":server.port})
 	return servers
 
-def get_characters(user,async=False):
+def get_characters(user,_async=False):
 	characters=[]
 	for c in user.info.characters:
 		characters.append(get_by_iid_async("character|%s"%c["id"]))
-	if async: return characters
+	if _async: return characters
 	for i in xrange(len(characters)):
 		characters[i]=characters[i].get_result()
 	return characters
@@ -526,7 +525,7 @@ def character_to_dict(character):
 	data["map"]=character.info.map
 	data["x"]=character.info.x
 	data["y"]=character.info.y
-	if gf(character,"p") and character.info.p.has_key("home"):
+	if gf(character,"p") and "home" in character.info.p:
 		data["home"]=character.info.p["home"]
 
 	return data
@@ -628,7 +627,7 @@ def update_pids(character,data,owner):
 def character_to_info(character,user=None,ip=None,guild=None):
 	drm=False
 	drm_fail=False
-	if user and user.created>datetime(2019,02,01,0,0) and not gf(user,"legacy_override"): drm=True
+	if user and user.created>datetime(2019,2,1,0,0) and not gf(user,"legacy_override"): drm=True
 	if gf(user,"drm_fail_pid","not")==character.pid: drm_fail=True
 	info={
 		"id":character.k(),
@@ -740,13 +739,13 @@ def pretty_timeleft(t):
 	left=left+" %d minutes"%minutes
 	return left
 
-def gdpr_delete(self,user,logging=None):
+def gdpr_delete(request,user,logging=None):
 	from api import delete_character_api
 	if not logging: logging=globals()["logging"]
 	if not hasattr(user,"k"): user=get_user(email=user)
 	for c in gf(user,"characters",[]):
 		user.info.last_delete=really_old
-		delete_character_api(user=user,self=self,domain=gdi(self),name=c["name"])
+		delete_character_api(user=user,self=request,domain=gdi(request),name=c["name"])
 		logging.info("Deleted %s"%c["name"])
 	markedphrase=get_by_iid("markedphrase|%s"%dgt("email",user.info.email))
 	if markedphrase: markedphrase.key.delete()
@@ -902,12 +901,12 @@ def character_analysis(name,logging=None):
 
 			logging.info("%s[%s] %s"%(character.info.name,character.level,to_pretty_num(character.info.gold)))
 			for h in gf(character,"p",{}).get("history",[]):
-				if h.get("from") and not names.has_key(h.get("from")):
+				if h.get("from") and h.get("from") not in names:
 					e=froms.get(h["from"],[0,0])
 					e[0]+=1
 					e[1]+=h.get("amount",0) or h.get("item","") and item_value({"name":h["item"],"level":h.get("level",0)}) or 0
 					froms[h["from"]]=e
-				if h.get("to") and not names.has_key(h.get("to")):
+				if h.get("to") and h.get("to") not in names:
 					e=tos.get(h["to"],[0,0])
 					e[0]+=1
 					e[1]+=h.get("amount",0) or h.get("item","") and item_value({"name":h["item"],"level":h.get("level",0)}) or 0
@@ -1180,7 +1179,7 @@ def select_server(self,user,servers):
 	min_dist=99999999999; the_server=None; max_rank=-99999; u_server=""
 	if user and len(gf(user,"characters",[])):
 		for c in gf(user,"characters",[]):
-			if c.has_key("home"):
+			if "home" in c:
 				u_server=c["home"]
 				break;
 	logging.info(u_server)
@@ -1282,7 +1281,7 @@ def refactor_item(current):
 		current["level"]=0
 	if current and items[current["name"]].get("s",""):
 		current["q"]=current.get("quantity",current.get("q",1))
-		if current.has_key("quantity"): del current["quantity"]
+		if "quantity" in current: del current["quantity"]
 
 def refactor_character_items(character):
 	for i in range(0,len(character.info.items)):
@@ -1314,23 +1313,29 @@ def download_map(name,sdk_name=""):
 def download_maps():
 	if not is_sdk: return
 	for m in maps:
-		element=download_by_iid("map|%s"%m)
-		if element: Map(key=ndb.Key(Map,m),info=element.info).put()
+		element=download_by_iid("map|%s"%maps[m]["key"])
+		if element: Map(key=ndb.Key(Map,maps[m]["key"]),info=element.info).put()
+
+def empty_fill_maps():
+	if not is_sdk: return
+	for m in maps:
+		element=get_by_iid("map|%s"%maps[m]["key"])
+		if not element: Map(key=ndb.Key(Map,maps[m]["key"]),info=cGG(data={"tiles":[],"placements":[]})).put()
 
 def copy_map(fr,to):
 	fr=get_by_iid("map|%s"%fr)
 	m=Map(key=ndb.Key(Map,to),info=fr.info); m.put()
 
-def get_server(self,domain):
-	auth=self.request.get("server_auth")
+def get_server(request,domain):
+	auth=request.values.get("server_auth")
 	if auth:
 		logging.info("get_server auth: %s"%auth)
 		id,auth=auth.split("-")
 		server=get_by_iid("server|%s"%id)
 		if server and gf(server,"auth")==auth: return server
 
-def get_referrer(self,ip):
-	referrer=get_cookie(self,"referrer") or ip.referrer
+def get_referrer(request,ip):
+	referrer=get_cookie(request,"referrer") or ip.referrer
 	if referrer and referrer.replace('"',"")[0] in ["0","1","2","3","4","5","6","7","8","9"]: referrer=get_by_iid("user|%s"%referrer.replace('"',""))
 	elif referrer: referrer=get_owner(referrer.replace('"',""))
 	return referrer
@@ -1362,7 +1367,7 @@ def increase_characterth():
 	try: main.put()
 	except: logTrace()
 
-def get_new_auth(self,user,domain):
+def get_new_auth(request,user,domain):
 	auth=randomStr(20)
 	user.info.auths=gf(user,"auths",[])
 	user.info.last_auth=datetime.now()
@@ -1372,7 +1377,7 @@ def get_new_auth(self,user,domain):
 	return auth
 
 def download_by_iid(iid):
-	result=urlfetch.fetch(url="https://twodimensionalgame.appspot.com/tasks/download",payload=urllib.urlencode({"password":ELEMENT_PASSWORD,"iid":iid}),
+	result=urlfetch.fetch(url="https://twodimensionalgame.appspot.com/tasks/download",payload=urlencode({"password":ELEMENT_PASSWORD,"iid":iid}),
 		method=urlfetch.POST,headers={'Content-Type':'application/x-www-form-urlencoded'},validate_certificate=False)
 	return cPickle.loads(result.content)
 
@@ -1382,7 +1387,7 @@ def post_task(task,element=None,element2=None,element3=None,logging=None):
 	element=element and cPickle.dumps(element) or ""
 	element2=element2 and cPickle.dumps(element2) or ""
 	element3=element3 and cPickle.dumps(element3) or ""
-	result=urlfetch.fetch(url="https://twodimensionalgame.appspot.com/tasks/post",payload=urllib.urlencode({"p":SDK_UPLOAD_PASSWORD,"operation":"upload","obj1":element,"obj2":element2,"obj3":element3,"task_code":task}),
+	result=urlfetch.fetch(url="https://twodimensionalgame.appspot.com/tasks/post",payload=urlencode({"p":SDK_UPLOAD_PASSWORD,"operation":"upload","obj1":element,"obj2":element2,"obj3":element3,"task_code":task}),
 		method=urlfetch.POST,headers={'Content-Type': 'application/x-www-form-urlencoded'},validate_certificate=False)
 	result=cPickle.loads(str(result.content))
 	logging.info("post_task result: %s"%result)
@@ -1394,10 +1399,10 @@ def safe_commit(element):
 def domain_routine(domain):
 	pass #GTODO: Implement
 
-def delete_phrase_mark(type,phrase,async=False):
+def delete_phrase_mark(type,phrase,_async=False):
 	ndb.Key(MarkedPhrase,dgt(type,phrase)).delete()
 
-def mark_phrase(owner,phrase_type,phrase,async=False):
+def mark_phrase(owner,phrase_type,phrase,_async=False):
 	MarkedPhrase(key=ndb.Key(MarkedPhrase,dgt(phrase_type,phrase)),type=phrase_type,phrase=str_or_unicode(phrase),owner=to_string_key(owner)).put()
 
 def marker_check(id):
@@ -1407,7 +1412,7 @@ def marker_check(id):
 		return True
 	return ndb.transaction(marker_transaction,xg=True,retries=12)
 
-def whtml(self,path,**dct):
+def whtml(request,path,**dct):
 	#path = os.path.join(os.path.dirname(__file__), pth)
 	start_time=datetime.now()
 	template = j2.get_template(path)
@@ -1418,16 +1423,21 @@ def whtml(self,path,**dct):
 			response=response.replace('="/','="%s/'%dct["domain"].secure_base_url).replace("='/","='%s/"%dct["domain"].secure_base_url)
 		else:
 			response=response.replace('="/','="%s/'%dct["domain"].base_url).replace("='/","='%s/"%dct["domain"].base_url)
-	self.response.out.write(response)
+	request.response.set_data(response)
+	return request.response
 
 def shtml(path,**dct):
 	#path = os.path.join(os.path.dirname(__file__), pth)
 	start_time=datetime.now()
 	template = j2.get_template(path)
 	if mssince(start_time)>250: logging.warning("JINJA2 WARNING %s took %s ms"%(path,mssince(start_time)))
-	#html=template.render(dct)
-	#if dct.pop("convert_onclicks",""): html=html.replace('onclick="','ontap="') #experimental [28/05/15]
-	return template.render(dct)
+	response=template.render(dct)
+	if dct.get("domain","") and dct["domain"].electron:
+		if dct["domain"].https:
+			response=response.replace('="/','="%s/'%dct["domain"].secure_base_url).replace("='/","='%s/"%dct["domain"].secure_base_url)
+		else:
+			response=response.replace('="/','="%s/'%dct["domain"].base_url).replace("='/","='%s/"%dct["domain"].base_url)
+	return response
 
 def pre_put_hook(self):
 	try:
@@ -1449,10 +1459,10 @@ def arr_arr_same(ar1,ar2):
 		if not d.get(e): return False
 	return True
 
-def delete_phrase_mark(type,phrase,async=False):
+def delete_phrase_mark(type,phrase,_async=False):
 	ndb.Key(MarkedPhrase,dgt(type,phrase)).delete()
 
-def mark_phrase(owner,phrase_type,phrase,async=False):
+def mark_phrase(owner,phrase_type,phrase,_async=False):
 	MarkedPhrase(key=ndb.Key(MarkedPhrase,dgt(phrase_type,phrase)),type=phrase_type,phrase=str_or_unicode(phrase),owner=to_string_key(owner)).put()
 
 def to_id(id):
@@ -1468,7 +1478,7 @@ def to_id(id):
 def k_factory(self,t=""):
 	if t=="h":
 		the_key=self.key.id()
-		if type(the_key) in [types.IntType,types.LongType]: return the_key
+		if is_int(the_key): return the_key
 		return string_to_int(the_key)
 	if t=="e": return "%s"%has_key(self) or "-1" #as a placeholder mainly for the StuffHandler routines [28/08/14]
 	if t=="s": the_key=has_key(self)
@@ -1476,11 +1486,14 @@ def k_factory(self,t=""):
 	try: u"%s"%the_key
 	except: the_key=the_key.decode("utf-8")
 	if t in ["i","s",1]: return dmt(model_name(self),the_key)
-	return unicode(the_key)
+	try:
+		return unicode(the_key)
+	except:
+		return str(the_key) #python3 [27/01/24]
 
 def to_model(string):
 	d=globals()
-	if d.has_key(string.title()): return d[string.title()]
+	if string.title() in d: return d[string.title()]
 	for e in d.keys():
 		try:
 			if len(e) and e[0].isupper() and e.lower()==string.lower(): return d[e]
@@ -1489,30 +1502,30 @@ def to_model(string):
 def dgt(*list,**dct):
 	lst=[]
 	for i in range(0,len(list)): lst.append(to_str(list[i]))
-	if dct.has_key("sort"): lst.sort()
+	if "sort" in dct: lst.sort()
 	return "-".join(lst)
 
 def dge(*list,**dct):
 	lst=[]
 	for i in range(0,len(list)): lst.append(to_str(list[i]))
-	if dct.has_key("sort"): lst.sort()
+	if "sort" in dct: lst.sort()
 	return "".join(lst)
 
 def dse(*list,**dct):
 	lst=[]
 	for i in range(0,len(list)): lst.append(to_str(list[i]))
-	if dct.has_key("sort"): lst.sort()
+	if "sort" in dct: lst.sort()
 	return " ".join(lst)
 
 def dmt(*list,**dct):
 	lst=[]
 	for i in range(0,len(list)): lst.append(to_str(list[i]))
-	if dct.has_key("sort"): lst.sort()
+	if "sort" in dct: lst.sort()
 	return "|".join(lst)
 
 def to_string_key(element):
-	if type(element) in [types.IntType,types.LongType]: return str(element)
-	if type(element) in types.StringTypes: return element
+	if is_int(element): return str(element)
+	if is_string(element): return element
 	return element.k()
 
 def str_or_unicode(s):
@@ -1526,6 +1539,18 @@ def model_name(item):
 		if item.get("a_t"): return "action"
 		return item.get("base_type",item.get("type",""))
 	return item._class_name().lower()
+
+def is_int(i):
+	if 1/2 == 0:
+		return type(i) in [types.IntType,types.LongType]
+	else:
+		return isinstance(i,int)
+
+def is_string(s):
+	if 1/2 == 0:
+		return isinstance(s, basestring)
+	else:
+		return isinstance(s, str)
 
 def is_array(a):
 	if hasattr(a, "__len__"): return True
@@ -1585,7 +1610,7 @@ def calculate_tutorial_step(user_data):
 	for i in xrange(len(docs["tutorial"])):
 		done=True
 		for key in docs["tutorial"][i]["tasks"]:
-			if not marked.has_key(key): done=False
+			if key not in marked: done=False
 		if not done and user_data.info.tutorial_step>i:
 			user_data.info.tutorial_step=i
 			break
@@ -1640,11 +1665,11 @@ def to_str(s):
 def split_iid(s):
 	return s.split("|",1)
 
-def get_by_iid(iid,async=False,no_cache=False):
+def get_by_iid(iid,_async=False,no_cache=False):
 	mname,id=split_iid(iid)
 	try:
 		k=ndb.Key(to_model(mname),to_id(id))
-		if async: return k.get_async()
+		if _async: return k.get_async()
 		else:
 			if no_cache: return k.get(use_cache=False)
 			return k.get()
@@ -1653,7 +1678,7 @@ def get_by_iid(iid,async=False,no_cache=False):
 		return None
 
 def get_by_iid_async(iid):
-	return get_by_iid(iid,async=True)
+	return get_by_iid(iid,_async=True)
 
 def purify_email(email,check=True):
 	email=email.replace(" ","").replace("\t","").replace("\n","").replace("\r","")
@@ -1669,16 +1694,16 @@ def purify_email(email,check=True):
 	return email
 
 def gf(element,name,default=None): # as in getattr info fast :)
-	if not hasattr(element,"info") or type(element.info)!=types.InstanceType: return getattr(element,name,default)
+	if not hasattr(element,"info") or type(element.info)!=type(GG()): return getattr(element,name,default)
 	return getattr(element.info,name,default)
 
 def gt(element,name,default=None):
 	return getattr(element,name,default)
 
-def gdmul(self,*lst):
+def gdmul(request,*lst):
 	gg=[]
 	for l in lst:
-		gg.append(self.request.get(l))
+		gg.append(request.values.get(l))
 	if len(gg)==1: return gg[0]
 	return gg
 
@@ -1714,14 +1739,15 @@ def jsuccess(self,message,duration=0):
 	if not getattr(self,"_cjsons",0): self._cjsons=[]
 	self._cjsons.append({"type":"success","message":message,"duration":duration})
 
-def jhtml(self,jsn=[]):
-	if not self: return
-	if getattr(self,"_cjsons",0):
-		self._cjsons.extend(jsn)
+def jhtml(request,jsn=[]):
+	if not request: return
+	if getattr(request,"_cjsons",0):
+		request._cjsons.extend(jsn)
 		#logging.info("CJSONS %s"%self._cjsons)
-		self.response.out.write(json.dumps(self._cjsons))
+		request.response.set_data(json.dumps(self._cjsons))
 	else:
-		self.response.out.write(json.dumps(jsn))
+		request.response.set_data(json.dumps(jsn))
+	return request.response
 
 def jhtmle(self,err):
 	if not self: return
@@ -1789,25 +1815,25 @@ def log_trace(place="",logger=None):
 	logger.error("\n\n<<<<<<<<<< log_trace %s %s>>>>>>>>>>"%(exc_type,place),exc_info=sys.exc_info())
 	logger.error("\n")
 
-def get_domain(self=None):
+def get_domain(request=None):
 	if not is_sdk:
 		return live_domain
 	else:
-		if self:
-			return (urlparse(self.request.url)).hostname
+		if request:
+			return (urlparse(request.url)).hostname
 		else:
 			return sdk_domain
 
-def get_cookie(self,name):
-	return self.request.cookies.get(name)
+def get_cookie(request,name):
+	return request.cookies.get(name)
 
-def set_cookie(self,name,value):
-	hostname=get_domain(self)
-	self.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s'%(hostname),secure=secure_cookies)
+def set_cookie(request,name,value):
+	hostname=get_domain(request)
+	request.response.set_cookie(name,to_str(value),max_age=86400*365*5, path='/',domain='.%s'%(hostname),secure=secure_cookies)
 
-def delete_cookie(self,name):
-	hostname=get_domain(self)
-	self.response.delete_cookie(name,path='/',domain='.%s'%(hostname))
+def delete_cookie(request,name):
+	hostname=get_domain(request)
+	request.response.delete_cookie(name,path='/',domain='.%s'%(hostname))
 
 class StrLogHandler(logging.Handler):
 	def __init__(self, output):
@@ -1872,9 +1898,9 @@ def randomStr(length,digits_only=False,lowercase_only=False):
 	for i in range(0,length+1): s+=chars[random.randrange(0,len(chars))]
 	return s
 
-def add_event(element,type,tags,info=None,backup=False,async=False,self=None,rowner=None,selfic=None):
+def add_event(element,type,tags,info=None,backup=False,_async=False,self=None,rowner=None,selfic=None):
 	logging.info("add_event %s %s %s"%(element and element.k('i'),type,tags))
-	if backup and element: backup=backup_item(element,async=True)
+	if backup and element: backup=backup_item(element,_async=True)
 	else: backup=None
 	if not info: info=GG()
 	if type not in tags: tags.append(type)
@@ -1888,13 +1914,13 @@ def add_event(element,type,tags,info=None,backup=False,async=False,self=None,row
 		event.item_id=element.k('i')
 		if hasattr(element,"region"): event.info.e_name="%s %s"%(element.region,element.name)
 		elif hasattr(element,"name"): event.info.e_name=element.name
-	if async: return event.put_async()
+	if _async: return event.put_async()
 	else:
 		if backup: backup.wait()
 		event.put()
 		return event
 
-def backup_item(element,rkey=None,async=False):
+def backup_item(element,rkey=None,_async=False):
 	logging.info("backup_item %s"%element.k('i'))
 	#if not has_key(element): logging.error("Backup: Element doesn't have a key"); return
 	if rkey: backup=Backup(key=ndb.Key(Backup,rkey))
@@ -1909,7 +1935,7 @@ def backup_item(element,rkey=None,async=False):
 		setattr(backup,k,i)
 	backup.backup_info=cGG(original_properties=element._properties)
 	backup.backup_created=datetime.now()
-	if async: return backup.put_async()
+	if _async: return backup.put_async()
 	else:
 		backup.put()
 		return backup
@@ -1948,7 +1974,10 @@ _js_escapes = (_base_js_escapes +
 @jrf
 def escapejs(value):
 	"""Hex encodes characters for use in JavaScript strings."""
-	if not isinstance(value, basestring):
+	base=str
+	if 1/2 == 0:
+		base=basestring
+	if not isinstance(value, base):
 		value = str(value)
 
 	for bad, good in _js_escapes:
@@ -2140,7 +2169,7 @@ def fetch_url(url_u,**dct):
 		else: url_u="https://adventure.land"+url_u
 	if dct or dct.pop("use_post",""):
 		encode_unicodes(dct)
-		data = urllib.urlencode(dct)
+		data = urlencode(dct)
 		return urlfetch.fetch(url=url_u,payload=data,method=urlfetch.POST,validate_certificate=is_production).content
 	else:
 		return urlfetch.fetch(url=url_u,method=urlfetch.GET,validate_certificate=is_production).content
@@ -2148,9 +2177,9 @@ def fetch_url(url_u,**dct):
 def fetch_url_async(url_u,**dct):
 	rpc=urlfetch.create_rpc(deadline=40)
 	if dct.pop("use_get",""):
-		urlfetch.make_fetch_call(rpc,url_u+"?"+urllib.urlencode(dct),method=urlfetch.GET,validate_certificate=False)
+		urlfetch.make_fetch_call(rpc,url_u+"?"+urlencode(dct),method=urlfetch.GET,validate_certificate=False)
 	else:
-		data = urllib.urlencode(dct)
+		data = urlencode(dct)
 		urlfetch.make_fetch_call(rpc,url_u,payload=data,method=urlfetch.POST,headers={'Content-Type': 'application/x-www-form-urlencoded'},validate_certificate=False)
 	return rpc
 
@@ -2165,7 +2194,7 @@ def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="De
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
 		#logging.info(ses.listVerifiedEmailAddresses().members)
 		try: ses.sendEmail("pr@createandspread.com","kaansoral@gmail.com",message)
-		except amazon_ses.AmazonError,e:
+		except amazon_ses.AmazonError as e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
 	elif always_amazon_ses:
@@ -2176,7 +2205,7 @@ def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="De
 		ses=amazon_ses.AmazonSES(secrets.amazon_ses_user,secrets.amazon_ses_key)
 		#logging.info(ses.listVerifiedEmailAddresses().members)
 		try: ses.sendEmail("hello@adventure.land",email,message)
-		except amazon_ses.AmazonError,e:
+		except amazon_ses.AmazonError as e:
 			logging.info(e.errorType); logging.info(e.code); logging.info(e.message);
 			log_trace()
 	else:
@@ -2187,13 +2216,20 @@ def send_email(domain,email="kaansoral@gmail.com",title="Default Title",html="De
 import hmac,hashlib
 from struct import Struct
 from operator import xor
-from itertools import izip, starmap
+from itertools import starmap
+try:
+	from itertools import izip
+except:
+	izip=zip
 _pack_int = Struct('>I').pack
 
 #https://code.google.com/p/googleappengine/issues/detail?id=5303 and https://github.com/mitsuhiko/python-pbkdf2/blob/master/pbkdf2.py
 def pbkdf2_hex(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	"""Like :func:`pbkdf2_bin` but returns a hex encoded string."""
-	return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode('hex')
+	if 1/2==0:
+		return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode('hex')
+	else:
+		pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode("utf-8").hex()
 
 def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	"""Returns a binary digest for the PBKDF2 hash algorithm of `data`
@@ -2206,13 +2242,22 @@ def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	def _pseudorandom(x, mac=mac):
 		h = mac.copy()
 		h.update(x)
-		return map(ord, h.digest())
+		if 1/2==0:
+			return map(ord, h.digest())
+		else:
+			return map(lambda x:x, h.digest())
 	buf = []
 	for block in xrange(1, -(-keylen // mac.digest_size) + 1):
-		rv = u = _pseudorandom(salt + _pack_int(block))
-		for i in xrange(iterations - 1):
-			u = _pseudorandom(''.join(map(chr, u)))
-			rv = starmap(xor, izip(rv, u))
+		if 1/2 == 0:
+			rv = u = _pseudorandom(salt + _pack_int(block))
+			for i in xrange(iterations - 1):
+				u = _pseudorandom(''.join(map(chr, u)))
+				rv = starmap(xor, izip(rv, u))
+		else:
+			rv = u = _pseudorandom(salt.encode(encoding = 'UTF-8', errors = 'strict') + _pack_int(block))
+			for i in xrange(iterations - 1):
+				u = _pseudorandom(''.join(map(chr, u)).encode(encoding = 'UTF-8', errors = 'strict'))
+				rv = starmap(xor, izip(rv, u))
 		buf.extend(rv)
 	return ''.join(map(chr, buf))[:keylen]
 

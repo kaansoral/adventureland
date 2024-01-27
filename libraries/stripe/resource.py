@@ -2,6 +2,8 @@ import urllib
 import warnings
 import sys
 
+if 1/2 != 0: basestring=str
+
 from libraries.stripe import api_requestor, error, util, upload_api_base
 
 

@@ -49,10 +49,11 @@ pip2.7 check
 
 For MacOS pyenv makes sense as it prevents clash between Python versions and allows local versioning by just adding a .python-version to the folder https://github.com/pyenv/pyenv
 
-Make sure to install lxml afterwards:
+Make sure to install lxml and Flask afterwards:
 
 ```sh
 pip2.7 install lxml
+pip2.7 install flask -t lib
 ```
 
 Run the Python2.7 backend - includes an HTTP server, datastore, various utilities - emulates Google App Engine:

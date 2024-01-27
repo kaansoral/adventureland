@@ -3,7 +3,7 @@
 # if 1:
 # 	if 1:
 # 		if 1:
-# 			for i in xrange(200):
+# 			for i in range(200):
 # 				new_xp=xp
 # 				while new_xp>=100: new_xp/=10
 # 				new_xp=int(new_xp)
@@ -25,7 +25,7 @@
 # if 1:
 # 	if 1:
 # 		if 1:
-# 			for i in xrange(200):
+# 			for i in range(200):
 # 				new_xp=xp
 # 				while new_xp>=100: new_xp/=10
 # 				new_xp=int(new_xp)
@@ -46,7 +46,7 @@
 # if 1:
 # 	if 1:
 # 		if 1:
-# 			for i in xrange(200):
+# 			for i in range(200):
 # 				new_xp=xp
 # 				while new_xp>=100: new_xp/=10
 # 				new_xp=int(new_xp)

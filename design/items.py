@@ -1739,11 +1739,11 @@ for name in armor.keys():
 	res_gains=[0,0.5,2.5,5.5,7.5]
 	xtier=([0.5,0.5,2,3.4,4.5,6][ftier]+[0.5,0.5,2,4,5,6][ctier]+tier)/3.0
 	#if not current.has_key("edge") and tier>1: current["edge"]=(tier-1)*2
-	if tier<=1.25 and not current.has_key("grades"): current["grades"]=[7,9]
-	elif tier<=1.5 and not current.has_key("grades"): current["grades"]=[4,8]
-	elif tier<=2.4 and not current.has_key("grades"): current["grades"]=[0,7]
-	elif tier<=2.75 and not current.has_key("grades"): current["grades"]=[0,5]
-	elif not current.has_key("grades"): current["grades"]=[0,0]
+	if tier<=1.25 and "grades" not in current: current["grades"]=[7,9]
+	elif tier<=1.5 and "grades" not in current: current["grades"]=[4,8]
+	elif tier<=2.4 and "grades" not in current: current["grades"]=[0,7]
+	elif tier<=2.75 and "grades" not in current: current["grades"]=[0,5]
+	elif "grades" not in current: current["grades"]=[0,0]
 	if len(current["grades"])==2:
 		current["grades"].append(10); current["grades"].append(12)
 		if tier>=4:
@@ -2583,7 +2583,7 @@ accessories={
 
 for name in accessories.keys():
 	current=accessories[name]
-	if not current.has_key("grades"): current["grades"]=[3,5]
+	if "grades" not in current: current["grades"]=[3,5]
 
 #Ring of Mage PVP: 30 Armor, 10 Res. Piercing, 120HP
 #Ring of Warrior PVP: 20 Res, 10 Armor, 10 Armor. Piercing
@@ -3839,8 +3839,8 @@ weapons={
 
 for name in weapons.keys():
 	current=weapons[name]; tier=current.get("tier",1)
-	if not current.has_key("upgrade"): continue
-	if not current.has_key("grades"):
+	if "upgrade" not in current: continue
+	if "grades" not in current:
 		if tier<1: current["grades"]=[8,9]
 		elif tier<=1: current["grades"]=[7,9]
 		elif tier<=1.5: current["grades"]=[5,8]

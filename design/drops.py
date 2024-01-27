@@ -1,5 +1,8 @@
 import copy
-from items import items
+try:
+	from items import items
+except:
+	from design.items import items
 
 drops={
 	"gold":{
@@ -1222,7 +1225,7 @@ drops={
 }
 
 for n,nm in [[1,25],[2,25],[3,25],[4,25],[5,22]]:
-	for num in xrange(nm):
+	for num in range(nm):
 		if "%s%.2d"%(n,num) in ["122","203","404"]: continue
 		drops["cosmo2"].append([1,"cx","hairdo%s%.2d"%(n,num)])
 
@@ -1231,7 +1234,7 @@ drops["cosmo2"].append([1.0/3,"cx","hairdo404"])
 drops["cosmo2"].append([1.0/10,"cx","hairdo203"])
 
 for n,nm in [[1,16],[2,25],[3,24],[4,8]]:
-	for num in xrange(nm):
+	for num in range(nm):
 		if "%s%.2d"%(n,num) in ["100","114","115","102","106","113","310","309","318","400","405"]: continue
 		drops["cosmo3"].append([1,"cx","hat%s%.2d"%(n,num)])
 
@@ -1264,7 +1267,7 @@ for name in items:
 			drops["glitch"].append([1,name])
 
 for name in items:
-	if not items[name].has_key("g"):
+	if "g" not in items[name]:
 		import logging
 		logging.error(name)
 	if not items[name].get("ignore") and not items[name].get("exclusive"):

@@ -1,4 +1,7 @@
-import httplib
+try:
+	import httplib
+except:
+	import http.client as httplib #for python3
 import urllib
 import hashlib
 import hmac
@@ -6,6 +9,8 @@ import logging
 import base64
 from datetime import datetime
 from xml.etree.ElementTree import XML
+
+if 1/2 != 0: basestring=str
 
 def encodeUnicodez(args):
     if args and type(args)==type({}):

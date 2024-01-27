@@ -36,20 +36,20 @@ handlers:
   static_dir: sounds
 - url: /js
   static_dir: js
-- url: /api.*
-  script: api.application
-- url: /admin.*
-  script: admin.application
-  login: admin
-- url: /cr/.*
-  script: crons.application
-  login: admin
-- url: /tasks.*
-  script: tasks.application
-- url: /test.*
-  script: tests.application
 - url: .*
-  script: main.application
+  script: main.app
+- url: /admin/upload.*
+  script: uploaders.application
+- url: /upload.*
+  script: uploaders.application
+- url: /tileset/.*
+  script: uploaders.application
+
+# skip_files:
+# - ^lib(/.*)?
+# - .*lib.*
+# - ^electron(/.*)?
+# - .*electron.*
 
 libraries:
 - name: jinja2
