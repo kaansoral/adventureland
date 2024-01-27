@@ -203,12 +203,12 @@ def all_character_cron(num):
 			item=element.info.slots[slot]
 			if item and not item.get("oo"):
 				item["oo"]=element.info.name
-			 	change=True
+				change=True
 		for i in xrange(len(gf(element,"items",[]))):
 			item=gf(element,"items",[])[i]
 			if item and not item.get("oo"):
 				item["oo"]=element.info.name
-			 	change=True
+				change=True
 		if change: element.put()
 
 def all_cbackup_cron(num):

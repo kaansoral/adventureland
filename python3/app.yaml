@@ -1,4 +1,3 @@
-version: 4 #2-new UI | 3-new font dynamics | 4-python3
 runtime: python312
 app_engine_apis: true
 threadsafe: true
@@ -32,3 +31,8 @@ handlers:
   static_dir: js
 - url: .*
   script: auto
+
+env_variables:
+  NDB_USE_CROSS_COMPATIBLE_PICKLE_PROTOCOL: True
+  MEMCACHE_USE_CROSS_COMPATIBLE_PROTOCOL: True
+  DEFERRED_USE_CROSS_COMPATIBLE_PICKLE_PROTOCOL:  True
