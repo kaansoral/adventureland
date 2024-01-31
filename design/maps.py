@@ -491,11 +491,11 @@ maps={
 			#{"name":"Transporter","id":"transporter","position":[100,100]},
 		],
 		"monsters":[
-			{"type":"bat","boundary":[-396,-594,8,-328],"count":6,"grow":True},
-			{"type":"bat","boundary":[182,-1282,465,-932],"count":7,"grow":True},
-			{"type":"bat","boundary":[1018,-940,1385,-624],"count":8,"grow":True},
-			{"type":"bat","boundary":[1066,-132,1420,78],"count":5,"grow":True},
-			{"type":"bat","boundary":[964,11,1252,107],"count":2,"grow":True},
+			{"type":"bat","boundary":[-396,-594,8,-328],"count":6,"grow":True}, #added grow 31/1/2024
+			{"type":"bat","boundary":[182,-1282,465,-932],"count":7,"grow":True}, #added grow 31/1/2024
+			{"type":"bat","boundary":[1018,-940,1385,-624],"count":8,"grow":True}, #added grow 31/1/2024
+			{"type":"bat","boundary":[1066,-132,1420,78],"count":5,"grow":True}, #added grow 31/1/2024
+			{"type":"bat","boundary":[964,11,1252,107],"count":2,"grow":True}, #added grow 31/1/2024
 			{"type":"mvampire","boundaries":[["cave",-367,-1296,-14,-1057],["cave",1068,-123,1420,78]],"count":1,"stype":"randomrespawn"},
 			#{"type":"dknight2","boundary":[0,0,0,0],"count":1,"roam":True},
 		],
@@ -594,8 +594,8 @@ maps={
 			#beach
 			{"type":"crab","boundary":[-1353,-254,-1052,122],"count":8,"grow":True},
 			{"type":"squig","boundary":[-1353,126,-998,718],"count":6,"grow":True},
-			{"type":"squigtoad","boundary":[-1353,126,-998,718],"count":2,"grow":True},
-			{"type":"tortoise","boundary":[-1353,720,-896,1516],"count":6,"grow":True},
+			{"type":"squigtoad","boundary":[-1353,126,-998,718],"count":2,"grow":True}, #added grow 31/1/2024
+			{"type":"tortoise","boundary":[-1353,720,-896,1516],"count":6,"grow":True}, #added grow 31/1/2024
 			{"type":"frog","boundary":[-1353,720,-896,1516],"count":2},
 			{"type":"crabx","boundary":[-1256,1520,-712,2004],"count":5},
 			{"type":"crabxx","boundary":[-1256,1520,-712,2004],"count":0},
@@ -627,7 +627,7 @@ maps={
 			{"type":"snake","boundary":[-254,1812,90,1990],"count":6,"grow":True},
 
 			#final
-			{"type":"bigbird","boundary":[1100,160,1586,336],"count":5,"grow":True},
+			{"type":"bigbird","boundary":[1100,160,1586,336],"count":5,"grow":True}, #added grow 31/1/2024
 			{"type":"spider","boundary":[700,-282,1196,-6],"count":7,"grow":True},
 			{"type":"scorpion","boundary":[1485,-390,1670,54],"count":6,"grow":True},
 
@@ -741,13 +741,13 @@ maps={
 			{"id":"pwincess","position":[0,-303]},
 		],
 		"monsters":[
-			{"type":"rat","boundary":[-217,-272,200,-24],"count":5,"grow":True},
-			{"type":"rat","boundary":[-408,-102,-158,27],"count":3,"grow":True},
-			{"type":"rat","boundary":[160,-97,402,29],"count":3,"grow":True},
-			{"type":"rat","boundary":[-388,-610,-282,-197],"count":3,"grow":True},
-			{"type":"rat","boundary":[-388,-610,-282,-197],"count":3,"grow":True},
-			{"type":"rat","boundary":[283,-604,382,-200],"count":3,"grow":True},
-			{"type":"rat","boundary":[-240,-487,249,-401],"count":4,"grow":True},
+			{"type":"rat","boundary":[-217,-272,200,-24],"count":5,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[-408,-102,-158,27],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[160,-97,402,29],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[-388,-610,-282,-197],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[-388,-610,-282,-197],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[283,-604,382,-200],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"rat","boundary":[-240,-487,249,-401],"count":4,"grow":True}, #added grow 31/1/2024
 		],
 		"doors":[
 			[-1,12,40,24,"main",10,0],
@@ -1078,8 +1078,8 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"bbpompom","boundary":[-234,-300,336,-28],"count":6,"grow":True},
-			{"type":"bbpompom","boundary":[-318,-1112,153,-786],"count":7,"grow":True},
+			{"type":"bbpompom","boundary":[-234,-300,336,-28],"count":6,"grow":True}, #added grow 31/1/2024
+			{"type":"bbpompom","boundary":[-318,-1112,153,-786],"count":7,"grow":True}, #added grow 31/1/2024
 		],
 		"doors":[
 			[3,41,36,20,"winterland",3,0],
@@ -1100,7 +1100,7 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"harpy","boundary":[-3.38,-398.22,273.25,-223.83],"count":5,"grow":True,"roam":True,"random":True},
+			{"type":"harpy","boundary":[-3.38,-398.22,273.25,-223.83],"count":5,"grow":True,"roam":True,"random":True}, #added grow 31/1/2024
 			{"type":"rharpy","boundary":[-3.38,-398.22,273.25,-223.83],"count":1,"roam":True},
 		],
 		"doors":[
@@ -1172,14 +1172,14 @@ maps={
 		],
 		"monsters":[
 			{"type":"stompy","boundary":[30,-2954,836,-2536],"count":1},
-			{"type":"wolf","boundary":[30,-2954,836,-2536],"count":7,"grow":True},
+			{"type":"wolf","boundary":[30,-2954,836,-2536],"count":7,"grow":True}, #added grow 31/1/2024
 			#{"type":"rudolph","boundary":[1065,-1598,1418,-1449],"count":1}, #xmas
 			{"type":"arcticbee","boundary":[682,-967,1482,-779],"count":10,"grow":True},
-			{"type":"wolfie","boundary":[-367,-2234,29,-1819],"count":4,"grow":True},
-			{"type":"wolfie","boundary":[236,-2232,460,-1847],"count":3,"grow":True},
-			{"type":"boar","boundary":[-173,-1488,212,-730],"count":8,"grow":True},
-			{"type":"iceroamer","boundary":[550,-240,1097,149],"count":5,"grow":True},
-			{"type":"iceroamer","boundary":[1335,-71,1689,278],"count":4,"grow":True},
+			{"type":"wolfie","boundary":[-367,-2234,29,-1819],"count":4,"grow":True}, #added grow 31/1/2024
+			{"type":"wolfie","boundary":[236,-2232,460,-1847],"count":3,"grow":True}, #added grow 31/1/2024
+			{"type":"boar","boundary":[-173,-1488,212,-730],"count":8,"grow":True}, #added grow 31/1/2024
+			{"type":"iceroamer","boundary":[550,-240,1097,149],"count":5,"grow":True}, #added grow 31/1/2024
+			{"type":"iceroamer","boundary":[1335,-71,1689,278],"count":4,"grow":True}, #added grow 31/1/2024
 			{"type":"icegolem","boundary":[782.25,395.96,888.71,450.28],"count":0,"roam":True},
 		],
 		"doors":[
@@ -1223,13 +1223,13 @@ maps={
 			{"id":"locksmith","position":[316,-270]},
 		],
 		"monsters":[
-			{"type":"plantoid","boundary":[-1013,-472,-575,-130],"count":4,"grow":True},
-			{"type":"plantoid","boundary":[-1013,-624,-762,-137],"count":4,"grow":True},
+			{"type":"plantoid","boundary":[-1013,-472,-575,-130],"count":4,"grow":True}, #added grow 31/1/2024
+			{"type":"plantoid","boundary":[-1013,-624,-762,-137],"count":4,"grow":True}, #added grow 31/1/2024
 			{"type":"porcupine","boundary":[-992,-58,-666,328],"count":8,"grow":True},
 			{"type":"ent","boundary":[-757,-2034,-70,-1888],"count":3},
-			{"type":"fireroamer","boundary":[91,-952,353,-702],"count":4,"grow":True},
-			{"type":"fireroamer","boundary":[161,-868,453,-697],"count":2,"grow":True},
-			{"type":"gscorpion","boundary":[220.31,-1569.2,561.04,-1275.72],"count":6,"grow":True},
+			{"type":"fireroamer","boundary":[91,-952,353,-702],"count":4,"grow":True}, #added grow 31/1/2024
+			{"type":"fireroamer","boundary":[161,-868,453,-697],"count":2,"grow":True}, #added grow 31/1/2024
+			{"type":"gscorpion","boundary":[220.31,-1569.2,561.04,-1275.72],"count":6,"grow":True}, #replaced spawn of red scorpion with purple scorpions and added grow 31/1/2024
 			{"type":"bscorpion","boundary":[-522.44,-1340.19,-295.2,-1183.31],"count":1},
 		],
 		"spawns":[
@@ -1295,11 +1295,11 @@ maps={
 			{"type":"osnake","boundary":[141,-792,552,-702],"count":2},
 			{"type":"tinyp","boundary":[141,-792,552,-702],"count":1},
 
-			{"type":"ghost","boundary":[284,-1351,446,-1189],"count":5,"grow":True},
-			{"type":"ghost","boundary":[54,-1277,237,-1078],"count":5,"grow":True},
+			{"type":"ghost","boundary":[284,-1351,446,-1189],"count":5,"grow":True}, #added grow 31/1/2024
+			{"type":"ghost","boundary":[54,-1277,237,-1078],"count":5,"grow":True}, #added grow 31/1/2024
 
 			{"type":"fvampire","boundary":[-664,-1808,-147,-1477],"count":1},
-			{"type":"ghost","boundary":[-664,-1808,-147,-1477],"count":9,"grow":True},
+			{"type":"ghost","boundary":[-664,-1808,-147,-1477],"count":9,"grow":True}, #added grow 31/1/2024
 		],
 		"spawns":[
 			[0,0],
@@ -1334,12 +1334,12 @@ maps={
 			{"id":"citizen14","position":[0,0],"boundary":[-283,-222,289,234]},
 		],
 		"monsters":[
-			{"type":"mummy","boundary":[31,-1571,480,-1293],"count":9,"grow":True,"rage":[-124,-1631,614,-1130]},
-			{"type":"booboo","boundary":[286,-842,544,-562],"count":5,"grow":True,"rage":[286,-842,544,-562]},
-			{"type":"booboo","boundary":[-820,-940,-570,-630],"count":4,"rage":[-820,-940,-570,-630]},
+			{"type":"mummy","boundary":[31,-1571,480,-1293],"count":9,"grow":True,"rage":[-124,-1631,614,-1130]},#added grow 31/1/2024
+			{"type":"booboo","boundary":[286,-842,544,-562],"count":5,"grow":True,"rage":[286,-842,544,-562]}, #added grow 31/1/2024
+			{"type":"booboo","boundary":[-820,-940,-570,-630],"count":4,"rage":[-820,-940,-570,-630]}, #added a new spawn for players where grow may be too hard to handle 31/1/2024
 
-			{"type":"stoneworm","boundary":[501,61,852,197],"count":4,"grow":True},
-			{"type":"stoneworm","boundary":[773,-198,1216,-68],"count":4,"grow":True},
+			{"type":"stoneworm","boundary":[501,61,852,197],"count":4,"grow":True}, #added grow 31/1/2024
+			{"type":"stoneworm","boundary":[773,-198,1216,-68],"count":4,"grow":True}, #added grow 31/1/2024
 
 			{"type":"mrgreen","boundary":[524,860,748,1129],"count":1,"special":True},
 			{"type":"jr","boundary":[-970,-413,-597,-189],"count":1},
@@ -1372,8 +1372,8 @@ maps={
 			{"id":"gemmerchant","position":[-264,-96,2]},
 		],
 		"monsters":[
-			{"type":"mole","boundary":[-210,-1291,238,-853],"count":8,"grow":True},
-			{"type":"mole","boundary":[-238,-638,207,-21],"count":7,"grow":True},
+			{"type":"mole","boundary":[-210,-1291,238,-853],"count":8,"grow":True}, #added grow 31/1/2024
+			{"type":"mole","boundary":[-238,-638,207,-21],"count":7,"grow":True}, #added grow 31/1/2024
 		],
 		"spawns":[[0,-16,3]], # 1 left, 2 right, 3 back
 		"doors":[
@@ -1437,8 +1437,8 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"prat","boundary":[-86,17,64,212],"count":5,"grow":True},
-			{"type":"prat","boundary":[-308,629,0,762],"count":5,"grow":True},
+			{"type":"prat","boundary":[-86,17,64,212],"count":5,"grow":True}, #added grow 31/1/2024
+			{"type":"prat","boundary":[-308,629,0,762],"count":5,"grow":True}, #added grow 31/1/2024
 		],
 		"spawns":[
 			[149,87,1],
@@ -1499,8 +1499,8 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"pppompom","boundary":[-621,-241,-234,-65],"count":6,"grow":True},
-			{"type":"pppompom","boundary":[153,-303,432,-75],"count":7,"grow":True},
+			{"type":"pppompom","boundary":[-621,-241,-234,-65],"count":6,"grow":True}, #added grow 31/1/2024
+			{"type":"pppompom","boundary":[153,-303,432,-75],"count":7,"grow":True}, #added grow 31/1/2024
 		],
 		"spawns":[
 			[0,0,3], #0-level2w
@@ -1524,7 +1524,7 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"pinkgoblin","polygon":[[384,-96],[464,-96],[464,-64],[608,-64],[608,144],[568,144],[568,304],[464,304],[464,328],[368,328],[368,208],[344,208],[344,160],[384,160]],"boundary":[344,-96,608,328],"count":3,"grow":True}
+			{"type":"pinkgoblin","polygon":[[384,-96],[464,-96],[464,-64],[608,-64],[608,144],[568,144],[568,304],[464,304],[464,328],[368,328],[368,208],[344,208],[344,160],[384,160]],"boundary":[344,-96,608,328],"count":3,"grow":True} #added grow 31/1/2024
 		],
 		"spawns":[
 			[18.5,459.5,2], #0-level2s
@@ -1546,7 +1546,7 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"cgoo","boundary":[-52.5,359.33,120.29,646.25],"count":8,"grow":True},
+			{"type":"cgoo","boundary":[-52.5,359.33,120.29,646.25],"count":8,"grow":True}, #added grow 31/1/2024
 		],
 		"spawns":[
 			[0,-14], #0-level2
@@ -1570,7 +1570,7 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"oneeye","boundary":[-447,9,-208,323],"count":5,"grow":True},
+			{"type":"oneeye","boundary":[-447,9,-208,323],"count":5,"grow":True}, #added grow 31/1/2024
 			{"type":"franky","boundary":[-447,9,-208,323],"count":0,"special":True},
 		],
 		"spawns":[
@@ -1618,7 +1618,7 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"cgoo","boundary":[-366.74,-395.74,-109.59,-152.68],"count":6,"grow":True},
+			{"type":"cgoo","boundary":[-366.74,-395.74,-109.59,-152.68],"count":6,"grow":True}, #added grow 31/1/2024
 			{"type":"mummy","boundary":[119.92,-4.27,378.46,338.17],"count":3},
 		],
 		"spawns":[
