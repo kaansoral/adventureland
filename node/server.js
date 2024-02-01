@@ -8268,7 +8268,7 @@ function init_io() {
 			}
 
 			// Range check
-			if (target && (gSkill.range || gSkill.use_range)) {
+			const isTargetTooFar = (target) => {
 				let range = gSkill.range || player.range;
 				if (gSkill.range_multiplier) {
 					range *= gSkill.range_multiplier;
@@ -8283,11 +8283,18 @@ function init_io() {
 
 				const dist = distance(player, target);
 				if (dist > range + player.xrange) {
-					return fail_response("too_far", data.name, { dist: dist, id: target.id });
+					return true;
 				}
 				if (dist > range) {
 					// xrange was used, reduce it by however much we used
 					player.xrange -= dist - range;
+				}
+				return false;
+			};
+			if (target && (gSkill.range || gSkill.use_range)) {
+				if (isTargetTooFar(target)) {
+					fail_response("too_far", data.name, { dist: dist, id: target.id });
+					return;
 				}
 			}
 
@@ -8671,40 +8678,33 @@ function init_io() {
 				xy_emit(player, "ui", { type: data.name });
 			} else if (data.name == "3shot" || data.name == "5shot") {
 				player.halt = true;
-				var times = 0;
-				var hit = {};
-				var reftarget = null;
-				var targets = 3;
-				var attack = null;
-				var c_resolve = null;
-				if (data.name == "5shot") {
-					targets = 5;
-				}
+				const targeted = {};
+				let c_resolve = null;
 				//console.log(data.ids);
 				if (is_array(data.ids)) {
-					data.ids.forEach(function (id) {
-						if (times >= targets) {
-							return;
+					// Only look at the first Xshot targets in the array if more are provided
+					for (const id of data.ids.slice(0, data.name === "5shot" ? 5 : 3)) {
+						if (targeted[id]) {
+							// Already targeted this monster
+							continue;
 						}
-						times += 1;
-						var target = instances[player.in].monsters[id];
+						targeted[id] = true;
+						target = instances[player.in].monsters[id];
 						if (!target) {
 							target = instances[player.in].players[id];
 						}
 						if (!target || is_invinc(target) || target.name == player.name) {
-							attack = { failed: true, place: data.name, reason: "no_target" };
-							return;
+							continue;
 						}
-						if (hit[id]) {
-							return;
+						if (isTargetTooFar(target)) {
+							continue;
 						}
-						hit[id] = true;
-						attack = commence_attack(player, target, data.name);
+						const attack = commence_attack(player, target, data.name);
 						if (!attack || !attack.projectile) {
-							return;
+							continue;
 						}
 						if (!c_resolve) {
-							reftarget = target;
+							consume_mp(player, gSkill.mp, target);
 							c_resolve = attack;
 							attack.pids = [attack.pid];
 							attack.targets = [attack.target];
@@ -8712,16 +8712,12 @@ function init_io() {
 							c_resolve.pids.push(attack.pid);
 							c_resolve.targets.push(attack.target);
 						}
-						// if(times==1 && attack==null) times=40;
-					});
+					}
 				}
-				consume_mp(player, gSkill.mp, reftarget);
 				player.halt = false;
 				player.to_resend = "u+cid";
 				if (!c_resolve) {
-					if (attack) {
-						reject = attack;
-					}
+					reject = { failed: true, place: data.name, reason: "no_target" };
 					disappearing_text(player.socket, player, "NO HITS");
 				} else {
 					resolve = c_resolve;
