@@ -2886,9 +2886,6 @@ function commence_attack(attacker, target, atype) {
 	} else if (atype == "cburst") {
 		var mp_cutoff = attacker.next_mp;
 		var mp = attacker.next_mp;
-		if (atype == "cburst") {
-			mp = mp_cutoff = attacker.next_mp;
-		}
 		if (attacker.mp < mp_cutoff) {
 			attacker.socket.emit("game_response", { response: "no_mp" });
 			return { failed: true, reason: "no_mp", place: atype, id: target.id };
@@ -8589,37 +8586,38 @@ function init_io() {
 					resend(target, "u+cid");
 				}
 			} else if (data.name == "cburst") {
-				var hit = {};
-				var times = 0;
+				var targeted = {};
 				var attack = null;
 				var c_resolve = null;
 				consume_mp(player, gSkill.mp);
 				player.first_burst = true;
 				player.halt = true;
 				if (is_array(data.targets)) {
-					data.targets.forEach(function (t) {
-						// console.log(id);
-						var id = t[0];
-						var mp = max(0, parseInt(t[1]) || 0);
-						if (player.mp < 20 || times > 16 || !mp) {
-							return;
+					// Only look at the first 16 targets in the array if more are provided
+					for (const t of data.targets.slice(0, 16)) {
+						const id = t[0];
+						if (targeted[id]) {
+							continue;
 						}
-						times += 1;
-						var target = instances[player.in].monsters[id];
+						targeted[id] = true;
+						const mp = max(0, parseInt(t[1]) || 0);
+						if (mp <= 0) {
+							continue;
+						}
+						let target = instances[player.in].monsters[id];
 						if (!target) {
 							target = instances[player.in].players[id];
 						}
 						if (!target || is_invinc(target) || target.name == player.name) {
-							return;
+							continue;
 						}
-						if (hit[id]) {
-							return;
+						if (isTargetTooFar(target)) {
+							continue;
 						}
-						hit[id] = true;
 						player.next_mp = mp;
 						attack = commence_attack(player, target, "cburst");
 						if (!attack || !attack.projectile) {
-							return;
+							continue;
 						}
 						if (!c_resolve) {
 							c_resolve = attack;
@@ -8629,14 +8627,12 @@ function init_io() {
 							c_resolve.pids.push(attack.pid);
 							c_resolve.targets.push(attack.target);
 						}
-					});
+					}
 				}
 				player.halt = false;
 				player.to_resend = "u+cid";
 				if (!c_resolve) {
-					if (attack) {
-						reject = attack;
-					}
+					reject = { failed: true, place: data.name, reason: "no_target" };
 					disappearing_text(player.socket, player, "NO HITS");
 				} else {
 					resolve = c_resolve;
