@@ -810,6 +810,7 @@ skills={
 		"name":"Curse",
 		"explanation":"Cursed opponents receive 20% more damage, deal 20% less damage and they slow down by 20.",
 		"mp":400,
+		"range":200,
 		"duration":5000,
 		"cooldown":5000,
 		"condition":"cursed",
