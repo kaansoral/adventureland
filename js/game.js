@@ -1943,6 +1943,11 @@ function init_socket(args)
 				ui_log("Can't reach","gray");
 				transporting=false;
 			}
+			else if(response=="transport_cant_invalid")
+			{
+				ui_log("Instance not found","gray");
+				transporting=false;
+			}
 			else if(response=="transport_cant_item")
 			{
 				ui_log("Item not found","gray");
