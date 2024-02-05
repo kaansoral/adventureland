@@ -8266,6 +8266,7 @@ function init_io() {
 
 			// Range check
 			const isTargetTooFar = (target) => {
+				// Use the range of the skill, falling back to the player range if it isn't set
 				let range = gSkill.range || player.range;
 				if (gSkill.range_multiplier) {
 					range *= gSkill.range_multiplier;
@@ -8288,11 +8289,8 @@ function init_io() {
 				}
 				return false;
 			};
-			if (target && (gSkill.range || gSkill.use_range)) {
-				if (isTargetTooFar(target)) {
-					fail_response("too_far", data.name, { dist: dist, id: target.id });
-					return;
-				}
+			if (target && isTargetTooFar(target)) {
+				return fail_response("too_far", data.name, { dist: dist, id: target.id });
 			}
 
 			// Consume item check
