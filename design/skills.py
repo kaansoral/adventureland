@@ -644,6 +644,7 @@ skills={
 		"warning":"Highly unbalanced skill, could get nerfed or modified",
 		"hostile":True,
 		"projectile":"mentalburst",
+		"use_range":True,
 	},
 	"quickpunch":{
 		"type":"skill",
@@ -748,6 +749,7 @@ skills={
 		"pierces_immunity":True,
 		"damage_type":"physical",
 		"procs":True,
+		"use_range":True,
 	},
 	"3shot":{
 		"type":"skill",
