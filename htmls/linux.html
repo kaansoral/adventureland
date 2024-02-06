@@ -95,6 +95,12 @@
 				<p>User "foldM_" on Discord stumbled onto this issue on NixOS - his solution was to set Steam to launch the game with: LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH %command% (from Steam's Game Properties > Launch Options)</p>
 			</div>
 
+			<div style="background: #EEF1F1; color: #3B3B3C; padding: 10px 10px 10px 10px; margin: 10px -10px 10px -10px;">
+				<div style="color: #4DA9DF">[01/02/24]: [15629:1229/162230.657405:FATAL:gpu_data_manager_impl_private.cc(1034)] The display compositor is frequently crashing. Goodbye.
+(see it via launching from CLI)</div>
+				<p>Richard found a fix for this issue, the fix is to use the <b>`--no-sandbox`</b> flag.</p>
+			</div>
+
 			<p>If you find and solve an issue, or just stumble onto an issue you can't solve, please email hello@adventure.land with details</p>
 			
 		</div>

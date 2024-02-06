@@ -276,6 +276,7 @@ def selection_info(self,user,domain):
 	return {"type":"content","html":shtml("htmls/contents/selection.html",user=user,domain=domain,server=server,servers=servers,characters=get_characters(user))}
 
 def security_threat(request,domain):
+	return False
 	referer=request.headers.get('Referer') or request.headers.get('Origin') or ""
 	if not referer: return False
 
@@ -1203,7 +1204,7 @@ def select_server(self,user,servers):
 	return servers[0]
 
 def get_servers(no_cache=False):
-	servers=memcache.get("servers")
+	servers=memcache.get("servers"+(1/2!=0 and "v3" or ""))
 	if not servers or no_cache:
 		servers=[]
 		for server in Server.query(Server.online == True):
@@ -1220,7 +1221,7 @@ def set_servers(current=None):
 		if msince(server.last_update)<5 and server.online and not (current and current.k()==server.k()):
 			del server.info.data # otherwise easily exceeds 1MB [13/06/19]
 			servers.append(server)
-	memcache.set("servers",servers)
+	memcache.set("servers"+(1/2!=0 and "v3" or ""),servers)
 
 def check_servers():
 	offlines=[]; servers=[]
@@ -1242,7 +1243,7 @@ def check_servers():
 			del server.info.data
 			servers.append(server)
 			logging.info("Server Alive: %s"%server)
-	memcache.set("servers",servers)
+	memcache.set("servers"+(1/2!=0 and "v3" or ""),servers)
 	if offlines:
 		send_email(gdi(),"kaansoral@gmail.com",html="%s"%offlines,title="OFFLINE SERVERS DETECTED")
 	enforce_limitations()
@@ -1528,6 +1529,14 @@ def to_string_key(element):
 	if is_string(element): return element
 	return element.k()
 
+def py3_safe_string(s):
+	#Because App Engine is run by a bunch of idiots now. Random things return bytes. Even something like .urlsafe() ... [06/02/24]
+	if 1/2==0: return s
+	try:
+		return s.decode("utf-8")
+	except:
+		return s
+
 def str_or_unicode(s):
 	try: return str(s)
 	except:
@@ -1743,8 +1752,8 @@ def jhtml(request,jsn=[]):
 	if not request: return
 	if getattr(request,"_cjsons",0):
 		request._cjsons.extend(jsn)
-		#logging.info("CJSONS %s"%self._cjsons)
-		request.response.set_data(json.dumps(self._cjsons))
+		#logging.info("CJSONS %s"%request._cjsons)
+		request.response.set_data(json.dumps(request._cjsons))
 	else:
 		request.response.set_data(json.dumps(jsn))
 	return request.response
@@ -2041,7 +2050,7 @@ def ginspect(o,id="root",force_inspection=0):
 		str+="</ul>"
 	elif type(o)==type({}):
 		str+="<ul>"
-		keys=o.keys(); keys.sort()
+		keys=sorted(o)
 		for k in keys:
 			e=o[k]
 			cid=randomStr(20)

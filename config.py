@@ -35,15 +35,25 @@ else: #python3
 	from libraries import stripe3 as stripe
 	from libraries import amazon_ses3 as amazon_ses
 	import _pickle as cPickle
+
 from google.appengine.api import memcache,urlfetch,urlfetch_errors,mail,taskqueue,images,namespace_manager,search,modules
 from google.appengine.ext import ndb,blobstore,deferred
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.runtime.apiproxy_errors import DeadlineExceededError as DeadlineExceededError2
 from google.appengine.datastore.datastore_query import Cursor
 
-from flask import Flask, render_template, request, make_response 
+def _from_base_type(self, value):
+	try:
+		return pickle.loads(value)
+	except:
+		return pickle.loads(value,encoding='latin1')
+ndb.model.PickleProperty._from_base_type=_from_base_type
+
+from flask import Flask, render_template, request, make_response, redirect
 
 app = Flask(__name__)
+# app = ndb.toplevel(app) # sadly doesn't work this way
+
 if 1/2 != 0:
 	app.wsgi_app = wrap_wsgi_app(app.wsgi_app, use_deferred=True)
 
@@ -104,12 +114,14 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=786
+game_version=787
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Lunar New Year Event",
-	"Last Update [19th of January]",
+	"Last Update [6th of February]",
 	"Switched to Python3",
+	"All major issues fixed",
+
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",

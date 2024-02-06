@@ -8,6 +8,9 @@ node ~/gscripts/run_servers.js
 
 
 
+#Occasionally [28/01/24]
+gcloud app logs tail
+And check the log messages to see if there are frequent issues
 
 #After Maps Change
 Executor: download_maps()

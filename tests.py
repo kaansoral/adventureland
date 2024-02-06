@@ -14,7 +14,7 @@ def serve_test(name=""):
 	domain=gdi(request)
 	if name=="hash":
 		start=datetime.now()
-		logging.info(pbkdf2_hex("test","123456",iterations=160))
+		#logging.info(pbkdf2_hex("test","123456",iterations=160))
 		logging.info(mssince(start))
 	elif name=="levels":
 		xp=200
@@ -30,6 +30,11 @@ def serve_test(name=""):
 		return html
 	elif name.startswith("pixi_"):
 		return shtml("utility/htmls/tests/%s.html"%name,domain=domain)
+	elif name=="versions":
+		html="GAE_ENV: "+os.getenv('GAE_ENV', '')+" <br />"
+		html+="is_sdk: "+str(is_sdk)+" <br />"
+		# html+=str(request.headers)
+		return html
 	else:
 		request.response=make_response('Setting the cookie')
 		#test()

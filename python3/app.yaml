@@ -1,7 +1,5 @@
-runtime: python312
+runtime: python39
 app_engine_apis: true
-threadsafe: true
-api_version: 1
 builtins:
 - deferred: on
 
@@ -33,6 +31,7 @@ handlers:
   script: auto
 
 env_variables:
+#  NDB_PY2_UNPICKLE_COMPAT: True
   NDB_USE_CROSS_COMPATIBLE_PICKLE_PROTOCOL: True
   MEMCACHE_USE_CROSS_COMPATIBLE_PROTOCOL: True
   DEFERRED_USE_CROSS_COMPATIBLE_PICKLE_PROTOCOL:  True
