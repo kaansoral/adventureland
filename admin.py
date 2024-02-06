@@ -10,7 +10,6 @@ def serve_admin_maker():
 	user.put()
 	return "done!"
 
-
 @app.route('/admin/renderer')
 @ndb.toplevel
 def serve_render():

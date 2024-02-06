@@ -6,6 +6,8 @@ def signup_or_login_api(**args):
 	self,domain,email,password,only_login,only_signup,mobile=gdmuld(args,"self","domain","email","password","only_login","only_signup","mobile")
 	logging.info("Signup or Login")
 	
+	#jhtmle(self,"Disabled for now"); return
+
 	try: email=purify_email(email)
 	except: return jhtmle(self,"Invalid Email")
 

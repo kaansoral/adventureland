@@ -2238,7 +2238,7 @@ def pbkdf2_hex(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	if 1/2==0:
 		return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode('hex')
 	else:
-		pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode("utf-8").hex()
+		return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode("utf-8").hex()
 
 def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	"""Returns a binary digest for the PBKDF2 hash algorithm of `data`
