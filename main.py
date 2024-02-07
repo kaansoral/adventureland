@@ -293,12 +293,17 @@ def serve_credits():
 	return whtml(request,"htmls/page.html",domain=domain,user=user,content="credits")
 
 @app.route('/docs')
-@app.route('/docs/<path>')
-def serve_docs(path=""):
+@app.route('/docs/<path0>')
+@app.route('/docs/<path0>/<path1>')
+@app.route('/docs/<path0>/<path1>/<path2>')
+@app.route('/docs/<path0>/<path1>/<path2>/<path3>')
+def serve_docs(path0="",path1="",path2="",path3=""):
 	domain=gdi(request); user=get_user(request,domain); domain.title="Docs"
-	if len(path):
-		domain.title="Docs /%s"%path
-	path=path.split("/")
+	if path0: domain.title+=" /%s"%path0
+	if path1: domain.title+="/%s"%path1
+	if path2: domain.title+="/%s"%path2
+	if path3: domain.title+="/%s"%path3
+	path=[path0,path1,path2,path3]
 	return whtml(request,"htmls/docs.html",domain=domain,user=user,content="docs",dpath=path,extras=True)
 
 @ndb.toplevel

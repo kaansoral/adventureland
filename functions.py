@@ -2235,10 +2235,7 @@ _pack_int = Struct('>I').pack
 #https://code.google.com/p/googleappengine/issues/detail?id=5303 and https://github.com/mitsuhiko/python-pbkdf2/blob/master/pbkdf2.py
 def pbkdf2_hex(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	"""Like :func:`pbkdf2_bin` but returns a hex encoded string."""
-	if 1/2==0:
-		return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode('hex')
-	else:
-		return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode("utf-8").hex()
+	return pbkdf2_bin(data, salt, iterations, keylen, hashfunc).encode('hex')
 
 def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	"""Returns a binary digest for the PBKDF2 hash algorithm of `data`
@@ -2251,24 +2248,56 @@ def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
 	def _pseudorandom(x, mac=mac):
 		h = mac.copy()
 		h.update(x)
-		if 1/2==0:
-			return map(ord, h.digest())
-		else:
-			return map(lambda x:x, h.digest())
+		return map(ord, h.digest())
 	buf = []
 	for block in xrange(1, -(-keylen // mac.digest_size) + 1):
-		if 1/2 == 0:
-			rv = u = _pseudorandom(salt + _pack_int(block))
-			for i in xrange(iterations - 1):
-				u = _pseudorandom(''.join(map(chr, u)))
-				rv = starmap(xor, izip(rv, u))
-		else:
-			rv = u = _pseudorandom(salt.encode(encoding = 'UTF-8', errors = 'strict') + _pack_int(block))
-			for i in xrange(iterations - 1):
-				u = _pseudorandom(''.join(map(chr, u)).encode(encoding = 'UTF-8', errors = 'strict'))
-				rv = starmap(xor, izip(rv, u))
+		rv = u = _pseudorandom(salt + _pack_int(block))
+		for i in xrange(iterations - 1):
+			u = _pseudorandom(''.join(map(chr, u)))
+			rv = starmap(xor, izip(rv, u))
 		buf.extend(rv)
 	return ''.join(map(chr, buf))[:keylen]
+
+if 1/2!=0:
+	# big thanks to https://github.com/mitsuhiko/python-pbkdf2/issues/8 [07/02/24]
+	try:
+		from itertools import izip as zip
+	except ImportError: pass # py3
+
+	try: range = xrange
+	except NameError: pass # py3
+
+	_pack_int = Struct('>I').pack
+	def pbkdf2_hex(data, salt, iterations=1000, keylen=24, hashfunc=None):
+		salt=bytes(salt,'utf-8')
+		"""Like :func:`pbkdf2_bin` but returns a hex encoded string."""
+		return str(''.join('%02x'%(v if type(v) is int else ord(v)) for v in
+			pbkdf2_bin(data, salt, iterations, keylen, hashfunc)))
+
+
+	def pbkdf2_bin(data, salt, iterations=1000, keylen=24, hashfunc=None):
+		"""Returns a binary digest for the PBKDF2 hash algorithm of `data`
+		with the given `salt`.  It iterates `iterations` time and produces a
+		key of `keylen` bytes.  By default SHA-1 is used as hash function,
+		a different hashlib `hashfunc` can be provided.
+		"""
+		hashfunc = hashfunc or hashlib.sha1
+		mac = hmac.new(data, None, hashfunc)
+
+		buf = []
+		for block in range(1, -(-keylen // mac.digest_size) + 1):
+			h = mac.copy()
+			h.update(salt + _pack_int(block))
+			u = h.digest()
+			rv = list(bytearray(u)) # needs further testing on py2 and could possibly be more performant
+			for i in range(iterations - 1):
+				h = mac.copy()
+				h.update(bytes(u))
+				u = h.digest()
+				rv = starmap(xor, zip(rv, list(bytearray(u))))
+
+			buf.extend(rv)
+		return ''.join(map(chr, buf))[:keylen]
 
 def hash_password(password,salt):
 	password=password.replace(" ","").encode('utf8')

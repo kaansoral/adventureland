@@ -42,12 +42,12 @@ from google.appengine.runtime import DeadlineExceededError
 from google.appengine.runtime.apiproxy_errors import DeadlineExceededError as DeadlineExceededError2
 from google.appengine.datastore.datastore_query import Cursor
 
-def _from_base_type(self, value):
+def from_base_type(self, value):
 	try:
 		return pickle.loads(value)
 	except:
 		return pickle.loads(value,encoding='latin1')
-ndb.model.PickleProperty._from_base_type=_from_base_type
+ndb.model.PickleProperty._from_base_type=from_base_type
 
 from flask import Flask, render_template, request, make_response, redirect
 
