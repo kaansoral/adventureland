@@ -53,7 +53,7 @@ Make sure to install lxml and Flask afterwards:
 
 ```sh
 pip2.7 install lxml
-pip2.7 install flask -t lib
+pip2.7 install flask -t adventureland/lib
 ```
 
 Run the Python2.7 backend - includes an HTTP server, datastore, various utilities - emulates Google App Engine:
