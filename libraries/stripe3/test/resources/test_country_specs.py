@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class CountrySpecTest(StripeResourceTest):
 
     def test_country_spec_list(self):
-        libraries.stripe.CountrySpec.list()
+        libraries.stripe3.CountrySpec.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/country_specs',
@@ -13,7 +13,7 @@ class CountrySpecTest(StripeResourceTest):
         )
 
     def test_country_spec_retrieve(self):
-        libraries.stripe.CountrySpec.retrieve('US')
+        libraries.stripe3.CountrySpec.retrieve('US')
 
         self.requestor_mock.request.assert_called_with(
             'get',

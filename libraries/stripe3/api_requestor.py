@@ -6,9 +6,9 @@ import urllib.request, urllib.parse, urllib.error
 import urllib.parse
 import warnings
 
-import libraries.stripe
-from libraries.stripe import error, http_client, version, util
-from libraries.stripe.multipart_data_generator import MultipartDataGenerator
+import libraries.stripe3
+from libraries.stripe3 import error, http_client, version, util
+from libraries.stripe3.multipart_data_generator import MultipartDataGenerator
 
 
 def _encode_datetime(dttime):
@@ -64,13 +64,13 @@ def _build_api_url(url, query):
 class APIRequestor(object):
 
     def __init__(self, key=None, client=None, api_base=None, account=None):
-        self.api_base = api_base or libraries.stripe.api_base
+        self.api_base = api_base or libraries.stripe3.api_base
         self.api_key = key
         self.stripe_account = account
 
-        from libraries.stripe import verify_ssl_certs as verify
+        from libraries.stripe3 import verify_ssl_certs as verify
 
-        self._client = client or libraries.stripe.default_http_client or \
+        self._client = client or libraries.stripe3.default_http_client or \
             http_client.new_default_http_client(verify_ssl_certs=verify)
 
     @classmethod
@@ -171,12 +171,12 @@ class APIRequestor(object):
         """
         Mechanism for issuing an API call
         """
-        from libraries.stripe import api_version
+        from libraries.stripe3 import api_version
 
         if self.api_key:
             my_api_key = self.api_key
         else:
-            from libraries.stripe import api_key
+            from libraries.stripe3 import api_key
             my_api_key = api_key
 
         if my_api_key is None:
@@ -306,37 +306,37 @@ class APIRequestor(object):
         return client._handle_request_error(*args)
 
     def requests_request(self, meth, abs_url, headers, params):
-        from libraries.stripe.http_client import RequestsClient
+        from libraries.stripe3.http_client import RequestsClient
         return self._deprecated_request(RequestsClient, meth, abs_url,
                                         headers, params)
 
     def handle_requests_error(self, err):
-        from libraries.stripe.http_client import RequestsClient
+        from libraries.stripe3.http_client import RequestsClient
         return self._deprecated_handle_error(RequestsClient, err)
 
     def pycurl_request(self, meth, abs_url, headers, params):
-        from libraries.stripe.http_client import PycurlClient
+        from libraries.stripe3.http_client import PycurlClient
         return self._deprecated_request(PycurlClient, meth, abs_url,
                                         headers, params)
 
     def handle_pycurl_error(self, err):
-        from libraries.stripe.http_client import PycurlClient
+        from libraries.stripe3.http_client import PycurlClient
         return self._deprecated_handle_error(PycurlClient, err)
 
     def urlfetch_request(self, meth, abs_url, headers, params):
-        from libraries.stripe.http_client import UrlFetchClient
+        from libraries.stripe3.http_client import UrlFetchClient
         return self._deprecated_request(UrlFetchClient, meth, abs_url,
                                         headers, params)
 
     def handle_urlfetch_error(self, err, abs_url):
-        from libraries.stripe.http_client import UrlFetchClient
+        from libraries.stripe3.http_client import UrlFetchClient
         return self._deprecated_handle_error(UrlFetchClient, err, abs_url)
 
     def urllib2_request(self, meth, abs_url, headers, params):
-        from libraries.stripe.http_client import Urllib2Client
+        from libraries.stripe3.http_client import Urllib2Client
         return self._deprecated_request(Urllib2Client, meth, abs_url,
                                         headers, params)
 
     def handle_urllib2_error(self, err, abs_url):
-        from libraries.stripe.http_client import Urllib2Client
+        from libraries.stripe3.http_client import Urllib2Client
         return self._deprecated_handle_error(Urllib2Client, err)

@@ -3,8 +3,8 @@
 import re
 import sys
 
-from libraries.stripe.multipart_data_generator import MultipartDataGenerator
-from libraries.stripe.test.helper import StripeTestCase
+from libraries.stripe3.multipart_data_generator import MultipartDataGenerator
+from libraries.stripe3.test.helper import StripeTestCase
 
 
 class MultipartDataGeneratorTests(StripeTestCase):

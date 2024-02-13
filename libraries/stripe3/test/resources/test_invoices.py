@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_INVOICE_ITEM
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class InvoiceTest(StripeResourceTest):
 
     def test_add_invoice_item(self):
-        customer = libraries.stripe.Customer(id="cus_invoice_items")
+        customer = libraries.stripe3.Customer(id="cus_invoice_items")
         customer.add_invoice_item(**DUMMY_INVOICE_ITEM)
 
         expected = DUMMY_INVOICE_ITEM.copy()
@@ -21,7 +21,7 @@ class InvoiceTest(StripeResourceTest):
         )
 
     def test_retrieve_invoice_items(self):
-        customer = libraries.stripe.Customer(id="cus_get_invoice_items")
+        customer = libraries.stripe3.Customer(id="cus_get_invoice_items")
         customer.invoice_items()
 
         self.requestor_mock.request.assert_called_with(
@@ -31,8 +31,8 @@ class InvoiceTest(StripeResourceTest):
         )
 
     def test_invoice_create(self):
-        customer = libraries.stripe.Customer(id="cus_invoice")
-        libraries.stripe.Invoice.create(customer=customer.id)
+        customer = libraries.stripe3.Customer(id="cus_invoice")
+        libraries.stripe3.Invoice.create(customer=customer.id)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -44,7 +44,7 @@ class InvoiceTest(StripeResourceTest):
         )
 
     def test_retrieve_customer_invoices(self):
-        customer = libraries.stripe.Customer(id="cus_invoice_items")
+        customer = libraries.stripe3.Customer(id="cus_invoice_items")
         customer.invoices()
 
         self.requestor_mock.request.assert_called_with(
@@ -56,7 +56,7 @@ class InvoiceTest(StripeResourceTest):
         )
 
     def test_pay_invoice(self):
-        invoice = libraries.stripe.Invoice(id="ii_pay")
+        invoice = libraries.stripe3.Invoice(id="ii_pay")
         invoice.pay()
 
         self.requestor_mock.request.assert_called_with(
@@ -67,7 +67,7 @@ class InvoiceTest(StripeResourceTest):
         )
 
     def test_upcoming_invoice(self):
-        libraries.stripe.Invoice.upcoming()
+        libraries.stripe3.Invoice.upcoming()
 
         self.requestor_mock.request.assert_called_with(
             'get',

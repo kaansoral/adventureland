@@ -3,8 +3,8 @@ import sys
 
 import unittest2
 
-from libraries.stripe import StripeError
-from libraries.stripe.test.helper import StripeUnitTestCase
+from libraries.stripe3 import StripeError
+from libraries.stripe3.test.helper import StripeUnitTestCase
 
 
 class StripeErrorTests(StripeUnitTestCase):

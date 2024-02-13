@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class AccountTest(StripeResourceTest):
 
     def test_retrieve_account_deprecated(self):
-        libraries.stripe.Account.retrieve()
+        libraries.stripe3.Account.retrieve()
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -15,7 +15,7 @@ class AccountTest(StripeResourceTest):
         )
 
     def test_retrieve_account(self):
-        libraries.stripe.Account.retrieve('acct_foo')
+        libraries.stripe3.Account.retrieve('acct_foo')
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/accounts/acct_foo',
@@ -24,7 +24,7 @@ class AccountTest(StripeResourceTest):
         )
 
     def test_list_accounts(self):
-        libraries.stripe.Account.list()
+        libraries.stripe3.Account.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/accounts',
@@ -37,7 +37,7 @@ class AccountTest(StripeResourceTest):
             'first_name': 'Joe',
             'last_name': 'Smith',
         }
-        libraries.stripe.Account.create(legal_entity=pii)
+        libraries.stripe3.Account.create(legal_entity=pii)
         self.requestor_mock.request.assert_called_with(
             'post',
             '/v1/accounts',
@@ -48,7 +48,7 @@ class AccountTest(StripeResourceTest):
         )
 
     def test_update_account(self):
-        acct = libraries.stripe.Account.construct_from({
+        acct = libraries.stripe3.Account.construct_from({
             'id': 'acct_update',
             'legal_entity': {'first_name': 'Joe'},
         }, 'api_key')
@@ -67,7 +67,7 @@ class AccountTest(StripeResourceTest):
         )
 
     def test_account_delete_bank_account(self):
-        source = libraries.stripe.BankAccount.construct_from({
+        source = libraries.stripe3.BankAccount.construct_from({
             'account': 'acc_delete_ba',
             'id': 'ba_delete_ba',
         }, 'api_key')
@@ -88,7 +88,7 @@ class AccountTest(StripeResourceTest):
             },
         })
 
-        obj = libraries.stripe.Account.construct_from({
+        obj = libraries.stripe3.Account.construct_from({
             'id': 'acct_reject'
         }, 'mykey')
 
@@ -111,7 +111,7 @@ class AccountTest(StripeResourceTest):
             },
         })
 
-        obj = libraries.stripe.Account.construct_from({
+        obj = libraries.stripe3.Account.construct_from({
             'id': 'acct_reject'
         }, 'mykey')
 
@@ -127,7 +127,7 @@ class AccountTest(StripeResourceTest):
         )
 
     def test_verify_additional_owner(self):
-        acct = libraries.stripe.Account.construct_from({
+        acct = libraries.stripe3.Account.construct_from({
             'id': 'acct_update',
             'additional_owners': [{
                 'first_name': 'Alice',

@@ -6,7 +6,7 @@ import email
 
 if 1/2 != 0: str=str
 
-from libraries.stripe import error, util
+from libraries.stripe3 import error, util
 
 
 # - Requests is the preferred HTTP library

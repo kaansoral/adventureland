@@ -276,7 +276,7 @@ def selection_info(self,user,domain):
 	return {"type":"content","html":shtml("htmls/contents/selection.html",user=user,domain=domain,server=server,servers=servers,characters=get_characters(user))}
 
 def security_threat(request,domain):
-	return False
+	#return False
 	referer=request.headers.get('Referer') or request.headers.get('Origin') or ""
 	if not referer: return False
 
@@ -1031,12 +1031,21 @@ def verify_steam_installs():
 	for id in checks:
 		try:
 			result=checks[id].get_result()
-			if result.content.find('"ownsapp":true')!=-1:
-				logging.info("%s yes!"%id)
-			elif result.content.find('"ownsapp":false')!=-1:
-				logging.error("%s no!"%id)
+			if 1/2==0:
+				if result.content.find(b'"ownsapp":true')!=-1:
+					logging.info("%s yes!"%id)
+				elif result.content.find('"ownsapp":false')!=-1:
+					logging.error("%s no!"%id)
+				else:
+					logging.error("%s Unhandled output %s"%(id,result.content))
 			else:
-				logging.error("%s Unhandled output %s"%(id,result.content))
+				result=checks[id].get_result()
+				if b'"ownsapp":true' in result.content:
+					logging.info("%s yes!"%id)
+				elif b'"ownsapp":false' in result.content:
+					logging.error("%s no!"%id)
+				else:
+					logging.error("%s Unhandled output %s"%(id,result.content))
 		except:
 			log_trace()
 

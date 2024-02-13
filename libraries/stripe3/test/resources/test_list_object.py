@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeApiTestCase
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeApiTestCase
 
 
 class ListObjectTests(StripeApiTestCase):
@@ -7,7 +7,7 @@ class ListObjectTests(StripeApiTestCase):
     def setUp(self):
         super(ListObjectTests, self).setUp()
 
-        self.lo = libraries.stripe.resource.ListObject.construct_from({
+        self.lo = libraries.stripe3.resource.ListObject.construct_from({
             'id': 'me',
             'url': '/my/path',
             'data': ['foo'],
@@ -19,7 +19,7 @@ class ListObjectTests(StripeApiTestCase):
         }])
 
     def assertResponse(self, res):
-        self.assertTrue(isinstance(res[0], libraries.stripe.Charge))
+        self.assertTrue(isinstance(res[0], libraries.stripe3.Charge))
         self.assertEqual('bar', res[0].foo)
 
     def test_for_loop(self):
@@ -67,7 +67,7 @@ class AutoPagingTests(StripeApiTestCase):
         }
 
     def test_iter_one_page(self):
-        lo = libraries.stripe.resource.ListObject.construct_from(
+        lo = libraries.stripe3.resource.ListObject.construct_from(
             self.pageable_model_response(['pm_123', 'pm_124'], False),
             'mykey'
         )
@@ -79,7 +79,7 @@ class AutoPagingTests(StripeApiTestCase):
         self.assertEqual(['pm_123', 'pm_124'], seen)
 
     def test_iter_two_pages(self):
-        lo = libraries.stripe.resource.ListObject.construct_from(
+        lo = libraries.stripe3.resource.ListObject.construct_from(
             self.pageable_model_response(['pm_123', 'pm_124'], True),
             'mykey'
         )
@@ -111,7 +111,7 @@ class AutoPagingTests(StripeApiTestCase):
             'has_more': False,
         })
 
-        seen = [item['id'] for item in libraries.stripe.Charge.auto_paging_iter(
+        seen = [item['id'] for item in libraries.stripe3.Charge.auto_paging_iter(
             limit=25,
             foo='bar'
         )]

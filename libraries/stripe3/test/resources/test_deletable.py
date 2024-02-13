@@ -1,4 +1,4 @@
-from libraries.stripe.test.helper import (
+from libraries.stripe3.test.helper import (
     StripeApiTestCase, MyDeletable
 )
 

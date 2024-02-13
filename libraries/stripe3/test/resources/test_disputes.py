@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_DISPUTE, NOW
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class DisputeTest(StripeResourceTest):
 
     def test_list_all_disputes(self):
-        libraries.stripe.Dispute.list(created={'lt': NOW})
+        libraries.stripe3.Dispute.list(created={'lt': NOW})
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -18,7 +18,7 @@ class DisputeTest(StripeResourceTest):
         )
 
     def test_create_dispute(self):
-        libraries.stripe.Dispute.create(idempotency_key='foo', **DUMMY_DISPUTE)
+        libraries.stripe3.Dispute.create(idempotency_key='foo', **DUMMY_DISPUTE)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -28,7 +28,7 @@ class DisputeTest(StripeResourceTest):
         )
 
     def test_retrieve_dispute(self):
-        libraries.stripe.Dispute.retrieve('dp_test_id')
+        libraries.stripe3.Dispute.retrieve('dp_test_id')
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -38,7 +38,7 @@ class DisputeTest(StripeResourceTest):
         )
 
     def test_update_dispute(self):
-        dispute = libraries.stripe.Dispute.construct_from({
+        dispute = libraries.stripe3.Dispute.construct_from({
             'id': 'dp_update_id',
             'evidence': {
                 'product_description': 'description',
@@ -59,7 +59,7 @@ class DisputeTest(StripeResourceTest):
         )
 
     def test_close_dispute(self):
-        dispute = libraries.stripe.Dispute(id='dp_close_id')
+        dispute = libraries.stripe3.Dispute(id='dp_close_id')
         dispute.close(idempotency_key='foo')
 
         self.requestor_mock.request.assert_called_with(

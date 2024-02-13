@@ -10,7 +10,7 @@ if 1/2 != 0: str=str
 
 from mock import patch, Mock
 
-import libraries.stripe
+import libraries.stripe3
 
 NOW = datetime.datetime.now()
 
@@ -68,7 +68,7 @@ DUMMY_INVOICE_ITEM = {
     'currency': 'usd',
 }
 
-SAMPLE_INVOICE = libraries.stripe.util.json.loads("""
+SAMPLE_INVOICE = libraries.stripe3.util.json.loads("""
 {
   "amount_due": 1305,
   "attempt_count": 0,
@@ -130,8 +130,8 @@ class StripeTestCase(unittest2.TestCase):
 
         api_base = os.environ.get('STRIPE_API_BASE')
         if api_base:
-            libraries.stripe.api_base = api_base
-        libraries.stripe.api_key = os.environ.get(
+            libraries.stripe3.api_base = api_base
+        libraries.stripe3.api_key = os.environ.get(
             'STRIPE_API_KEY', 'tGN0bIwXnHdwOa85VABjPdSn8nWY7G7I')
 
     def tearDown(self):
@@ -234,7 +234,7 @@ class MyDeletable(stripe.resource.DeletableAPIResource):
 
 
 class MyComposite(stripe.resource.ListableAPIResource,
-                  libraries.stripe.resource.CreateableAPIResource,
-                  libraries.stripe.resource.UpdateableAPIResource,
-                  libraries.stripe.resource.DeletableAPIResource):
+                  libraries.stripe3.resource.CreateableAPIResource,
+                  libraries.stripe3.resource.UpdateableAPIResource,
+                  libraries.stripe3.resource.DeletableAPIResource):
     pass

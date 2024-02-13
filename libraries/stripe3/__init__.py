@@ -15,7 +15,7 @@ verify_ssl_certs = True
 default_http_client = None
 
 # Resource
-from libraries.stripe.resource import (  # noqa
+from libraries.stripe3.resource import (  # noqa
     Account,
     AlipayAccount,
     ApplicationFee,
@@ -50,7 +50,7 @@ from libraries.stripe.resource import (  # noqa
 # namespace in the future and you should prefer to access them via
 # the fully qualified `stripe.error` module.
 
-from libraries.stripe.error import (  # noqa
+from libraries.stripe3.error import (  # noqa
     APIConnectionError,
     APIError,
     AuthenticationError,
@@ -62,9 +62,9 @@ from libraries.stripe.error import (  # noqa
 # DEPRECATED: These imports will be moved out of the root stripe namespace
 # in version 2.0
 
-from libraries.stripe.version import VERSION  # noqa
-from libraries.stripe.api_requestor import APIRequestor  # noqa
-from libraries.stripe.resource import (  # noqa
+from libraries.stripe3.version import VERSION  # noqa
+from libraries.stripe3.api_requestor import APIRequestor  # noqa
+from libraries.stripe3.resource import (  # noqa
     APIResource,
     CreateableAPIResource,
     DeletableAPIResource,
@@ -75,4 +75,4 @@ from libraries.stripe.resource import (  # noqa
     StripeObjectEncoder,
     UpdateableAPIResource,
     convert_to_stripe_object)
-from libraries.stripe.util import json, logger  # noqa
+from libraries.stripe3.util import json, logger  # noqa

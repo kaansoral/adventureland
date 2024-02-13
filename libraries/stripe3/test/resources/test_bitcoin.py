@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class BitcoinReceiverTest(StripeResourceTest):
 
     def test_retrieve_resource(self):
-        libraries.stripe.BitcoinReceiver.retrieve("btcrcv_test_receiver")
+        libraries.stripe3.BitcoinReceiver.retrieve("btcrcv_test_receiver")
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/bitcoin/receivers/btcrcv_test_receiver',
@@ -14,7 +14,7 @@ class BitcoinReceiverTest(StripeResourceTest):
         )
 
     def test_list_receivers(self):
-        libraries.stripe.BitcoinReceiver.list()
+        libraries.stripe3.BitcoinReceiver.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/bitcoin/receivers',
@@ -22,7 +22,7 @@ class BitcoinReceiverTest(StripeResourceTest):
         )
 
     def test_create_receiver(self):
-        libraries.stripe.BitcoinReceiver.create(amount=100, description="some details",
+        libraries.stripe3.BitcoinReceiver.create(amount=100, description="some details",
                                       currency="usd",
                                       email="do+fill_now@stripe.com")
         self.requestor_mock.request.assert_called_with(
@@ -40,7 +40,7 @@ class BitcoinReceiverTest(StripeResourceTest):
     def test_update_receiver_without_customer(self):
         params = {'id': 'receiver', 'amount': 100,
                   'description': "some details", 'currency': "usd"}
-        r = libraries.stripe.BitcoinReceiver.construct_from(params, 'api_key')
+        r = libraries.stripe3.BitcoinReceiver.construct_from(params, 'api_key')
         r.description = "some other details"
         r.save()
         self.requestor_mock.request.assert_called_with(
@@ -56,7 +56,7 @@ class BitcoinReceiverTest(StripeResourceTest):
         params = {'id': 'receiver', 'amount': 100,
                   'description': "some details", 'currency': "usd",
                   'customer': "cust"}
-        r = libraries.stripe.BitcoinReceiver.construct_from(params, 'api_key')
+        r = libraries.stripe3.BitcoinReceiver.construct_from(params, 'api_key')
         r.description = "some other details"
         r.save()
         self.requestor_mock.request.assert_called_with(
@@ -71,7 +71,7 @@ class BitcoinReceiverTest(StripeResourceTest):
     def test_delete_receiver_without_customer(self):
         params = {'id': 'receiver', 'amount': 100,
                   'description': "some details", 'currency': "usd"}
-        r = libraries.stripe.BitcoinReceiver.construct_from(params, 'api_key')
+        r = libraries.stripe3.BitcoinReceiver.construct_from(params, 'api_key')
         r.delete()
         self.requestor_mock.request.assert_called_with(
             'delete',
@@ -84,7 +84,7 @@ class BitcoinReceiverTest(StripeResourceTest):
         params = {'id': 'receiver', 'amount': 100,
                   'description': "some details", 'currency': "usd",
                   'customer': "cust"}
-        r = libraries.stripe.BitcoinReceiver.construct_from(params, 'api_key')
+        r = libraries.stripe3.BitcoinReceiver.construct_from(params, 'api_key')
         r.delete()
         self.requestor_mock.request.assert_called_with(
             'delete',
@@ -94,7 +94,7 @@ class BitcoinReceiverTest(StripeResourceTest):
         )
 
     def test_list_transactions(self):
-        receiver = libraries.stripe.BitcoinReceiver.construct_from({
+        receiver = libraries.stripe3.BitcoinReceiver.construct_from({
             'id': 'btcrcv_foo',
             'transactions': {
                 'object': 'list',

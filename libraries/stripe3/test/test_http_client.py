@@ -5,9 +5,9 @@ if 1/2 != 0: str=str
 
 from mock import Mock, patch
 
-import libraries.stripe
+import libraries.stripe3
 
-from libraries.stripe.test.helper import StripeUnitTestCase
+from libraries.stripe3.test.helper import StripeUnitTestCase
 
 VALID_API_METHODS = ('get', 'post', 'delete')
 
@@ -17,11 +17,11 @@ class HttpClientTests(StripeUnitTestCase):
     def setUp(self):
         super(HttpClientTests, self).setUp()
 
-        self.original_filters = libraries.stripe.http_client.warnings.filters[:]
-        libraries.stripe.http_client.warnings.simplefilter('ignore')
+        self.original_filters = libraries.stripe3.http_client.warnings.filters[:]
+        libraries.stripe3.http_client.warnings.simplefilter('ignore')
 
     def tearDown(self):
-        libraries.stripe.http_client.warnings.filters = self.original_filters
+        libraries.stripe3.http_client.warnings.filters = self.original_filters
 
         super(HttpClientTests, self).tearDown()
 
@@ -29,25 +29,25 @@ class HttpClientTests(StripeUnitTestCase):
         for lib in none_libs:
             setattr(stripe.http_client, lib, None)
 
-        inst = libraries.stripe.http_client.new_default_http_client()
+        inst = libraries.stripe3.http_client.new_default_http_client()
 
         self.assertTrue(isinstance(inst, expected))
 
     def test_new_default_http_client_urlfetch(self):
         self.check_default((),
-                           libraries.stripe.http_client.UrlFetchClient)
+                           libraries.stripe3.http_client.UrlFetchClient)
 
     def test_new_default_http_client_requests(self):
         self.check_default(('urlfetch',),
-                           libraries.stripe.http_client.RequestsClient)
+                           libraries.stripe3.http_client.RequestsClient)
 
     def test_new_default_http_client_pycurl(self):
         self.check_default(('urlfetch', 'requests',),
-                           libraries.stripe.http_client.PycurlClient)
+                           libraries.stripe3.http_client.PycurlClient)
 
     def test_new_default_http_client_urllib2(self):
         self.check_default(('urlfetch', 'requests', 'pycurl'),
-                           libraries.stripe.http_client.Urllib2Client)
+                           libraries.stripe3.http_client.Urllib2Client)
 
 
 class ClientTestBase():
@@ -112,7 +112,7 @@ class RequestsVerify(object):
 
 
 class RequestsClientTests(StripeUnitTestCase, ClientTestBase):
-    request_client = libraries.stripe.http_client.RequestsClient
+    request_client = libraries.stripe3.http_client.RequestsClient
 
     def mock_response(self, mock, body, code):
         result = Mock()
@@ -134,7 +134,7 @@ class RequestsClientTests(StripeUnitTestCase, ClientTestBase):
 
 
 class UrlFetchClientTests(StripeUnitTestCase, ClientTestBase):
-    request_client = libraries.stripe.http_client.UrlFetchClient
+    request_client = libraries.stripe3.http_client.UrlFetchClient
 
     def mock_response(self, mock, body, code):
         result = Mock()
@@ -159,7 +159,7 @@ class UrlFetchClientTests(StripeUnitTestCase, ClientTestBase):
 
 
 class Urllib2ClientTests(StripeUnitTestCase, ClientTestBase):
-    request_client = libraries.stripe.http_client.Urllib2Client
+    request_client = libraries.stripe3.http_client.Urllib2Client
 
     def mock_response(self, mock, body, code):
         response = Mock
@@ -184,7 +184,7 @@ class Urllib2ClientTests(StripeUnitTestCase, ClientTestBase):
 
 
 class PycurlClientTests(StripeUnitTestCase, ClientTestBase):
-    request_client = libraries.stripe.http_client.PycurlClient
+    request_client = libraries.stripe3.http_client.PycurlClient
 
     @property
     def request_mock(self):
@@ -222,8 +222,8 @@ class PycurlClientTests(StripeUnitTestCase, ClientTestBase):
             def __getitem__(self, i):
                 return 'foo'
 
-        libraries.stripe.http_client.pycurl.error = FakeException
-        mock.perform.side_effect = libraries.stripe.http_client.pycurl.error
+        libraries.stripe3.http_client.pycurl.error = FakeException
+        mock.perform.side_effect = libraries.stripe3.http_client.pycurl.error
 
     def check_call(self, mock, meth, url, post_data, headers):
         # TODO: Check the setopt calls
@@ -242,7 +242,7 @@ class APIEncodeTest(StripeUnitTestCase):
             },
         }
 
-        values = [t for t in libraries.stripe.api_requestor._api_encode(body)]
+        values = [t for t in libraries.stripe3.api_requestor._api_encode(body)]
 
         self.assertTrue(('foo[dob][month]', 1) in values)
         self.assertTrue(('foo[name]', 'bat') in values)
@@ -257,7 +257,7 @@ class APIEncodeTest(StripeUnitTestCase):
             }],
         }
 
-        values = [t for t in libraries.stripe.api_requestor._api_encode(body)]
+        values = [t for t in libraries.stripe3.api_requestor._api_encode(body)]
 
         self.assertTrue(('foo[][dob][month]', 1) in values)
         self.assertTrue(('foo[][name]', 'bat') in values)

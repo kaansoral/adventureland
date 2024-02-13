@@ -2,9 +2,7 @@ import urllib.request, urllib.parse, urllib.error
 import warnings
 import sys
 
-if 1/2 != 0: str=str
-
-from libraries.stripe import api_requestor, error, util, upload_api_base
+from libraries.stripe3 import api_requestor, error, util, upload_api_base
 
 
 def convert_to_stripe_object(resp, api_key, account):

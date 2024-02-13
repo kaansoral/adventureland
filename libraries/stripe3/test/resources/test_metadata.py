@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class MetadataTest(StripeResourceTest):
 
     def test_noop_metadata(self):
-        charge = libraries.stripe.Charge(id='ch_foo')
+        charge = libraries.stripe3.Charge(id='ch_foo')
         charge.description = 'test'
         charge.save()
 
@@ -19,7 +19,7 @@ class MetadataTest(StripeResourceTest):
         )
 
     def test_unset_metadata(self):
-        charge = libraries.stripe.Charge(id='ch_foo')
+        charge = libraries.stripe3.Charge(id='ch_foo')
         charge.metadata = {}
         charge.save()
 
@@ -33,7 +33,7 @@ class MetadataTest(StripeResourceTest):
         )
 
     def test_whole_update(self):
-        charge = libraries.stripe.Charge(id='ch_foo')
+        charge = libraries.stripe3.Charge(id='ch_foo')
         charge.metadata = {'whole': 'update'}
         charge.save()
 
@@ -47,7 +47,7 @@ class MetadataTest(StripeResourceTest):
         )
 
     def test_individual_delete(self):
-        charge = libraries.stripe.Charge(id='ch_foo')
+        charge = libraries.stripe3.Charge(id='ch_foo')
         charge.metadata = {'whole': None}
         charge.save()
 

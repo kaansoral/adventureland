@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeApiTestCase, MyResource, MySingleton
 )
 
@@ -53,14 +53,14 @@ class APIResourceTests(StripeApiTestCase):
             ]
         }
 
-        converted = libraries.stripe.resource.convert_to_stripe_object(
+        converted = libraries.stripe3.resource.convert_to_stripe_object(
             sample, 'akey', None)
 
         # Types
-        self.assertTrue(isinstance(converted, libraries.stripe.resource.StripeObject))
-        self.assertTrue(isinstance(converted.adict, libraries.stripe.Charge))
+        self.assertTrue(isinstance(converted, libraries.stripe3.resource.StripeObject))
+        self.assertTrue(isinstance(converted.adict, libraries.stripe3.Charge))
         self.assertEqual(1, len(converted.alist))
-        self.assertTrue(isinstance(converted.alist[0], libraries.stripe.Customer))
+        self.assertTrue(isinstance(converted.alist[0], libraries.stripe3.Customer))
 
         # Values
         self.assertEqual('bar', converted.foo)

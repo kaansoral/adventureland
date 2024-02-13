@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, NOW, DUMMY_CHARGE
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class ChargeTest(StripeResourceTest):
 
     def test_charge_list(self):
-        libraries.stripe.Charge.list(created={'lt': NOW})
+        libraries.stripe3.Charge.list(created={'lt': NOW})
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -18,7 +18,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_charge_create(self):
-        libraries.stripe.Charge.create(idempotency_key='foo', **DUMMY_CHARGE)
+        libraries.stripe3.Charge.create(idempotency_key='foo', **DUMMY_CHARGE)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -28,7 +28,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_charge_retrieve(self):
-        libraries.stripe.Charge.retrieve('ch_test_id')
+        libraries.stripe3.Charge.retrieve('ch_test_id')
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -38,7 +38,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_charge_modify(self):
-        libraries.stripe.Charge.modify('ch_test_id', refund=True)
+        libraries.stripe3.Charge.modify('ch_test_id', refund=True)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -50,7 +50,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_charge_update_dispute(self):
-        charge = libraries.stripe.Charge(id='ch_update_id')
+        charge = libraries.stripe3.Charge(id='ch_update_id')
         charge.update_dispute(idempotency_key='foo')
 
         self.requestor_mock.request.assert_called_with(
@@ -61,7 +61,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_charge_close_dispute(self):
-        charge = libraries.stripe.Charge(id='ch_update_id')
+        charge = libraries.stripe3.Charge(id='ch_update_id')
         charge.close_dispute(idempotency_key='foo')
 
         self.requestor_mock.request.assert_called_with(
@@ -72,7 +72,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_mark_as_fraudulent(self):
-        charge = libraries.stripe.Charge(id='ch_update_id')
+        charge = libraries.stripe3.Charge(id='ch_update_id')
         charge.mark_as_fraudulent(idempotency_key='foo')
 
         self.requestor_mock.request.assert_called_with(
@@ -85,7 +85,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_mark_as_safe(self):
-        charge = libraries.stripe.Charge(id='ch_update_id')
+        charge = libraries.stripe3.Charge(id='ch_update_id')
         charge.mark_as_safe(idempotency_key='foo')
 
         self.requestor_mock.request.assert_called_with(
@@ -98,7 +98,7 @@ class ChargeTest(StripeResourceTest):
         )
 
     def test_create_with_source_param(self):
-        libraries.stripe.Charge.create(amount=100, currency='usd',
+        libraries.stripe3.Charge.create(amount=100, currency='usd',
                              source='btcrcv_test_receiver')
 
         self.requestor_mock.request.assert_called_with(

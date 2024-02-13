@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_PLAN
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class PlanTest(StripeResourceTest):
 
     def test_create_plan(self):
-        libraries.stripe.Plan.create(**DUMMY_PLAN)
+        libraries.stripe3.Plan.create(**DUMMY_PLAN)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -17,7 +17,7 @@ class PlanTest(StripeResourceTest):
         )
 
     def test_delete_plan(self):
-        p = libraries.stripe.Plan(id="pl_delete")
+        p = libraries.stripe3.Plan(id="pl_delete")
         p.delete()
 
         self.requestor_mock.request.assert_called_with(
@@ -28,7 +28,7 @@ class PlanTest(StripeResourceTest):
         )
 
     def test_update_plan(self):
-        p = libraries.stripe.Plan(id="pl_update")
+        p = libraries.stripe3.Plan(id="pl_update")
         p.name = "Plan Name"
         p.save()
 

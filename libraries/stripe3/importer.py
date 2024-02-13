@@ -12,5 +12,5 @@ def import_json():
         "`from importer import json` instead'",
         DeprecationWarning)
 
-    from libraries.stripe.util import json
+    from libraries.stripe3.util import json
     return json

@@ -2,8 +2,8 @@ import datetime
 import time
 import warnings
 
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_CARD, DUMMY_PLAN
 )
 
@@ -11,7 +11,7 @@ from libraries.stripe.test.helper import (
 class CustomerTest(StripeResourceTest):
 
     def test_list_customers(self):
-        libraries.stripe.Customer.list()
+        libraries.stripe3.Customer.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/customers',
@@ -19,7 +19,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_create_customer(self):
-        libraries.stripe.Customer.create(description="foo bar", card=DUMMY_CARD,
+        libraries.stripe3.Customer.create(description="foo bar", card=DUMMY_CARD,
                                coupon='cu_discount', idempotency_key='foo')
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -33,7 +33,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_unset_description(self):
-        customer = libraries.stripe.Customer(id="cus_unset_desc")
+        customer = libraries.stripe3.Customer(id="cus_unset_desc")
         customer.description = "Hey"
         customer.save(idempotency_key='foo')
 
@@ -47,7 +47,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_del_coupon(self):
-        customer = libraries.stripe.Customer(id="cus_unset_desc")
+        customer = libraries.stripe3.Customer(id="cus_unset_desc")
         customer.description = "bar"
         customer.coupon = "foo"
         del customer.coupon
@@ -63,11 +63,11 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_cannot_set_empty_string(self):
-        customer = libraries.stripe.Customer()
+        customer = libraries.stripe3.Customer()
         self.assertRaises(ValueError, setattr, customer, "description", "")
 
     def test_customer_add_card(self):
-        customer = libraries.stripe.Customer.construct_from({
+        customer = libraries.stripe3.Customer.construct_from({
             'id': 'cus_add_card',
             'sources': {
                 'object': 'list',
@@ -86,7 +86,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_add_source(self):
-        customer = libraries.stripe.Customer.construct_from({
+        customer = libraries.stripe3.Customer.construct_from({
             'id': 'cus_add_source',
             'sources': {
                 'object': 'list',
@@ -105,7 +105,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_update_card(self):
-        card = libraries.stripe.Card.construct_from({
+        card = libraries.stripe3.Card.construct_from({
             'customer': 'cus_update_card',
             'id': 'ca_update_card',
         }, 'api_key')
@@ -122,7 +122,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_update_source(self):
-        source = libraries.stripe.BitcoinReceiver.construct_from({
+        source = libraries.stripe3.BitcoinReceiver.construct_from({
             'customer': 'cus_update_source',
             'id': 'btcrcv_update_source',
         }, 'api_key')
@@ -139,7 +139,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_update_alipay_account(self):
-        aa = libraries.stripe.AlipayAccount.construct_from({
+        aa = libraries.stripe3.AlipayAccount.construct_from({
             'customer': 'cus_update_alipay',
             'id': 'ali_update',
         }, 'api_key')
@@ -156,7 +156,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_delete_card(self):
-        card = libraries.stripe.Card.construct_from({
+        card = libraries.stripe3.Card.construct_from({
             'customer': 'cus_delete_card',
             'id': 'ca_delete_card',
         }, 'api_key')
@@ -170,7 +170,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_delete_source(self):
-        source = libraries.stripe.BitcoinReceiver.construct_from({
+        source = libraries.stripe3.BitcoinReceiver.construct_from({
             'customer': 'cus_delete_source',
             'id': 'btcrcv_delete_source',
         }, 'api_key')
@@ -184,7 +184,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_delete_alipay_account(self):
-        aa = libraries.stripe.AlipayAccount.construct_from({
+        aa = libraries.stripe3.AlipayAccount.construct_from({
             'customer': 'cus_delete_alipay',
             'id': 'ali_delete',
         }, 'api_key')
@@ -198,7 +198,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_delete_bank_account(self):
-        source = libraries.stripe.BankAccount.construct_from({
+        source = libraries.stripe3.BankAccount.construct_from({
             'customer': 'cus_delete_source',
             'id': 'ba_delete_source',
         }, 'api_key')
@@ -212,7 +212,7 @@ class CustomerTest(StripeResourceTest):
         )
 
     def test_customer_verify_bank_account(self):
-        source = libraries.stripe.BankAccount.construct_from({
+        source = libraries.stripe3.BankAccount.construct_from({
             'customer': 'cus_verify_source',
             'id': 'ba_verify_source',
         }, 'api_key')
@@ -229,7 +229,7 @@ class CustomerTest(StripeResourceTest):
 class CustomerPlanTest(StripeResourceTest):
 
     def test_create_customer(self):
-        libraries.stripe.Customer.create(plan=DUMMY_PLAN['id'], card=DUMMY_CARD)
+        libraries.stripe3.Customer.create(plan=DUMMY_PLAN['id'], card=DUMMY_CARD)
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -243,7 +243,7 @@ class CustomerPlanTest(StripeResourceTest):
 
     def test_legacy_update_subscription(self):
         with warnings.catch_warnings(record=True) as w:
-            customer = libraries.stripe.Customer(id="cus_legacy_sub_update")
+            customer = libraries.stripe3.Customer(id="cus_legacy_sub_update")
             customer.update_subscription(idempotency_key='foo',
                                          plan=DUMMY_PLAN['id'])
 
@@ -261,7 +261,7 @@ class CustomerPlanTest(StripeResourceTest):
 
     def test_legacy_delete_subscription(self):
         with warnings.catch_warnings(record=True) as w:
-            customer = libraries.stripe.Customer(id="cus_legacy_sub_delete")
+            customer = libraries.stripe3.Customer(id="cus_legacy_sub_delete")
             customer.cancel_subscription()
 
             self.requestor_mock.request.assert_called_with(
@@ -275,7 +275,7 @@ class CustomerPlanTest(StripeResourceTest):
             self.assertTrue(issubclass(w[-1].category, DeprecationWarning))
 
     def test_list_customer_subscriptions(self):
-        customer = libraries.stripe.Customer.construct_from({
+        customer = libraries.stripe3.Customer.construct_from({
             'id': 'cus_foo',
             'subscriptions': {
                 'object': 'list',
@@ -293,7 +293,7 @@ class CustomerPlanTest(StripeResourceTest):
         )
 
     def test_create_customer_subscription(self):
-        customer = libraries.stripe.Customer.construct_from({
+        customer = libraries.stripe3.Customer.construct_from({
             'id': 'cus_sub_create',
             'subscriptions': {
                 'object': 'list',
@@ -314,7 +314,7 @@ class CustomerPlanTest(StripeResourceTest):
         )
 
     def test_retrieve_customer_subscription(self):
-        customer = libraries.stripe.Customer.construct_from({
+        customer = libraries.stripe3.Customer.construct_from({
             'id': 'cus_foo',
             'subscriptions': {
                 'object': 'list',
@@ -332,7 +332,7 @@ class CustomerPlanTest(StripeResourceTest):
         )
 
     def test_update_customer_subscription(self):
-        subscription = libraries.stripe.Subscription.construct_from({
+        subscription = libraries.stripe3.Subscription.construct_from({
             'id': "sub_update",
             'customer': "cus_foo",
         }, 'api_key')
@@ -355,7 +355,7 @@ class CustomerPlanTest(StripeResourceTest):
         )
 
     def test_delete_customer_subscription(self):
-        subscription = libraries.stripe.Subscription.construct_from({
+        subscription = libraries.stripe3.Subscription.construct_from({
             'id': "sub_delete",
             'customer': "cus_foo",
         }, 'api_key')

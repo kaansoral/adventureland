@@ -2,16 +2,16 @@
 import os
 import sys
 import unittest2
-import libraries.stripe
+import libraries.stripe3
 
 if 1/2 != 0: str=str
 
 from mock import patch
-from libraries.stripe.test.helper import (StripeTestCase, NOW, DUMMY_CHARGE, DUMMY_CARD)
+from libraries.stripe3.test.helper import (StripeTestCase, NOW, DUMMY_CHARGE, DUMMY_CARD)
 
 
 class FunctionalTests(StripeTestCase):
-    request_client = libraries.stripe.http_client.Urllib2Client
+    request_client = libraries.stripe3.http_client.Urllib2Client
 
     def setUp(self):
         super(FunctionalTests, self).setUp()
@@ -31,23 +31,23 @@ class FunctionalTests(StripeTestCase):
         self.client_patcher.stop()
 
     def test_dns_failure(self):
-        api_base = libraries.stripe.api_base
+        api_base = libraries.stripe3.api_base
         try:
-            libraries.stripe.api_base = 'https://my-invalid-domain.ireallywontresolve/v1'
+            libraries.stripe3.api_base = 'https://my-invalid-domain.ireallywontresolve/v1'
             self.assertRaises(stripe.error.APIConnectionError,
-                              libraries.stripe.Customer.create)
+                              libraries.stripe3.Customer.create)
         finally:
-            libraries.stripe.api_base = api_base
+            libraries.stripe3.api_base = api_base
 
     def test_run(self):
-        charge = libraries.stripe.Charge.create(**DUMMY_CHARGE)
+        charge = libraries.stripe3.Charge.create(**DUMMY_CHARGE)
         self.assertFalse(charge.refunded)
         charge.refund()
         self.assertTrue(charge.refunded)
 
     def test_refresh(self):
-        charge = libraries.stripe.Charge.create(**DUMMY_CHARGE)
-        charge2 = libraries.stripe.Charge.retrieve(charge.id)
+        charge = libraries.stripe3.Charge.create(**DUMMY_CHARGE)
+        charge2 = libraries.stripe3.Charge.retrieve(charge.id)
         self.assertEqual(charge2.created, charge.created)
 
         charge2.junk = 'junk'
@@ -55,7 +55,7 @@ class FunctionalTests(StripeTestCase):
         self.assertRaises(AttributeError, lambda: charge2.junk)
 
     def test_list_accessors(self):
-        customer = libraries.stripe.Customer.create(card=DUMMY_CARD)
+        customer = libraries.stripe3.Customer.create(card=DUMMY_CARD)
         self.assertEqual(customer['created'], customer.created)
         customer['foo'] = 'bar'
         self.assertEqual(customer.foo, 'bar')
@@ -64,7 +64,7 @@ class FunctionalTests(StripeTestCase):
         EXPIRED_CARD = DUMMY_CARD.copy()
         EXPIRED_CARD['exp_month'] = NOW.month - 2
         EXPIRED_CARD['exp_year'] = NOW.year - 2
-        self.assertRaises(stripe.error.CardError, libraries.stripe.Charge.create,
+        self.assertRaises(stripe.error.CardError, libraries.stripe3.Charge.create,
                           amount=100, currency='usd', card=EXPIRED_CARD)
 
     def test_response_headers(self):
@@ -72,35 +72,35 @@ class FunctionalTests(StripeTestCase):
         EXPIRED_CARD['exp_month'] = NOW.month - 2
         EXPIRED_CARD['exp_year'] = NOW.year - 2
         try:
-            libraries.stripe.Charge.create(amount=100, currency='usd', card=EXPIRED_CARD)
+            libraries.stripe3.Charge.create(amount=100, currency='usd', card=EXPIRED_CARD)
             self.fail('charge creation with expired card did not fail')
-        except libraries.stripe.error.CardError as e:
+        except libraries.stripe3.error.CardError as e:
             self.assertTrue(e.request_id.startswith('req_'))
 
     def test_unicode(self):
         # Make sure unicode requests can be sent
         self.assertRaises(stripe.error.InvalidRequestError,
-                          libraries.stripe.Charge.retrieve,
+                          libraries.stripe3.Charge.retrieve,
                           id='☃')
 
     def test_none_values(self):
-        customer = libraries.stripe.Customer.create(plan=None)
+        customer = libraries.stripe3.Customer.create(plan=None)
         self.assertTrue(customer.id)
 
     def test_missing_id(self):
-        customer = libraries.stripe.Customer()
+        customer = libraries.stripe3.Customer()
         self.assertRaises(stripe.error.InvalidRequestError, customer.refresh)
 
 
 class RequestsFunctionalTests(FunctionalTests):
-    request_client = libraries.stripe.http_client.RequestsClient
+    request_client = libraries.stripe3.http_client.RequestsClient
 
 
 class UrlfetchFunctionalTests(FunctionalTests):
     request_client = 'urlfetch'
 
     def setUp(self):
-        if libraries.stripe.http_client.urlfetch is None:
+        if libraries.stripe3.http_client.urlfetch is None:
             self.skipTest(
                 '`urlfetch` from Google App Engine is unavailable.')
         else:
@@ -117,17 +117,17 @@ class PycurlFunctionalTests(FunctionalTests):
         else:
             super(PycurlFunctionalTests, self).setUp()
 
-    request_client = libraries.stripe.http_client.PycurlClient
+    request_client = libraries.stripe3.http_client.PycurlClient
 
 
 class AuthenticationErrorTest(StripeTestCase):
 
     def test_invalid_credentials(self):
-        key = libraries.stripe.api_key
+        key = libraries.stripe3.api_key
         try:
-            libraries.stripe.api_key = 'invalid'
-            libraries.stripe.Customer.create()
-        except libraries.stripe.error.AuthenticationError as e:
+            libraries.stripe3.api_key = 'invalid'
+            libraries.stripe3.Customer.create()
+        except libraries.stripe3.error.AuthenticationError as e:
             self.assertEqual(401, e.http_status)
             self.assertTrue(isinstance(e.http_body, str))
             self.assertTrue(isinstance(e.json_body, dict))
@@ -135,7 +135,7 @@ class AuthenticationErrorTest(StripeTestCase):
             # facilities in the API server so currently no Request ID is
             # returned.
         finally:
-            libraries.stripe.api_key = key
+            libraries.stripe3.api_key = key
 
 
 class CardErrorTest(StripeTestCase):
@@ -145,8 +145,8 @@ class CardErrorTest(StripeTestCase):
         EXPIRED_CARD['exp_month'] = NOW.month - 2
         EXPIRED_CARD['exp_year'] = NOW.year - 2
         try:
-            libraries.stripe.Charge.create(amount=100, currency='usd', card=EXPIRED_CARD)
-        except libraries.stripe.error.CardError as e:
+            libraries.stripe3.Charge.create(amount=100, currency='usd', card=EXPIRED_CARD)
+        except libraries.stripe3.error.CardError as e:
             self.assertEqual(402, e.http_status)
             self.assertTrue(isinstance(e.http_body, str))
             self.assertTrue(isinstance(e.json_body, dict))
@@ -157,8 +157,8 @@ class InvalidRequestErrorTest(StripeTestCase):
 
     def test_nonexistent_object(self):
         try:
-            libraries.stripe.Charge.retrieve('invalid')
-        except libraries.stripe.error.InvalidRequestError as e:
+            libraries.stripe3.Charge.retrieve('invalid')
+        except libraries.stripe3.error.InvalidRequestError as e:
             self.assertEqual(404, e.http_status)
             self.assertTrue(isinstance(e.http_body, str))
             self.assertTrue(isinstance(e.json_body, dict))
@@ -166,8 +166,8 @@ class InvalidRequestErrorTest(StripeTestCase):
 
     def test_invalid_data(self):
         try:
-            libraries.stripe.Charge.create()
-        except libraries.stripe.error.InvalidRequestError as e:
+            libraries.stripe3.Charge.create()
+        except libraries.stripe3.error.InvalidRequestError as e:
             self.assertEqual(400, e.http_status)
             self.assertTrue(isinstance(e.http_body, str))
             self.assertTrue(isinstance(e.json_body, dict))

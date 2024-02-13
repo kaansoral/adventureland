@@ -4,9 +4,9 @@ import urllib.parse
 
 from mock import Mock, ANY
 
-import libraries.stripe
+import libraries.stripe3
 
-from libraries.stripe.test.helper import StripeUnitTestCase
+from libraries.stripe3.test.helper import StripeUnitTestCase
 
 VALID_API_METHODS = ('get', 'post', 'delete')
 
@@ -29,7 +29,7 @@ class APIHeaderMatcher(object):
 
     def __init__(self, api_key=None, extra={}, request_method=None):
         self.request_method = request_method
-        self.api_key = api_key or libraries.stripe.api_key
+        self.api_key = api_key or libraries.stripe3.api_key
         self.extra = extra
 
     def __eq__(self, other):
@@ -64,7 +64,7 @@ class QueryMatcher(object):
     def __eq__(self, other):
         query = urllib.parse.urlsplit(other).query or other
 
-        parsed = libraries.stripe.util.parse_qsl(query)
+        parsed = libraries.stripe3.util.parse_qsl(query)
         return self.expected == sorted(parsed)
 
 
@@ -124,7 +124,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
             ('%s[]', 'baz'),
         ],
         'string': [('%s', 'boo')],
-        'unicode': [('%s', libraries.stripe.util.utf8('\u1234'))],
+        'unicode': [('%s', libraries.stripe3.util.utf8('\u1234'))],
         'datetime': [('%s', 1356994801)],
         'none': [],
     }
@@ -136,7 +136,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
         self.http_client._verify_ssl_certs = True
         self.http_client.name = 'mockclient'
 
-        self.requestor = libraries.stripe.api_requestor.APIRequestor(
+        self.requestor = libraries.stripe3.api_requestor.APIRequestor(
             client=self.http_client)
 
     def mock_response(self, return_body, return_code, requestor=None,
@@ -183,7 +183,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
     def _test_encode_naive_datetime(self):
         stk = []
 
-        libraries.stripe.api_requestor.APIRequestor.encode_datetime(
+        libraries.stripe3.api_requestor.APIRequestor.encode_datetime(
             stk, 'test', datetime.datetime(2013, 1, 1))
 
         # Naive datetimes will encode differently depending on your system
@@ -286,7 +286,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
 
     def test_uses_instance_key(self):
         key = 'fookey'
-        requestor = libraries.stripe.api_requestor.APIRequestor(key,
+        requestor = libraries.stripe3.api_requestor.APIRequestor(key,
                                                       client=self.http_client)
 
         self.mock_response('{}', 200, requestor=requestor)
@@ -298,7 +298,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
         self.assertEqual(key, used_key)
 
     def test_passes_api_version(self):
-        libraries.stripe.api_version = 'fooversion'
+        libraries.stripe3.api_version = 'fooversion'
 
         self.mock_response('{}', 200)
 
@@ -309,7 +309,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
 
     def test_uses_instance_account(self):
         account = 'acct_foo'
-        requestor = libraries.stripe.api_requestor.APIRequestor(account=account,
+        requestor = libraries.stripe3.api_requestor.APIRequestor(account=account,
                                                       client=self.http_client)
 
         self.mock_response('{}', 200, requestor=requestor)
@@ -326,7 +326,7 @@ class APIRequestorRequestTests(StripeUnitTestCase):
         )
 
     def test_fails_without_api_key(self):
-        libraries.stripe.api_key = None
+        libraries.stripe3.api_key = None
 
         self.assertRaises(stripe.error.AuthenticationError,
                           self.requestor.request,
@@ -393,8 +393,8 @@ class APIRequestorRequestTests(StripeUnitTestCase):
 class DefaultClientTests(unittest2.TestCase):
 
     def setUp(self):
-        libraries.stripe.default_http_client = None
-        libraries.stripe.api_key = 'foo'
+        libraries.stripe3.default_http_client = None
+        libraries.stripe3.api_key = 'foo'
 
     def test_default_http_client_called(self):
         hc = Mock(stripe.http_client.HTTPClient)
@@ -402,15 +402,15 @@ class DefaultClientTests(unittest2.TestCase):
         hc.name = 'mockclient'
         hc.request = Mock(return_value=("{}", 200, {}))
 
-        libraries.stripe.default_http_client = hc
-        libraries.stripe.Charge.list(limit=3)
+        libraries.stripe3.default_http_client = hc
+        libraries.stripe3.Charge.list(limit=3)
 
         hc.request.assert_called_with(
             'get', 'https://api.stripe.com/v1/charges?limit=3', ANY, None)
 
     def tearDown(self):
-        libraries.stripe.api_key = None
-        libraries.stripe.default_http_client = None
+        libraries.stripe3.api_key = None
+        libraries.stripe3.default_http_client = None
 
 
 if __name__ == '__main__':

@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class ReversalTest(StripeResourceTest):
 
     def test_fetch_reversal(self):
-        transfer = libraries.stripe.Charge.construct_from({
+        transfer = libraries.stripe3.Charge.construct_from({
             'id': 'tr_get',
             'reversals': {
                 'object': 'list',
@@ -23,7 +23,7 @@ class ReversalTest(StripeResourceTest):
         )
 
     def test_list_reversals(self):
-        transfer = libraries.stripe.Charge.construct_from({
+        transfer = libraries.stripe3.Charge.construct_from({
             'id': 'tr_list',
             'reversals': {
                 'object': 'list',
@@ -41,7 +41,7 @@ class ReversalTest(StripeResourceTest):
         )
 
     def test_update_transfer(self):
-        reversal = libraries.stripe.resource.Reversal.construct_from({
+        reversal = libraries.stripe3.resource.Reversal.construct_from({
             'id': "rev_update",
             'transfer': "tr_update",
             'metadata': {},

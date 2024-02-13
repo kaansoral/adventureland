@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeApiTestCase, MyCreatable
 )
 
@@ -17,7 +17,7 @@ class CreateableAPIResourceTests(StripeApiTestCase):
         self.requestor_mock.request.assert_called_with(
             'post', '/v1/mycreatables', {}, None)
 
-        self.assertTrue(isinstance(res, libraries.stripe.Charge))
+        self.assertTrue(isinstance(res, libraries.stripe3.Charge))
         self.assertEqual('bar', res.foo)
 
     def test_idempotent_create(self):
@@ -31,5 +31,5 @@ class CreateableAPIResourceTests(StripeApiTestCase):
         self.requestor_mock.request.assert_called_with(
             'post', '/v1/mycreatables', {}, {'Idempotency-Key': 'foo'})
 
-        self.assertTrue(isinstance(res, libraries.stripe.Charge))
+        self.assertTrue(isinstance(res, libraries.stripe3.Charge))
         self.assertEqual('bar', res.foo)

@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class ThreeDSecureTest(StripeResourceTest):
 
     def test_threedsecure_create(self):
-        libraries.stripe.ThreeDSecure.create(
+        libraries.stripe3.ThreeDSecure.create(
             card="tok_test",
             amount=1500,
             currency="usd",

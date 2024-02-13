@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class TransferTest(StripeResourceTest):
 
     def test_list_transfers(self):
-        libraries.stripe.Transfer.list()
+        libraries.stripe3.Transfer.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/transfers',
@@ -13,7 +13,7 @@ class TransferTest(StripeResourceTest):
         )
 
     def test_cancel_transfer(self):
-        transfer = libraries.stripe.Transfer(id='tr_cancel')
+        transfer = libraries.stripe3.Transfer(id='tr_cancel')
         transfer.cancel()
 
         self.requestor_mock.request.assert_called_with(

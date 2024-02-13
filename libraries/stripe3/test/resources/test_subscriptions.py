@@ -1,8 +1,8 @@
 import datetime
 import time
 
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_PLAN
 )
 
@@ -10,7 +10,7 @@ from libraries.stripe.test.helper import (
 class SubscriptionTest(StripeResourceTest):
 
     def test_list_subscriptions(self):
-        libraries.stripe.Subscription.all(customer="test_cus", plan=DUMMY_PLAN['id'],
+        libraries.stripe3.Subscription.all(customer="test_cus", plan=DUMMY_PLAN['id'],
                                 limit=3)
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -23,7 +23,7 @@ class SubscriptionTest(StripeResourceTest):
         )
 
     def test_retrieve_subscription(self):
-        libraries.stripe.Subscription.retrieve('test_sub')
+        libraries.stripe3.Subscription.retrieve('test_sub')
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -33,7 +33,7 @@ class SubscriptionTest(StripeResourceTest):
         )
 
     def test_create_subscription(self):
-        libraries.stripe.Subscription.create(customer="test_cus", plan=DUMMY_PLAN['id'])
+        libraries.stripe3.Subscription.create(customer="test_cus", plan=DUMMY_PLAN['id'])
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -46,7 +46,7 @@ class SubscriptionTest(StripeResourceTest):
         )
 
     def test_update_subscription(self):
-        subscription = libraries.stripe.Subscription.construct_from({
+        subscription = libraries.stripe3.Subscription.construct_from({
             'id': 'test_sub',
             'customer': 'test_cus',
         }, 'api_key')
@@ -72,7 +72,7 @@ class SubscriptionTest(StripeResourceTest):
         trial_end_dttm = datetime.datetime.now() + datetime.timedelta(days=15)
         trial_end_int = int(time.mktime(trial_end_dttm.timetuple()))
 
-        libraries.stripe.Subscription.modify('test_sub',
+        libraries.stripe3.Subscription.modify('test_sub',
                                    plan=DUMMY_PLAN['id'],
                                    trial_end=trial_end_int)
 
@@ -87,7 +87,7 @@ class SubscriptionTest(StripeResourceTest):
         )
 
     def test_delete_subscription(self):
-        subscription = libraries.stripe.Subscription.construct_from({
+        subscription = libraries.stripe3.Subscription.construct_from({
             'id': 'test_sub',
             'customer': 'test_cus',
         }, 'api_key')
@@ -102,7 +102,7 @@ class SubscriptionTest(StripeResourceTest):
         )
 
     def test_delete_subscription_discount(self):
-        subscription = libraries.stripe.Subscription.construct_from({
+        subscription = libraries.stripe3.Subscription.construct_from({
             'id': 'test_sub',
             'customer': 'test_cus',
             'coupon': 'test_discount'

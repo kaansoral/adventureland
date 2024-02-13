@@ -1,14 +1,14 @@
 import tempfile
 
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class FileUploadTest(StripeResourceTest):
 
     def test_create_file_upload(self):
         test_file = tempfile.TemporaryFile()
-        libraries.stripe.FileUpload.create(
+        libraries.stripe3.FileUpload.create(
             purpose='dispute_evidence',
             file=test_file
         )
@@ -23,7 +23,7 @@ class FileUploadTest(StripeResourceTest):
         )
 
     def test_fetch_file_upload(self):
-        libraries.stripe.FileUpload.retrieve("fil_foo")
+        libraries.stripe3.FileUpload.retrieve("fil_foo")
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/files/fil_foo',
@@ -32,7 +32,7 @@ class FileUploadTest(StripeResourceTest):
         )
 
     def test_list_file_uploads(self):
-        libraries.stripe.FileUpload.list()
+        libraries.stripe3.FileUpload.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/files',

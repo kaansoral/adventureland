@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_COUPON
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class CouponTest(StripeResourceTest):
 
     def test_create_coupon(self):
-        libraries.stripe.Coupon.create(**DUMMY_COUPON)
+        libraries.stripe3.Coupon.create(**DUMMY_COUPON)
         self.requestor_mock.request.assert_called_with(
             'post',
             '/v1/coupons',
@@ -16,7 +16,7 @@ class CouponTest(StripeResourceTest):
         )
 
     def test_update_coupon(self):
-        coup = libraries.stripe.Coupon.construct_from({
+        coup = libraries.stripe3.Coupon.construct_from({
             'id': 'cu_update',
             'metadata': {},
         }, 'api_key')
@@ -35,7 +35,7 @@ class CouponTest(StripeResourceTest):
         )
 
     def test_delete_coupon(self):
-        c = libraries.stripe.Coupon(id='cu_delete')
+        c = libraries.stripe3.Coupon(id='cu_delete')
         c.delete()
 
         self.requestor_mock.request.assert_called_with(
@@ -46,7 +46,7 @@ class CouponTest(StripeResourceTest):
         )
 
     def test_detach_coupon(self):
-        customer = libraries.stripe.Customer(id="cus_delete_discount")
+        customer = libraries.stripe3.Customer(id="cus_delete_discount")
         customer.delete_discount()
 
         self.requestor_mock.request.assert_called_with(

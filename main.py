@@ -225,7 +225,7 @@ def serve_resort_get(name="",suffix=""):
 	if not name: return
 	name=name.split("/")[0]
 	domain=gdi(request); user=get_user(request,domain)
-	if security_threat(request,domain): return
+	if security_threat(request,domain): return "security_threat"
 	if not user or (not name.startswith("%s_"%user.k()) and user.k() not in inner_circle): return
 	number=name.split("_")[1]
 	if number not in ["1","2","3","4","5","6","7","8","9","10"]: return

@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class ApplicationFeeTest(StripeResourceTest):
 
     def test_list_application_fees(self):
-        libraries.stripe.ApplicationFee.list()
+        libraries.stripe3.ApplicationFee.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/application_fees',
@@ -16,7 +16,7 @@ class ApplicationFeeTest(StripeResourceTest):
 class ApplicationFeeRefundTest(StripeResourceTest):
 
     def test_fetch_refund(self):
-        fee = libraries.stripe.ApplicationFee.construct_from({
+        fee = libraries.stripe3.ApplicationFee.construct_from({
             'id': 'fee_get_refund',
             'refunds': {
                 'object': 'list',
@@ -34,7 +34,7 @@ class ApplicationFeeRefundTest(StripeResourceTest):
         )
 
     def test_list_refunds(self):
-        fee = libraries.stripe.ApplicationFee.construct_from({
+        fee = libraries.stripe3.ApplicationFee.construct_from({
             'id': 'fee_get_refund',
             'refunds': {
                 'object': 'list',
@@ -53,11 +53,11 @@ class ApplicationFeeRefundTest(StripeResourceTest):
 
     def test_update_refund(self):
         def side_effect(*args):
-            raise libraries.stripe.InvalidRequestError('invalid', 'foo')
+            raise libraries.stripe3.InvalidRequestError('invalid', 'foo')
 
         self.requestor_mock.request.side_effect = side_effect
 
-        refund = libraries.stripe.resource.ApplicationFeeRefund.construct_from({
+        refund = libraries.stripe3.resource.ApplicationFeeRefund.construct_from({
             'id': "ref_update",
             'fee': "fee_update",
             'metadata': {},
@@ -67,7 +67,7 @@ class ApplicationFeeRefundTest(StripeResourceTest):
 
         try:
             refund.save()
-        except libraries.stripe.InvalidRequestError:
+        except libraries.stripe3.InvalidRequestError:
             pass
 
         self.requestor_mock.request.assert_called_with(
@@ -98,7 +98,7 @@ class ApplicationFeeRefundTest(StripeResourceTest):
         )
 
     def test_modify_refund(self):
-        libraries.stripe.resource.ApplicationFeeRefund.modify("fee_update", "ref_update",
+        libraries.stripe3.resource.ApplicationFeeRefund.modify("fee_update", "ref_update",
                                                     metadata={'key': 'foo'},
                                                     api_key='api_key')
         self.requestor_mock.request.assert_called_with(

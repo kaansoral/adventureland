@@ -1,5 +1,5 @@
-import libraries.stripe
-from libraries.stripe.test.helper import (
+import libraries.stripe3
+from libraries.stripe3.test.helper import (
     StripeResourceTest, DUMMY_CARD
 )
 
@@ -7,7 +7,7 @@ from libraries.stripe.test.helper import (
 class RecipientTest(StripeResourceTest):
 
     def test_list_recipients(self):
-        libraries.stripe.Recipient.list()
+        libraries.stripe3.Recipient.list()
         self.requestor_mock.request.assert_called_with(
             'get',
             '/v1/recipients',
@@ -15,7 +15,7 @@ class RecipientTest(StripeResourceTest):
         )
 
     def test_recipient_transfers(self):
-        recipient = libraries.stripe.Recipient(id='rp_transfer')
+        recipient = libraries.stripe3.Recipient(id='rp_transfer')
         recipient.transfers()
 
         self.requestor_mock.request.assert_called_with(
@@ -25,7 +25,7 @@ class RecipientTest(StripeResourceTest):
         )
 
     def test_recipient_add_card(self):
-        recipient = libraries.stripe.Recipient.construct_from({
+        recipient = libraries.stripe3.Recipient.construct_from({
             'id': 'rp_add_card',
             'sources': {
                 'object': 'list',
@@ -44,7 +44,7 @@ class RecipientTest(StripeResourceTest):
         )
 
     def test_recipient_update_card(self):
-        card = libraries.stripe.Card.construct_from({
+        card = libraries.stripe3.Card.construct_from({
             'recipient': 'rp_update_card',
             'id': 'ca_update_card',
         }, 'api_key')
@@ -61,7 +61,7 @@ class RecipientTest(StripeResourceTest):
         )
 
     def test_recipient_delete_card(self):
-        card = libraries.stripe.Card.construct_from({
+        card = libraries.stripe3.Card.construct_from({
             'recipient': 'rp_delete_card',
             'id': 'ca_delete_card',
         }, 'api_key')

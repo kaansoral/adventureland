@@ -1,22 +1,22 @@
 import pickle
 import sys
 
-import libraries.stripe
-from libraries.stripe import util
-from libraries.stripe.test.helper import StripeUnitTestCase, SAMPLE_INVOICE
+import libraries.stripe3
+from libraries.stripe3 import util
+from libraries.stripe3.test.helper import StripeUnitTestCase, SAMPLE_INVOICE
 
 
 class StripeObjectTests(StripeUnitTestCase):
 
     def test_initializes_with_parameters(self):
-        obj = libraries.stripe.resource.StripeObject(
+        obj = libraries.stripe3.resource.StripeObject(
             'foo', 'bar', myparam=5, yourparam='boo')
 
         self.assertEqual('foo', obj.id)
         self.assertEqual('bar', obj.api_key)
 
     def test_access(self):
-        obj = libraries.stripe.resource.StripeObject('myid', 'mykey', myparam=5)
+        obj = libraries.stripe3.resource.StripeObject('myid', 'mykey', myparam=5)
 
         # Empty
         self.assertRaises(AttributeError, getattr, obj, 'myattr')
@@ -44,7 +44,7 @@ class StripeObjectTests(StripeUnitTestCase):
         self.assertRaises(ValueError, setattr, obj, 'foo', '')
 
     def test_refresh_from(self):
-        obj = libraries.stripe.resource.StripeObject.construct_from({
+        obj = libraries.stripe3.resource.StripeObject.construct_from({
             'foo': 'bar',
             'trans': 'me',
         }, 'mykey')
@@ -74,7 +74,7 @@ class StripeObjectTests(StripeUnitTestCase):
         self.assertEqual(4, obj.trans)
 
     def test_passing_nested_refresh(self):
-        obj = libraries.stripe.resource.StripeObject.construct_from({
+        obj = libraries.stripe3.resource.StripeObject.construct_from({
             'foos': {
                 'type': 'list',
                 'data': [
@@ -91,17 +91,17 @@ class StripeObjectTests(StripeUnitTestCase):
         self.assertEqual('acct_foo', nested.stripe_account)
 
     def test_refresh_from_nested_object(self):
-        obj = libraries.stripe.resource.StripeObject.construct_from(
+        obj = libraries.stripe3.resource.StripeObject.construct_from(
             SAMPLE_INVOICE, 'key')
 
         self.assertEqual(1, len(obj.lines.subscriptions))
         self.assertTrue(
             isinstance(obj.lines.subscriptions[0],
-                       libraries.stripe.resource.StripeObject))
+                       libraries.stripe3.resource.StripeObject))
         self.assertEqual('month', obj.lines.subscriptions[0].plan.interval)
 
     def test_to_json(self):
-        obj = libraries.stripe.resource.StripeObject.construct_from(
+        obj = libraries.stripe3.resource.StripeObject.construct_from(
             SAMPLE_INVOICE, 'key')
 
         self.check_invoice_data(util.json.loads(str(obj)))
@@ -121,7 +121,7 @@ class StripeObjectTests(StripeUnitTestCase):
                          data['lines']['subscriptions'][0]['plan']['interval'])
 
     def test_repr(self):
-        obj = libraries.stripe.resource.StripeObject(
+        obj = libraries.stripe3.resource.StripeObject(
             'foo', 'bar', myparam=5)
 
         obj['object'] = '\u4e00boo\u1f00'
@@ -135,7 +135,7 @@ class StripeObjectTests(StripeUnitTestCase):
         self.assertTrue('id=foo' in res)
 
     def test_pickling(self):
-        obj = libraries.stripe.resource.StripeObject(
+        obj = libraries.stripe3.resource.StripeObject(
             'foo', 'bar', myparam=5)
 
         obj['object'] = 'boo'
@@ -152,7 +152,7 @@ class StripeObjectTests(StripeUnitTestCase):
         self.assertEqual('lalala', newobj.fala)
 
     def test_deletion(self):
-        obj = libraries.stripe.resource.StripeObject('id', 'key')
+        obj = libraries.stripe3.resource.StripeObject('id', 'key')
 
         obj.coupon = "foo"
         self.assertEqual('foo', obj.coupon)

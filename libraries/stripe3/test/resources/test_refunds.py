@@ -1,11 +1,11 @@
-import libraries.stripe
-from libraries.stripe.test.helper import StripeResourceTest
+import libraries.stripe3
+from libraries.stripe3.test.helper import StripeResourceTest
 
 
 class RefundTest(StripeResourceTest):
 
     def test_create_refund(self):
-        libraries.stripe.Refund.create(charge='ch_foo')
+        libraries.stripe3.Refund.create(charge='ch_foo')
 
         self.requestor_mock.request.assert_called_with(
             'post',
@@ -15,7 +15,7 @@ class RefundTest(StripeResourceTest):
         )
 
     def test_fetch_refund(self):
-        libraries.stripe.Refund.retrieve('re_foo')
+        libraries.stripe3.Refund.retrieve('re_foo')
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -25,7 +25,7 @@ class RefundTest(StripeResourceTest):
         )
 
     def test_list_refunds(self):
-        libraries.stripe.Refund.list(limit=3, charge='ch_foo')
+        libraries.stripe3.Refund.list(limit=3, charge='ch_foo')
 
         self.requestor_mock.request.assert_called_with(
             'get',
@@ -34,7 +34,7 @@ class RefundTest(StripeResourceTest):
         )
 
     def test_update_refund(self):
-        refund = libraries.stripe.resource.Refund.construct_from({
+        refund = libraries.stripe3.resource.Refund.construct_from({
             'id': "ref_update",
             'charge': "ch_update",
             'metadata': {},
@@ -57,7 +57,7 @@ class RefundTest(StripeResourceTest):
 class ChargeRefundTest(StripeResourceTest):
 
     def test_create_refund(self):
-        charge = libraries.stripe.Charge.construct_from({
+        charge = libraries.stripe3.Charge.construct_from({
             'id': 'ch_foo',
             'refunds': {
                 'object': 'list',
@@ -75,7 +75,7 @@ class ChargeRefundTest(StripeResourceTest):
         )
 
     def test_non_recursive_save(self):
-        charge = libraries.stripe.Charge.construct_from({
+        charge = libraries.stripe3.Charge.construct_from({
             'id': 'ch_nested_update',
             'customer': {
                 'object': 'customer',
@@ -105,7 +105,7 @@ class ChargeRefundTest(StripeResourceTest):
         )
 
     def test_fetch_refund(self):
-        charge = libraries.stripe.Charge.construct_from({
+        charge = libraries.stripe3.Charge.construct_from({
             'id': 'ch_get_refund',
             'refunds': {
                 'object': 'list',
@@ -123,7 +123,7 @@ class ChargeRefundTest(StripeResourceTest):
         )
 
     def test_list_refunds(self):
-        charge = libraries.stripe.Charge.construct_from({
+        charge = libraries.stripe3.Charge.construct_from({
             'id': 'ch_get_refund',
             'refunds': {
                 'object': 'list',
@@ -141,7 +141,7 @@ class ChargeRefundTest(StripeResourceTest):
         )
 
     def test_update_refund(self):
-        refund = libraries.stripe.resource.Refund.construct_from({
+        refund = libraries.stripe3.resource.Refund.construct_from({
             'id': "ref_update",
             'charge': "ch_update",
             'metadata': {},
