@@ -221,6 +221,7 @@ skills={
 		"cooldown":60000,
 		"target":"monster",
 		"hostile":True,
+		"use_range":True,
 	},
 	"tangle":{
 		"type":"skill",
