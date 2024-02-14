@@ -606,6 +606,9 @@ skills={
 		"cooldown":10000,
 		"target":True,
 		"hostile":True,
+		"range_multiplier":3,
+		"range_bonus":20,
+		"use_range": True
 	},
 	"pcoat":{
 		"type":"skill",
