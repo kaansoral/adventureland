@@ -1710,8 +1710,9 @@ def simplify_args_for_logging(args):
 @app.route('/api', methods=['POST'])
 @app.route('/api/<name>', methods=['POST'])
 @app.route('/api/<name>/<extra>', methods=['POST'])
+@app.route('/api/<name>/<extra>/<extra2>', methods=['POST'])
 @ndb.toplevel
-def server_api(name="",extra=""):
+def server_api(name="",extra="",extra2=""):
 	self=request # [26/01/24] easier for now
 	domain=gdi(self)
 	server=get_server(self,domain)
