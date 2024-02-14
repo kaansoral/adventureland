@@ -232,6 +232,8 @@ skills={
 		"cooldown":60000,
 		"target":True,
 		"hostile":True,
+		"use_range":True,
+		"range_multiplier":2,
 	},
 	"rspeed":{
 		"type":"skill",
