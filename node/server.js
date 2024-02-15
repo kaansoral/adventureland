@@ -8703,7 +8703,6 @@ function init_io() {
 							continue;
 						}
 						if (!c_resolve) {
-							consume_mp(player, gSkill.mp, target);
 							c_resolve = attack;
 							attack.pids = [attack.pid];
 							attack.targets = [attack.target];
@@ -8715,6 +8714,7 @@ function init_io() {
 				}
 				player.halt = false;
 				player.to_resend = "u+cid";
+				consume_mp(player, gSkill.mp, target);
 				if (!c_resolve) {
 					reject = { failed: true, place: data.name, reason: "no_target" };
 					disappearing_text(player.socket, player, "NO HITS");
