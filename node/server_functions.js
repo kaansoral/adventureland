@@ -2684,20 +2684,21 @@ function add_condition(target, condition, args) {
 		if (Math.random() < (target.firesistance || 0) / 100.0) {
 			return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
 		}
+		let scale = (1.0 - (target.firesistance || 0) / 100.0);
 
 		duration = 5000;
 		if (!args.attack) {
 			args.attack = 1000;
 		}
 		if (args.divider == 3 && target.s.burned && target.s.burned.ms) {
-			duration = min(
+			duration = parseInt(scale * min(
 				12000,
 				max(duration + 400, min(8000, parseInt(duration / 4 + (50 * args.attack) / (target.s.burned.intensity + 200)))),
-			);
+			));
 		}
 		C.intensity = max(
 			(target.s.burned && target.s.burned.intensity) || 1,
-			parseInt(((target.s.burned && target.s.burned.intensity) || 0) / (args.divider || 3) + args.attack),
+			parseInt(scale * (((target.s.burned && target.s.burned.intensity) || 0) / (args.divider || 3) + args.attack)),
 		);
 		C.fid = args.fid;
 		disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 }); //target.is_player&&"huge"||undefined
