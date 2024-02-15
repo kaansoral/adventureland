@@ -2684,17 +2684,23 @@ function add_condition(target, condition, args) {
 		if (Math.random() < (target.firesistance || 0) / 100.0) {
 			return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
 		}
-		let scale = (1.0 - (target.firesistance || 0) / 100.0);
+		let scale = 1.0 - (target.firesistance || 0) / 100.0;
 
 		duration = 5000;
 		if (!args.attack) {
 			args.attack = 1000;
 		}
 		if (args.divider == 3 && target.s.burned && target.s.burned.ms) {
-			duration = parseInt(scale * min(
-				12000,
-				max(duration + 400, min(8000, parseInt(duration / 4 + (50 * args.attack) / (target.s.burned.intensity + 200)))),
-			));
+			duration = parseInt(
+				scale *
+					min(
+						12000,
+						max(
+							duration + 400,
+							min(8000, parseInt(duration / 4 + (50 * args.attack) / (target.s.burned.intensity + 200))),
+						),
+					),
+			);
 		}
 		C.intensity = max(
 			(target.s.burned && target.s.burned.intensity) || 1,
