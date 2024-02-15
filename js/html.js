@@ -2154,10 +2154,20 @@ function render_tracker()
 	show_modal(html,{wwidth:578,hideinbackground:true});
 }
 
-function render_computer($element)
+function render_computer($element,type="computer",slot=0)
 {
 	var html="";
 	html+="<div style=\"color: #32A3B0\">CONNECTED.</div>";
+	html+="<div onclick='socket.emit(\"trade_history\",{})' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> TRADE HISTORY</div>";
+	if(character.stand) {
+		html+="<div onclick='close_merchant()' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> CLOSE STAND</div>";
+	} else {
+		html+="<div onclick='open_merchant(\"" + slot + "\")' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> OPEN STAND</div>";
+	}
+	if(type == "supercomputer") {
+		html+="<div onclick=\"socket.emit('tracker')\" class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> TRACKER</div>";
+	}
+	
 	html+="<div onclick='render_upgrade_shrine()' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> UPGRADE</div>"; // style='color: #C3C3C3' style='color: #D6D6D6'
 	html+="<div onclick='render_compound_shrine()' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> COMPOUND</div>";
 	html+="<div onclick='render_exchange_shrine()' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> EXCHANGE</div>";
@@ -2228,11 +2238,11 @@ function render_skill(selector,skill_name,args)
 	else $(selector).html(html);
 }
 
-function render_computer_network(selector)
+function render_computer_network(selector,type,num)
 {
 	var html="<div style='background-color: black; border: 5px solid gray; font-size: 24px; display: inline-block; padding: 20px; line-height: 24px; max-width: 240px;' class='buyitem'><div class='computernx'></div></div>";
 	$(selector).html(html);
-	render_computer($(".computernx"));
+	render_computer($(".computernx"),type,num);
 }
 
 function render_secondhands(type)
