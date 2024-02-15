@@ -1244,7 +1244,7 @@ function inventory_click(num,event)
 			if(character.items[num].name=="placeholder") return;
 			if(character.items[num].name=="computer" || character.items[num].name=="supercomputer") // gameplay=="hardcore" && 
 			{
-				return render_computer_network(".inventory-item",character.items[num].name);
+				return render_computer_network(".inventory-item",character.items[num].name,num);
 			}
 			render_item(".inventory-item",{id:"citem"+num,item:G.items[character.items[num].name],name:character.items[num].name,actual:character.items[num],num:num,inventory_ui:num});
 			last_invclick=num+iname;
