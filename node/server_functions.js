@@ -3452,14 +3452,14 @@ function exchange(player, name, args) {
 					bundle: drop[1] == "cxbundle",
 				});
 			} else if (drop[1] == "open") {
-				switch (args.phrase) {
-					case "Fished":
-						args.phrase = `Fished ${drop[2]} and got`;
-						break;
-					case "Mined":
-						args.phrase = `Mined ${drop[2]} and got`;
-						break;
-				}
+				//switch (args.phrase) {
+				//	case "Fished":
+				//		args.phrase = `Fished ${drop[2]} and got`;
+				//		break;
+				//	case "Mined":
+				//		args.phrase = `Mined ${drop[2]} and got`;
+				//		break;
+				//}
 				exchange(player, drop[2], args);
 			} else {
 				var item = create_new_item(drop[1], drop[2]);
