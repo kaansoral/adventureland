@@ -6724,22 +6724,16 @@ function init_io() {
 			socket.emit("lostandfound", cfound);
 		});
 		socket.on("split", function (data) {
-			var player = players[socket.id];
-			var num = data.num;
-			var item = player.items[data.num];
-			var quantity = min(max(parseInt(data.quantity) || 0, 1), (item && item.q) || 1);
+			const player = players[socket.id];
+			const item = player.items[data.num];
 			if (!item) {
 				return fail_response("no_item");
 			}
 			if (!G.items[item.name].s) {
 				return fail_response("invalid");
 			}
-			quantity = min(quantity, G.items[item.name].s || 1);
 			if (!player.esize) {
 				return fail_response("cant_space");
-			}
-			if (item.q == quantity) {
-				return success_response();
 			}
 			if (item.name == "placeholder") {
 				return fail_response("item_placeholder");
@@ -6751,22 +6745,32 @@ function init_io() {
 				return fail_response("item_blocked");
 			}
 
+			let quantity = min(max(parseInt(data.quantity) || 0, 1), (item && item.q) || 1);
+			quantity = min(quantity, G.items[item.name].s);
+			if (quantity >= item.q) {
+				// They requested to split the whole stack...
+				return success_response({ from: data.num, to: data.num, q: quantity });
+			}
+
 			consume(player, data.num, quantity);
 
-			var new_item = cache_item(item);
+			const new_item = cache_item(item);
 			if (item.q) {
 				new_item.q = quantity;
 			}
 
-			for (var i = 0; i < player.isize; i++) {
-				if (!player.items[i]) {
-					player.items[i] = new_item;
-					player.citems[i] = cache_item(new_item);
-					break;
+			let num;
+			for (let i = 0; i < player.isize; i++) {
+				if (player.items[i]) {
+					continue;
 				}
+				player.items[i] = new_item;
+				player.citems[i] = cache_item(new_item);
+				num = i;
+				break;
 			}
 			resend(player, "reopen");
-			success_response();
+			success_response({ from: data.num, to: num, q: quantity });
 		});
 		socket.on("sell", function (data) {
 			var player = players[socket.id];
