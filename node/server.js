@@ -8594,10 +8594,13 @@ function init_io() {
 					// Only look at the first 16 targets in the array if more are provided
 					for (const t of data.targets.slice(0, 16)) {
 						const id = t[0];
+
+						// Prevent attacking the same entity twice
 						if (targeted[id]) {
 							continue;
 						}
 						targeted[id] = true;
+
 						const mp = max(0, parseInt(t[1]) || 0);
 						if (mp <= 0) {
 							continue;
@@ -8678,15 +8681,17 @@ function init_io() {
 				if (is_array(data.ids)) {
 					// Only look at the first Xshot targets in the array if more are provided
 					for (const id of data.ids.slice(0, data.name === "5shot" ? 5 : 3)) {
+						// Prevent attacking the same entity twice
 						if (targeted[id]) {
-							// Already targeted this monster
 							continue;
 						}
 						targeted[id] = true;
+
 						target = instances[player.in].monsters[id];
 						if (!target) {
 							target = instances[player.in].players[id];
 						}
+
 						if (!target || is_invinc(target) || target.name == player.name) {
 							continue;
 						}
