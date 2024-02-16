@@ -4093,7 +4093,7 @@ function init_io() {
 						climit = round(climit / 4);
 					}
 					if (method == "equip_batch") {
-						var cost = 1;
+						var cost = 0.5;
 						if (Array.isArray(data)) {
 							cost += data.length / 2;
 						}
