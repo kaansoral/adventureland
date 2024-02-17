@@ -2159,11 +2159,7 @@ function render_computer($element,type="computer",slot=0)
 	var html="";
 	html+="<div style=\"color: #32A3B0\">CONNECTED.</div>";
 	html+="<div onclick='socket.emit(\"trade_history\",{})' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> TRADE HISTORY</div>";
-	if(character.stand) {
-		html+="<div onclick='close_merchant()' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> CLOSE STAND</div>";
-	} else {
-		html+="<div onclick='open_merchant(\"" + slot + "\")' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> OPEN STAND</div>";
-	}
+	html+="<div onclick='toggle_merchant(\"" + slot + "\")' class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> TOGGLE STAND</div>";
 	if(type == "supercomputer") {
 		html+="<div onclick=\"socket.emit('tracker')\" class='clickable' style='color: #E4E4E4'><span style='color: #BA61A4'>&gt;</span> TRACKER</div>";
 	}
