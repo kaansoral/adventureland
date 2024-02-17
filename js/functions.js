@@ -2848,6 +2848,15 @@ function close_merchant()
 	return push_deferred("merchant");
 }
 
+function toggle_merchant(num) {
+	if(character.stand) {
+		socket.emit("merchant",{close:1});
+	} else {
+		socket.emit("merchant",{num:num});
+	}
+	return push_deferred("merchant");
+}
+
 function donate(gold)
 {
 	if(gold===undefined)
