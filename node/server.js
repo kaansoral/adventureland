@@ -8461,7 +8461,7 @@ function init_io() {
 				xy_emit(player, "ui", { type: data.name, name: player.name });
 				player.to_resend = "u+cid";
 			} else if (data.name == "throw") {
-				if (target.s.invincible || target.immune) {
+				if (target.s.invincible) {
 					return fail_response("target_invincible", data.name);
 				}
 				var item = player.items[data.num];
