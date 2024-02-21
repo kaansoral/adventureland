@@ -114,17 +114,8 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=792
+game_version=793
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
-update_notes=[
-	"Lunar New Year Event",
-	"Valentines Day Event",
-	"Last Update [13th of February]",
-	"Switched to Python3",
-	"Testing a more performant instance type to run the backend",
-	"Shells Bonus!"
-
-]
 update_notes=[
 	"Last Update [21st of February]",
 	"Included PR's:",
@@ -132,6 +123,7 @@ update_notes=[
 	"When Fishing or Mining something that uses open keep the phrase #84",
 	"Fixed URL in GitHub link #101",
 	"Fix small bug with async code snippets #102",
+	"Mob respawn adjustment through .grow #103",
 	"Fix infinite range for curse, cburst, and 3shot/5shot #104",
 	"Improve Computer and Super Computer UI #106",
 	"Change equip_batch's base cost from 1 to 0.5 #108",
