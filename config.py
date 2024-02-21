@@ -125,6 +125,18 @@ update_notes=[
 	"Shells Bonus!"
 
 ]
+update_notes=[
+	"Last Update [21st of February]",
+	"Included PR's:",
+	"Introduce tags for some debuffs #81",
+	"When Fishing or Mining something that uses open keep the phrase #84",
+	"Fixed URL in GitHub link #101",
+	"Fix small bug with async code snippets #102",
+	"Fix infinite range for curse, cburst, and 3shot/5shot #104",
+	"Improve Computer and Super Computer UI #106",
+	"Change equip_batch's base cost from 1 to 0.5 #108",
+	"Fix throw skill to pierce immunity #109",
+]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
 	"35.246.244.105":"eu1",
