@@ -456,6 +456,7 @@ skills={
 		"cooldown":0,
 		"target":"player",
 		"global":True,
+		"range": 8000
 	},
 	"charge":{
 		"type":"skill",
