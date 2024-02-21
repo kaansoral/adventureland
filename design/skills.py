@@ -221,6 +221,7 @@ skills={
 		"cooldown":60000,
 		"target":"monster",
 		"hostile":True,
+		"use_range":True,
 	},
 	"tangle":{
 		"type":"skill",
@@ -232,6 +233,8 @@ skills={
 		"cooldown":60000,
 		"target":True,
 		"hostile":True,
+		"use_range":True,
+		"range_multiplier":2,
 	},
 	"rspeed":{
 		"type":"skill",
@@ -606,6 +609,9 @@ skills={
 		"cooldown":10000,
 		"target":True,
 		"hostile":True,
+		"range_multiplier":3,
+		"range_bonus":20,
+		"use_range": True
 	},
 	"pcoat":{
 		"type":"skill",
@@ -644,6 +650,7 @@ skills={
 		"warning":"Highly unbalanced skill, could get nerfed or modified",
 		"hostile":True,
 		"projectile":"mentalburst",
+		"use_range":True,
 	},
 	"quickpunch":{
 		"type":"skill",
@@ -748,6 +755,7 @@ skills={
 		"pierces_immunity":True,
 		"damage_type":"physical",
 		"procs":True,
+		"use_range":True,
 	},
 	"3shot":{
 		"type":"skill",
@@ -810,6 +818,7 @@ skills={
 		"name":"Curse",
 		"explanation":"Cursed opponents receive 20% more damage, deal 20% less damage and they slow down by 20.",
 		"mp":400,
+		"range":200,
 		"duration":5000,
 		"cooldown":5000,
 		"condition":"cursed",
