@@ -2661,30 +2661,43 @@ function add_condition(target, condition, args) {
 	}
 	var response = { response: "condition", name: condition, cevent: true };
 	var duration = args.duration || args.ms || def.duration;
+	if (def.defense) {
+		if (Math.random() < (target[def.defense] || 0) / 100.0) {
+			return xy_emit(target, "ui", { type: condition + "_resist", id: target.id });
+		}
+	}
+	// if (def.tag === "stun") {
+	// 	if (Math.random() < (target.phresistance || 0) / 100.0) {
+	// 	}
+	// } else if (def.tag === "burn") {
+	// 	if (Math.random() < (target.firesistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
+	// 	}
+	// } else if (def.tag === "poison") {
+	// 	if (Math.random() < (target.pnresistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
+	// 	}
+	// } else if (def.tag === "freeze") {
+	// 	if (Math.random() < (target.fzresistance || 0) / 100.0) {
+	// 		return xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
+	// 	}
+	// }
 	if (duration == undefined) {
 		duration = 1000;
 	}
 	var C = { ms: duration };
 	if (condition == "poisoned" && target.pnresistance) {
-		if (Math.random() < (target.pnresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
-		}
-
 		duration *= (100 - target.pnresistance) / 100.0;
 	}
 	if (condition == "stunned") {
-		if (Math.random() < (target.phresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "stun_resist", id: target.id });
-		}
-
 		target.abs = true;
 		target.moving = false;
+		disappearing_text(target.socket, target, "STUN!", { xy: 1, size: "huge", color: "stun", nv: 1 });
+	}
+	if (condition == "frozen") {
+		disappearing_text(target.socket, target, "FREEZE!", { xy: 1, size: "huge", color: "freeze", nv: 1 });
 	}
 	if (condition == "burned") {
-		if (Math.random() < (target.firesistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
-		}
-
 		duration = 5000;
 		if (!args.attack) {
 			args.attack = 1000;
@@ -2701,11 +2714,6 @@ function add_condition(target, condition, args) {
 		);
 		C.fid = args.fid;
 		disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 }); //target.is_player&&"huge"||undefined
-	}
-	if (condition == "deepfreezed") {
-		if (Math.random() < (target.fzresistance || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
-		}
 	}
 	if (condition == "woven") {
 		C.s = min((target.is_monster && 20) || 5, (target.s.woven && target.s.woven.s + 1) || 1);
