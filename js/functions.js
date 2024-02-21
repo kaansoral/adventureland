@@ -1663,7 +1663,7 @@ function code_eval(snippet)
 {
 	var f="eval";
 	if(snippet.search("output=")!=-1 || snippet.search("json_output=")!=-1) f="eval_s";
-	if(snippet.search("await")!=-1) snippet="(async () => {"+snippet+"})()";
+	if(snippet.search("await")!=-1) snippet="(async () => {"+snippet+"\n})()";
 	if(code_active)
 	{
 		call_code_function(f,snippet);
