@@ -8259,6 +8259,9 @@ function init_io() {
 			const isTargetTooFar = (target) => {
 				// Use the range of the skill, falling back to the player range if it isn't set
 				let range = gSkill.range || player.range;
+				if (gSkill.global) {
+					return false;
+				}
 				if (gSkill.range_multiplier) {
 					range *= gSkill.range_multiplier;
 				}
