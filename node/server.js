@@ -12389,12 +12389,10 @@ function update_instance(instance) {
 					}
 
 					if (success && !player.p.u_fail) {
-						if (announce) {
-							player.hitchhikers.push([
-								"game_response",
-								{ response: "upgrade_success", level: new_level, num: ref.num, stale: ref.stale },
-							]);
-						}
+						player.hitchhikers.push([
+							"game_response",
+							{ response: "upgrade_success", level: new_level, num: ref.num, stale: ref.stale },
+						]);
 						if (announce && calculate_item_value(item) > 4800000 && !player.stealth) {
 							broadcast("server_message", {
 								message: player.name + " received " + item_to_phrase(item),
