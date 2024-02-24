@@ -19,10 +19,17 @@ module.exports = {
 	character_limit: 3,
 	fast_sdk: 0,
 	DISCORD: {
-		TOKEN: "NDXXXXXXXXXXX",
+		ENABLED: false,
+		TOKEN: "NDXXXXXXXXXXX", // Your discord applications bot token
 		EVENT_CHANNELS: {
-			DEFAULT: "https://discordapp.com/api/channels/404333059018719233/messages",
-			NEW_PLAYER: "https://discordapp.com/api/channels/839163123499794481/messages",
+			DEFAULT: "https://discordapp.com/api/channels/404333059018719233/messages", // #game_events
+			NEW_PLAYER: "https://discordapp.com/api/channels/839163123499794481/messages", // #new_players
 		},
+	},
+
+	// mode variable in server.js can be overridden here
+	MODE: {
+		drm_check: 0, // Enable steam/mac DRM check, prevents authfail debuff being added if disabled
+		notverified_debuff: 0, // disables the debuff for not being verified
 	},
 };
