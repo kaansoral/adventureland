@@ -66,6 +66,7 @@ j2_loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 class GG(): pass
 
 import secrets
+import environment
 
 from libraries.country_to_latlon import c_to_ll
 #from libraries import get_image_size
@@ -140,10 +141,10 @@ ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudf
 HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
 always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
-game_name="Adventure Land"
-appengine_id="twodimensionalgame"
-live_domain='adventure.land'
-sdk_domain='thegame.com'
+game_name=environment.GAME_NAME
+appengine_id=environment.APPENGINE_ID
+live_domain=environment.DOMAIN_NAME
+sdk_domain=environment.DOMAIN_NAME
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def init_request(request):
@@ -166,7 +167,7 @@ def gdi(request=None):
 
 		domain.base_url=protocol + "://" + hostname
 		domain.pref_url=domain.base_url
-		domain.server_ip="192.168.1.125"
+		# domain.server_ip="192.168.1.125" # See environment.py
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
