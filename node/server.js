@@ -167,6 +167,8 @@ var mode = {
 	prevent_external: 0, // for "test" / "hardcore"
 	pvp_level_gap: 0, // have to be within 10 level to attack
 };
+// Override default settings
+mode = { ...mode, ...variables.MODE };
 var events = {
 	// SEASONS
 	holidayseason: false,
@@ -9669,10 +9671,12 @@ function init_io() {
 					// player.vision[1]=min(700,player.vision[1]);
 					player.vision = B.vision;
 
-					if (!player.verified) {
-						player.s.notverified = { ms: 30 * 60 * 1000 };
-					} else if (player.s.notverified) {
-						player.s.notverified = { ms: 100 };
+					if (mode.notverified_debuff) {
+						if (!player.verified) {
+							player.s.notverified = { ms: 30 * 60 * 1000 };
+						} else if (player.s.notverified) {
+							player.s.notverified = { ms: 100 };
+						}
 					}
 
 					if (player.guild) {
