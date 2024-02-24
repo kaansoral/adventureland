@@ -66,6 +66,7 @@ j2_loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 class GG(): pass
 
 import secrets
+import environment
 
 from libraries.country_to_latlon import c_to_ll
 #from libraries import get_image_size
@@ -120,25 +121,14 @@ update_notes=[
 	"Last Update [April 25th]",
 	"Cost reduction trial"
 ]
-ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
-	"35.187.255.184":"asia1",
-	"35.246.244.105":"eu1",
-	"35.228.96.241":"eu2",
-	"35.234.72.136":"eupvp",
-	"35.184.37.35":"us1",
-	"34.67.188.57":"us2",
-	"34.75.5.124":"us3",
-	"34.67.187.11":"uspvp",
-	"195.201.181.245":"eud1",
-	"158.69.23.127":"usd1",
-}
+ip_to_subdomain=environment.IP_TO_SUBDOMAIN
 HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
 always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
-game_name="Adventure Land"
-appengine_id="twodimensionalgame"
-live_domain='adventure.land'
-sdk_domain='thegame.com'
+game_name=environment.GAME_NAME
+appengine_id=environment.APPENGINE_ID
+live_domain=environment.DOMAIN_NAME
+sdk_domain=environment.DOMAIN_NAME
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def init_request(request):
@@ -161,7 +151,7 @@ def gdi(request=None):
 
 		domain.base_url=protocol + "://" + hostname
 		domain.pref_url=domain.base_url
-		domain.server_ip="192.168.1.125"
+		# domain.server_ip="192.168.1.125" # See environment.py
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
