@@ -15,6 +15,7 @@ module.exports = {
 	ip_limit: 3,
 	character_limit: 3,
 	DISCORD: {
+		ENABLED: false,
 		TOKEN: "NDXXXXXXXXXXX",
 		EVENT_CHANNELS: {
 			DEFAULT: "https://discordapp.com/api/channels/404333059018719233/messages",
