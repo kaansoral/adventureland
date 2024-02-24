@@ -3270,12 +3270,19 @@ function appengine_call(method, args, on_success, on_error) {
 }
 
 function discord_call(message) {
+	// TODO: should it not post to the channel either way? I vote to remove this return
 	if (gameplay == "hardcore" || gameplay == "test") {
 		return;
 	}
+
 	if (is_sdk) {
-		return server_log("Discord: " + message);
+		server_log("Discord: " + message);
 	}
+
+	if (!variables.DISCORD.ENABLED) {
+		return;
+	}
+
 	var url = variables.DISCORD.EVENT_CHANNELS.DEFAULT; // #game_events
 	if (message.search(" joined Adventure Land") != -1) {
 		url = variables.DISCORD.EVENT_CHANNELS.NEW_PLAYER; // #new_players
@@ -3290,7 +3297,7 @@ function discord_call(message) {
 			},
 		},
 		function (err, response, body) {
-			//console.log(response);
+			console.log(err, response);
 		},
 	);
 }
