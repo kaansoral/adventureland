@@ -15,6 +15,7 @@ IP_TO_SUBDOMAIN = {
 	"158.69.23.127":"usd1"
 }
 
+# This is currently only used in SDK mode to map the hostname
 REQUEST_IP_TO_HOSTNAME = {
 	"172.20.0.4":"localhost", #EU1 docker internal ip
 	"172.20.0.3":"localhost", #US1 docker internal ip

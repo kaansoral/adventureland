@@ -3276,14 +3276,14 @@ function discord_call(message) {
 	if (is_sdk) {
 		return server_log("Discord: " + message);
 	}
-	var url = "https://discordapp.com/api/channels/404333059018719233/messages";
+	var url = variables.DISCORD.EVENT_CHANNELS.DEFAULT; // #game_events
 	if (message.search(" joined Adventure Land") != -1) {
-		url = "https://discordapp.com/api/channels/839163123499794481/messages";
+		url = variables.DISCORD.EVENT_CHANNELS.NEW_PLAYER; // #new_players
 	}
 	request(
 		{
 			url: url,
-			headers: { Authorization: "Bot " + variables.discord_token },
+			headers: { Authorization: "Bot " + variables.DISCORD.TOKEN },
 			method: "POST",
 			json: {
 				content: message,
