@@ -95,7 +95,7 @@ var B = {
 	door_dist: 112,
 	// game dynamics
 	transporter_dist: 160,
-	rip_time: 12,
+	rip_time: 12000,
 	hlevel_loss: 3,
 	heal_multiplier: 1,
 	arena_limit: 1,
@@ -5178,12 +5178,16 @@ function init_io() {
 			success_response({ success: false, in_progress: true });
 		});
 		socket.on("respawn", function (data) {
-			var player = players[socket.id];
+			const player = players[socket.id];
 			if (!player || !player.rip) {
 				return fail_response("invalid");
 			}
-			if (player.rip_time && ssince(player.rip_time) < B.rip_time) {
-				return fail_response("cant_respawn");
+
+			if (player.rip_time) {
+				const msRemaining = B.rip_time - mssince(player.rip_time);
+				if (msRemaining > 0) {
+					return fail_response("cant_respawn", { ms: msRemaining });
+				}
 			}
 
 			delete player.s.block;
