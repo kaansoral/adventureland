@@ -331,7 +331,7 @@ npcs={
 	},
 	"firstc":{
 		"role":"companion",
-		"says":["I've heard Goo's drop Amulets.","I'm strictly on a goo-only diet."],
+		"says":["I've heard goos drop amulets.","I'm strictly on a goo-only diet."],
 		"skin":"lady1",
 		"type":"fullstatic",
 	},
