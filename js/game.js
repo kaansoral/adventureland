@@ -2194,6 +2194,15 @@ function init_socket(args)
 			}
 			else if(response=="magiport_failed") ui_log("Magiport failed","gray"),no_no_no(2);
 			else if(response=="revive_failed") ui_log("Revival failed","gray"),no_no_no(1);
+			else if(response=="scrollsmith_cant")
+			{
+				ui_log("Can't destat this item","gray")
+			}
+			else if(response=="scrollsmith_success")
+			{
+				ui_log("Spent " + data.gold.toLocaleString() + " gold","gray");
+				ui_log("De-statted the item","gray");
+			}
 			else if(response=="locksmith_cant")
 			{
 				ui_log("Can't lock/unlock this item","gray")
@@ -3256,6 +3265,10 @@ function npc_right_click(event){
 	if(this.role=="locksmith")
 	{
 		render_interaction({auto:true,dialog:"locksmith",skin:"asoldier"});
+	}
+	if(this.role=="scrollsmith")
+	{
+		render_interaction({auto:true,dialog:"scrollsmith",skin:"bsoldier"});
 	}
 	if(this.role=="compound")
 	{
