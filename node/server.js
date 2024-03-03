@@ -5585,6 +5585,57 @@ function init_io() {
 			resend(player, "reopen+nc+inv");
 			success_response({ num: num, cevent: true });
 		});
+
+		socket.on("destat", function (data) {
+			var player = players[socket.id];
+			var item = player.items[data.item_num];
+			var def = G.items[item && item.name];
+			if (!player || player.user) {
+				return fail_response("cant_in_bank");
+			}
+			if (!player.computer && simple_distance(G.maps.desertland.ref.scrollsmith, player) > B.sell_dist) {
+				return fail_response("distance");
+			}
+			var item = player.items[data.num];
+			if (!item) {
+				return fail_response("no_item");
+			}
+			var def = G.items[item.name];
+			if (item.stat_type == null) {
+				return fail_response("scrollsmith_cant");
+			}
+			var scrolltype = item.stat_type + "scroll";
+			if (scrolltype == "mp_costscroll") {
+				scrolltype = "mpcostscroll";
+			}
+			var scrolldef = G.items[scrolltype];
+			if (!scrolldef) {
+				return fail_response("scrollsmith_cant"); // Just in case there isn't actually an item associated with the scroll... should never happen, though.
+			}
+			if (player.gold < 250000) {
+				return fail_response("gold_not_enough");
+			}
+			var needed = [1, 10, 100, 1000, 9999, 9999, 9999];
+			var ograde = calculate_item_grade(def, { name: item.name, level: 0 });
+			var cost = needed[ograde] * scrolldef.g * 10;
+			if (player.gold < cost) {
+				return fail_response("gold_not_enough");
+			}
+			if (
+				!can_add_items(player, list_to_pseudo_items([[neeeded[ograde], scrolltype]]), {
+					space: 1,
+				})
+			) {
+				return fail_response("inv_size");
+			}
+			player.gold -= cost;
+			add_item(player, scrolltype, { q: needed[ograde] });
+			delete item.stat_type;
+			socket.emit("game_response", { response: "scrollsmith_success", gold: cost });
+			player.citems[data.num] = cache_item(player.items[data.num]);
+			resend(player, "reopen+nc");
+			success_response();
+		});
 		socket.on("locksmith", function (data) {
 			var player = players[socket.id];
 			var item = player.items[data.item_num];
