@@ -5621,11 +5621,7 @@ function init_io() {
 			if (player.gold < cost) {
 				return fail_response("gold_not_enough");
 			}
-			if (
-				!can_add_items(player, list_to_pseudo_items([[neeeded[ograde], scrolltype]]), {
-					space: 1,
-				})
-			) {
+			if (!can_add_items(player, list_to_pseudo_items([[needed[ograde], scrolltype]]))) {
 				return fail_response("inv_size");
 			}
 			player.gold -= cost;
