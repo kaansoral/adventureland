@@ -9742,25 +9742,27 @@ function init_io() {
 			);
 		});
 		socket.on("use", function (data) {
-			var player = players[socket.id];
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
 			if (data.item == "hp" || data.item == "mp") {
-				if (player.last.potion && mssince(player.last.potion) < 0) {
-					return fail_response("not_ready");
+				if (player.last.potion) {
+					const ms = -mssince(player.last.potion);
+					if (ms > 0) {
+						socket.emit("eval", { code: `pot_timeout(${ms})` });
+						return fail_response("not_ready", { ms: ms });
+					}
 				}
 				player.last.potion = future_ms(4000);
 				if (data.item == "hp") {
-					player.hp += 50;
+					player.hp = min(player.hp + 50, player.max_hp);
 					disappearing_text(socket, player, "+50", { color: "green", xy: 1, s: "hp", nohp: 1 });
 				}
 				if (data.item == "mp") {
-					player.mp += 100;
+					player.mp = min(player.mp + 100, player.max_mp);
 					disappearing_text(socket, player, "+100", { color: "#006AA9", xy: 1, s: "mp", nomp: 1 });
 				}
-				player.hp = min(player.hp, player.max_hp);
-				player.mp = min(player.mp, player.max_mp);
 				// calculate_player_stats(player); [22/11/16]
 				player.cid++;
 				player.u = true;
