@@ -2201,6 +2201,7 @@ function render_skill(selector,skill_name,args)
 			if(skill.range_multiplier && skill.range_bonus) html+=bold_prop_line("Range",to_pretty_float(skill.range_multiplier||1)+"X + "+skill.range_bonus,"gray");
 			else if(skill.range_multiplier) html+=bold_prop_line("Range",to_pretty_float(skill.range_multiplier||1)+"X of Character Range","gray");
 			if(skill.level) html+=bold_prop_line("Level Requirement",skill.level,"gray");
+			if(skill.wtype) html+=bold_prop_line("Weapon Requirement", is_array(skill.wtype) ? skill.wtype.join(", ") : skill.wtype,"gray");
 			if(skill.max) html+=bold_prop_line("Max",skill.max,"gray");
 			if(skill.type=="passive") html+="<div><span style='color: #696C68;'>Passive</span></div>";
 			if(skill.damage_type)
