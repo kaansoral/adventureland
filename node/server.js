@@ -5612,9 +5612,6 @@ function init_io() {
 			if (!scrolldef) {
 				return fail_response("scrollsmith_cant"); // Just in case there isn't actually an item associated with the scroll... should never happen, though.
 			}
-			if (player.gold < 250000) {
-				return fail_response("gold_not_enough");
-			}
 			var needed = [1, 10, 100, 1000, 9999, 9999, 9999];
 			var ograde = calculate_item_grade(def, { name: item.name, level: 0 });
 			var cost = needed[ograde] * scrolldef.g * 10;
