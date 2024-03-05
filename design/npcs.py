@@ -891,6 +891,13 @@ npcs={
 		"type":"fullstatic",
 		"name":"Smith",
 	},
+	"scrollsmith":{
+		"role":"scrollsmith",
+		"skin":"bsoldier",
+		"says":"X",
+		"type":"fullstatic",
+		"name":"Sir Bob",
+	},
 	"transporter":{
 		"role":"transport",
 		"skin":"spell",
