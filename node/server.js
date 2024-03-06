@@ -1841,7 +1841,6 @@ function list_to_pseudo_items(list, type, add) {
 }
 
 function bank_add_item(player, slot, new_item) {
-	var done = false;
 	if (!new_item.name) {
 		new_item = create_new_item(new_item);
 	}
@@ -1851,26 +1850,22 @@ function bank_add_item(player, slot, new_item) {
 			if (can_stack(item, new_item)) {
 				item.q = (item.q || 1) + (new_item.q || 1);
 				player.cuser[slot][i] = cache_item(player.user[slot][i]);
-				done = true;
-				break;
+				return i;
 			}
 		}
 	}
-	if (!done) {
-		for (var i = 0; i < player.user[slot].length; i++) {
-			var item = player.user[slot][i];
-			if (!item) {
-				player.user[slot][i] = new_item;
-				player.cuser[slot][i] = cache_item(player.user[slot][i]);
-				done = true;
-				break;
-			}
+	for (var i = 0; i < player.user[slot].length; i++) {
+		var item = player.user[slot][i];
+		if (!item) {
+			player.user[slot][i] = new_item;
+			player.cuser[slot][i] = cache_item(player.user[slot][i]);
+			return i;
 		}
 	}
-	if (!done) {
-		player.user[slot].push(new_item);
-		player.cuser[slot][player.user[slot].length - 1] = cache_item(player.user[slot][player.user[slot].length - 1]);
-	}
+	player.user[slot].push(new_item);
+	const num = player.user[slot].length - 1;
+	player.cuser[slot][num] = cache_item(player.user[slot][num]);
+	return num;
 }
 
 function drop_item_logic(drop, def, pvp) {
@@ -7794,18 +7789,21 @@ function init_io() {
 					player.items[data.inv] = bank_item;
 					player.cuser[data.pack][data.str] = cache_item(player.user[data.pack][data.str]);
 					player.citems[data.inv] = cache_item(player.items[data.inv]);
+					success = { operation: "swap", pack: data.pack, inv: data.inv, str: data.str };
 				} else if (operation == "store" && inv_item) {
 					if (!can_add_item(player.user[data.pack], inv_item)) {
 						return fail_response("storage_full");
 					}
 					player.items[data.inv] = player.citems[data.inv] = null;
-					bank_add_item(player, data.pack, inv_item);
+					const num = bank_add_item(player, data.pack, inv_item);
+					success = { operation: "swap", pack: data.pack, inv: data.inv, str: num };
 				} else if (operation == "pull" && bank_item) {
 					if (!can_add_item(player, bank_item)) {
 						return fail_response("inventory_full");
 					}
 					player.user[data.pack][data.str] = player.cuser[data.pack][data.str] = null;
-					add_item(player, bank_item, { announce: false });
+					const num = add_item(player, bank_item, { announce: false });
+					success = { operation: "swap", pack: data.pack, inv: num, str: data.str };
 				}
 			}
 			if (!player.user.gold && player.user.gold !== 0) {
