@@ -4,11 +4,11 @@ runtime: python27
 threadsafe: true
 api_version: 1
 builtins:
-#- appstats: on
-#- remote_api: on
-- deferred: on
+  #- appstats: on
+  #- remote_api: on
+  - deferred: on
 inbound_services:
-- warmup
+  - warmup
 
 #F2/F4: same warmup handler performance [14/10/14]
 instance_class: F2
@@ -21,29 +21,39 @@ automatic_scaling:
 default_expiration: "4d"
 
 handlers:
-#- url: /robots.txt
-#  script: stuff.application
-- url: /favicon\.ico
-  static_files: images/favicon.ico
-  upload: favicon\.ico
-- url: /css
-  static_dir: css
-- url: /images
-  static_dir: images
-- url: /img/
-  static_dir: images/screenshots
-- url: /sounds
-  static_dir: sounds
-- url: /js
-  static_dir: js
-- url: .*
-  script: main.app
-- url: /admin/upload.*
-  script: uploaders.application
-- url: /upload.*
-  script: uploaders.application
-- url: /tileset/.*
-  script: uploaders.application
+  #- url: /robots.txt
+  #  script: stuff.application
+  - url: /favicon\.ico
+    static_files: images/favicon.ico
+    http_headers:
+      Cache-Control: public, max-age=86400 # 1 day
+    upload: favicon\.ico
+  - url: /css
+    static_dir: css
+    http_headers:
+      Cache-Control: public, max-age=86400 # 1 day
+  - url: /images
+    static_dir: images
+    http_headers:
+      Cache-Control: public, max-age=86400 # 1 day
+  - url: /img/
+    static_dir: images/screenshots
+    http_headers:
+      Cache-Control: public, max-age=604800 # 1 week
+  - url: /sounds
+    static_dir: sounds
+    http_headers:
+      Cache-Control: public, max-age=86400 # 1 day
+  - url: /js
+    static_dir: js
+  - url: .*
+    script: main.app
+  - url: /admin/upload.*
+    script: uploaders.application
+  - url: /upload.*
+    script: uploaders.application
+  - url: /tileset/.*
+    script: uploaders.application
 
 # skip_files:
 # - ^lib(/.*)?
@@ -52,11 +62,11 @@ handlers:
 # - .*electron.*
 
 libraries:
-- name: jinja2
-  version: latest
-- name: markupsafe
-  version: latest
-- name: lxml
-  version: latest
-- name: ssl
-  version: latest
+  - name: jinja2
+    version: latest
+  - name: markupsafe
+    version: latest
+  - name: lxml
+    version: latest
+  - name: ssl
+    version: latest
