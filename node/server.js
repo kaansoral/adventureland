@@ -13207,7 +13207,6 @@ setInterval(function () {
 											"'s giveaway. Participants were: " +
 											list.map((e) => e.name).join(", "),
 										rid: randomStr(50),
-										rid: randomStr(50),
 										retries: 5,
 										item: mitem,
 									},
