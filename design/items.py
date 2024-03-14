@@ -3073,6 +3073,7 @@ weapons={
 		"apiercing":12,
 		"damage_type":"physical",
 		"upgrade":{
+			"apiercing":5,
 		},
 		"name":"Spear of the Dead",
 		"explanation":"A deadly weapon",
