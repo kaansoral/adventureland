@@ -13202,7 +13202,7 @@ setInterval(function () {
 										to: winner.name,
 										subject: "You've won a giveaway!",
 										message:
-											"Congratulations, you won " + player.name + "'s giveaway. Participants were: " + list.join(", "),
+											"Congratulations, you won " + player.name + "'s giveaway. Participants were: " + list.map(e=>e.name).join(", "),
 										rid: randomStr(50),
 										retries: 5,
 										item: mitem,
