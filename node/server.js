@@ -13168,12 +13168,12 @@ setInterval(function () {
 					player.slots[slot].giveaway--;
 					if (!player.slots[slot].giveaway) {
 						var list = [];
-						player.slots[slot].list.forEach(function (p) {
-							var p = get_player(p);
-							if (p && p.esize) {
-								list.push(p);
+						player.slots[slot].list.forEach(function (name) {
+							var player = get_player(name);
+							if (player && player.esize) {
+								list.push(player);
 							} else if (!mode.prevent_external) {
-								list.push({ name: p });
+								list.push({ name });
 							}
 						});
 						if (!list.length) {
