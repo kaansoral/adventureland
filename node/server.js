@@ -8524,7 +8524,7 @@ function init_io() {
 				player.s.phasedout = { ms: G.conditions.phasedout.duration };
 			} else if (data.name == "pcoat") {
 				consume_mp(player, gSkill.mp);
-				player.s.poisonous = { ms: G.skills.pcoat.cooldown };
+				player.s.poisonous = { ms: G.conditions.poisonous.duration };
 			} else if (data.name == "curse") {
 				//#TODO: last_curse variable + check for multiple curses
 				var attack = commence_attack(player, target, "curse");
