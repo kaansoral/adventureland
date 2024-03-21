@@ -567,7 +567,7 @@ armor={
 		"upgrade":{
 			"int":1.25,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Int)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -578,7 +578,7 @@ armor={
 		"upgrade":{
 			"dex":1.25,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Dex)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -589,7 +589,7 @@ armor={
 		"upgrade":{
 			"str":1.25,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Str)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -600,7 +600,7 @@ armor={
 		"upgrade":{
 			"xp":0.75,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (XP)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -611,7 +611,7 @@ armor={
 		"upgrade":{
 			"speed":0.5,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Speed)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -629,7 +629,7 @@ armor={
 			"str":1,
 			"dex":1,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Lucky)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -640,7 +640,7 @@ armor={
 		"upgrade":{
 			"rpiercing":5,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Res. Piercing)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -651,7 +651,7 @@ armor={
 		"upgrade":{
 			"apiercing":5,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Armor Piercing)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -662,7 +662,7 @@ armor={
 		"upgrade":{
 			"mp_cost":-2,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Attack MP Cost)",
 		"grades":[0,6],
 		"g":120,
 	},
@@ -673,7 +673,7 @@ armor={
 		"upgrade":{
 			"manasteal":0.1,
 		},
-		"name":"T-Shirt",
+		"name":"T-Shirt (Manasteal)",
 		"grades":[0,6],
 		"g":120,
 	},
