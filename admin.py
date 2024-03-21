@@ -43,7 +43,7 @@ def executor_task(the_code):
 @ndb.toplevel
 def serve_executor_get():
 	domain=gdi(request); user=get_user(request,domain)
-	if not user or not getattr(user,"admin",False): return "no permission"
+	if not user or not getattr(user,"admin",False): return "no permission"+(is_sdk and " visit /admin/make after modifying serve_admin_maker() at admin.py" or "")
 	return whtml(request,"utility/htmls/executor.html",domain=gdi(request))
 
 @app.route('/admin/executor',methods=['POST'])
