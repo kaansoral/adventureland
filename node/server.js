@@ -13170,12 +13170,12 @@ setInterval(function () {
 					player.slots[slot].giveaway--;
 					if (!player.slots[slot].giveaway) {
 						var list = [];
-						player.slots[slot].list.forEach(function (p) {
-							var p = get_player(p);
-							if (p && p.esize) {
-								list.push(p);
+						player.slots[slot].list.forEach(function (name) {
+							var player = get_player(name);
+							if (player && player.esize) {
+								list.push(player);
 							} else if (!mode.prevent_external) {
-								list.push({ name: p });
+								list.push({ name });
 							}
 						});
 						if (!list.length) {
@@ -13204,7 +13204,10 @@ setInterval(function () {
 										to: winner.name,
 										subject: "You've won a giveaway!",
 										message:
-											"Congratulations, you won " + player.name + "'s giveaway. Participants were: " + list.join(", "),
+											"Congratulations, you won " +
+											player.name +
+											"'s giveaway. Participants were: " +
+											list.map((e) => e.name).join(", "),
 										rid: randomStr(50),
 										retries: 5,
 										item: mitem,
