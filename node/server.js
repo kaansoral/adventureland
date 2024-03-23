@@ -2972,7 +2972,7 @@ function commence_attack(attacker, target, atype) {
 	}
 	["apiercing", "rpiercing", "miss"].forEach(function (p) {
 		if (attacker[p]) {
-			info[p] = attacker[p];
+			info[p] = (info[p] || 0) + attacker[p];
 		}
 	});
 	if (
