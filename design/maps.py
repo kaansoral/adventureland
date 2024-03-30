@@ -1288,7 +1288,7 @@ maps={
 			{"type":"greenjr","boundary":[-720,-820,-418,-203],"count":1},
 
 			{"type":"minimush","boundary":[-166,453,182,808],"count":8,"grow":True},
-			{"type":"mrpumpkin","boundary":[-671,571,-300,800],"count":1,"special":True},
+			{"type":"mrpumpkin","boundary":[-671,571,-320,800],"count":1,"special":True},
 			{"type":"xscorpion","boundary":[-671,571,-320,800],"count":6,"grow":True},
 
 			{"type":"snake","boundary":[141,-792,552,-702],"count":6,"grow":True},
