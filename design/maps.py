@@ -1289,7 +1289,7 @@ maps={
 
 			{"type":"minimush","boundary":[-166,453,182,808],"count":8,"grow":True},
 			{"type":"mrpumpkin","boundary":[-671,571,-300,800],"count":1,"special":True},
-			{"type":"xscorpion","boundary":[-671,571,-300,800],"count":6,"grow":True},
+			{"type":"xscorpion","boundary":[-671,571,-320,800],"count":6,"grow":True},
 
 			{"type":"snake","boundary":[141,-792,552,-702],"count":6,"grow":True},
 			{"type":"osnake","boundary":[141,-792,552,-702],"count":2},
