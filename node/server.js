@@ -3166,7 +3166,7 @@ function complete_attack(attacker, target, info) {
 		return xy_emit(
 			info.action,
 			"hit",
-			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, evade: true },
+			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, evade: true, source: def.source },
 			attacker.id,
 		);
 	} else if (
@@ -3178,7 +3178,7 @@ function complete_attack(attacker, target, info) {
 		return xy_emit(
 			info.action,
 			"hit",
-			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true },
+			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
 			attacker.id,
 		);
 	} else if (
@@ -3194,6 +3194,7 @@ function complete_attack(attacker, target, info) {
 				id: target.id,
 				damage: 0,
 				avoid: true,
+				source: def.source,
 				x: info.action.x,
 				y: info.action.y,
 				map: info.attacker.map,
@@ -3298,7 +3299,7 @@ function complete_attack(attacker, target, info) {
 					xy_emit(
 						info.action,
 						"hit",
-						{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true },
+						{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
 						attacker.id,
 					);
 					continue;
