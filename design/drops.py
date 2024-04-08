@@ -35,8 +35,8 @@ drops={
 			#[0.0005,"candycane"],
 			#[0.0001,"open","xN"],
 			#[0.0004,"redenvelope"],
-			[0.00005,"goldenegg"],
-			[0.009,"open","eastereggs"], #originally 0.009
+			#[0.00005,"goldenegg"],
+			#[0.009,"open","eastereggs"], #originally 0.009
 			#[0.0001,"redenvelopev2"],
 			#[0.0001,"redenvelopev3"],
 			#[0.00005,"greenenvelope"],
