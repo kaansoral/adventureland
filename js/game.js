@@ -1149,15 +1149,12 @@ function init_socket(args)
 		window.socket.destroy();
 	}
 	$(".disconnected").hide();
-	// if(is_sdk && (Cookies.get("windows") || Cookies.get("local_ip") || window.location.host=="advanture.land" || window.location.host=="x.thegame.com")) server_addr="192.168.1.125"; // Cookies.set('windows','1',{expires:12*365});
-	// else if(is_sdk)
-	// {
-	// 	server_addr = window.location.hostname
-	// 	console.log('SDK MODE wss server adress:', location.protocol, server_addr, server_port)
-	// }
 
 	add_log("Connecting to the server.");
-	add_log(`${location.protocol} ${server_addr} ${server_port}`);
+	if (is_sdk) {
+		add_log(`${location.protocol} ${server_addr} ${server_port}`);
+	}
+
 	var query=args.secret&&"desktop="+(!is_comm&&1||"")+"&secret="+args.secret||undefined;
 	if(location.protocol=="https:") window.socket=io('wss://'+server_addr+':'+server_port,{secure:true,transports:['websocket'],query:query});
 	else window.socket=io('ws://'+server_addr+':'+server_port,{transports:['websocket'],query:query});
