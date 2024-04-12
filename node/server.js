@@ -5588,8 +5588,6 @@ function init_io() {
 
 		socket.on("destat", function (data) {
 			var player = players[socket.id];
-			var item = player.items[data.item_num];
-			var def = G.items[item && item.name];
 			if (!player || player.user) {
 				return fail_response("cant_in_bank");
 			}
