@@ -1501,7 +1501,6 @@ def create_server_api(**args):
 		# If we are not running in HTTPS_MODE servers_to_client will use actual_ip instead
 		actual_ip = ip
 
-	# if is_sdk: actual_ip=ip=domain.server_ip
 	# TODO: makes an ip like eu1.adventure.land, this is hardcoded and should be changed
 	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
 	lat,lon=(request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
