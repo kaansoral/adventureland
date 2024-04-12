@@ -140,9 +140,9 @@ craft={
 	"firebow":{
 		"items":[
 			[1,"bow"],
-			[2,"essenceoffire"],
+			[1,"essenceoffire"], # Was 2 [2024/04/12]
 		],
-		"cost":40000,
+		"cost":20000, # Was 40000 [2024/04/12]
 	},
 	"fireblade":{
 		"items":[
@@ -545,6 +545,12 @@ dismantle={
 		"cost":40,
 	},
 	"fireblade":{
+		"items":[
+			[1,"essenceoffire"],
+		],
+		"cost":10000,
+	},
+	"firebow":{  # Added firebow [2024/04/12]
 		"items":[
 			[1,"essenceoffire"],
 		],
