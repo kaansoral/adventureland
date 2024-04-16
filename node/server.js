@@ -8251,31 +8251,42 @@ function init_io() {
 			if (gSkill.slot) {
 				let found = false;
 				let noCharge = false;
-				for (const [slotName, itemName] of gSkill.slot) {
+				for (const [slotName, itemNameOrType] of gSkill.slot) {
 					const slotItem = player.slots[slotName];
-					if (!slotItem || slotItem.name !== itemName) {
+
+					if (!slotItem) {
 						continue;
 					}
+
+					const gItem = G.items[slotItem.name];
+					if (slotItem.name !== itemNameOrType && gItem.type !== itemNameOrType) {
+						continue;
+					}
+
 					found = true;
 
-					const gItem = G.items[itemName];
 					if (!gItem.charge) {
 						continue;
 					}
+
 					// This skill requires a charge, check the charge level
 					if ((slotItem.charges || 0) < gItem.charge) {
 						noCharge = true;
 						continue;
 					}
+
 					// Charge is sufficient, use this item for the skill
 					slotItem.charges -= gItem.charge;
 					player.cslots[slotName] = cache_item(slotItem);
 					noCharge = false;
 					break;
 				}
+
 				if (!found) {
+					// TODO: return expected slot / item / type
 					return fail_response("skill_cant_slot", data.name);
 				}
+
 				if (noCharge) {
 					return fail_response("skill_cant_charges", data.name);
 				}
@@ -8314,6 +8325,7 @@ function init_io() {
 				}
 				return false;
 			};
+
 			if (target && isTargetTooFar(target)) {
 				return fail_response("too_far", data.name, { dist: dist, id: target.id });
 			}
@@ -8740,6 +8752,72 @@ function init_io() {
 				player.halt = false;
 				player.to_resend = "u+cid";
 				consume_mp(player, gSkill.mp, target);
+				if (!c_resolve) {
+					reject = { failed: true, place: data.name, reason: "no_target" };
+					disappearing_text(player.socket, player, "NO HITS");
+				} else {
+					resolve = c_resolve;
+				}
+			} else if (data.name == "avengers_shield") {
+				player.halt = true; // TODO: halt should be specified on the skill if it halts / stops you from moving
+				const targeted = {};
+				let c_resolve = null;
+				// we have a primary target, should players be able to choose their additional targets? or should the server find them?
+				// TODO: we should find closest target recursively for now we just pick the two closest target to the original target
+				// TODO: what if we targeted a player? it should only target hostile players
+
+				const targets = Object.values(instances[player.in].monsters)
+					.map((m) => ({
+						...m,
+						distance: distance(target, m),
+					}))
+					.filter((m) => m.distance <= 50 /* Nearby distance */)
+					.sort((a, b) => a.distance - b.distance)
+					.slice(0, 3); // the monster is 0 range to itself, and included in the array
+
+				for (const target of targets) {
+					// Prevent attacking the same entity twice
+					if (targeted[target.id]) {
+						continue;
+					}
+
+					targeted[target.id] = true;
+
+					if (is_invinc(target) || target.name == player.name) {
+						continue;
+					}
+
+					if (
+						target.is_monster &&
+						target.target && // has target
+						get_player(target.target) &&
+						is_same(player, get_player(target.target), 1)
+					) {
+						stop_pursuit(target, { redirect: true, cause: "avengers_shield redirect" });
+						target_player(target, player);
+					}
+
+					// TODO: how do we chain theese attacks on the target on top of each other? so the projectile flies from first target to the next
+					const attack = commence_attack(player, target, data.name);
+					if (!attack || !attack.projectile) {
+						continue;
+					}
+
+					if (!c_resolve) {
+						c_resolve = attack;
+						attack.pids = [attack.pid];
+						attack.targets = [attack.target];
+					} else {
+						c_resolve.pids.push(attack.pid);
+						c_resolve.targets.push(attack.target);
+					}
+				}
+
+				player.halt = false;
+				player.to_resend = "u+cid";
+
+				consume_mp(player, gSkill.mp, target);
+
 				if (!c_resolve) {
 					reject = { failed: true, place: data.name, reason: "no_target" };
 					disappearing_text(player.socket, player, "NO HITS");

@@ -4219,14 +4219,18 @@ function render_skills()
 		var s=[],slast=0,a=[],alast=0;
 		object_sort(G.skills).forEach(function(io){
 			var name=io[0],skill=io[1];
-			if(skill.slot)
+			
+			// We still want to show class specific skills, like avenger's shield
+			if(skill.slot && !skill.class)
 			{
 				var found=false;
 				skill.slot.forEach(function(p){
 					if(character.slots[p[0]] && character.slots[p[0]].name==p[1]) found=true;
 				});
+
 				if(!found) return;
 			}
+
 			if(skill.inventory)
 			{
 				var found=false;
@@ -4239,6 +4243,7 @@ function render_skills()
 				});
 				if(!found) return;
 			}
+			
 			if(skill.type=="skill" && (!skill['class'] || in_arr(character.ctype,skill['class']) || character.role=="gm"))
 				s.push({name:name});
 			if(skill.type=="passive" && (!skill['class'] || in_arr(character.ctype,skill['class']) || character.role=="gm"))
