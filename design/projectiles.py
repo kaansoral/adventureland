@@ -123,6 +123,11 @@ projectiles={
 		"speed":320,
 		"hit_animation":"explode_b",
 	},
+	"shield":{
+		"animation":"gold",
+		"speed":320,
+		"hit_animation":"explode_c",
+	},
 	"fireball":{
 		"animation":"fireball",
 		"speed":320,
