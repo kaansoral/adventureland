@@ -970,7 +970,7 @@ skills={
 		"hostile":True,
 		"projectile":"shield", # would be cool if this could adapt to the equipped shield
 		"pierces_immunity":True,
-		"chained": True
+		"chained": { "targets": 2 }
 	},
 	"alchemy":{
 		"type":"skill",
