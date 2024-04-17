@@ -8768,14 +8768,13 @@ function init_io() {
 
 				const targets = Object.values(instances[player.in].monsters)
 					.map((m) => ({
-						...m,
+						target: m,
 						distance: distance(target, m),
 					}))
 					.filter((m) => m.distance <= 50 /* Nearby distance */)
 					.sort((a, b) => a.distance - b.distance)
 					.slice(0, 3); // the monster is 0 range to itself, and included in the array
-
-				for (const target of targets) {
+				for (const { target, distance } of targets) {
 					// Prevent attacking the same entity twice
 					if (targeted[target.id]) {
 						continue;
