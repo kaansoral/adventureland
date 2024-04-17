@@ -2704,7 +2704,7 @@ function issue_player_award(attacker, target) {
 	}
 }
 
-function commence_attack(attacker, target, atype) {
+function commence_attack(attacker, target, atype, { chained, targets } = { targets: [] }) {
 	var attack = attacker.attack;
 	var mp_cost = 0;
 	var info = {
@@ -2716,7 +2716,15 @@ function commence_attack(attacker, target, atype) {
 		first_attack: 0,
 		procs: false,
 		conditions: [],
+		chained,
+		targets,
 	}; // server projectile
+
+	console.log(
+		"targets",
+		chained,
+		targets.map((x) => x.id),
+	);
 
 	if (!G.skills[atype].hostile) {
 		info.positive = true;
@@ -3229,6 +3237,7 @@ function complete_attack(attacker, target, info) {
 		target.combo += 1;
 		def.mobbing = target.combo;
 	}
+
 	if (
 		combo &&
 		target.is_player &&
@@ -3334,6 +3343,7 @@ function complete_attack(attacker, target, info) {
 		if (target_def[1] != "normal") {
 			def.unintentional = true;
 		}
+
 		if (target_def[1] == "splash") {
 			def.splash = true;
 		}
@@ -3552,6 +3562,7 @@ function complete_attack(attacker, target, info) {
 			}
 			change = true;
 		}
+
 		target.hp = min(target.hp - attack, target.max_hp); // both for damage and heal
 		var net = original - max(0, target.hp);
 		if (target.hp <= 0) {
@@ -3607,6 +3618,39 @@ function complete_attack(attacker, target, info) {
 			if (m && m.is_monster && m.cooperative) {
 				add_coop_points(m, attacker, mnet);
 			}
+		}
+
+		if (info.chained) {
+			console.log(
+				"targets",
+				info.targets.map((x) => x.id),
+			);
+			// info is the projectile
+			info.target = info.targets.shift();
+
+			// data to the ui
+			def.next_chain_id = info.target.id;
+			def.chained = !!info.target;
+
+			let eta = 0;
+			const gProjectile = G.projectiles[info.def.projectile];
+			if (info.target && gProjectile && !gProjectile.instant) {
+				// get distance to next target
+				console.log("dist", target.id, info.target.id);
+				const dist = distance(target, info.target);
+
+				eta = (1000 * dist) / gProjectile.speed;
+			}
+
+			info.eta = future_ms(eta);
+
+			// delete chained if no more targets
+			if (info.targets.length === 0) {
+				console.log("deleting info.chained");
+				delete info.chained;
+			}
+
+			console.log("chained", info.targets.length, info.eta, dist);
 		}
 
 		if (mode.instant_monster_attacks || attacker.is_player) {
@@ -8771,58 +8815,43 @@ function init_io() {
 						target: m,
 						distance: distance(target, m),
 					}))
-					.filter((m) => m.distance <= 50 /* Nearby distance */)
+					.filter(
+						(m) => {
+							if (is_invinc(target) || target.name == player.name) {
+								return false;
+							}
+							return m.target !== target && m.distance <= 50 /* Nearby distance */;
+						} /* Nearby distance */,
+					)
 					.sort((a, b) => a.distance - b.distance)
-					.slice(0, 3); // the monster is 0 range to itself, and included in the array
-				for (const { target, distance } of targets) {
-					// Prevent attacking the same entity twice
-					if (targeted[target.id]) {
-						continue;
-					}
+					.slice(0, 2) // TODO: skill config
+					.map((x) => x.target);
+				// TODO: should the taunt first trigger when the projectile hits in complete_attack?
+				// TODO: this currently only taunts the first target, might need to add redirect info to the projectile / attack
+				const targetsTarget = get_player(target.target);
+				if (
+					target.is_monster &&
+					target.target &&
+					target.target !== player.name &&
+					targetsTarget &&
+					is_same(player, targetsTarget, 1) // checks party / account and such
+				) {
+					stop_pursuit(target, { redirect: true, cause: "avengers_shield redirect" });
+					target_player(target, player);
+				}
 
-					targeted[target.id] = true;
-
-					if (is_invinc(target) || target.name == player.name) {
-						continue;
-					}
-
-					if (
-						target.is_monster &&
-						target.target && // has target
-						get_player(target.target) &&
-						is_same(player, get_player(target.target), 1)
-					) {
-						stop_pursuit(target, { redirect: true, cause: "avengers_shield redirect" });
-						target_player(target, player);
-					}
-
-					// TODO: how do we chain theese attacks on the target on top of each other? so the projectile flies from first target to the next
-					const attack = commence_attack(player, target, data.name);
-					if (!attack || !attack.projectile) {
-						continue;
-					}
-
-					if (!c_resolve) {
-						c_resolve = attack;
-						attack.pids = [attack.pid];
-						attack.targets = [attack.target];
-					} else {
-						c_resolve.pids.push(attack.pid);
-						c_resolve.targets.push(attack.target);
-					}
+				const attack = commence_attack(player, target, data.name, { chained: true, targets });
+				if (!attack.failed) {
+					resolve = attack;
+				} else {
+					reject = attack;
+					cool = false;
 				}
 
 				player.halt = false;
 				player.to_resend = "u+cid";
 
 				consume_mp(player, gSkill.mp, target);
-
-				if (!c_resolve) {
-					reject = { failed: true, place: data.name, reason: "no_target" };
-					disappearing_text(player.socket, player, "NO HITS");
-				} else {
-					resolve = c_resolve;
-				}
 			} else if (data.name == "track") {
 				var list = [];
 				for (var id in instances[player.in].players) {
@@ -13409,12 +13438,16 @@ setInterval(function () {
 }, 4000);
 
 function projectiles_loop() {
-	var now = new Date();
-	for (var id in projectiles) {
+	const now = new Date();
+	for (const id in projectiles) {
 		try {
 			if (projectiles[id].eta <= now) {
-				var projectile = projectiles[id];
-				delete projectiles[id];
+				const projectile = projectiles[id];
+				if (!projectile.chained) {
+					console.log(id, "deleting projectile");
+					delete projectiles[id];
+				}
+				console.log(id, projectile.attacker.name, projectile.target.id);
 				complete_attack(projectile.attacker, projectile.target, projectile);
 			}
 		} catch (e) {

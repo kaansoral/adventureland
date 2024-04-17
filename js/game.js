@@ -2956,7 +2956,22 @@ function init_socket(args)
 		var owner=get_entity(data.hid);
 		var color="red";
 
-		if(map_animations[data.pid]) map_animations[data.pid].to_delete=true;
+		const shouldDeleteAnimation = !data.chained
+		if(shouldDeleteAnimation && map_animations[data.pid]) map_animations[data.pid].to_delete=true;
+
+		if (data.chained) {
+			const asprite = map_animations[data.pid];
+			if (asprite) {
+				if(data.next_chain_id)
+				{
+					const chain_target=get_entity(data.next_chain_id)
+					asprite.target=chain_target;
+					asprite.going_x=get_x(chain_target);
+					asprite.going_y=get_y(chain_target)-get_height(chain_target)/2;
+					if(point_distance(asprite.x,asprite.y,asprite.going_x,asprite.going_y)<100) asprite.speed*=0.75;
+				}
+			}
+		}
 
 		var attack_data=clone(data); delete attack_data.id; delete attack_data.hid;
 		attack_data.actor=data.hid; attack_data.target=data.id;
