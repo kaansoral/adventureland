@@ -2720,12 +2720,6 @@ function commence_attack(attacker, target, atype, { chained, targets } = { targe
 		targets,
 	}; // server projectile
 
-	console.log(
-		"targets",
-		chained,
-		targets.map((x) => x.id),
-	);
-
 	if (!G.skills[atype].hostile) {
 		info.positive = true;
 	}
@@ -3625,12 +3619,21 @@ function complete_attack(attacker, target, info) {
 				"targets",
 				info.targets.map((x) => x.id),
 			);
-			// info is the projectile
+
+			// info is the projectile, update next target
 			info.target = info.targets.shift();
 
 			// data to the ui
-			def.next_chain_id = info.target.id;
+			def.next_chain_id = info.target ? info.target.id : undefined;
+			// let the ui clean up after the last projectile
 			def.chained = !!info.target;
+
+			// last chain completed, remove chained so projectile loop cleans up
+			if (!def.chained) {
+				console.log("deleting info.chained");
+				delete info.chained;
+			}
+			console.log("hit", def.id, "next", def.next_chain_id, "chained", def.chained);
 
 			let eta = 0;
 			const gProjectile = G.projectiles[info.def.projectile];
@@ -3643,14 +3646,6 @@ function complete_attack(attacker, target, info) {
 			}
 
 			info.eta = future_ms(eta);
-
-			// delete chained if no more targets
-			if (info.targets.length === 0) {
-				console.log("deleting info.chained");
-				delete info.chained;
-			}
-
-			console.log("chained", info.targets.length, info.eta, dist);
 		}
 
 		if (mode.instant_monster_attacks || attacker.is_player) {
@@ -8804,8 +8799,6 @@ function init_io() {
 				}
 			} else if (data.name == "avengers_shield") {
 				player.halt = true; // TODO: halt should be specified on the skill if it halts / stops you from moving
-				const targeted = {};
-				let c_resolve = null;
 				// we have a primary target, should players be able to choose their additional targets? or should the server find them?
 				// TODO: we should find closest target recursively for now we just pick the two closest target to the original target
 				// TODO: what if we targeted a player? it should only target hostile players
@@ -8820,7 +8813,7 @@ function init_io() {
 							if (is_invinc(target) || target.name == player.name) {
 								return false;
 							}
-							return m.target !== target && m.distance <= 50 /* Nearby distance */;
+							return m.target !== target && m.distance <= 100 /* Nearby distance */;
 						} /* Nearby distance */,
 					)
 					.sort((a, b) => a.distance - b.distance)
@@ -13444,11 +13437,13 @@ function projectiles_loop() {
 			if (projectiles[id].eta <= now) {
 				const projectile = projectiles[id];
 				if (!projectile.chained) {
-					console.log(id, "deleting projectile");
+					// console.log(id, "deleting projectile");
 					delete projectiles[id];
 				}
-				console.log(id, projectile.attacker.name, projectile.target.id);
-				complete_attack(projectile.attacker, projectile.target, projectile);
+
+				if (projectile.target) {
+					complete_attack(projectile.attacker, projectile.target, projectile);
+				}
 			}
 		} catch (e) {
 			log_trace("#X projectile loop error", e);
