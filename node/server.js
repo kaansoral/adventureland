@@ -5503,7 +5503,8 @@ function init_io() {
 				return fail_response("invalid");
 			}
 			if (!player.computer) {
-				if (distance(player, def.quest ? G.quests[def.quest] : G.maps.main.exchange) > B.sell_dist) {
+				const distance = distance(player, def.quest ? G.quests[def.quest] : G.maps.main.exchange);
+				if (distance > B.sell_dist) {
 					return fail_response("distance");
 				}
 			}
