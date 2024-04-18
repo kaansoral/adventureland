@@ -3623,6 +3623,14 @@ function complete_attack(attacker, target, info) {
 			// info is the projectile, update next target
 			info.target = info.targets.shift();
 
+			// prevent avoid triggering
+			// TODO: if complete attack executes a "hit" (avoid,miss) earlier this part never executes, the projectile should probably be removed
+			if (info.target) {
+				info.action.x = info.target.x;
+				info.action.y = info.target.y;
+				info.action.m = info.target.m; // No idea what m is currently
+			}
+
 			// data to the ui
 			def.next_chain_id = info.target ? info.target.id : undefined;
 			// let the ui clean up after the last projectile
@@ -8803,22 +8811,60 @@ function init_io() {
 				// TODO: we should find closest target recursively for now we just pick the two closest target to the original target
 				// TODO: what if we targeted a player? it should only target hostile players
 
-				const targets = Object.values(instances[player.in].monsters)
-					.map((m) => ({
-						target: m,
-						distance: distance(target, m),
-					}))
-					.filter(
-						(m) => {
-							if (is_invinc(target) || target.name == player.name) {
-								return false;
-							}
-							return m.target !== target && m.distance <= 100 /* Nearby distance */;
-						} /* Nearby distance */,
-					)
-					.sort((a, b) => a.distance - b.distance)
-					.slice(0, 2) // TODO: skill config
-					.map((x) => x.target);
+				const chainTargets = [];
+
+				let previousTarget = target;
+
+				while (chainTargets.length < gSkill.chained.targets) {
+					const targets = Object.values(instances[player.in].monsters)
+						.map((m) => ({
+							target: m,
+							distance: distance(previousTarget, m),
+						}))
+						.filter(
+							(m) => {
+								if (is_invinc(m.target) || m.target.name == player.name) {
+									return false;
+								}
+
+								if (
+									m.target.id === target.id || // don't include initial target
+									m.target.id === previousTarget.id || // don't include current previous target
+									chainTargets.includes(m.target) // don't include previously added targets
+								) {
+									console.log(
+										"already added",
+										m.target.id,
+										target.id,
+										previousTarget.id,
+										chainTargets.map((x) => x.id),
+									);
+									return false;
+								}
+
+								return m.distance <= 100 /* Nearby distance */;
+							} /* Nearby distance */,
+						)
+						.sort((a, b) => a.distance - b.distance);
+
+					console.log(
+						previousTarget.id,
+						targets.map(({ distance, target }) => ({ distance, id: target.id })),
+					);
+
+					const entity = targets.shift();
+					if (!entity) {
+						console.log(
+							"no more targets",
+							chainTargets.map((x) => x.id),
+						);
+						break;
+					}
+
+					previousTarget = entity.target;
+					chainTargets.push(previousTarget);
+				}
+
 				// TODO: should the taunt first trigger when the projectile hits in complete_attack?
 				// TODO: this currently only taunts the first target, might need to add redirect info to the projectile / attack
 				const targetsTarget = get_player(target.target);
@@ -8833,7 +8879,7 @@ function init_io() {
 					target_player(target, player);
 				}
 
-				const attack = commence_attack(player, target, data.name, { chained: true, targets });
+				const attack = commence_attack(player, target, data.name, { chained: true, targets: chainTargets });
 				if (!attack.failed) {
 					resolve = attack;
 				} else {
