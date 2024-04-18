@@ -9756,11 +9756,11 @@ function init_io() {
 				}
 				player.last.potion = future_ms(4000);
 				if (data.item == "hp") {
-					player.hp = min(player.hp + 50, player.max_hp);
+					player.hp = Math.min(player.hp + 50, player.max_hp);
 					disappearing_text(socket, player, "+50", { color: "green", xy: 1, s: "hp", nohp: 1 });
 				}
 				if (data.item == "mp") {
-					player.mp = min(player.mp + 100, player.max_mp);
+					player.mp = Math.min(player.mp + 100, player.max_mp);
 					disappearing_text(socket, player, "+100", { color: "#006AA9", xy: 1, s: "mp", nomp: 1 });
 				}
 				// calculate_player_stats(player); [22/11/16]
