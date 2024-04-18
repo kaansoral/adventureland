@@ -5515,7 +5515,7 @@ function init_io() {
 			player.p.stats.exchanges[dropId] = (player.p.stats.exchanges[dropId] || 0) + 1;
 			consume(player, data.item_num, def.e);
 			const num = add_item(player, "placeholder");
-			const ms = gameplay === "hardcore" ? 400 : 3000 + parseInt(Math.random() * 3000);
+			const ms = gameplay === "hardcore" ? 400 : 3000 + Math.floor(Math.random() * 3000);
 			player.q.exchange = { ms: ms, len: ms, name: item.name, id: dropId, q: def.e, num: num };
 			if (suffix) {
 				player.q.exchange.s = suffix;
