@@ -9750,7 +9750,6 @@ function init_io() {
 				if (player.last.potion) {
 					const ms = -mssince(player.last.potion);
 					if (ms > 0) {
-						socket.emit("eval", { code: `pot_timeout(${ms})` });
 						return fail_response("not_ready", { ms: ms });
 					}
 				}
