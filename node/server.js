@@ -3662,50 +3662,6 @@ function complete_attack(attacker, target, info) {
 			}
 		}
 
-		if (info.chained) {
-			console.log(
-				"targets",
-				info.targets.map((x) => x.id),
-			);
-
-			// info is the projectile, update next target
-			info.target = info.targets.shift();
-
-			// prevent avoid triggering
-			// TODO: if complete attack executes a "hit" (avoid,miss) earlier this part never executes, the projectile should probably be removed
-			if (info.target) {
-				info.action.x = info.target.x;
-				info.action.y = info.target.y;
-				info.action.m = info.target.m; // the map?, avoid will trigger if on a different map
-			}
-
-			// data to the ui
-			def.next_chain_id = info.target ? info.target.id : undefined;
-			// let the ui clean up after the last projectile
-			def.chained = !!info.target;
-
-			// last chain completed, remove chained so projectile loop cleans up
-			if (!def.chained) {
-				console.log("deleting info.chained");
-				delete info.chained;
-			}
-			console.log("hit", def.id, "next", def.next_chain_id, "chained", def.chained);
-
-			let eta = 0;
-			const gProjectile = G.projectiles[info.def.projectile];
-			if (info.target && gProjectile && !gProjectile.instant) {
-				// get distance to next target
-				// console.log("dist", target.id, info.target.id);
-				const dist = distance(target, info.target);
-
-				eta = (1000 * dist) / gProjectile.speed;
-
-				deleteProjectile = false;
-			}
-
-			info.eta = future_ms(eta);
-		}
-
 		if (mode.instant_monster_attacks || attacker.is_player) {
 			xy_emit(target, "hit", def, attacker.id);
 		} // always sends the event to attacker.id
@@ -3799,6 +3755,50 @@ function complete_attack(attacker, target, info) {
 			resend(target, "u+cid");
 		}
 	});
+
+	if (info.chained) {
+		console.log(
+			"targets",
+			info.targets.map((x) => x.id),
+		);
+
+		// info is the projectile, update next target
+		info.target = info.targets.shift();
+
+		// prevent avoid triggering
+		// TODO: if complete attack executes a "hit" (avoid,miss) earlier this part never executes, the projectile should probably be removed
+		if (info.target) {
+			info.action.x = info.target.x;
+			info.action.y = info.target.y;
+			info.action.m = info.target.m; // the map?, avoid will trigger if on a different map
+		}
+
+		// data to the ui
+		def.next_chain_id = info.target ? info.target.id : undefined;
+		// let the ui clean up after the last projectile
+		def.chained = !!info.target;
+
+		// last chain completed, remove chained so projectile loop cleans up
+		if (!def.chained) {
+			console.log("deleting info.chained");
+			delete info.chained;
+		}
+		console.log("hit", def.id, "next", def.next_chain_id, "chained", def.chained);
+
+		let eta = 0;
+		const gProjectile = G.projectiles[info.def.projectile];
+		if (info.target && gProjectile && !gProjectile.instant) {
+			// get distance to next target
+			// console.log("dist", target.id, info.target.id);
+			const dist = distance(target, info.target);
+
+			eta = (1000 * dist) / gProjectile.speed;
+
+			deleteProjectile = false;
+		}
+
+		info.eta = future_ms(eta);
+	}
 
 	if (info.redirect) {
 		const targetsTarget = get_player(target.target);
