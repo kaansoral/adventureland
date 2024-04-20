@@ -2718,6 +2718,7 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 		conditions: [],
 		chained,
 		targets,
+		redirect,
 	}; // server projectile
 
 	const gSkill = G.skills[atype];
@@ -3798,6 +3799,20 @@ function complete_attack(attacker, target, info) {
 			resend(target, "u+cid");
 		}
 	});
+
+	if (info.redirect) {
+		const targetsTarget = get_player(target.target);
+		if (
+			target.is_monster &&
+			target.target &&
+			target.target !== attacker.name &&
+			targetsTarget &&
+			is_same(attacker, targetsTarget, 1) // checks party / account and such
+		) {
+			stop_pursuit(target, { redirect: true, cause: `${atype} redirect` });
+			target_player(target, attacker);
+		}
+	}
 
 	if (attacker.hp <= 0 && !attacker.dead && !attacker.rip) {
 		// dreturn
