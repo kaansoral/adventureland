@@ -1,0 +1,30 @@
+{
+	"name": "adventureland-client",
+	"version": "1.0.0",
+	"description": "",
+	"main": "game.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "echo \"Error: no start specified\" && exit 1",
+		"lint": "eslint --ext html,.js .",
+		"lint:fix": "eslint --fix --ext html,.js ."
+	},
+	"devDependencies": {
+		"eslint": "^8.52.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.1",
+		"prettier": "^3.0.3"
+	},
+	"eslintIgnore": [
+		"node_modules/*",
+		"codemirror/*",
+		"howler/*",
+		"pixi/*",
+		"pixi-*/*",
+		"socket.io/*",
+		"tests/*",
+		"libraries/*",
+		"jquery/*",
+		"interact/*"
+	]
+}

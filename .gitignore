@@ -6,6 +6,7 @@
 /electron/dist/
 /electron/node_modules/
 /node/node_modules/
+/js/node_modules/
 /scripts/node_modules/
 *.pyc
 *.pyo
