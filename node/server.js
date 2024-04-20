@@ -3107,6 +3107,8 @@ function complete_attack(attacker, target, info) {
 	info.action.map = attacker.map;
 	info.action.in = attacker.in;
 
+	let deleteProjectile = true;
+
 	if (info.damage_type == "pure" || target === attacker) {
 		defense = "none_existent";
 		pierce = "non_existent";
@@ -3172,35 +3174,45 @@ function complete_attack(attacker, target, info) {
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, reflect: info.attack },
 			attacker.id,
 		);
-		return xy_emit(target, "action", info.action, attacker.id);
+
+		xy_emit(target, "action", info.action, attacker.id);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	}
 
 	if (attacker == target && !target.dead) {
 	} // reflect after dead fix [04/02/23]
 	else if (target.evasion && defense == "armor" && Math.random() * 100 < target.evasion) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, evade: true, source: def.source },
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	} else if (
 		target.dc ||
 		target.dead ||
 		(attacker.miss && Math.random() * 100 < attacker.miss) ||
 		(target.avoidance && Math.random() * 100 < target.avoidance)
 	) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	} else if (
 		target.m != info.action.m ||
 		point_distance(target.x, target.y, info.action.x, info.action.y) > 72 * ((info.heal && 1.5) || 1)
 	) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{
@@ -3217,6 +3229,9 @@ function complete_attack(attacker, target, info) {
 			},
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	}
 
 	if (info.positive || !info.procs) {
@@ -3270,6 +3285,7 @@ function complete_attack(attacker, target, info) {
 				ntarget.last_combo = new Date();
 				ntarget.combo += 1;
 			}
+
 			if (targets.length > 1) {
 				def.stacked = [];
 				targets.forEach(function (t) {
@@ -3651,6 +3667,8 @@ function complete_attack(attacker, target, info) {
 				const dist = distance(target, info.target);
 
 				eta = (1000 * dist) / gProjectile.speed;
+
+				deleteProjectile = false;
 			}
 
 			info.eta = future_ms(eta);
@@ -3772,6 +3790,8 @@ function complete_attack(attacker, target, info) {
 		attacker.cid++;
 		ccms(attacker);
 	}
+
+	return deleteProjectile;
 }
 
 function target_player(monster, player, no_increase) {
@@ -13482,13 +13502,10 @@ function projectiles_loop() {
 		try {
 			if (projectiles[id].eta <= now) {
 				const projectile = projectiles[id];
-				if (!projectile.chained) {
-					// console.log(id, "deleting projectile");
-					delete projectiles[id];
-				}
+				// TODO: projectile loop triggering every 7 ms might cause the projectile to trigger complete_attack multiple times? unless eta is updated inside it
 
-				if (projectile.target) {
-					complete_attack(projectile.attacker, projectile.target, projectile);
+				if (projectile.target && complete_attack(projectile.attacker, projectile.target, projectile)) {
+					delete projectiles[id];
 				}
 			}
 		} catch (e) {
