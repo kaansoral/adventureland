@@ -3628,7 +3628,7 @@ function complete_attack(attacker, target, info) {
 			if (info.target) {
 				info.action.x = info.target.x;
 				info.action.y = info.target.y;
-				info.action.m = info.target.m; // No idea what m is currently
+				info.action.m = info.target.m; // the map?, avoid will trigger if on a different map
 			}
 
 			// data to the ui
@@ -3647,7 +3647,7 @@ function complete_attack(attacker, target, info) {
 			const gProjectile = G.projectiles[info.def.projectile];
 			if (info.target && gProjectile && !gProjectile.instant) {
 				// get distance to next target
-				console.log("dist", target.id, info.target.id);
+				// console.log("dist", target.id, info.target.id);
 				const dist = distance(target, info.target);
 
 				eta = (1000 * dist) / gProjectile.speed;
