@@ -2704,7 +2704,7 @@ function issue_player_award(attacker, target) {
 	}
 }
 
-function commence_attack(attacker, target, atype, { chained, targets } = { targets: [] }) {
+function commence_attack(attacker, target, atype, { chained, targets, redirect } = { targets: [] }) {
 	var attack = attacker.attack;
 	var mp_cost = 0;
 	var info = {
@@ -2954,6 +2954,20 @@ function commence_attack(attacker, target, atype, { chained, targets } = { targe
 	) {
 		attacker.socket.emit("game_response", { response: "friendly", id: target.id });
 		return { failed: true, reason: "friendly", place: atype, id: target.id };
+	}
+
+	if (redirect) {
+		const targetsTarget = get_player(target.target);
+		if (
+			target.is_monster &&
+			target.target &&
+			target.target !== attacker.name &&
+			targetsTarget &&
+			is_same(attacker, targetsTarget, 1) // checks party / account and such
+		) {
+			stop_pursuit(target, { redirect: true, cause: `${atype} redirect` });
+			target_player(target, attacker);
+		}
 	}
 
 	direction_logic(attacker, target);
@@ -8828,7 +8842,6 @@ function init_io() {
 			} else if (data.name == "avengers_shield") {
 				player.halt = true; // TODO: halt should be specified on the skill if it halts / stops you from moving
 				// we have a primary target, should players be able to choose their additional targets? or should the server find them?
-				// TODO: we should find closest target recursively for now we just pick the two closest target to the original target
 				// TODO: what if we targeted a player? it should only target hostile players
 
 				const chainTargets = [];
@@ -8885,21 +8898,12 @@ function init_io() {
 					chainTargets.push(previousTarget);
 				}
 
-				// TODO: should the taunt first trigger when the projectile hits in complete_attack?
-				// TODO: this currently only taunts the first target, might need to add redirect info to the projectile / attack
-				const targetsTarget = get_player(target.target);
-				if (
-					target.is_monster &&
-					target.target &&
-					target.target !== player.name &&
-					targetsTarget &&
-					is_same(player, targetsTarget, 1) // checks party / account and such
-				) {
-					stop_pursuit(target, { redirect: true, cause: "avengers_shield redirect" });
-					target_player(target, player);
-				}
+				const attack = commence_attack(player, target, data.name, {
+					chained: true,
+					targets: chainTargets,
+					redirect: true,
+				});
 
-				const attack = commence_attack(player, target, data.name, { chained: true, targets: chainTargets });
 				if (!attack.failed) {
 					resolve = attack;
 				} else {
