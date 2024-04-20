@@ -26,5 +26,6 @@
 		"libraries/*",
 		"jquery/*",
 		"interact/*"
-	]
+	],
+	"prettier": "../node/.prettierrc.json"
 }
