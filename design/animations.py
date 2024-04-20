@@ -309,6 +309,15 @@ animations={
 		"speed":160,
 		"front":True,
 	},
+	"throw_shield":{
+		"file":"/images/sprites/animations/throw_shield.png",
+		"frames":5,
+		"continuous":True,
+		"directional":True,
+		"speed":500,
+		"size":0.75,
+		"front":True,
+	},
 	"arrow_hit":{
 		"file":"/images/sprites/animations/Slash0Arrow.png", # nice animation, damage-like
 		"frames":7,

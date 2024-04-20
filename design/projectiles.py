@@ -124,7 +124,7 @@ projectiles={
 		"hit_animation":"explode_b",
 	},
 	"shield":{
-		"animation":"gold",
+		"animation":"throw_shield",
 		"speed":320,
 		"hit_animation":"explode_c",
 	},
