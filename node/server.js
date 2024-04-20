@@ -2757,18 +2757,23 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	if (attacker.is_monster) {
 		def.projectile = G.monsters[attacker.type].projectile || "stone";
 	}
+
 	if (attacker.is_player && G.classes[attacker.type].projectile) {
 		def.projectile = G.classes[attacker.type].projectile;
 	}
+
 	if (attacker.projectile) {
 		def.projectile = attacker.projectile;
 	}
+
 	if (attacker.slots && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].projectile) {
 		def.projectile = G.items[attacker.slots.mainhand.name].projectile;
 	}
+
 	if (attacker.tskin == "konami") {
 		def.projectile = "stone_k";
 	}
+
 	if ((atype != "attack" || !def.projectile || atype == "heal") && gSkill.projectile) {
 		def.projectile = gSkill.projectile;
 	}
@@ -2777,12 +2782,15 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 	if (attacker.is_monster && G.monsters[attacker.type].damage_type) {
 		info.damage_type = G.monsters[attacker.type].damage_type;
 	}
+
 	if (attacker.is_player && G.classes[attacker.type].damage_type) {
 		info.damage_type = G.classes[attacker.type].damage_type;
 	}
+
 	if (attacker.is_player && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].damage_type) {
 		info.damage_type = G.items[attacker.slots.mainhand.name].damage_type;
 	}
+
 	if (atype != "attack" && gSkill.damage_type) {
 		info.damage_type = gSkill.damage_type;
 	}
@@ -2936,6 +2944,14 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 		attacker.last.attack = future_ms(rng);
 	}
 
+	if (gSkill.attack_multiplier) {
+		attack = attacker.attack * gSkill.attack_multiplier;
+	}
+
+	if (gSkill.mp_cost_multiplier) {
+		mp_cost = parseInt(attacker.mp_cost * gSkill.mp_cost_multiplier);
+	}
+
 	if (atype != "attack" && target.immune && (!gSkill || !gSkill.pierces_immunity)) {
 		disappearing_text(target.socket, target, "IMMUNE!", { xy: 1, color: "evade", nv: 1, from: attacker.id });
 		return { failed: true, reason: "skill_immune", place: atype, id: target.id };
@@ -2954,6 +2970,7 @@ function commence_attack(attacker, target, atype, { chained, targets, redirect }
 		return { failed: true, reason: "friendly", place: atype, id: target.id };
 	}
 
+	// TODO: this belongs in complete attack
 	if (redirect) {
 		const targetsTarget = get_player(target.target);
 		if (
