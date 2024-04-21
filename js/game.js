@@ -2956,11 +2956,12 @@ function init_socket(args)
 		var owner=get_entity(data.hid);
 		var color="red";
 
+		const asprite = map_animations[data.pid];
+
 		const shouldDeleteAnimation = !data.chained
-		if(shouldDeleteAnimation && map_animations[data.pid]) map_animations[data.pid].to_delete=true;
+		if(shouldDeleteAnimation && asprite) asprite.to_delete=true;
 
 		if (data.chained) {
-			const asprite = map_animations[data.pid];
 			if (asprite) {
 				if(data.next_chain_id)
 				{
