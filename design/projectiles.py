@@ -125,7 +125,7 @@ projectiles={
 	},
 	"shield":{
 		"animation":"throw_shield",
-		"speed":320,
+		"speed":220,
 		"hit_animation":"explode_c",
 	},
 	"fireball":{

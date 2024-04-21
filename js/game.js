@@ -2961,8 +2961,11 @@ function init_socket(args)
 		const shouldDeleteAnimation = !data.chained
 		if(shouldDeleteAnimation && asprite) asprite.to_delete=true;
 
+		
+		console.log('hit',data.id, data.chained, asprite?.to_delete, data.next_chain_id, asprite?.going_x,asprite?.going_y, asprite?.speed)
 		if (data.chained) {
 			if (asprite) {
+				asprite.chained = data.chained;
 				if(data.next_chain_id)
 				{
 					const chain_target=get_entity(data.next_chain_id)
@@ -2970,6 +2973,7 @@ function init_socket(args)
 					asprite.going_x=get_x(chain_target);
 					asprite.going_y=get_y(chain_target)-get_height(chain_target)/2;
 					if(point_distance(asprite.x,asprite.y,asprite.going_x,asprite.going_y)<100) asprite.speed*=0.75;
+					console.log('next chain',data.next_chain_id,asprite.going_x,asprite.going_y, asprite.speed)
 				}
 			}
 		}
@@ -3775,7 +3779,11 @@ function update_sprite(sprite)
 		if(sprite.frame>=sprite.frames) sprite.frame=0;
 		set_texture(sprite,sprite.frame);
 		sprite.crotation=Math.atan2(target_y-sprite.y,target_x-sprite.x)+Math.PI/2;
-		if(sprite.to_delete || point_distance(target_x,target_y,sprite.x,sprite.y)<(sprite.limit||16) || abs(sprite.first_rotation-sprite.crotation)>Math.PI/2)
+
+		if(sprite.to_delete || 
+			(!sprite.chained &&
+			(point_distance(target_x,target_y,sprite.x,sprite.y)<(sprite.limit||16) || 
+			abs(sprite.first_rotation-sprite.crotation)>Math.PI/2)))
 		{
 			destroy_sprite(sprite,"children");
 			delete map_animations[sprite.id];
