@@ -183,5 +183,10 @@ projectiles={
 	"partyheal":{
 		"instant":True,
 		"hit_animation":"party_heal",
-	}
+	},
+	"dartgun":{
+		"animation":"gold",
+		"speed":320,
+		"hit_animation":"slash1",
+	},
 }
