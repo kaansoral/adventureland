@@ -128,6 +128,11 @@ projectiles={
 		"speed":220,
 		"hit_animation":"explode_c",
 	},
+	"crusader_shield":{
+		"animation":"throw_crusader_shield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
 	"fireball":{
 		"animation":"fireball",
 		"speed":320,

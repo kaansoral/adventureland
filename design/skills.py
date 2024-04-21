@@ -968,7 +968,7 @@ skills={
 		"cooldown":3000,
 		"target":True,
 		"hostile":True,
-		"projectile":"shield", # would be cool if this could adapt to the equipped shield
+		"projectile":"crusader_shield", # would be cool if this could adapt to the equipped shield
 		"pierces_immunity":True,
 		"chained": { "targets": 2 }
 	},

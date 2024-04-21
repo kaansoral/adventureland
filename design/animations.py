@@ -311,7 +311,16 @@ animations={
 	},
 	"throw_shield":{
 		"file":"/images/sprites/animations/throw_shield.png",
-		"frames":5,
+		"frames":4,
+		"continuous":True,
+		"directional":True,
+		"speed":500,
+		"size":0.75,
+		"front":True,
+	},
+	"throw_crusader_shield":{
+		"file":"/images/sprites/animations/throw_crusader_shield.png",
+		"frames":4,
 		"continuous":True,
 		"directional":True,
 		"speed":500,
