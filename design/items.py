@@ -2761,7 +2761,7 @@ weapons={
 		"damage_type":"physical",
 		"upgrade":{
 		},
-		"projectile": "stone",
+		"projectile": "dartgun",
 		"name":"Golden Dart Gun",
 		"explanation":"Don't let the looks fool you. It's a solid weapon with most components forged from gold. The barrel and trigger mechanism is a platinum alloy. Can shoot anything that fits its barrel, like actual gold.",
 		"g":20000000,
