@@ -309,6 +309,15 @@ animations={
 		"speed":160,
 		"front":True,
 	},
+	"throw_wshield":{
+		"file":"/images/sprites/animations/throw_wshield.png",
+		"frames":4,
+		"continuous":True,
+		"directional":True,
+		"speed":500,
+		"size":0.75,
+		"front":True,
+	},
 	"throw_shield":{
 		"file":"/images/sprites/animations/throw_shield.png",
 		"frames":4,

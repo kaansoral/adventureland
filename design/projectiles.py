@@ -123,6 +123,11 @@ projectiles={
 		"speed":320,
 		"hit_animation":"explode_b",
 	},
+	"wshield":{
+		"animation":"throw_wshield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
 	"shield":{
 		"animation":"throw_shield",
 		"speed":220,
