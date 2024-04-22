@@ -1,3 +1,10 @@
+// const { PerformanceObserver, performance } = require("node:perf_hooks");
+// const obs = new PerformanceObserver((items) => {
+// 	console.log(items.getEntries()[0].duration);
+// 	performance.clearMarks();
+// });
+// obs.observe({ type: "measure" });
+
 var is_game = 0;
 var is_server = 1;
 var is_code = 0;
@@ -8884,56 +8891,58 @@ function init_io() {
 				const chainTargets = [];
 
 				let previousTarget = target;
-
+				performance.mark("avengers_shield_targets");
+				const maxChainRange = gSkill.range / 2;
 				while (chainTargets.length < gSkill.chained.targets) {
-					const targets = Object.values(instances[player.in].monsters)
-						.map((m) => ({
-							target: m,
-							distance: distance(previousTarget, m),
-						}))
-						.filter(
-							(m) => {
-								if (is_invinc(m.target) || m.target.name == player.name) {
-									return false;
-								}
+					let closestEntityDistance = Infinity;
+					let closestEntity = undefined;
+					const instanceMonsters = instances[player.in].monsters;
+					for (const monsterId in instanceMonsters) {
+						const monster = instanceMonsters[monsterId];
 
-								if (
-									m.target.id === target.id || // don't include initial target
-									m.target.id === previousTarget.id || // don't include current previous target
-									chainTargets.includes(m.target) // don't include previously added targets
-								) {
-									console.log(
-										"already added",
-										m.target.id,
-										target.id,
-										previousTarget.id,
-										chainTargets.map((x) => x.id),
-									);
-									return false;
-								}
+						if (is_invinc(monster)) {
+							break;
+						}
 
-								return m.distance <= 100 /* Nearby distance */;
-							} /* Nearby distance */,
-						)
-						.sort((a, b) => a.distance - b.distance);
+						if (
+							monster.id === target.id || // don't include initial target
+							monster.id === previousTarget.id || // don't include current previous target
+							chainTargets.includes(monster) // don't include previously added targets
+						) {
+							continue;
+						}
 
-					console.log(
-						previousTarget.id,
-						targets.map(({ distance, target }) => ({ distance, id: target.id })),
-					);
+						const dist = distance(previousTarget, monster);
 
-					const entity = targets.shift();
-					if (!entity) {
-						console.log(
-							"no more targets",
-							chainTargets.map((x) => x.id),
-						);
+						if (dist > maxChainRange) {
+							continue;
+						}
+
+						if (dist < closestEntityDistance) {
+							closestEntityDistance = dist;
+							closestEntity = monster;
+						}
+					}
+
+					if (!closestEntity) {
 						break;
 					}
 
-					previousTarget = entity.target;
+					previousTarget = closestEntity;
 					chainTargets.push(previousTarget);
 				}
+
+				// performance.mark("avengers_shield_targets_done");
+				// performance.measure("avengers_shield_targets", "avengers_shield_targets");
+				// original
+				// 2.238631010055542
+				// 1.7855859994888306
+				// 1.568897008895874
+				// optimized
+				// 1.3652199804782867
+				// 0.8254919946193695
+				// 1.3924390077590942
+				// 0.9302980005741119
 
 				let projectileKey = player.slots.offhand.name;
 				if (!G.projectiles[projectileKey]) {
