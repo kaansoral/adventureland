@@ -5,7 +5,7 @@ builtins:
 
 #F2/F4: same warmup handler performance [14/10/14]
 # F4_1G cost 3X [05/04/24]
-instance_class: F2
+instance_class: F4
 automatic_scaling:
  min_idle_instances: 0
  max_idle_instances: 1
