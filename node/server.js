@@ -2976,21 +2976,6 @@ function commence_attack(attacker, target, atype, { projectile, chained, targets
 		return { failed: true, reason: "friendly", place: atype, id: target.id };
 	}
 
-	// TODO: this belongs in complete attack
-	if (redirect) {
-		const targetsTarget = get_player(target.target);
-		if (
-			target.is_monster &&
-			target.target &&
-			target.target !== attacker.name &&
-			targetsTarget &&
-			is_same(attacker, targetsTarget, 1) // checks party / account and such
-		) {
-			stop_pursuit(target, { redirect: true, cause: `${atype} redirect` });
-			target_player(target, attacker);
-		}
-	}
-
 	direction_logic(attacker, target);
 
 	if (mp_cost && attacker.first && !attacker.is_npc) {
