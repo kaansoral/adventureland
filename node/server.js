@@ -1,10 +1,3 @@
-// const { PerformanceObserver, performance } = require("node:perf_hooks");
-// const obs = new PerformanceObserver((items) => {
-// 	console.log(items.getEntries()[0].duration);
-// 	performance.clearMarks();
-// });
-// obs.observe({ type: "measure" });
-
 var is_game = 0;
 var is_server = 1;
 var is_code = 0;
@@ -8891,7 +8884,6 @@ function init_io() {
 				const chainTargets = [];
 
 				let previousTarget = target;
-				performance.mark("avengers_shield_targets");
 				const maxChainRange = gSkill.range / 2;
 				while (chainTargets.length < gSkill.chained.targets) {
 					let closestEntityDistance = Infinity;
@@ -8931,18 +8923,6 @@ function init_io() {
 					previousTarget = closestEntity;
 					chainTargets.push(previousTarget);
 				}
-
-				// performance.mark("avengers_shield_targets_done");
-				// performance.measure("avengers_shield_targets", "avengers_shield_targets");
-				// original
-				// 2.238631010055542
-				// 1.7855859994888306
-				// 1.568897008895874
-				// optimized
-				// 1.3652199804782867
-				// 0.8254919946193695
-				// 1.3924390077590942
-				// 0.9302980005741119
 
 				let projectileKey = player.slots.offhand.name;
 				if (!G.projectiles[projectileKey]) {
