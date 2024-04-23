@@ -128,8 +128,28 @@ projectiles={
 		"speed":220,
 		"hit_animation":"explode_c",
 	},
+	"sshield":{
+		"animation":"throw_sshield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
 	"shield":{
 		"animation":"throw_shield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
+	"mshield":{
+		"animation":"throw_mshield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
+	"xshield":{
+		"animation":"throw_xshield",
+		"speed":220,
+		"hit_animation":"explode_c",
+	},
+	"tigershield":{
+		"animation":"throw_tigershield",
 		"speed":220,
 		"hit_animation":"explode_c",
 	},
