@@ -5,12 +5,14 @@ builtins:
 
 #F2/F4: same warmup handler performance [14/10/14]
 # F4_1G cost 3X [05/04/24]
-instance_class: F4
+instance_class: F1
 automatic_scaling:
  min_idle_instances: 0
  max_idle_instances: 1
  min_pending_latency: 14000ms
 # max_pending_latency: 12000ms
+
+entrypoint: gunicorn --bind=:$PORT --workers=2 --preload main:app # 4 for F2 - 2 for F1
 
 #instance_class: B2
 #manual_scaling:

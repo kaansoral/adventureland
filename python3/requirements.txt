@@ -1,3 +1,4 @@
 Flask
 lxml
 appengine-python-standard
+gunicorn[gthread]
