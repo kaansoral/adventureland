@@ -5038,7 +5038,7 @@ function init_io() {
 				} else {
 					return fail_response("cant_enter");
 				}
-			} else if (data.place == "crypt" || data.place == "winter_instance") {
+			} else if (data.place == "winter_instance") {
 				var f = "cave";
 				var ref = G.maps.cave.spawns[2];
 				var item = "cryptkey";
