@@ -5038,35 +5038,6 @@ function init_io() {
 				} else {
 					return fail_response("cant_enter");
 				}
-			} else if (data.place == "winter_instance") {
-				var f = "cave";
-				var ref = G.maps.cave.spawns[2];
-				var item = "cryptkey";
-				if (data.place == "winter_instance") {
-					f = "winterland";
-					ref = G.maps.winterland.spawns[5];
-					item = "frozenkey";
-				}
-				if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
-					return fail_response("transport_cant_reach");
-				}
-				if (data.name) {
-					// Player requested to enter an existing instance
-					if (instances[data.name] && instances[data.name].map == data.place) {
-						// The instance exists
-						transport_player_to(player, data.name);
-					} else {
-						// The instance doesn't exist
-						return fail_response("transport_cant_invalid");
-					}
-				} else {
-					if (!consume_one_by_id(player, item)) {
-						return fail_response("transport_cant_item");
-					}
-					instance = create_instance(name, data.place);
-					transport_player_to(player, name);
-				}
-				resend(player, "u+cid+reopen");
 			} else if (data.place == "dungeon0" && player.role == "gm") {
 				instance = create_instance(name, "dungeon0", { solo: player.id });
 				transport_player_to(player, name);

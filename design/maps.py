@@ -1162,6 +1162,17 @@ maps={
 		"drop_norm":4000,
 		"instance":True,
 		"lux":0.75,
+		"enter": {
+			# requirements to enter the dungeon
+			# TODO level, class, 
+			"items": [["frozenkey", 1]], #requires 1 frozenkey to enter
+			
+			# [mapKey, locationType, locationIndex, range]
+			"locations": [
+				# ["winterland", "spawns", 5, 120],
+				["winterland", "doors", 3, 120] 
+			]
+		}
 	},
 	"winterland":{
 		#"key":"jayson_IceLandPrototype",
