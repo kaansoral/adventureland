@@ -5179,6 +5179,14 @@ function init_io() {
 
 					const instanceExists = data.name && instances[data.name] && instances[data.name].map == data.place;
 
+					if (data.name) {
+						// Player requested to enter an existing instance
+						if (!instances[data.name]) {
+							// The instance doesn't exist
+							return fail_response("transport_cant_invalid");
+						}
+					}
+
 					// Requirements for entering
 					if (gMap.enter) {
 						// Is there a place you need to be near to use the key
