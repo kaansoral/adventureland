@@ -1,3 +1,14 @@
 {
-	"extends": "../node/.eslintrc"
+	"extends": "../node/.eslintrc",
+	"globals": {
+        "G": "readonly",
+		"parent": "readonly",
+		"window": "readonly",
+		"$": "readonly",
+		"game": "readonly",
+		"character": "readonly",
+		"localStorage": "readonly",
+		"server": "readonly"
+
+    }
 }

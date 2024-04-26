@@ -69,6 +69,7 @@ for (var p in parent.character) {
 var G = parent.G; // Game Data - Use show_json(Object.keys(G)); and inspect individual data with show_json(G.skills) and alike
 var safeties = true; // Prevents common delay based issues that cause many requests to be sent to the server in a burst that triggers the server to disconnect the character
 
+// eslint-disable-next-line no-global-assign
 server = {
 	mode: parent.gameplay, // "normal", "hardcore", "test"
 	pvp: parent.is_pvp, // true for PVP servers, use is_pvp() for maps
@@ -76,6 +77,7 @@ server = {
 	id: parent.server_identifier, // "I", "II", "PVP", "TEST"
 };
 
+// eslint-disable-next-line no-global-assign
 game = {
 	platform: (parent.is_electron && "electron") || "web", // "electron" for Steam, Mac clients, "web" for https://adventure.land
 	graphics: !parent.no_graphics, // if game.graphics is false, don't draw stuff to the game in your Code
