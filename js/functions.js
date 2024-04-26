@@ -181,9 +181,11 @@ function disappearing_clone(element, args) {
 	var sprite = new PIXI.Sprite(texture);
 	if (element.cx) {
 		if (args.i !== undefined) {
-			(sprite.i = args.i), (sprite.j = args.j);
+			sprite.i = args.i;
+			sprite.j = args.j;
 		} else {
-			(sprite.i = element.i), (sprite.j = element.j);
+			sprite.i = element.i;
+			sprite.j = element.j;
 		}
 		sprite.skin = element.skin;
 		sprite.cx = element.cx;
@@ -499,7 +501,8 @@ function show_modal(mhtml, args) {
 	if (0 && window.code && !args.keep_code) {
 		$("#codeui").hide();
 		if (last_hint) {
-			$("#codehint").remove(), (last_hint = undefined);
+			$("#codehint").remove();
+			last_hint = undefined;
 		}
 	}
 	if (window.page && args.url) {
@@ -1082,7 +1085,8 @@ function get_nearby_hostiles(args) {
 		}
 		var c_dist = parent.distance(character, current);
 		if (c_dist < args.range && hostiles.length < args.limit) {
-			hostiles.push(current), (current.c_dist = c_dist);
+			hostiles.push(current);
+			current.c_dist = c_dist;
 		}
 	}
 	hostiles.sort(function (a, b) {
@@ -1187,7 +1191,8 @@ function show_confirm(text, ok, cancel, onclick) {
 		"</div></div>";
 	html += "<div style='width: 410px; text-align: right; font-size: 0px'>";
 	if (is_array(ok)) {
-		(color = ok[0]), (ok = ok[1]);
+		color = ok[0];
+		ok = ok[1];
 	}
 	html +=
 		"<div class='gamebutton' style='border-color: " +
@@ -1343,7 +1348,8 @@ function use_skill(name, target, arg) {
 						return;
 					}
 					if (Math.random() < 0.02) {
-						(trset = true), (target = [s[0], s[1], id]);
+						trset = true;
+						target = [s[0], s[1], id];
 					}
 				});
 			}
@@ -1657,7 +1663,8 @@ function move(x, y, code) {
 		m: character.m,
 	};
 	if (next_minteraction) {
-		(data.key = next_minteraction), (next_minteraction = null);
+		data.key = next_minteraction;
+		next_minteraction = null;
 	}
 	socket.emit("move", data);
 	last_move = new Date();
@@ -1968,13 +1975,15 @@ function npc_focus() {
 		var element = entities[id];
 		c_dist = distance(element, character);
 		if (c_dist < m_dist) {
-			(m_dist = c_dist), (selected = element);
+			m_dist = c_dist;
+			selected = element;
 		}
 	}
 	map_doors.forEach(function (element) {
 		c_dist = distance(element, character);
 		if (c_dist < m_dist) {
-			(m_dist = c_dist), (selected = element);
+			m_dist = c_dist;
+			selected = element;
 		}
 	});
 	if (selected) {
@@ -2181,7 +2190,8 @@ function get_active_characters() {
 				}
 			}
 			if (new_name && new_name != name) {
-				(name = new_name), $this.attr("id", "ichar" + name.toLowerCase());
+				name = new_name;
+				$this.attr("id", "ichar" + name.toLowerCase());
 			} // TEST server name correction [31/07/18]
 			characters[name] = state;
 		}
@@ -2308,7 +2318,8 @@ function start_runner(rid, code) {
 	}
 	actual_code = false;
 	if (code === undefined) {
-		(code = codemirror_render.getValue()), (actual_code = true);
+		code = codemirror_render.getValue();
+		actual_code = true;
 	}
 	the_code = code;
 	$(".engagebutton").hide();
@@ -2348,7 +2359,8 @@ function stop_runner(rid) {
 	socket.emit("code", { run: 0 });
 	code_persistence_logic();
 	if (sounds.empty) {
-		sounds.empty.stop(), (sounds.empty.cplaying = false);
+		sounds.empty.stop();
+		sounds.empty.cplaying = false;
 	}
 }
 
@@ -2443,7 +2455,8 @@ function code_persistence_logic() {
 		data["slot_" + real_id + suffix] = code_slot;
 		storage_set("code_cache", JSON.stringify(data));
 		if (code_change) {
-			api_call("save_code", { code: codemirror_render.getValue(), slot: code_slot, auto: true }), (code_change = false);
+			api_call("save_code", { code: codemirror_render.getValue(), slot: code_slot, auto: true });
+			code_change = false;
 		}
 		console.log("Code saved!");
 	} catch (e) {
@@ -2506,7 +2519,8 @@ function listen_for_hints(editor) {
 			$("#codehint").html("<span style='color: #716CBB'>[E]</span> <span class='thehint'>" + text + "</span>");
 			$("#codehint").show();
 		} else if (last_hint) {
-			$("#codehint").remove(), (last_hint = undefined);
+			$("#codehint").remove();
+			last_hint = undefined;
 		}
 	});
 }
@@ -2716,9 +2730,11 @@ function rshake_i_major(e) {
 	function displ(e, d) {
 		return function () {
 			if (e == character) {
-				(stage.y -= d[1]), (stage.x -= d[0]);
+				stage.y -= d[1];
+				stage.x -= d[0];
 			} else {
-				(e.real_y -= d[1]), (e.real_x -= d[0]);
+				e.real_y -= d[1];
+				e.real_x -= d[0];
 			}
 		};
 	}
@@ -2825,9 +2841,11 @@ function sway(e) {
 	function displ(x, y) {
 		return function () {
 			if (e == character) {
-				(ch_disp_x -= x), (ch_disp_y -= y);
+				ch_disp_x -= x;
+				ch_disp_y -= y;
 			} else {
-				(e.real_x -= x), (e.real_y -= y);
+				e.real_x -= x;
+				e.real_y -= y;
 			}
 		};
 	}
@@ -2851,9 +2869,11 @@ function mojo(e) {
 	function displ(x, y) {
 		return function () {
 			if (e == character) {
-				(ch_disp_x -= x), (ch_disp_y -= y);
+				ch_disp_x -= x;
+				ch_disp_y -= y;
 			} else {
-				(e.real_x -= x), (e.real_y -= y);
+				e.real_x -= x;
+				e.real_y -= y;
 			}
 		};
 	}
@@ -2876,9 +2896,11 @@ function flurry(e) {
 	function displ(x, y) {
 		return function () {
 			if (e == character) {
-				(ch_disp_x -= x), (ch_disp_y -= y);
+				ch_disp_x -= x;
+				ch_disp_y -= y;
 			} else {
-				(e.real_x -= x), (e.real_y -= y);
+				e.real_x -= x;
+				e.real_y -= y;
 			}
 		};
 	}
@@ -2954,7 +2976,8 @@ function safe_y_move(sprite, y) {
 	if (sprite.me) {
 		ch_disp_y += y;
 	} else {
-		(sprite.real_y += y), (sprite.y_disp += y);
+		sprite.real_y += y;
+		sprite.y_disp += y;
 	}
 }
 
@@ -3466,9 +3489,11 @@ function say(message, code) {
 			var name = args.shift();
 			var target = xtarget || ctarget;
 			if (name && name.length) {
-				socket.emit("party", { event: "invite", name: name }), push_deferred("party");
+				socket.emit("party", { event: "invite", name: name });
+				push_deferred("party");
 			} else if (target && !target.me && !target.npc && target.type == "character") {
-				socket.emit("party", { event: "invite", id: target.id }), push_deferred("party");
+				socket.emit("party", { event: "invite", id: target.id });
+				push_deferred("party");
 			} else {
 				add_chat("", "Target someone to invite");
 			}
@@ -3499,9 +3524,11 @@ function say(message, code) {
 			var name = args.shift();
 			var target = xtarget || ctarget;
 			if (name && name.length) {
-				socket.emit("friend", { event: "request", name: name }), push_deferred("friend");
+				socket.emit("friend", { event: "request", name: name });
+				push_deferred("friend");
 			} else if (target && !target.me && !target.npc && target.type == "character") {
-				socket.emit("friend", { event: "request", name: target.name }), push_deferred("friend");
+				socket.emit("friend", { event: "request", name: target.name });
+				push_deferred("friend");
 			} else {
 				add_chat("", "Target someone to friend");
 			}
@@ -3864,10 +3891,12 @@ function set_uroll(def, rhtml) {
 	var color = 0;
 	var html = "";
 	if (def.success) {
-		(c = "$"), (color = "#49C528");
+		c = "$";
+		color = "#49C528";
 	}
 	if (def.failure) {
-		(c = "^"), (color = "#9F1020");
+		c = "^";
+		color = "#9F1020";
 	}
 	html += "<span style='color:" + (color || random_one(uroll_colors)) + ";'>" + c + "</span>";
 	for (var i = 3; i >= 0; i--) {
@@ -3952,7 +3981,8 @@ setInterval(function () {
 		u_scroll !== null &&
 		mssince(last_uping) > 1600
 	) {
-		upgrade(u_item, u_scroll, u_offering, null, true), (last_uping = new Date());
+		upgrade(u_item, u_scroll, u_offering, null, true);
+		last_uping = new Date();
 	}
 }, 1600);
 
@@ -4010,7 +4040,8 @@ function craft() {
 	var j = false;
 	for (var i = 0; i < 9; i++) {
 		if (cr_items[i] || cr_items[i] === 0) {
-			(j = true), items.push([i, cr_items[i]]);
+			j = true;
+			items.push([i, cr_items[i]]);
 		}
 	}
 	if (!j) {
@@ -4065,7 +4096,8 @@ function reopen() {
 		var ocheck = false;
 		for (var i = 0; i < originals.length; i++) {
 			if (originals[i] !== null) {
-				on_rclick($("#citem" + originals[i])[0]), (ocheck = true);
+				on_rclick($("#citem" + originals[i])[0]);
+				ocheck = true;
 			}
 		}
 		if (ocheck && last_uchance !== null && last_uchance_for == rendered_target) {
@@ -4141,7 +4173,8 @@ function toggle_character() {
 	} else if (ctarget == character && !topleft_npc) {
 		ctarget = null;
 	} else {
-		(topleft_npc = false), (xtarget = character);
+		topleft_npc = false;
+		xtarget = character;
 	}
 }
 
@@ -4208,7 +4241,8 @@ function generate_textures(name, stype) {
 		var dyh = 0;
 		var col_num = 3;
 		if (stype == "upper") {
-			(prefix = "upper"), (dyh = 8);
+			prefix = "upper";
+			dyh = 8;
 		}
 		var a = G.dimensions[name];
 		if (a) {
@@ -4223,13 +4257,15 @@ function generate_textures(name, stype) {
 			[null, null, null, null],
 		];
 		if (stype == "tail") {
-			(col_num = 4), textures[prefix + name].push([null, null, null, null]);
+			col_num = 4;
+			textures[prefix + name].push([null, null, null, null]);
 		}
 		for (var i = 0; i < col_num; i++) {
 			for (var j = 0; j < 4; j++) {
 				var rectangle = new PIXI.Rectangle(d[0] + i * d[2] + dx, d[1] + j * d[3] + dy, width, height - dyh);
 				if (offset_walking && !a) {
-					(rectangle.y += 2), (rectangle.height -= 2);
+					rectangle.y += 2;
+					rectangle.height -= 2;
 				}
 				textures[prefix + name][i][j] = new PIXI.Texture(C[FC[name]], rectangle);
 			}
@@ -4739,7 +4775,13 @@ function assassin_smoke(x, y, type) {
 	var d_x = 0;
 	var a_map = current_map;
 	if (type == "firecrackers") {
-		(type = "crackle"), (d_height = 1.5), (d_width = 1.5), (interval = 16), (d_y = 1), (steps = 6);
+		type = "crackle";
+		d_height = 1.5;
+		d_width = 1.5;
+		interval = 16;
+		d_y = 1;
+		steps = 6;
+
 		var rx = Math.random();
 		if (rx < 0.3) {
 			d_x = 0.5;
@@ -4800,7 +4842,9 @@ function confetti_shower(entity, level) {
 	var times = 25;
 	var a_map = current_map;
 	if (level == 2) {
-		(interval = 150), (count = 2), (times = 60);
+		interval = 150;
+		count = 2;
+		times = 60;
 	}
 	if (is_hidden()) {
 		times = 2;
@@ -4828,7 +4872,9 @@ function confetti_shower(entity, level) {
 }
 
 function firecrackers(entity) {
-	(interval = 60), (count = 2), (times = 15);
+	interval = 60;
+	count = 2;
+	times = 15;
 	for (var i = 0; i < times; i++) {
 		for (var j = 0; j < count; j++) {
 			draw_timeout(function () {
@@ -5246,13 +5292,33 @@ function tint_logic() {
 		} else if (tint.type == "progress") {
 			// copy-paste of "selector" [14/06/19]
 			if (tint.compound) {
-				(r = 50), (g = 163), (b = 204), (rr = 70), (gg = 183), (bb = 244);
+				r = 50;
+				g = 163;
+				b = 204;
+				rr = 70;
+				gg = 183;
+				bb = 244;
 			} else if (tint.upgrade) {
-				(rr = 41), (gg = 156), (bb = 76), (r = 254), (g = 183), (b = 42);
+				rr = 41;
+				gg = 156;
+				bb = 76;
+				r = 254;
+				g = 183;
+				b = 42;
 			} else if (tint.upgrade) {
-				(r = 254), (g = 183), (b = 42), (rr = 255), (gg = 209), (bb = 9);
+				r = 254;
+				g = 183;
+				b = 42;
+				rr = 255;
+				gg = 209;
+				bb = 9;
 			} else {
-				(r = 200), (g = 200), (b = 200), (rr = 250), (gg = 250), (bb = 250);
+				r = 200;
+				g = 200;
+				b = 200;
+				rr = 250;
+				gg = 250;
+				bb = 250;
 			}
 			if (start > tint.end) {
 				//$(tint.selector).parent().find("img").css("opacity",1);
@@ -5585,7 +5651,9 @@ function pvp_timeout(ms, event) {
 	var g = 50;
 	var b = 20;
 	if (event == "sneak") {
-		(r = 45), (g = 111), (b = 45);
+		r = 45;
+		g = 111;
+		b = 45;
 	} // didn't work out well
 	skill_timeout("use_town", ms);
 	if (event == 1) {
@@ -5807,7 +5875,8 @@ function draw_circle(x, y, size, color) {
 
 function add_border(element, width, height) {
 	if (!width) {
-		(width = element.texture.width), (height = element.texture.height);
+		width = element.texture.width;
+		height = element.texture.height;
 	}
 	var e = new PIXI.Graphics();
 	e.lineStyle(1, 0xfeb222);
@@ -6091,11 +6160,13 @@ function add_name_tag(element) {
 				!element.slots["trade" + i].b &&
 				G.positions[G.items[element.slots["trade" + i].name].skin]
 			) {
-				items.push(element.slots["trade" + i]), (bsc += element.slots["trade" + i].name);
+				items.push(element.slots["trade" + i]);
+				bsc += element.slots["trade" + i].name;
 			}
 		}
 		if (items.length || 1) {
-			(bar.stand = items), (bar.hp = false);
+			bar.stand = items;
+			bar.hp = false;
 		}
 	}
 	if (
@@ -6111,9 +6182,11 @@ function add_name_tag(element) {
 	} else if (element.team == "A") {
 		//bar.color="#E09400";
 		// else if(element.type=="character" && !pvp && !is_pvp && (ctarget==element || xtarget==element)) bar.color="#368C2B";
-		(bar.color = "#39BB54"), (bar.hp = true);
+		bar.color = "#39BB54";
+		bar.hp = true;
 	} else if (element.team == "B") {
-		(bar.color = "#DB37A3"), (bar.hp = true);
+		bar.color = "#DB37A3";
+		bar.hp = true;
 	} else if (
 		element.type == "character" &&
 		(pvp || is_pvp) &&
@@ -6446,7 +6519,8 @@ function add_hp_bar_old(element) {
 		dy += 8;
 	}
 	if (element.mscale == 2) {
-		(dy += 6), (dx += width / 2);
+		dy += 6;
+		dx += width / 2;
 	}
 	// if(element.height<40) dy=12;
 
@@ -6536,7 +6610,8 @@ function add_hp_bar(element) {
 		dy -= element.mscale * element.mscale * 4;
 	}
 	if (SCALE && element.mscale == 0.5) {
-		(dy += 6), (dx += width / 2);
+		dy += 6;
+		dx += width / 2;
 	}
 
 	// if(element.height<40) dy=12;
@@ -6557,7 +6632,8 @@ function calculate_difficulty(monster) {
 	var hp = 8000;
 	var mhp = monster.hp;
 	if (character) {
-		(dps = character.attack * character.frequency), (hp = character.hp);
+		dps = character.attack * character.frequency;
+		hp = character.hp;
 	}
 	for (var i = 0; i < 30; i++) {
 		hp -= mdps * 2;
@@ -6613,13 +6689,17 @@ function d_line(start, end, args) {
 	} else if (args.color == "taunt") {
 		args.color = 0x707070;
 	} else if (args.color == "burst") {
-		(args.color = 0x428fae), (args.size = 3);
+		args.color = 0x428fae;
+		args.size = 3;
 	} else if (args.color == "supershot") {
-		(args.color = 0x9b172e), (args.size = 2);
+		args.color = 0x9b172e;
+		args.size = 2;
 	} else if (args.color == "reflect") {
-		(args.color = 0x8a4aa2), (args.size = 2);
+		args.color = 0x8a4aa2;
+		args.size = 2;
 	} else if (args.color == "curse") {
-		(args.color = 0x7d4daa), (args.size = 2);
+		args.color = 0x7d4daa;
+		args.size = 2;
 	} else if (args.color == "evade") {
 		args.color = 0x808b94;
 	} else if (args.color == "my_hit") {
@@ -6636,7 +6716,8 @@ function d_line(start, end, args) {
 	} else if (args.color == "mluck") {
 		args.color = eval("#9BF984".replace("#", "0x"));
 	} else if (args.color == "warrior") {
-		(args.color = 0xe07523), (args.size = 3);
+		args.color = 0xe07523;
+		args.size = 3;
 	} else if (args.color && args.color.startsWith && args.color.startsWith("#")) {
 		args.color = eval(args.color.replace("#", "0x"));
 	}
@@ -6729,17 +6810,22 @@ function d_text_new(message, entity, args) {
 	else if (color == "+gold") {
 		color = "gold";
 	} else if (color == "stun") {
-		(color = "#FF9601"), (y -= 6);
+		color = "#FF9601";
+		y -= 6;
 	} else if (color == "sugar") {
 		color = "#D64770";
 	} else if (color == "freeze") {
-		(color = "#53C1FF"), (y -= 6);
+		color = "#53C1FF";
+		y -= 6;
 	} else if (color == "burn") {
-		(color = "#FD9644"), (y -= 6);
+		color = "#FD9644";
+		y -= 6;
 	} else if (color == "crit") {
-		(color = "#D32D51"), (y -= 6);
+		color = "#D32D51";
+		y -= 6;
 	} else if (color == "sneak") {
-		(color = "#2D9B41"), (y -= 6);
+		color = "#2D9B41";
+		y -= 6;
 	} else if (color == "mana") {
 		color = colors.mp;
 	} else if (color == "elixir") {
@@ -6749,17 +6835,24 @@ function d_text_new(message, entity, args) {
 	} else if (color == "reflect") {
 		color = "#6D62A2";
 	} else if (color == "supershot") {
-		(color = "#9B172E"), (y -= 6);
+		color = "#9B172E";
+		y -= 6;
 	} else if (color == "quickpunch") {
-		(color = "#41338B"), (y -= 6);
+		color = "#41338B";
+		y -= 6;
 	} else if (color == "mentalburst") {
-		(color = "#4C9AE0"), (y -= 6);
+		color = "#4C9AE0";
+		y -= 6;
 	} else if (color == "burst") {
-		(color = "#2A8A9A"), (size = "large");
+		color = "#2A8A9A";
+		size = "large";
 	} else if (color == "poison") {
-		(color = colors.poison), (size = "large"), (y -= 6);
+		color = colors.poison;
+		ize = "larg";
+		y -= 6;
 	} else if (color == "1mxp") {
-		(color = "#FFFFFF"), (fx = "glow");
+		color = "#FFFFFF";
+		fx = "glow";
 	} else if (colors[color]) {
 		color = colors[color];
 	}
@@ -6872,11 +6965,14 @@ function d_text(message, x, y, args) {
 	} else if (color == "reflect") {
 		color = "#6D62A2";
 	} else if (color == "burst") {
-		(color = "#2A8A9A"), (size = "large");
+		color = "#2A8A9A";
+		size = "large";
 	} else if (color == "poison") {
-		(color = colors.poison), (size = "large");
+		color = colors.poison;
+		size = "large";
 	} else if (color == "1mxp") {
-		(color = "#FFFFFF"), (fx = "glow");
+		color = "#FFFFFF";
+		fx = "glow";
 	} else if (colors[color]) {
 		color = colors[color];
 	}
@@ -7144,38 +7240,41 @@ function new_map_logic(place, data) {
 	}
 	if (current_map == "tavern") {
 		if (I.dice == "roll") {
-			(map_machines.dice.shuffling = true),
-				(map_machines.dice.num = undefined),
-				delete map_machines.dice.lock_start,
-				(map_machines.dice.locked = 0);
+			map_machines.dice.shuffling = true;
+			map_machines.dice.num = undefined;
+			delete map_machines.dice.lock_start;
+			map_machines.dice.locked = 0;
 		}
 		if (I.dice == "lock") {
-			(map_machines.dice.shuffling = true),
-				(map_machines.dice.num = I.num),
-				(map_machines.dice.lock_start = future_ms(-1200)),
-				(map_machines.dice.locked = 0);
+			map_machines.dice.shuffling = true;
+			map_machines.dice.num = I.num;
+			map_machines.dice.lock_start = future_ms(-1200);
+			map_machines.dice.locked = 0;
 		}
 		if (I.dice == "bets") {
-			(map_machines.dice.shuffling = false),
-				(map_machines.dice.num = I.num),
-				(map_machines.dice.seconds = I.seconds),
-				(map_machines.dice.count_start = future_s(-I.seconds));
+			map_machines.dice.shuffling = false;
+			map_machines.dice.num = I.num;
+			map_machines.dice.seconds = I.seconds;
+			map_machines.dice.count_start = future_s(-I.seconds);
 		}
 		add_log("Tavern is a prototype with work in progress", "#63ABE4");
 	} else {
-		(dice_bet.active = false), (topleft_npc = false);
+		dice_bet.active = false;
+		topleft_npc = false;
 	}
 
 	if (is_pvp && (place == "start" || place == "welcome")) {
 		add_log("This is a PVP Server. Be careful!", "#E1664C");
 	}
 	if (place == "map" && !is_pvp && G.maps[current_map].safe_pvp && !warned[current_map]) {
-		(warned[current_map] = 1),
-			add_log("This is a Safe PVP Zone. You can lose recently looted items if someone defeats you!", "#E1664C");
+		warned[current_map] = 1;
+		add_log("This is a Safe PVP Zone. You can lose recently looted items if someone defeats you!", "#E1664C");
 	} else if (place == "map" && !is_pvp && G.maps[current_map].pvp && !warned[current_map]) {
-		(warned[current_map] = 1), add_log("This is a PVP Zone. Be careful!", "#E1664C");
+		warned[current_map] = 1;
+		add_log("This is a PVP Zone. Be careful!", "#E1664C");
 	} else if (place == "map" && is_pvp && G.maps[current_map].safe && !warned[current_map]) {
-		(warned[current_map] = 1), add_log("This is a Safe Zone. No one can hurt you here!", "#9DE85E");
+		warned[current_map] = 1;
+		add_log("This is a Safe Zone. No one can hurt you here!", "#9DE85E");
 	}
 	light_logic();
 	render_map();
@@ -7257,14 +7356,16 @@ function update_servers_and_characters() {
 		if (character.type == "merchant") {
 			keys.merchant = character;
 		} else if (order <= 3) {
-			(keys[order] = character), (order += 1);
+			keys[order] = character;
+			order += 1;
 		}
 	});
 	[1, 2, 3, "merchant"].forEach(function (key) {
 		if (!keys[key]) {
 			$(".characterr" + key).html("<span style='color: orange'>Offline</span>");
 		} else {
-			$(".characterr" + key).html("<span style='color: green'>" + keys[key].name + "</span>"), (c_count += 1);
+			$(".characterr" + key).html("<span style='color: green'>" + keys[key].name + "</span>");
+			c_count += 1;
 		}
 	});
 	$(".ccount").html(c_count);
@@ -7332,7 +7433,8 @@ function handle_information(infs) {
 					var sname = num;
 					var lnum = num;
 					if (parseInt(num) > 100) {
-						(color = "#D46E33"), (sname = "Character Default");
+						color = "#D46E33";
+						sname = "Character Default";
 					} else {
 						color = colors.code_blue;
 					}
@@ -7473,7 +7575,8 @@ function handle_information(infs) {
 			X.codes = info.code_list;
 			update_servers_and_characters();
 			if (window.is_comm) {
-				render_characters(), render_servers();
+				render_characters();
+				render_servers();
 			}
 		} else if (info.type == "unread") {
 			X.unread = info.count;
@@ -7538,13 +7641,15 @@ function handle_information(infs) {
 
 				if (info.run) {
 					if (code_run) {
-						toggle_runner(), toggle_runner();
+						toggle_runner();
+						toggle_runner();
 					} else {
 						toggle_runner();
 					}
 				} else if (info.code.indexOf("autorerun") != -1) {
 					if (code_run) {
-						toggle_runner(), toggle_runner();
+						toggle_runner();
+						toggle_runner();
 					}
 				}
 
@@ -8089,10 +8194,12 @@ function hide_loader() {}
 function ui_inspect(e) {
 	var args = {};
 	if (e.type == "character") {
-		(args.character_ui = true), (args.name = e.id);
+		args.character_ui = true;
+		args.name = e.id;
 	}
 	if (e.type == "monster") {
-		(args.monster_ui = e.mtype), (args.name = e.id);
+		args.monster_ui = e.mtype;
+		args.name = e.id;
 	}
 	show_json(game_stringify(e, "\t"), args);
 }
@@ -8958,7 +9065,9 @@ function electron_start_watching() {
 
 function electron_stop_watching() {
 	if (watcher1) {
-		watcher1.close(), watcher2.close(), (watcher1 = watcher2 = null);
+		watcher1.close();
+		watcher2.close();
+		watcher1 = watcher2 = null;
 	}
 }
 

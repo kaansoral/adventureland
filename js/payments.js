@@ -22,10 +22,12 @@ function set_pamount(amount) {
 		return;
 	}
 	if (stripe_state == "failed") {
-		(stripe_state = "pay"), $(".pbutton").removeClass("pfail");
+		stripe_state = "pay";
+		$(".pbutton").removeClass("pfail");
 	}
 	if (stripe_state == "declined") {
-		(stripe_state = "pay"), $(".pbutton").removeClass("pfail");
+		stripe_state = "pay";
+		$(".pbutton").removeClass("pfail");
 	}
 	if (stripe_state == "pay") {
 		$(".pbutton").html("Pay $" + pamount);
@@ -77,7 +79,8 @@ function stripe_response(status, response) {
 		stripe_state = "failed";
 		$(".pbutton").html("Failed.");
 		if (response.error && response.error.message) {
-			add_log(response.error.message, "gray"), p_log(response.error.message, "gray");
+			add_log(response.error.message, "gray");
+			p_log(response.error.message, "gray");
 		}
 	}
 	// if(is_sdk) show_json(response);
