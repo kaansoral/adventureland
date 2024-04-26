@@ -536,6 +536,14 @@ animations={
 		"frames":12,
 		"alpha":0.4,
 	},
+	"burned":{
+		"file":"/images/sprites/animations/Fire0.png",
+		"frames":8,
+		# "alpha":0.8,
+		"alpha":0.8,
+		"aspeed":"slow",
+		"continuous":True,
+	},
 }
 
 try:
