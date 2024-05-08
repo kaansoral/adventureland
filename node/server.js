@@ -378,11 +378,20 @@ function init_game() {
 					create_instance("d_b1");
 					create_instance("d_a1");
 					create_instance("d_a2");
-					server_bfs("crypt");
-					server_bfs("winter_instance");
-					server_bfs("tomb");
-					server_bfs("dungeon0");
-					server_bfs("cgallery");
+
+					for (const name in G.maps) {
+						const gMap = G.maps[name];
+						if (gMap.ignore) {
+							continue;
+						}
+
+						const hasNpcs = gMap.npcs && gMap.npcs.length > 0;
+						const hasMonsters = gMap.monsters && gMap.monsters.length > 0;
+						if (gMap.instance && (hasNpcs || hasMonsters)) {
+							// running this is important for instances, so that npcs and monsters can navigate / move
+							server_bfs(name);
+						}
+					}
 				} else if (gameplay == "dungeon") {
 					for (var name in G.maps) {
 						if (G.maps[name].world == "dungeon") {
