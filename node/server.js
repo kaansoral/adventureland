@@ -1307,6 +1307,7 @@ function calculate_player_stats(player) {
 	//player.max_hp+=player.str*5+player.vit*player.level/2; //player.str*10.0+player.level*10+player.vit*25
 	player.max_hp += player.str * 21 + player.vit * (48 + player.level / 3.0);
 	player.max_hp = max(1, player.max_hp);
+	player.max_mp = max(1, player.max_mp);
 	player.max_mp += player.int * 15.0 + player.level * 5;
 	//player.armor+=player.str/2.0;
 	player.armor += min(player.str, 160) + max(0, player.str - 160) * 0.25;
