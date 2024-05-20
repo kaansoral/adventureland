@@ -2400,6 +2400,11 @@ function init_socket(args)
 			}
 			else if(data.type=="disengage")
 			{
+				const m = get_entity(data.id);
+				if(!m) {
+					return
+				}
+				
 				// disengage |  event_lop can cause monsters to randomly disengage, this is during the grinch event.
 				// cant_move_smart |  if smart move fails to move the monster to the target
 				// kill_monster |  call relates to free_last_hits
@@ -2434,8 +2439,7 @@ function init_socket(args)
 						break;
 				}
 
-				const m = get_entity(data.id);
-				if(m) d_text(text, m, {color});
+				d_text(text, m, {color});
 			}
 			else if(data.type=="mheal")
 			{
