@@ -1015,6 +1015,55 @@ function show_upload_modal()
 	$('#toprightcorner').show();
 }
 
+function show_import_map() {
+	function onImportMapJsonChange(event) {
+		var reader = new FileReader();
+		reader.onload = onReaderLoad;
+		reader.readAsText(event.target.files[0]);
+	}
+
+	function onReaderLoad(event) {
+		$("#import_map_json").val(event.target.result);
+	}
+
+	function import_map() {
+		const text = $("#import_map_json").val();
+		const json = JSON.parse(text);
+		// console.log(json);
+		for (const key in json) {
+			const value = json[key];
+			map_data[key] = value;
+		}
+
+		$("#toprightcorner").hide();
+		$("#toprightcorner").html("");
+
+		redraw_map();
+	}
+
+	var html = "<div style='font-size: 32px;'>";
+	html +=
+		"<div style='margin-bottom: 20px'>The following will replace all data in your currently loaded map, press save to persist it</div>";
+	html += `
+	<input id="import_map_file" type="file" accept=".json" /><br/>
+	<textarea id="import_map_json" rows="10" style="min-height:600px; min-width:600px"/>
+	<button id="import_map_button" style="margin-bottom:20px;">Import</button>
+	<br/>
+	<br/>
+	`;
+	// html+=`<form method="post" enctype="multipart/form-data">
+	// <input type="file" name="json"/>
+	// <input type="hidden" name="iname" value="map" />
+	// <input type="hidden" name="key" value="{{name}}">
+	// <input type="submit" name="submit" value="Import"/>
+	// </form>`;
+	html += "</div>";
+	$("#toprightcorner").html(html);
+	$("#toprightcorner").show();
+	$("#import_map_file").on("change", onImportMapJsonChange);
+	$("#import_map_button").on("click", import_map);
+}
+
 function rescale_map(nscale)
 {
 	var ox=(map.x-round(width/2))/scale,oy=(map.y-round(height/2))/scale;
