@@ -1118,16 +1118,18 @@ function redraw_map()
 
 	to_delete=[]; deleted=false;
 
-	for(var i=0;i<map_data.placements.length;i++)
-	{
-		var tile=map_data.placements[i];
-		try{
-			if(!is_nun(tile[3])) place_area(tile[0],tile[1],tile[2],tile[3],tile[4],"yes");
-			else place_tile(tile[0],tile[1],tile[2],"yes");
-		}catch(e)
+	if (map_data.placements) {
+		for(var i=0;i<map_data.placements.length;i++)
 		{
-			console.log("Faulty tile detected + deleted"); deleted=true;
-			to_delete.push(i);
+			var tile=map_data.placements[i];
+			try{
+				if(!is_nun(tile[3])) place_area(tile[0],tile[1],tile[2],tile[3],tile[4],"yes");
+				else place_tile(tile[0],tile[1],tile[2],"yes");
+			}catch(e)
+			{
+				console.log("Faulty tile detected + deleted"); deleted=true;
+				to_delete.push(i);
+			}
 		}
 	}
 	
