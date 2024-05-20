@@ -1536,7 +1536,23 @@ def create_server_api(**args):
 	for name in maps:
 		key=maps[name]["key"]
 		if maps[name].get("ignore"): continue
-		geometry[name]=get_by_iid("map|%s"%key).info.data
+		dbmap=get_by_iid("map|%s"%key)
+		if dbmap:
+			geometry[name]=dbmap.info.data
+		else:
+			# Load design/maps/%key json if it exists
+			logging.warning("%s in maps.%s was not found. Trying to import from design/maps/%s.json"%(key,name, key))
+			filename = "design/maps/%s.json"%key 
+			if os.path.exists(filename):
+				with open("design/maps/%s.json"%key) as json_file:
+					logging.info("%s.json was found in design/maps saving to db"%key)
+					# Create map
+					map=Map(key=ndb.Key(Map,key),info=GG())
+					map.info.data=json.load(json_file)
+					process_map(map)
+					map.updated=datetime.now()
+					map.put()
+					
 	jhtml(self,{
 		"id":server.k(),
 		"auth":server.info.auth,
