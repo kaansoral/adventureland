@@ -2400,8 +2400,46 @@ function init_socket(args)
 			}
 			else if(data.type=="disengage")
 			{
-				var m=get_entity(data.id);
-				if(m) d_text("FFT..",m,{color:"#84A1D1"});
+				const m = get_entity(data.id);
+				if(!m) {
+					return
+				}
+				
+				// disengage |  event_lop can cause monsters to randomly disengage, this is during the grinch event.
+				// cant_move_smart |  if smart move fails to move the monster to the target
+				// kill_monster |  call relates to free_last_hits
+				// firecrackers | 
+				// stop() | mechagnomes
+				// defeat | defeated_by_a_monster function
+				// redirect | something with the rage_list
+				// anger
+				// warpstomp
+				// exceeds_range
+				// cant_move
+				let text = "FFT..";
+				let color = "#84A1D1";
+				switch (data.cause) {
+					case "taunt redirect":
+						text = "GRR.."
+						break;
+					case "agitate redirect":
+						text = "GRRRR.."
+						break;
+					case "absorb redirect":
+						text = "GRRR.."
+						break;
+					case "bored":
+						// if last attack is too long ago.
+						text = "Yawns.."
+					case "player_gone":
+						// different instance, dead player, invis player
+						text = "Huh?!"
+					case "scare":
+						text = "EEP.."
+						break;
+				}
+
+				d_text(text, m, {color});
 			}
 			else if(data.type=="mheal")
 			{
