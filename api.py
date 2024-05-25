@@ -1,5 +1,6 @@
 from config import *
 from functions import *
+import environment
 
 def signup_or_login_api(**args):
 	#time.sleep(10)
@@ -1494,7 +1495,13 @@ def create_server_api(**args):
 	self,domain,keyword,port,region,pvp,gameplay,sname=gdmuld(args,"self","domain","keyword","port","region","pvp","gameplay","name")
 	if keyword!=secrets.SERVER_MASTER: jhtml(self,{"failed":1}); return
 	actual_ip=ip=request.remote_addr; server_name="XX"
-	if is_sdk: actual_ip=ip=domain.server_ip
+	if is_sdk: 
+		# The ip we store should be the url the client needs to use
+		ip = "%s"%(environment.REQUEST_IP_TO_HOSTNAME.get(ip,ip))
+		# If we are not running in HTTPS_MODE servers_to_client will use actual_ip instead
+		actual_ip = ip
+
+	# TODO: makes an ip like eu1.adventure.land, this is hardcoded and should be changed
 	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
 	lat,lon=(request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
 	try: lat,lon=float(lat),float(lon)

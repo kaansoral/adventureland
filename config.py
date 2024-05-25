@@ -66,6 +66,7 @@ j2_loader=jinja2.FileSystemLoader(os.path.dirname(__file__))
 class GG(): pass
 
 import secrets
+import environment
 
 from libraries.country_to_latlon import c_to_ll
 #from libraries import get_image_size
@@ -135,10 +136,10 @@ ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudf
 HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
 always_amazon_ses=True
 SCREENSHOT_MODE=is_sdk and False
-game_name="Adventure Land"
-appengine_id="twodimensionalgame"
-live_domain='adventure.land'
-sdk_domain='thegame.com'
+game_name=environment.GAME_NAME
+appengine_id=environment.APPENGINE_ID
+live_domain=environment.DOMAIN_NAME
+sdk_domain=environment.DOMAIN_NAME
 SDK_UPLOAD_PASSWORD=ELEMENT_PASSWORD=secrets.sdk_password
 
 def init_request(request):
@@ -161,7 +162,7 @@ def gdi(request=None):
 
 		domain.base_url=protocol + "://" + hostname
 		domain.pref_url=domain.base_url
-		domain.server_ip="192.168.1.125"
+		# domain.server_ip="192.168.1.125" # See environment.py
 		domain.stripe_pkey=stripe_pkey
 		domain.stripe_enabled=False
 		domain.https_mode=False
@@ -180,7 +181,7 @@ def gdi(request=None):
 	domain.ip_to_subdomain=ip_to_subdomain
 	domain.https=False
 	domain.secure_base_url=domain.base_url.replace("http://","https://")
-	domain.discord_url="https://discord.gg/44yUVeU"
+	domain.discord_url=secrets.DISCORD["URL"]["WELCOME"]
 	domain.is_sdk=is_sdk
 	domain.io_version="4.2.0" #upgraded from 1.4.5 now [18/03/17] upgraded from 1.7.2 now [31/12/17] upgraded from 2.1.0 now [20/06/19] 2.3.0 [28/06/20] 4.0.0 [18/03/21]
 	domain.cm_version="5.65.1"
