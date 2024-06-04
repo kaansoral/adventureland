@@ -971,6 +971,7 @@ positions={
 	"elixirpnres":["",4,62],
 	"trigger":["",15,16],
 	"mbelt":["",4,3],
+	"bfangamulet":["community",1,0],
 
 	"cryptkey":["custom",0,3],
 	"tombkey":["custom",1,3],

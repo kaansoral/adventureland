@@ -1109,6 +1109,13 @@ imagesets={
 		"file":"/images/tiles/items/custom.png?v=9",
 		"load":True,
 	},
+	"community":{
+		"size":20,
+		"rows":9,
+		"columns":7,
+		"file":"/images/tiles/items/community.png",
+		"load":True,
+	},
 }
 tilesets={
 	"castle":{"file":"/images/tiles/map/castle.png?v=2"},
