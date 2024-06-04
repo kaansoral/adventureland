@@ -3359,10 +3359,22 @@ function complete_attack(attacker, target, info) {
 					attack *= cmult;
 				}
 				if (attacker.type == "rogue") {
+					let player_party = attacker.party || attacker.name;
 					var maxd = G.skills.stack.max;
 					// if(G.monsters[target.type] && G.monsters[target.type].stationary) maxd=9999999999;
-					target.s.stack = { ms: 10000, s: min(maxd, (target.s.stack && target.s.stack.s + 1) || 1) };
-					attack += target.s.stack.s;
+					if (target.s.stack) {
+						if (player_party in target.s.stack.data) {
+							let data_ref = target.s.stack.data[player_party];
+							data_ref.ms = 10000;
+							data_ref.s = min(maxd, data_ref.s + 1);
+						} else {
+							target.s.stack.data[player_party] = { ms: 10000, s: 1 };
+							target.s.stack.count++;
+						}
+					} else {
+						target.s.stack = { count: 1, data: { [player_party]: { ms: 10000, s: 1 } } };
+					}
+					attack += target.s.stack.data[player_party].s;
 				}
 				if (def.purify) {
 					for (var name in target.s) {
@@ -11575,7 +11587,13 @@ function update_instance(instance) {
 			var def = G.conditions[name];
 			var ref = monster.s[name];
 			var value = monster.s[name].ms;
-			monster.s[name].ms -= ms;
+			if ("ms" in ref) {
+				ref.ms -= ms;
+			} else {
+				for (let party_name in ref.data) {
+					ref.data[party_name].ms -= ms;
+				}
+			}
 			if (def && def.interval) {
 				if (!monster.s[name].last || mssince(monster.s[name].last) >= def.interval) {
 					monster.s[name].last = new Date();
@@ -11625,7 +11643,17 @@ function update_instance(instance) {
 					monster.cid++;
 				}
 			}
-			if (monster.s[name].ms <= 0) {
+			if (!("ms" in ref)) {
+				for (let party_name in ref.data) {
+					if (ref.data[party_name].ms <= 0) {
+						ref.count--;
+						delete ref.data[party_name];
+					}
+				}
+				if (ref.count == 0) {
+					delete monster.s[name];
+				}
+			} else if (monster.s[name].ms <= 0) {
 				if (monster.a[name] && monster.a[name].cooldown) {
 					monster.s[name].ms = monster.a[name].cooldown;
 				} else {
