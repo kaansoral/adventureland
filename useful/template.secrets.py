@@ -5,8 +5,17 @@ stripe_pkey="sk_live_"
 steam_web_apikey="B4XXXXXXXXXXXXXX..."
 steam_publisher_web_apikey="F9XXXXXXXXXXXX..."
 sdk_password="123"
+
+#EMAIL PROVIDER SMTP = True, Amazon SES = False
+email_provider_smtp = False
+#AMAZON SES DETAILS
 amazon_ses_user='AKXXXXXXXX...'
 amazon_ses_key='aAXXXXXXXXX...'
+#SMTP DETAILS
+smtp_server="SERVER"
+smtp_port="PORT"
+smtp_username="USERNAME"
+smtp_password="PASSWORD"
 
 #Master Passwords
 ACCESS_MASTER="123" #this key is the master key of all servers, gives access to data/eval/render, most juicy key [03/08/17]
