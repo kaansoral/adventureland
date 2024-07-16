@@ -3291,16 +3291,16 @@ function complete_attack(attacker, target, info) {
 		if (attacker.is_player) {
 			for (var id in instances[target.in].monsters) {
 				var target = instances[target.in].monsters[id];
-				if (target.avoidance && Math.random() * 100 < target.avoidance) {
-					xy_emit(
-						info.action,
-						"hit",
-						{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
-						attacker.id,
-					);
-					continue;
-				}
 				if (target.id != otarget.id && distance(target, otarget) < radius) {
+					if (target.avoidance && Math.random() * 100 < target.avoidance) {
+						xy_emit(
+							info.action,
+							"hit",
+							{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
+							attacker.id,
+						);
+						continue;
+					}
 					targets.push([target, "splash", (damage_multiplier(target[defense] || 0) * intensity) / 100.0]);
 				}
 			}
