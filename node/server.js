@@ -11517,7 +11517,10 @@ function rage_logic(instance) {
 				player.y <= map_def.rage[3]
 			) {
 				if (Math.random() < player.aggro_diff) {
-					return;
+					// bling vs. cuteness fix [7/17/24]
+					// change return to a continue since this is a
+					// "regular" for loop rather than a .forEach loop
+					continue;
 				}
 				for (var id in instance.monsters) {
 					var monster = instance.monsters[id];
