@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  adventureland:
+    image: al
+    build:
+      context: ./
+    restart: always
+    ports:
+      - "8083:8083"
+      - "8000:8000"
+    volumes:
+      - al-db:/appserver/storage/
+  eu1:
+    image: al
+    build:
+      context: ./
+    restart: always
+    ports:
+      - "8022:8022"
+    volumes:
+      - al-db:/appserver/storage/
+    entrypoint: ["/adventureland/docker/game-server-entrypoint.sh", "EU", "V", "8022"]
+    depends_on:
+      - adventureland
+  us1:
+    image: al
+    build:
+      context: ./
+    restart: always
+    ports:
+      - "8023:8023"
+    volumes:
+      - al-db:/appserver/storage/
+    entrypoint: ["/adventureland/docker/game-server-entrypoint.sh", "US", "I", "8023"]
+    depends_on:
+      - adventureland
+
+volumes:
+  al-db:
