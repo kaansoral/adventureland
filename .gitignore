@@ -1,4 +1,5 @@
 /secrets.py
+/environment.py
 /node/live_variables.js
 /node/variables.js
 /stack/
