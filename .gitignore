@@ -13,6 +13,8 @@
 *.pub
 *.bak
 /scripts/test.js
+# Temporary folder to deploy the Python3 app
+to_deploy/
 # System Files
 .DS_Store
 Thumbs.db
