@@ -1497,9 +1497,11 @@ def create_server_api(**args):
 	actual_ip=ip=request.remote_addr; server_name="XX"
 	if is_sdk: 
 		# The ip we store should be the url the client needs to use
-		ip = "%s"%(environment.REQUEST_IP_TO_HOSTNAME.get(ip,ip))
+		mappingKey = "%s%s"%(region,sname)
+		ip = "%s"%(environment.CREATE_SERVER_MAPPING.get(mappingKey,ip))
 		# If we are not running in HTTPS_MODE servers_to_client will use actual_ip instead
 		actual_ip = ip
+		logging.info("create_server_api: sname: %s region:%s %s %s"%(sname,region,ip,actual_ip))
 
 	# TODO: makes an ip like eu1.adventure.land, this is hardcoded and should be changed
 	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
