@@ -5492,46 +5492,48 @@ function init_io() {
 			success_response("craft", { num: i, name: name, cevent: true });
 		});
 		socket.on("exchange", function (data) {
-			var player = players[socket.id];
-			var item = player.items[data.item_num];
-			var def = G.items[item && item.name];
-			var suffix = "";
+			const player = players[socket.id];
+			if (!player) {
+				return fail_response("invalid");
+			}
 			if (player.q.exchange) {
 				return fail_response("exchange_existing");
 			}
-			if (def && (def.compound || def.upgrade)) {
-				suffix = item.level || 0;
-			}
-			if (!player || player.user) {
+			if (player.user) {
 				return fail_response("cant_in_bank");
 			}
-			G.maps.main.exchange.name = player.name;
-			if (!def || !def.e || item.q != data.q || !D.drops[item.name + suffix]) {
+
+			const item = player.items[data.item_num];
+			if (!item) {
 				return fail_response("invalid");
 			}
 			if (item.l) {
 				return fail_response("item_locked");
 			}
-			if (!player.computer && !def.quest && simple_distance(G.maps.main.exchange, player) > B.sell_dist) {
-				return fail_response("distance");
-			}
-			if (!player.computer && def.quest && simple_distance(G.quests[def.quest], player) > B.sell_dist) {
-				return fail_response("distance");
-			}
 			if (player.esize <= 0 && !((item.q || 1) == 1)) {
+				// TODO: If there are no items in the drop table, we could add support to exchange it
 				return fail_response("inventory_full");
+			}
+			const def = G.items[item.name];
+			const suffix = def && (def.compound || def.upgrade) ? item.level || 0 : "";
+			const dropId = item.name + suffix;
+			if (!def || !def.e || !D.drops[dropId]) {
+				return fail_response("invalid");
+			}
+			if (!player.computer) {
+				const dist = distance(player, def.quest ? G.quests[def.quest] : G.maps.main.exchange);
+				if (dist > B.sell_dist) {
+					return fail_response("distance");
+				}
 			}
 			if (def.e > 1 && item.q < def.e) {
 				return fail_response("exchange_notenough");
 			}
-			player.p.stats.exchanges[item.name + suffix] = (player.p.stats.exchanges[item.name + suffix] || 0) + 1;
+			player.p.stats.exchanges[dropId] = (player.p.stats.exchanges[dropId] || 0) + 1;
 			consume(player, data.item_num, def.e);
-			var num = add_item(player, "placeholder");
-			var ms = 3000 + parseInt(Math.random() * 3000);
-			if (gameplay == "hardcore") {
-				ms = 400;
-			}
-			player.q.exchange = { ms: ms, len: ms, name: item.name, id: item.name + suffix, q: def.e, num: num };
+			const num = add_item(player, "placeholder");
+			const ms = gameplay === "hardcore" ? 400 : 3000 + Math.floor(Math.random() * 3000);
+			player.q.exchange = { ms: ms, len: ms, name: item.name, id: dropId, q: def.e, num: num };
 			if (suffix) {
 				player.q.exchange.s = suffix;
 			}
