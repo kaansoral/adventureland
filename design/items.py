@@ -2923,7 +2923,7 @@ weapons={
 		"name":"Fire Bow",
 		"explanation":"Rains fire upon the enemy",
 		"g":178000,
-		"grades":[0,7],
+		"grades":[0,8],
 		"a":True,
 		"cx":{"accent":"#E34C25"},
 		#"cx":{"accent":"#D3001E"},
