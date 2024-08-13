@@ -2025,7 +2025,8 @@ function drop_something(player, monster, share) {
 	 *                       dropped, where item[0] is the drop rate.
 	 * @returns {boolean}  - true if the item should drop,
 	 *                       false if the item should NOT drop.
-	 * [7/17/24] - ATLUS - 'temp' monsters should also roll for drops
+	 * Change Note:
+	 * - [7/17/24] - ATLUS - 'temp' monsters should also roll for drops
 	 */
 	const shouldItemDrop = (item) => {
 		// 1) calculate the drop rate
