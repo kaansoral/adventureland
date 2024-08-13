@@ -2017,14 +2017,34 @@ function drop_something(player, monster, share) {
 			}
 		});
 	}
+
+	/**
+	 * Determines whether an item should drop for a player based
+	 * on the drop rate and luck modifiers.
+	 * @param {Array} item - An array representing the item to be
+	 *                       dropped, where item[0] is the drop rate.
+	 * @returns {boolean}  - true if the item should drop,
+	 *                       false if the item should NOT drop.
+	 * Change Note:
+	 * - [7/17/24] - ATLUS - 'temp' monsters should also roll for drops
+	 */
+	const shouldItemDrop = (item) => {
+		// 1) calculate the drop rate
+		// 2) calculate & use roll modifier on a random roll (0 <= N < 1)
+		// 3) item drops if the calculated falls below the drop rate threshold
+
+		let dropRate = item[0];
+		let rollModifier = share / player.luckm / monster.level / monster_mult;
+		let playerRoll = Math.random() / rollModifier;
+
+		return playerRoll < dropRate;
+	};
+
 	// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
 	if (D.drops.monsters[monster.type] && player.tskin != "konami") {
 		D.drops.monsters[monster.type].forEach(function (item) {
-			if (
-				((!monster.temp || item[0] > 0.00001) &&
-					Math.random() / share / player.luckm / monster.level / monster_mult < item[0]) ||
-				mode.drop_all
-			) {
+			let itemShouldDrop = shouldItemDrop(item);
+			if (itemShouldDrop || mode.drop_all) {
 				// /hp_mult - removed [13/07/18]
 				drop_item_logic(drop, item, is_in_pvp(player, 1));
 			}
@@ -2032,11 +2052,8 @@ function drop_something(player, monster, share) {
 	}
 	if (monster.drops) {
 		monster.drops.forEach(function (item) {
-			if (
-				((!monster.temp || item[0] > 0.00001) &&
-					Math.random() / share / player.luckm / monster.level / monster_mult < item[0]) ||
-				mode.drop_all
-			) {
+			let itemShouldDrop = shouldItemDrop(item);
+			if (itemShouldDrop || mode.drop_all) {
 				// /hp_mult - removed [13/07/18]
 				drop_item_logic(drop, item, is_in_pvp(player, 1));
 			}
