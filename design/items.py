@@ -4050,7 +4050,7 @@ offhands={
 			"str":6,
 		},
 		"name":"Exoskeletal Arm",
-		"explanation":"It does more than just enhance your natural movements, almost like has a mind of its own",
+		"explanation":"It does more than just enhance your natural movements, almost like it has a mind of its own.",
 		"g":48000000,
 		"grades":[0,0],
 		"cx":{
