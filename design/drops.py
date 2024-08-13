@@ -274,7 +274,7 @@ drops={
 		"mvampire":[[0.10,"intearring"],[0.10,"strearring"],[0.10,"dexearring"],[0.05,"firestaff"],[0.03,"mcape"],[0.01,"forscroll"],[1.0/400000,"cxjar",1,"coolblueg"],[1.0/80000,"sanguine"]],
 		"fvampire":[[0.30,"open","statamulet"],[0.04,"firestaff"],[0.01,"mcape"],[0.01,"armorbox"],[0.01,"forscroll"],[1.0/200000,"cxjar",1,"catbatg"],[1.0/40,"offeringp"],[1.0/50000,"sanguine"]],
 		#"phoenix":[[0.08,"intearring"],[0.08,"strearring"],[0.08,"dexearring"],[0.02,"firestaff"],[0.02,"fireblade"]],
-		"phoenix":[[0.7,"vitscroll"],[0.12,"intearring"],[0.12,"strearring"],[0.12,"dexearring"],[0.12,"vitearring"],[0.04,"firestaff"],[0.04,"fireblade"],[1.0/120000,"fcape"],[1.0/600,"offeringp"],[1.0/64000000,"cxjar",1,"hairdo606"]],
+		"phoenix":[[0.7,"vitscroll"],[0.12,"intearring"],[0.12,"strearring"],[0.12,"dexearring"],[0.12,"vitearring"],[0.04,"firestaff"],[0.04,"firebow"],[0.04,"fireblade"],[1.0/120000,"fcape"],[1.0/600,"offeringp"],[1.0/64000000,"cxjar",1,"hairdo606"]], # Added firebow [2024/04/12]
 		"mechagnome":[[0.2,"electronics"],[0.2,"electronics"],[0.2,"electronics"],[0.00001,"networkcard"],[1.0/10000000,"mpxamulet"]],
 		"bat":[[4.0/1000,"wbook0"],[5.0/1000,"bwing"],[1.0/100000000,"cxjar",1,"wings102"]],
 		"scorpion":[
@@ -1067,6 +1067,7 @@ drops={
 		[0.5,"pmace"],
 		[1,"fireblade"],
 		[0.8,"firestaff"],
+		[0.8,"firebow"], # Added firebow [2024/04/12]
 		[0.04,"t3bow"],
 		[0.02,"hammer"],
 		[0.1,"rapier"],
