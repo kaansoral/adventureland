@@ -1939,27 +1939,6 @@ function drop_one_thing(player, items, args) {
 	});
 }
 
-/**
- * Determines whether an item should drop for a player based
- * on the drop rate and luck modifiers
- * @param {Array} item - An array representing the item to be
- *                       dropped, where item[0] is the drop rate.
- * @returns {boolean}  - true if the item should drop,
- *                       false if the item should NOT drop.
- * [7/17/24] - ATLUS - 'temp' monsters should also roll for drops
- */
-function shouldItemDrop(item) {
-	// 1) calculate drop modifier
-	// 2) use roll modifier on a random roll (0 <= N < 1)
-	// 3) item drops if the calculated falls below the drop threshold
-
-	let dropRate = item[0];
-	let rollModifier = share / player.luckm / monster.level / monster_mult;
-	let playerRoll = Math.random() / rollModifier < item[0];
-
-	return playerRoll < dropRate;
-}
-
 function drop_something(player, monster, share) {
 	if (monster.pet || monster.trap) {
 		return;
@@ -2038,6 +2017,27 @@ function drop_something(player, monster, share) {
 			}
 		});
 	}
+
+	/**
+	 * Determines whether an item should drop for a player based
+	 * on the drop rate and luck modifiers.
+	 * @param {Array} item - An array representing the item to be
+	 *                       dropped, where item[0] is the drop rate.
+	 * @returns {boolean}  - true if the item should drop,
+	 *                       false if the item should NOT drop.
+	 * [7/17/24] - ATLUS - 'temp' monsters should also roll for drops
+	 */
+	const shouldItemDrop = (item) => {
+		// 1) calculate the drop rate
+		// 2) calculate & use roll modifier on a random roll (0 <= N < 1)
+		// 3) item drops if the calculated falls below the drop rate threshold
+
+		let dropRate = item[0];
+		let rollModifier = share / player.luckm / monster.level / monster_mult;
+		let playerRoll = Math.random() / rollModifier < item[0];
+
+		return playerRoll < dropRate;
+	};
 
 	// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
 	if (D.drops.monsters[monster.type] && player.tskin != "konami") {
