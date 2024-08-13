@@ -7881,7 +7881,11 @@ function init_io() {
 					);
 					for (var id in instances[player.in].monsters) {
 						var monster = instances[player.in].monsters[id];
-						if (monster.target && distance({ map: player.map, in: player.in, x: x, y: y }, monster) < 64) {
+						if (
+							monster.target &&
+							is_same(player, get_player(monster.target), 1) &&
+							distance({ map: player.map, in: player.in, x: x, y: y }, monster) < 64
+						) {
 							stop_pursuit(monster, { force: true, cause: "firecrackers" });
 						}
 					}
