@@ -2035,7 +2035,7 @@ function drop_something(player, monster, share) {
 
 		let dropRate = item[0];
 		let rollModifier = share / player.luckm / monster.level / monster_mult;
-		let playerRoll = Math.random() / rollModifier < item[0];
+		let playerRoll = Math.random() / rollModifier;
 
 		return playerRoll < dropRate;
 	};
