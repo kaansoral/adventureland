@@ -5210,10 +5210,7 @@ function init_io() {
 						if (gMap.enter.items && !instanceExists) {
 							const itemsToConsume = [];
 
-							const quantityByItem = {};
-							for (const [itemKey, quantity] of gMap.enter.items) {
-								quantityByItem[itemKey] = quantity;
-							}
+							const quantityByItem = gMap.enter.items;
 
 							for (let i = 0; i < player.items.length; i++) {
 								const item = player.items[i];
