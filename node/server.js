@@ -5150,10 +5150,13 @@ function init_io() {
 
 					const instanceExists = data.name && instances[data.name] && instances[data.name].map == data.place;
 
-					// Player requested to enter an existing instance
-					if (!instanceExists) {
-						// The instance doesn't exist
-						return fail_response("transport_cant_invalid");
+					if (data.name) {
+						// Player requested to enter an existing instance
+						if (!instanceExists) {
+							// The instance doesn't exist
+							server_log(`${player.name} tried to enter ${data.place} (${data.name}) but it does not exist`);
+							return fail_response("transport_cant_invalid");
+						}
 					}
 
 					// Requirements for entering
