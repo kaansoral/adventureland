@@ -5239,8 +5239,7 @@ function init_io() {
 							// validate missing quantities
 							if (Object.keys(quantityByItem).length > 0) {
 								server_log(`${data.place} missing items ${JSON.stringify(quantityByItem)}`);
-								// TODO: tell missing requirements to the client?
-								return fail_response("transport_cant_item");
+								return fail_response("transport_cant_item", data.place, { items: quantityByItem });
 							}
 
 							for (const [inventory_index, quantity] of itemsToConsume) {
