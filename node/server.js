@@ -5181,7 +5181,7 @@ function init_io() {
 								}
 
 								const location = G.maps[locationsMapKey][locationType][locationIndex];
-								const distanceToLocation = simple_distance(player, {
+								const distanceToLocation = distance(player, {
 									in: locationsMapKey,
 									map: locationsMapKey,
 									x: location[0],
