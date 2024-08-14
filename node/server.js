@@ -5025,7 +5025,7 @@ function init_io() {
 			// 	if(data.place!="resort" && !G.maps[player.map].ref.transporter || simple_distance(G.maps[player.map].ref.transporter,player)>80) return socket.emit("game_response","transport_cant_reach");
 			// 	if(data.place=="resort" && player.map!="resort") return socket.emit("game_response","transport_cant_reach");
 			// }
-			server_log(data);
+			server_log(`${player.name} enter ${JSON.stringify(data)}`);
 			var name = randomStr(24);
 			if (data.place == "resort" && 0) {
 				var name = "resort_" + data.name;
@@ -5166,20 +5166,22 @@ function init_io() {
 						let inRange = !validateRange;
 
 						if (validateRange) {
-							server_log(`${gMap.enter.locations.length} locations to validate`);
+							server_log(`${data.place} ${player.name} ${gMap.enter.locations.length} locations to validate`);
 							for (const [locationsMapKey, locationType, locationIndex, range = 120] of gMap.enter.locations) {
 								if (!G.maps[locationsMapKey]) {
-									server_log(`G.maps.${locationsMapKey} does not exist`);
+									server_log(`${data.place} ${player.name} G.maps.${locationsMapKey} does not exist`);
 									continue;
 								}
 
 								if (!G.maps[locationsMapKey][locationType]) {
-									server_log(`G.maps.${locationsMapKey}.${locationType} does not exist`);
+									server_log(`${data.place} ${player.name} G.maps.${locationsMapKey}.${locationType} does not exist`);
 									continue;
 								}
 
 								if (!G.maps[locationsMapKey][locationType][locationIndex]) {
-									server_log(`G.maps.${locationsMapKey}.${locationType}.${locationIndex} does not exist`);
+									server_log(
+										`${data.place} ${player.name} G.maps.${locationsMapKey}.${locationType}.${locationIndex} does not exist`,
+									);
 									continue;
 								}
 
@@ -5192,7 +5194,7 @@ function init_io() {
 								});
 
 								server_log(
-									`G.maps.${locationsMapKey}.${locationType}.${locationIndex} ${distanceToLocation} <= ${range}`,
+									`${data.place} ${player.name} G.maps.${locationsMapKey}.${locationType}.${locationIndex} ${distanceToLocation} <= ${range}`,
 								);
 
 								if (distanceToLocation <= range) {
@@ -5215,20 +5217,13 @@ function init_io() {
 							for (let i = 0; i < player.items.length; i++) {
 								const item = player.items[i];
 								if (item && quantityByItem[item.name]) {
-									server_log(`${data.place} player has ${item.q} x ${item.name} in slot ${i}`);
-									const gItem = G.items[item.name];
-									if (gItem.s) {
-										const quantity = Math.min(item.q, quantityByItem[item.name]);
+									server_log(`${data.place} ${player.name} has ${item.q || 1} x ${item.name} in slot ${i}`);
 
-										quantityByItem[item.name] -= quantity;
-										server_log(`${data.place} ${data.name} ${quantity} x ${item.name} to be removed`);
-										itemsToConsume.push([i, quantity]);
-									} else {
-										// TODO: handle non stackable items
-										server_log(
-											`${data.place} player has ${item.name} in slot ${i} that is not stackable, how to handle?`,
-										);
-									}
+									const quantity = Math.min(item.q || 1, quantityByItem[item.name]);
+
+									quantityByItem[item.name] -= quantity;
+									server_log(`${data.place} ${player.name} ${quantity} x ${item.name} to be removed`);
+									itemsToConsume.push([i, quantity]);
 
 									if (quantityByItem[item.name] == 0) {
 										delete quantityByItem[item.name];
@@ -5243,7 +5238,6 @@ function init_io() {
 							}
 
 							for (const [inventory_index, quantity] of itemsToConsume) {
-								// TODO: will throw an error if quantity is spread over multiple stacks
 								consume(player, inventory_index, quantity);
 							}
 						}
@@ -5251,12 +5245,12 @@ function init_io() {
 
 					if (instanceExists) {
 						// transport to an existing instance
-						server_log(`entering existing instance ${data.place} ${data.name}`);
+						server_log(`${player.name} entering existing instance ${data.place} ${data.name}`);
 						// TODO: transport player to the spawn point the door maps too
 						transport_player_to(player, data.name);
 					} else {
 						// name is a random generated instance id
-						server_log(`entering new instance ${data.place} ${name}`);
+						server_log(`${player.name} entering new instance ${data.place} ${name}`);
 						instance = create_instance(name, data.place);
 						// TODO: transport player to the spawn point the door maps too
 						transport_player_to(player, name);
