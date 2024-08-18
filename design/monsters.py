@@ -425,12 +425,12 @@ monsters={
 		"rbuff":"mlifesteal",
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","mp",20],
-			[1000,"stat","attack",5],
+			[10,"stat","mp",20],
+			[100,"stat","attack",5],
+			[1000,"stat","resistance",5],
 			[10000,"stat","resistance",5],
-			[100000,"stat","resistance",5],
-			[1000000,"stat","lifesteal",1],
-			[10000000,"stat","lifesteal",2.5],
+			[100000,"stat","lifesteal",1],
+			[1000000,"stat","lifesteal",2.5],
 		]
 	},
 	"phoenix":{
