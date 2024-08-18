@@ -761,8 +761,8 @@ monsters={
 			[100,"stat","vit",1],
 			[1000,"stat","dex",1],
 			[10000,"stat","armor",10],
-			[100000,"stat","rpiercing",10],
-			[1000000,"stat","manasteal",0.32],
+			[50000,"stat","rpiercing",10],
+			[100000,"stat","manasteal",0.32],
 		]
 	},
 	"slenderman":{
