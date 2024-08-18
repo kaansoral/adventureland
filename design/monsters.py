@@ -808,9 +808,9 @@ monsters={
 			[10,"stat","vit",1],
 			[100,"stat","armor",10],
 			[1000,"stat","resistance",15],
-			[10000,"stat","for",3],
-			[100000,"stat","frequency",1],
-			[1000000,"stat","speed",1],
+			[5000,"stat","for",3],
+			[20000,"stat","frequency",1],
+			[50000,"stat","speed",1],
 		]
 	},
 	"jr":{
