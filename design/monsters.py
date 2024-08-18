@@ -1234,12 +1234,12 @@ monsters={
 		"name":"Mech-a Gnome","speed":1,"charge":120,"hp":164000,"xp":80000,"attack":48,"damage_type":"physical","respawn":480,"gold":6000,"range":30,"frequency":4,"aggro":0,"rage":0,"resistance":600,"armor":600,"abilities":{"portal":{"cooldown":0}},
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",20],
-			[1000,"stat","vit",1],
-			[10000,"stat","dex",1],
-			[100000,"stat","attack",5],
-			[1000000,"stat","vit",5],
-			[10000000,"stat","lifesteal",1.25],
+			[10,"stat","hp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","dex",1],
+			[10000,"stat","attack",5],
+			[100000,"stat","vit",5],
+			[1000000,"stat","lifesteal",1.25],
 		]
 	},
 
