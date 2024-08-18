@@ -539,12 +539,12 @@ monsters={
 		"name":"Stompy","speed":40,"charge":80,"hp":640000,"xp":600000,"attack":3600,"damage_type":"physical","respawn":36*60,"gold":80000,"range":64,"frequency":0.8,"aggro":0.2,
 		"achievements":[
 			[1,"stat","hp",50],
-			[100,"stat","mp",20],
-			[1000,"stat","speed",0.25],
-			[10000,"stat","range",0.5],
-			[100000,"stat","mp",50],
-			[1000000,"stat","frequency",1],
-			[10000000,"stat","attack",200],
+			[10,"stat","mp",20],
+			[100,"stat","speed",0.25],
+			[1000,"stat","range",0.5],
+			[5000,"stat","mp",50],
+			[20000,"stat","frequency",1],
+			[50000,"stat","attack",20],
 		]
 	},
 	"arcticbee":{
