@@ -493,12 +493,12 @@ monsters={
 		"slots":{"mainhand":{"name":"scythe","level":8}},
 		"achievements":[
 			[1,"stat","for",1],
-			[100,"stat","vit",1],
-			[1000,"stat","for",2],
-			[10000,"stat","vit",3],
-			[100000,"stat","crit",0.25],
-			[1000000,"stat","for",10],
-			[10000000,"stat","for",20],
+			[10,"stat","vit",1],
+			[100,"stat","for",2],
+			[1000,"stat","vit",3],
+			[10000,"stat","crit",0.25],
+			[100000,"stat","for",10],
+			[1000000,"stat","for",20],
 		]
 	},
 	"ligerx":{
