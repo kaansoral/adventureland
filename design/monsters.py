@@ -82,13 +82,13 @@ monsters={
 		"name":"Froggie","speed":10,"hp":600,"xp":7200,"attack":24,"damage_type":"physical","respawn":960,"gold":300,"range":15,"frequency":0.5,"aggro":0,"evasion":99,
 			"difficulty":12,
 		"achievements":[
-			[10,"stat","mp",10],
-			[100,"stat","vit",1],
-			[1000,"stat","int",1],
-			[10000,"stat","evasion",0.5],
-			[100000,"stat","int",3],
-			[1000000,"stat","vit",4],
-			[10000000,"stat","evasion",1],
+			[1,"stat","mp",10],
+			[10,"stat","vit",1],
+			[100,"stat","int",1],
+			[1000,"stat","evasion",0.5],
+			[10000,"stat","int",3],
+			[100000,"stat","vit",4],
+			[1000000,"stat","evasion",1],
 		]
 	},
 	"rat":{
