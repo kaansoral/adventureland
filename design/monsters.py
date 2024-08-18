@@ -824,9 +824,9 @@ monsters={
 			[10,"stat","vit",1],
 			[100,"stat","resistance",10],
 			[1000,"stat","armor",8],
-			[10000,"stat","attack",20],
-			[100000,"stat","luck",1],
-			[1000000,"stat","speed",1],
+			[5000,"stat","attack",20],
+			[20000,"stat","luck",1],
+			[50000,"stat","speed",1],
 		]
 	},
 
