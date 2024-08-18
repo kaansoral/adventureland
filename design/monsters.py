@@ -793,8 +793,8 @@ monsters={
 			[100,"stat","vit",1],
 			[1000,"stat","str",1],
 			[10000,"stat","resistance",10],
-			[100000,"stat","apiercing",10],
-			[1000000,"stat","crit",1],
+			[50000,"stat","apiercing",10],
+			[100000,"stat","crit",1],
 		]
 	},
 	"greenjr":{
