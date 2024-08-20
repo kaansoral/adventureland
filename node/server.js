@@ -2301,6 +2301,7 @@ function calculate_monster_score(player, monster, coopShare = 0) {
 	// NOTE: `.mult` is usually 1, but will be set on server shutdown to the ratio of remaining HP.
 	//       See: shutdown_routine()
 	let score = Math.min(1, monster.mult * 2.2);
+	const divisor = monster.cooperative ? 2 : 1;
 
 	for (const id in players) {
 		const p = players[id];
@@ -2316,28 +2317,25 @@ function calculate_monster_score(player, monster, coopShare = 0) {
 
 		const isMerchant = p.type === "merchant";
 		if (sameOwner && sameParty && !isMerchant) {
-			score += 0.3; // +0.3 points for each additional non-merchant character of ours in our party (even if they are far away)
+			score += 0.3 / divisor; // +0.3 points for each additional non-merchant character of ours in our party (even if they are far away)
 		}
 
 		if (isMerchant && simple_distance(p, player) <= 600) {
 			// Nearby merchants reduce the points
 			if (sameOwner) {
-				score -= 0.2; // -0.2 points if our merchant is nearby
+				score -= 0.2 / divisor; // -Deduct points if our merchant is nearby
 			} else {
-				score -= 0.1; // -0.1 points if a merchant in our party is nearby
+				score -= 0.1 / divisor; // Deduct points if a merchant in our party is nearby
 			}
 		}
 	}
 
 	if (simple_distance(player, monster) > 600 && coopShare < 0.01) {
-		score -= 0.3; // -0.3 points if we were far away from the kill, unless it was a coop monster and we contributed
+		score -= 0.3 / divisor; // Deduct points if we were far away from the kill, unless it was a coop monster and we contributed
 	}
 	if (player.type == "merchant" && player.party) {
 		// TODO: What if the merchant killed the monster with a golden gun? Should it not get full points then?
 		score /= 2; // Half points if we're a merchant in a party
-	}
-	if (monster.cooperative) {
-		score /= 2; // Half points for cooperative monsters
 	}
 	if (gameplay == "hardcore") {
 		score *= 10000;
