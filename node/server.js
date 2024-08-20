@@ -2323,8 +2323,9 @@ function calculate_monster_score(player, monster, coopShare = 0) {
 		if (isMerchant && simple_distance(p, player) <= 600) {
 			// Nearby merchants reduce the points
 			if (sameOwner) {
-				score -= 0.2 / divisor; // -Deduct points if our merchant is nearby
-			} else {
+				score -= 0.2 / divisor; // Deduct points if our merchant is nearby
+			}
+			if (sameParty) {
 				score -= 0.1 / divisor; // Deduct points if a merchant in our party is nearby
 			}
 		}
