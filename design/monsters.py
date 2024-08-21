@@ -440,12 +440,12 @@ monsters={
 		"cooperative":True,
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",20],
-			[1000,"stat","vit",1],
-			[10000,"stat","int",1],
-			[100000,"stat","resistance",5],
-			[1000000,"stat","resistance",10],
-			[10000000,"stat","frequency",1],
+			[10,"stat","hp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","int",1],
+			[10000,"stat","resistance",5],
+			[100000,"stat","resistance",10],
+			[1000000,"stat","frequency",1],
 		]
 	},
 	"cgoo":{
