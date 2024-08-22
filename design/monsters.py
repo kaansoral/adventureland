@@ -867,12 +867,12 @@ monsters={
 		},
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",30],
-			[1000,"stat","vit",1],
-			[10000,"stat","for",3],
-			[100000,"stat","resistance",10],
-			[1000000,"stat","attack",25],
-			[10000000,"stat","speed",2],
+			[10,"stat","hp",30],
+			[100,"stat","vit",1],
+			[1000,"stat","for",3],
+			[10000,"stat","resistance",10],
+			[100000,"stat","attack",25],
+			[1000000,"stat","speed",2],
 		]
 	},
 	"welemental":{"name":"Water Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
