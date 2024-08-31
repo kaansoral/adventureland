@@ -3011,7 +3011,6 @@ function commence_attack(attacker, target, atype) {
 	}
 
 	var pid = randomStr(6);
-	var eta = 0;
 	info.first_attack = info.attack = attack;
 	info.def = def;
 	def.damage_type = info.damage_type;
@@ -3028,7 +3027,7 @@ function commence_attack(attacker, target, atype) {
 		source: atype,
 		x: target.x,
 		y: target.y,
-		eta: 400,
+		eta: 0,
 		m: target.m,
 		pid: pid,
 	};
@@ -3052,12 +3051,12 @@ function commence_attack(attacker, target, atype) {
 	}
 
 	if (!(G.projectiles[def.projectile] && G.projectiles[def.projectile].instant)) {
-		eta = (1000 * dist) / G.projectiles[def.projectile].speed;
+		action.eta = Math.floor((1000 * dist) / G.projectiles[def.projectile].speed);
 	} else {
 		action.instant = true;
 	}
 
-	info.eta = future_ms(eta);
+	info.eta = future_ms(action.eta);
 
 	if (info.heal) {
 		action.heal = attack;
@@ -3073,7 +3072,7 @@ function commence_attack(attacker, target, atype) {
 	info.action = action;
 	xy_emit(attacker, "action", action, target.id);
 
-	if (!eta) {
+	if (!action.eta) {
 		projectiles_loop();
 	}
 
