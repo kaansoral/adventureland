@@ -5,6 +5,7 @@ from admin import *
 from crons import *
 from tests import *
 from tasks import *
+import hashlib
 
 @ndb.toplevel
 @app.route('/comm')
@@ -159,11 +160,13 @@ def serve_codejs():
 
 # Cache when data is prepared
 cached_data = None
+cached_data_hash = None
 
 @app.route('/data.js',methods=['GET','POST'])
 @ndb.toplevel
 def serve_datajs():
 	global cached_data
+	global cached_data_hash
 	
 	init_request(request)
 
@@ -171,13 +174,12 @@ def serve_datajs():
 
 	if request.values.get("reload"):
 		additional="add_log('Game data reloaded','#32A3B0');\napply_backup()\n"
-	else:
-		# Check the ETag
-		if request.headers.get('If-None-Match') == str(game_version):
-			request.response.status_code = 304
-			return request.response
+	elif cached_data_hash != None and request.headers.get('If-None-Match') == cached_data_hash:
+		# The ETag matches
+		request.response.status_code = 304
+		return request.response
 
-	if cached_data == None:
+	if cached_data == None or cached_data_hash == None:
 		geometry={}
 
 		for name in maps:
@@ -223,9 +225,11 @@ def serve_datajs():
 		}
 
 		cached_data = json.dumps(data)
+		cached_data_hash = hashlib.md5(cached_data).hexdigest()
 
-	# Set the ETag to the game version
-	request.response.headers['ETag'] = game_version
+	# The browser should cache this
+	request.response.headers['ETag'] = cached_data_hash
+	request.response.headers['Cache-Control'] = "max-age=31536000" # 1 Year
 
 	request.response.set_data("var G=%s;\n%s"%(cached_data,additional))
 	return request.response
