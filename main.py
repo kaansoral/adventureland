@@ -173,7 +173,7 @@ def serve_datajs():
 		additional="add_log('Game data reloaded','#32A3B0');\napply_backup()\n"
 	else:
 		# Check the ETag
-		if request.headers.get('If-None-Match') == game_version:
+		if request.headers.get('If-None-Match') == str(game_version):
 			request.response.status_code = 304
 			return request.response
 
