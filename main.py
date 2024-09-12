@@ -5,6 +5,7 @@ from admin import *
 from crons import *
 from tests import *
 from tasks import *
+import hashlib
 
 @ndb.toplevel
 @app.route('/comm')
@@ -157,53 +158,80 @@ def serve_codejs():
 	else: request.response.set_data("game_log('load_code: Code not found',colors.code_error)")
 	return request.response
 
+# Cache when data is prepared
+cached_data = None
+cached_data_hash = None
+
 @app.route('/data.js',methods=['GET','POST'])
 @ndb.toplevel
 def serve_datajs():
-	domain=gdi(request); additional=""
-	geometry={}
-	for name in maps:
-		key=maps[name]["key"]
-		if maps[name].get("ignore"): continue
-		#if name=="test" and not is_sdk: key="test"
-		#logging.info(key)
-		geometry[name]=get_by_iid("map|%s"%key).info.data
-	data={
-		"version":game_version,
-		"achievements":achievements,
-		"animations":animations,
-		"monsters":monsters,
-		"sprites":sprites,
-		"maps":maps,
-		"geometry":geometry,
-		"npcs":npcs,
-		"tilesets":tilesets,
-		"imagesets":imagesets,
-		"items":items,
-		"sets":sets,
-		"craft":craft,
-		"titles":titles,
-		"tokens":tokens,
-		"dismantle":dismantle,
-		"conditions":conditions,
-		"cosmetics":cosmetics,
-		"emotions":emotions,
-		"projectiles":projectiles,
-		"classes":classes,
-		"dimensions":dimensions,
-		"images":precomputed.images,
-		"levels":levels,
-		"positions":positions,
-		"skills":skills,
-		"events":events,
-		"games":games,
-		"multipliers":multipliers,
-		#"codes":codes,
-		"docs":docs,
-		"drops":drops,
-	}
-	if request.values.get("reload"): additional="add_log('Game data reloaded','#32A3B0');\napply_backup()\n"
-	request.response.set_data("var G=%s;\n%s"%(json.dumps(data),additional))
+	global cached_data
+	global cached_data_hash
+	
+	init_request(request)
+
+	additional=""
+
+	if request.values.get("reload"):
+		additional="add_log('Game data reloaded','#32A3B0');\napply_backup()\n"
+	elif cached_data_hash != None and request.headers.get('If-None-Match') == cached_data_hash:
+		# The ETag matches
+		request.response.status_code = 304
+		return request.response
+
+	if cached_data == None or cached_data_hash == None:
+		geometry={}
+
+		for name in maps:
+			key=maps[name]["key"]
+			if maps[name].get("ignore"): continue
+			#if name=="test" and not is_sdk: key="test"
+			#logging.info(key)
+			geometry[name]=get_by_iid("map|%s"%key).info.data
+
+		data={
+			"version":game_version,
+			"achievements":achievements,
+			"animations":animations,
+			"monsters":monsters,
+			"sprites":sprites,
+			"maps":maps,
+			"geometry":geometry,
+			"npcs":npcs,
+			"tilesets":tilesets,
+			"imagesets":imagesets,
+			"items":items,
+			"sets":sets,
+			"craft":craft,
+			"titles":titles,
+			"tokens":tokens,
+			"dismantle":dismantle,
+			"conditions":conditions,
+			"cosmetics":cosmetics,
+			"emotions":emotions,
+			"projectiles":projectiles,
+			"classes":classes,
+			"dimensions":dimensions,
+			"images":precomputed.images,
+			"levels":levels,
+			"positions":positions,
+			"skills":skills,
+			"events":events,
+			"games":games,
+			"multipliers":multipliers,
+			#"codes":codes,
+			"docs":docs,
+			"drops":drops,
+		}
+
+		cached_data = json.dumps(data)
+		cached_data_hash = hashlib.md5(cached_data).hexdigest()
+
+	# The browser should cache this
+	request.response.headers['ETag'] = cached_data_hash
+	request.response.headers['Cache-Control'] = "max-age=31536000" # 1 Year
+
+	request.response.set_data("var G=%s;\n%s"%(cached_data,additional))
 	return request.response
 
 
