@@ -267,7 +267,7 @@ monsters={
 			[10000,"stat","int",1],
 			[100000,"stat","dex",1],
 			[1000000,"stat","vit",2],
-			[10000000,"stat","attack",10],
+			[10000000,"stat","attack",20], #follow scorpion pattern 16/9/24
 		]
 	},
 	"xscorpion":{
