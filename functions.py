@@ -490,7 +490,7 @@ def characters_to_client(characters_data):
 def servers_to_client(domain,servers_data):
 	servers=[]
 	for server in servers_data:
-		servers.append({"name":server.name,"region":server.region,"players":server.info.players,"key":server.k(),"addr":domain.https and server.ip or server.actual_ip,"port":server.port})
+		servers.append({"name":server.name,"region":server.region,"players":server.info.players,"key":server.k(),"addr":server.ip,"port":server.port})
 	return servers
 
 def get_characters(user,_async=False):
@@ -1053,13 +1053,11 @@ def verify_steam_installs():
 
 def server_eval(server,code,data={}):
 	ip=server.actual_ip
-	if is_sdk: ip="0.0.0.0"
 	return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 
 def server_eval_safe(server,code,data={}):
 	try:
 		ip=server.actual_ip
-		if is_sdk: ip="0.0.0.0"
 		return json.loads(fetch_url("http://%s:%s"%(ip,server.port),aevent="eval",spass=secrets.ACCESS_MASTER,code=code.replace("+","%2B"),data=json.dumps(data).replace("+","%2B")))
 	except:
 		log_trace()

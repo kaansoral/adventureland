@@ -86,7 +86,8 @@ def serve_server_and_character_selection(name="",region="",sname=""):
 			level=c["level"]
 	for server in servers:
 		if server.region==region and server.name==sname:
-			domain.url_ip=domain.https and server.ip or server.actual_ip
+			# TODO: What is the purpose of this? we also have servers_to_client in functions.py that is used in render_selection and render_comm
+			domain.url_ip= server.ip
 			domain.url_port=server.port
 			logging.info("Set!")
 	return render_selection(request,user,domain,level=level)
