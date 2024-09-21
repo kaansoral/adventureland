@@ -1,0 +1,29 @@
+on:
+  issue_comment:
+    # To pickup comment body in pr or issue and generate a label.
+    # Imagine someone comment 'Me too, I get TimeoutException from ...' in comment body.
+    # Generate a 'bug/timeout' label for better triaging!
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#issue_comment
+    types: [created]
+
+permissions:
+  # Setting up permissions in the workflow to limit the scope of what it can do. Optional!
+  contents: read # the config file
+  issues: write # for labeling issues (on: issues)
+  pull-requests: write # for labeling pull requests (on: pull_request_target or on: pull_request)
+  statuses: write # to generate status
+  checks: write # to generate status
+
+jobs:
+  pr_commented:
+    name: Labeler PR comment
+    # This job only runs for pull request comments
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      # follows semantic versioning. Lock to different version: v1, v1.5, v1.5.0 or use a commit hash.
+      - uses: fuxingloh/multi-labeler@v4 # v4
+        with:
+          # github-token: ${{secrets.GITHUB_TOKEN}} # optional, default to '${{ github.token }}'
+          config-path: .github/pr-comment.yml # optional, default to '.github/labeler.yml'
+          # config-repo: my-org/my-repo # optional, default to '${{ github.repository }}'
