@@ -1497,7 +1497,8 @@ def create_server_api(**args):
 	actual_ip=ip=request.remote_addr; server_name="XX"
 	if is_sdk: 
 		# The ip we store should be the url the client needs to use
-		ip = "%s"%(environment.REQUEST_IP_TO_HOSTNAME.get(ip,ip))
+		# ip = "%s"%(environment.REQUEST_IP_TO_HOSTNAME.get(ip,ip))
+		ip = "localhost"
 		# If we are not running in HTTPS_MODE servers_to_client will use actual_ip instead
 		actual_ip = ip
 
@@ -1534,7 +1535,7 @@ def create_server_api(**args):
 	data={}
 	server=get_by_iid("server|%s%s"%(region,server_name))
 	if server:
-		if server.online and msince(server.last_update)<12: return jhtml(self,{"exists":True});
+		# if server.online and msince(server.last_update)<12: return jhtml(self,{"exists":True});
 		data=server.info.data
 	server=Server(key=ndb.Key(Server,"%s%s"%(region,server_name)),info=cGG(players=0,observers=0,total_players=0,lat=lat,lon=lon,pvp=pvp,data=data),name=server_name,region=region,version=to_str(game_version),ip=ip,actual_ip=actual_ip,port=int(port),online=True,gameplay=gameplay)
 	server.info.auth=randomStr(20)

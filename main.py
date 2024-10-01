@@ -219,6 +219,53 @@ def serve_shells():
 	return whtml(request,"htmls/payments.html",domain=domain,user=user,server=server,extra_shells=extra_shells)
 
 
+
+def dump_all_maps():
+    from google.appengine.ext import ndb
+    import json
+    from datetime import datetime
+    from google.appengine.ext.db import GeoPt
+    import logging
+
+    def custom_json_serializer(obj):
+        """JSON serializer for objects not serializable by default json code"""
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        elif isinstance(obj, GeoPt):
+            return {'lat': obj.lat, 'lon': obj.lon}
+        elif isinstance(obj, ndb.Key):
+            return obj.id()  # Use the ID of the key
+        elif isinstance(obj, ndb.Model):
+            return entity_to_dict(obj)
+        elif hasattr(obj, '__dict__'):
+            return {k: custom_json_serializer(v) for k, v in obj.__dict__.items()}
+        elif hasattr(obj, '__slots__'):
+            return {slot: custom_json_serializer(getattr(obj, slot)) for slot in obj.__slots__}
+        else:
+            logging.warning("Encountered non-serializable type: %s", type(obj))
+            return str(obj)
+
+    def entity_to_dict(entity):
+        result = {}
+        for k in entity._properties:
+            try:
+                result[k] = custom_json_serializer(getattr(entity, k))
+            except Exception as e:
+                logging.error("Error serializing property %s of type %s: %s", 
+                              k, type(getattr(entity, k)), str(e))
+                result[k] = str(getattr(entity, k))
+        return result
+
+    maps = Map.query().fetch()
+    map_dict = {m.key.id(): entity_to_dict(m) for m in maps}
+    return json.dumps(map_dict, default=custom_json_serializer)
+
+@app.route('/dump-all-maps')
+def route_dump_all_maps():
+    return dump_all_maps()
+
+
+
 @app.route("/map/<name>",methods=['GET']) #Resort Map Editor
 @app.route("/map/<name>/<suffix>",methods=['GET'])
 def serve_resort_get(name="",suffix=""):

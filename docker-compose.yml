@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   adventureland:
+    container_name: central-server-al
     image: al
     build:
       context: ./
@@ -11,6 +12,7 @@ services:
     volumes:
       - al-db:/appserver/storage/
   eu1:
+    container_name: eu1-al
     image: al
     build:
       context: ./
@@ -19,10 +21,11 @@ services:
       - "8022:8022"
     volumes:
       - al-db:/appserver/storage/
-    entrypoint: ["/adventureland/docker/game-server-entrypoint.sh", "EU", "V", "8022"]
+    entrypoint: ["/adventureland/docker/game-server-entrypoint.sh", "EU", "I", "8022"]
     depends_on:
       - adventureland
   us1:
+    container_name: us1-al
     image: al
     build:
       context: ./
