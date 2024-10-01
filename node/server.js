@@ -175,7 +175,7 @@ var events = {
 	pinkgoo: 0, // every N minutes - 60
 	snowman: 20 * 60, // 1200 normally - 60 - at sprocess_game_data
 	egghunt: 0, // every N minutes - 60
-	halloween: false,
+	halloween: true,
 	// RANDOM
 	goblin: false,
 	goldenbat: 160000,
