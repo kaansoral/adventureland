@@ -4522,6 +4522,17 @@ function effects_logic(sprite)
 		start_filter(sprite,"bloom");
 	}
 
+	if(sprite.s.burned && !sprite.fx.burned)
+	{
+		sprite.fx.burned=true;
+		start_animation(sprite,"burned")
+	}
+	else if(!sprite.s.burned && sprite.fx.burned)
+	{
+		delete sprite.fx.burned;
+		stop_animation(sprite,"burned")
+	}
+
 	if(sprite.type=="monster" && !Object.keys(sprite.fx).length && sprite.real_alpha<1 && !sprite.dead && !(sprite.appearing || sprite.disappearing || sprite.fading_out))
 	{
 		sprite.real_alpha=min(1,sprite.real_alpha+0.05);
