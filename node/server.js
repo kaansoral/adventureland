@@ -2034,7 +2034,7 @@ function drop_something(player, monster, share) {
 		// 3) item drops if the calculated falls below the drop rate threshold
 
 		let dropRate = item[0];
-		let rollModifier = share / player.luckm / monster.level / monster_mult;
+		let rollModifier = share * player.luckm * monster.level * monster_mult;
 		let playerRoll = Math.random() / rollModifier;
 
 		return playerRoll < dropRate;
