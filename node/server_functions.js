@@ -1752,7 +1752,6 @@ function spawn_special_monster(type) {
 		}
 	}
 	if (type == "slenderman") {
-		var packs = [];
 		var m = random_one(["cave", "halloween", "spookytown"]);
 		var p = random_place(m);
 		var pack = { type: "slenderman", boundary: [p.x, p.y, p.x, p.y], count: 1, i: m };
@@ -1762,7 +1761,6 @@ function spawn_special_monster(type) {
 		broadcast("game_event", { name: "slenderman", map: pack.i });
 	}
 	if (type == "tiger") {
-		var packs = [];
 		var m = random_one(["cave", "main"]);
 		var p = random_place(m);
 		var pack = { type: "tiger", boundary: [p.x, p.y, p.x, p.y], count: 1, i: m };
