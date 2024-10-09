@@ -2125,7 +2125,7 @@ function event_loop() {
 					timers[mtype] = future_s(G.monsters[mtype].respawn);
 				}
 				E[mtype] = { live: false, spawn: timer };
-				broadcast_e();
+				change = true;
 			} else if (c > timer) {
 				timers[mtype] = 0;
 				spawn_special_monster(mtype);
@@ -2136,7 +2136,7 @@ function event_loop() {
 					data.y = m.y;
 				}
 				E[mtype] = data;
-				broadcast_e();
+				change = true;
 			}
 		});
 		["holidayseason", "halloween", "lunarnewyear", "valentines", "egghunt"].forEach(function (event) {
@@ -2454,7 +2454,7 @@ function event_loop() {
 				}
 
 				delete E.duels[id];
-				broadcast_e();
+				change = true;
 				continue;
 			}
 			duel.active = instance.active;
