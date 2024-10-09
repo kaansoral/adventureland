@@ -2111,11 +2111,9 @@ function event_loop() {
 			["valentines", "pinkgoo", true],
 			["egghunt", "wabbit", true],
 		];
-		eventmap.forEach(function (event) {
-			const [name, mtype, hidePosition] = event;
-
-			if (!events[name]) return; // Event is not live
-			if (monster_c[mtype]) return; // There is a monster of this type already alive
+		for (const [name, mtype, hidePosition] of eventmap) {
+			if (!events[name]) continue; // Event is not live
+			if (monster_c[mtype]) continue; // There is a monster of this type already alive
 
 			const timer = timers[mtype];
 			if (!timer) {
@@ -2138,7 +2136,7 @@ function event_loop() {
 				E[mtype] = data;
 				change = true;
 			}
-		});
+		}
 		["holidayseason", "halloween", "lunarnewyear", "valentines", "egghunt"].forEach(function (event) {
 			if (events[event]) {
 				E[event] = true;
@@ -2262,12 +2260,13 @@ function event_loop() {
 			}
 		}
 
-		eventmap.forEach(function (s) {
-			if (events[s[0]] && !E[s[1]]) {
-				E[s[1]] = { live: false, spawn: timers[s[1]] };
-				change = true;
-			}
-		});
+		for (const [name, mtype] of eventmap) {
+			if (!events[name]) continue; // Event is not live
+			if (E[mtype]) continue; // Data is already present
+
+			E[mtype] = { live: false, spawn: timers[mtype] };
+			change = true;
+		}
 
 		if (events.goblin) {
 		}
