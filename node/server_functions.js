@@ -2082,7 +2082,7 @@ function event_loop() {
 			}
 		}
 
-		var eventmap = [
+		const eventmap = [
 			["halloween", "mrpumpkin"],
 			["halloween", "mrgreen"],
 			["halloween", "slenderman", true],
@@ -2093,28 +2093,32 @@ function event_loop() {
 			["valentines", "pinkgoo", true],
 			["egghunt", "wabbit", true],
 		];
-		eventmap.forEach(function (s) {
-			if (events[s[0]] && !monster_c[s[1]]) {
-				if (!timers[s[1]]) {
-					if (timers[s[1]] !== 0) {
-						timers[s[1]] = future_s(120);
+		eventmap.forEach(function (event) {
+			const [name, mtype, hidePosition] = event;
+
+			if (!events[name]) return; // Event is not live
+			if (monster_c[mtype]) return; // There is a monster of this type already alive
+
+			const timer = timers[mtype];
+			if (!timer) {
+				if (timer !== 0) {
+					timers[mtype] = future_s(120);
 					} else {
-						timers[s[1]] = future_s(G.monsters[s[1]].respawn);
+					timers[mtype] = future_s(G.monsters[mtype].respawn);
 					}
-					E[s[1]] = { live: false, spawn: timers[s[1]] };
+				E[mtype] = { live: false, spawn: timer };
 					broadcast_e();
-				} else if (timers[s[1]] && c > timers[s[1]]) {
-					timers[s[1]] = 0;
-					spawn_special_monster(s[1]);
-					var m = get_monsters(s[1])[0];
-					var data = { live: true, map: m.map, hp: m.hp, max_hp: m.max_hp, target: m.target };
-					if (!s[2]) {
+			} else if (c > timer) {
+				timers[mtype] = 0;
+				spawn_special_monster(mtype);
+				const m = get_monsters(mtype)[0];
+				const data = { live: true, map: m.map, hp: m.hp, max_hp: m.max_hp, target: m.target };
+				if (!hidePosition) {
 						data.x = m.x;
 						data.y = m.y;
 					}
-					E[s[1]] = data;
+				E[mtype] = data;
 					broadcast_e();
-				}
 			}
 		});
 		["holidayseason", "halloween", "lunarnewyear", "valentines", "egghunt"].forEach(function (event) {
