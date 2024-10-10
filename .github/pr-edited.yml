@@ -1,0 +1,64 @@
+version: v1
+
+labels:
+  # label Scope:
+  - label: "Scope: meta"
+    sync: true
+    matcher:
+      files: ".github/**"
+  - label: "Scope: central server"
+    # TODO: Where consitutes the central server?
+    sync: true
+    matcher:
+      files: "*.py"
+  - label: "Scope: Game client"
+    sync: true
+    matcher:
+      files: "js/**"
+  - label: "Scope: game server"
+    sync: true
+    matcher:
+      files: "node/**"
+  - label: "Scope: dependencies"
+    sync: true
+    matcher:
+      # packages for js, requirements for python
+      files: ["**/package.json", "**/requirements.txt"]
+  - label: "Scope: Map Editor"
+    sync: true
+    matcher:
+      # utility/htmls/map_editor_info.html,map_editor.html,map_editor.js
+      files: "**/*map_editor*"
+  - label: "Scope: UI/UX"
+    sync: true
+    matcher:
+      # e.g. '- [x] :lipstick:'
+      body: "(\\n|.)*- \\[x\\] :lipstick:(\\n|.)*"
+  # label Type:
+  - label: "Type: bug"
+    sync: true
+    matcher:
+      # e.g. '- [x] :bug:'
+      body: "(\\n|.)*- \\[x\\] :bug:(\\n|.)*"
+      branch: "^bug/.*"
+  - label: "Type: feature"
+    sync: true
+    matcher:
+      # e.g. '- [x] :sparkles:'
+      body: "(\\n|.)*- \\[x\\] :sparkles:(\\n|.)*"
+      branch: "^feature/.*"
+  - label: "Type: enhancement"
+    sync: true
+    matcher:
+      # e.g. '- [x] :hammer_and_wrench:'
+      body: "(\\n|.)*- \\[x\\] :hammer_and_wrench:(\\n|.)*"
+  - label: "Type: docs"
+    sync: true
+    matcher:
+      # e.g. '- [x] :memo:'
+      body: "(\\n|.)*- \\[x\\] :memo:(\\n|.)*"
+  - label: "Type: performance"
+    sync: true
+    matcher:
+      # e.g. '- [x] :zap:'
+      body: "(\\n|.)*- \\[x\\] :zap:(\\n|.)*"
