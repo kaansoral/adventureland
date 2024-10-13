@@ -3754,43 +3754,75 @@ function update_sprite(sprite)
 
 	}
 
-	if((sprite.stype=="animation" || sprite.stype=="item") && sprite.atype=="map")
-	{
-		var target_x=get_x(sprite.target),target_y=get_y(sprite.target)-get_height(sprite.target)/2;
-		if(sprite.m!=sprite.target.m) target_x=sprite.going_x,target_y=sprite.going_y;
-		var ms=mssince(sprite.last_update);
-		sprite.crotation=Math.atan2(target_y-sprite.y,target_x-sprite.x)+Math.PI/2;
-		if(sprite.first_rotation===undefined)
-		{
-			sprite.first_rotation=sprite.crotation;
-			if(sprite.directional) sprite.rotation=sprite.crotation;
+	if ((sprite.stype == "animation" || sprite.stype == "item") && sprite.atype == "map") {
+		if (!sprite.target) {
+			console.error(`sprite has no target`, sprite);
 		}
-		if(sprite.directional && point_distance(target_x,target_y,sprite.x,sprite.y)>50)
-		{
-			sprite.rotation=sprite.crotation;
+		
+		// sprite.target can be undefined causing get_x to throw an error, so we default to going_ because the code does that with .m
+		let target_x = sprite.target ? get_x(sprite.target) : sprite.going_x;
+		let target_y = sprite.target ? get_y(sprite.target) - get_height(sprite.target) / 2 : sprite.going_y;
+	
+		// TODO: what is .m? and why do we use going_ instead?
+		if (sprite.target && sprite.m != sprite.target.m) {
+			target_x = sprite.going_x;
+			target_y = sprite.going_y;
 		}
-		sprite.from_x=sprite.x; sprite.from_y=sprite.y;
-		sprite.going_x=target_x; sprite.going_y=target_y;
-		calculate_vxy(sprite);
-		sprite.x=sprite.x+sprite.vx*ms/1000.0;
-		sprite.y=sprite.y+sprite.vy*ms/1000.0;
-		if(mssince(sprite.last_frame)>=sprite.framefps) sprite.frame+=1,sprite.last_frame=new Date();
-		if(sprite.to_fade) sprite.alpha-=((sprite.to_fade!==true&&sprite.to_fade)||0.025)*ms/16.6;
-		if(sprite.frame>=sprite.frames) sprite.frame=0;
-		set_texture(sprite,sprite.frame);
-		sprite.crotation=Math.atan2(target_y-sprite.y,target_x-sprite.x)+Math.PI/2;
+	
+		var ms = mssince(sprite.last_update);
 
-		if(sprite.to_delete || 
+		// calculate current rotation
+		sprite.crotation = Math.atan2(target_y - sprite.y, target_x - sprite.x) + Math.PI / 2;
+
+		// update rotation if sprite is directional and it has not been updated yet
+		if (sprite.first_rotation === undefined) {
+			sprite.first_rotation = sprite.crotation;
+			if (sprite.directional) sprite.rotation = sprite.crotation;
+		}
+		
+		// Update rotation to match current rotation if we are more than 50px away
+		if (sprite.directional && point_distance(target_x, target_y, sprite.x, sprite.y) > 50) {
+			sprite.rotation = sprite.crotation;
+		}
+
+		// move sprite based on velocity
+		sprite.from_x = sprite.x;
+		sprite.from_y = sprite.y;
+		sprite.going_x = target_x;
+		sprite.going_y = target_y;
+
+		calculate_vxy(sprite);
+		sprite.x = sprite.x + (sprite.vx * ms) / 1000.0;
+		sprite.y = sprite.y + (sprite.vy * ms) / 1000.0;
+
+		// set next sprite animation frame depending on sprite framefps
+		if (mssince(sprite.last_frame) >= sprite.framefps) (sprite.frame += 1), (sprite.last_frame = new Date());
+
+		// fade sprite to invisible over time
+		if (sprite.to_fade) sprite.alpha -= (((sprite.to_fade !== true && sprite.to_fade) || 0.025) * ms) / 16.6;
+
+		// reset sprite animation frame to first frame
+		if (sprite.frame >= sprite.frames) sprite.frame = 0;
+		set_texture(sprite, sprite.frame);
+
+		// TODO: calculate current rotation again? not sure why
+		sprite.crotation = Math.atan2(target_y - sprite.y, target_x - sprite.x) + Math.PI / 2;
+	
+		// delete unchained sprites that are close enough or if it has rotated more than half compared to the first rotation
+		if (
+			sprite.to_delete ||
 			(!sprite.chained &&
-			(point_distance(target_x,target_y,sprite.x,sprite.y)<(sprite.limit||16) || 
-			abs(sprite.first_rotation-sprite.crotation)>Math.PI/2)))
-		{
-			destroy_sprite(sprite,"children");
+				(point_distance(target_x, target_y, sprite.x, sprite.y) < (sprite.limit || 16) ||
+					abs(sprite.first_rotation - sprite.crotation) > Math.PI / 2))
+		) {
+			destroy_sprite(sprite, "children");
 			delete map_animations[sprite.id];
 			return;
 		}
-		sprite.last_update=new Date();
-	}
+
+		sprite.last_update = new Date();
+
+	}	
 	else if(sprite.stype=="animation" && sprite.atype=="cmap")
 	{
 		var ms=mssince(sprite.last_update);
