@@ -2704,7 +2704,7 @@ function issue_player_award(attacker, target) {
 	}
 }
 
-function commence_attack(attacker, target, atype) {
+function commence_attack(attacker, target, atype, { projectile, chained, targets, redirect } = { targets: [] }) {
 	var attack = attacker.attack;
 	var mp_cost = 0;
 	var info = {
@@ -2716,9 +2716,13 @@ function commence_attack(attacker, target, atype) {
 		first_attack: 0,
 		procs: false,
 		conditions: [],
+		chained,
+		targets,
+		redirect,
 	}; // server projectile
 
-	if (!G.skills[atype].hostile) {
+	const gSkill = G.skills[atype];
+	if (!gSkill.hostile) {
 		info.positive = true;
 	}
 
@@ -2730,7 +2734,7 @@ function commence_attack(attacker, target, atype) {
 	// FAILURE SCENARIOS
 	if (
 		attacker.type == "merchant" &&
-		!G.skills[atype].merchant_use &&
+		!gSkill.merchant_use &&
 		!(atype == "attack" && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].wtype == "dartgun")
 	) {
 		attacker.socket.emit("game_response", { response: "attack_failed", id: target.id });
@@ -2754,46 +2758,56 @@ function commence_attack(attacker, target, atype) {
 	if (attacker.is_monster) {
 		def.projectile = G.monsters[attacker.type].projectile || "stone";
 	}
+
 	if (attacker.is_player && G.classes[attacker.type].projectile) {
 		def.projectile = G.classes[attacker.type].projectile;
 	}
+
 	if (attacker.projectile) {
 		def.projectile = attacker.projectile;
 	}
+
 	if (attacker.slots && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].projectile) {
 		def.projectile = G.items[attacker.slots.mainhand.name].projectile;
 	}
+
 	if (attacker.tskin == "konami") {
 		def.projectile = "stone_k";
 	}
-	if ((atype != "attack" || !def.projectile || atype == "heal") && G.skills[atype].projectile) {
-		def.projectile = G.skills[atype].projectile;
+
+	if ((atype != "attack" || !def.projectile || atype == "heal") && gSkill.projectile) {
+		def.projectile = gSkill.projectile;
+	}
+
+	// a specific projectile to use
+	if (projectile) {
+		def.projectile = projectile;
 	}
 
 	// DAMAGE TYPE LOGIC
 	if (attacker.is_monster && G.monsters[attacker.type].damage_type) {
 		info.damage_type = G.monsters[attacker.type].damage_type;
 	}
+
 	if (attacker.is_player && G.classes[attacker.type].damage_type) {
 		info.damage_type = G.classes[attacker.type].damage_type;
 	}
+
 	if (attacker.is_player && attacker.slots.mainhand && G.items[attacker.slots.mainhand.name].damage_type) {
 		info.damage_type = G.items[attacker.slots.mainhand.name].damage_type;
 	}
-	if (atype != "attack" && G.skills[atype].damage_type) {
-		info.damage_type = G.skills[atype].damage_type;
+
+	if (atype != "attack" && gSkill.damage_type) {
+		info.damage_type = gSkill.damage_type;
 	}
 
 	// PROCS
-	if (!attacker.is_player || G.skills[atype].procs) {
+	if (!attacker.is_player || gSkill.procs) {
 		info.procs = true;
 	}
 
 	// HEAL / POSITIVE
-	if (
-		G.skills[atype].heal ||
-		(attacker.is_player && attacker.slots.mainhand && attacker.slots.mainhand.name == "cupid")
-	) {
+	if (gSkill.heal || (attacker.is_player && attacker.slots.mainhand && attacker.slots.mainhand.name == "cupid")) {
 		info.heal = true;
 		info.positive = true;
 	}
@@ -2804,13 +2818,13 @@ function commence_attack(attacker, target, atype) {
 	}
 
 	// DAMAGE
-	if (G.skills[atype].damage) {
-		attack = G.skills[atype].damage;
+	if (gSkill.damage) {
+		attack = gSkill.damage;
 	}
 
 	// SKILL MP
-	if (G.skills[atype].mp) {
-		mp_cost = G.skills[atype].mp;
+	if (gSkill.mp) {
+		mp_cost = gSkill.mp;
 	}
 
 	if (info.procs && attacker.s.poisonous) {
@@ -2923,9 +2937,9 @@ function commence_attack(attacker, target, atype) {
 			info.conditions.push("frozen");
 		}
 	} else if (atype == "quickpunch" || atype == "quickstab" || atype == "smash") {
-		attack = attacker.attack * G.skills[atype].damage_multiplier;
+		attack = attacker.attack * gSkill.damage_multiplier;
 	} else if (atype == "mentalburst") {
-		attack = attacker.attack * G.skills[atype].damage_multiplier;
+		attack = attacker.attack * gSkill.damage_multiplier;
 	} else if (atype == "poisonarrow") {
 		info.conditions.push("poisoned");
 	} else if (attacker.is_monster) {
@@ -2936,7 +2950,15 @@ function commence_attack(attacker, target, atype) {
 		attacker.last.attack = future_ms(rng);
 	}
 
-	if (atype != "attack" && target.immune && (!G.skills[atype] || !G.skills[atype].pierces_immunity)) {
+	if (gSkill.attack_multiplier) {
+		attack = attacker.attack * gSkill.attack_multiplier;
+	}
+
+	if (gSkill.mp_cost_multiplier) {
+		mp_cost = parseInt(attacker.mp_cost * gSkill.mp_cost_multiplier);
+	}
+
+	if (atype != "attack" && target.immune && (!gSkill || !gSkill.pierces_immunity)) {
 		disappearing_text(target.socket, target, "IMMUNE!", { xy: 1, color: "evade", nv: 1, from: attacker.id });
 		return { failed: true, reason: "skill_immune", place: atype, id: target.id };
 	}
@@ -3087,7 +3109,8 @@ function complete_attack(attacker, target, info) {
 	var pierce = "apiercing";
 	var combo = 1;
 	var combo_m = 1;
-	var atype = info.atype;
+	const atype = info.atype;
+	const gSkill = info.atype;
 	var evade = false;
 	var first = true;
 	var attack = info.attack;
@@ -3103,6 +3126,8 @@ function complete_attack(attacker, target, info) {
 	var events = [];
 	info.action.map = attacker.map;
 	info.action.in = attacker.in;
+
+	let deleteProjectile = true;
 
 	if (info.damage_type == "pure" || target === attacker) {
 		defense = "none_existent";
@@ -3122,6 +3147,7 @@ function complete_attack(attacker, target, info) {
 			add_coop_points(attacker, target, attack * B.dps_tank_mult);
 		}
 	}
+
 	if (attacker.is_monster && attack > 0 && !info.heal) {
 		attacker.outgoing += min(target.hp, attack);
 	}
@@ -3169,35 +3195,45 @@ function complete_attack(attacker, target, info) {
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, reflect: info.attack },
 			attacker.id,
 		);
-		return xy_emit(target, "action", info.action, attacker.id);
+
+		xy_emit(target, "action", info.action, attacker.id);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	}
 
 	if (attacker == target && !target.dead) {
 	} // reflect after dead fix [04/02/23]
 	else if (target.evasion && defense == "armor" && Math.random() * 100 < target.evasion) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, evade: true, source: def.source },
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	} else if (
 		target.dc ||
 		target.dead ||
 		(attacker.miss && Math.random() * 100 < attacker.miss) ||
 		(target.avoidance && Math.random() * 100 < target.avoidance)
 	) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{ pid: def.pid, hid: attacker.id, id: target.id, damage: 0, miss: true, source: def.source },
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	} else if (
 		target.m != info.action.m ||
 		point_distance(target.x, target.y, info.action.x, info.action.y) > 72 * ((info.heal && 1.5) || 1)
 	) {
-		return xy_emit(
+		xy_emit(
 			info.action,
 			"hit",
 			{
@@ -3214,6 +3250,9 @@ function complete_attack(attacker, target, info) {
 			},
 			attacker.id,
 		);
+
+		// delete projecile and prevent rest of code executing
+		return true;
 	}
 
 	if (info.positive || !info.procs) {
@@ -3228,6 +3267,7 @@ function complete_attack(attacker, target, info) {
 		target.combo += 1;
 		def.mobbing = target.combo;
 	}
+
 	if (
 		combo &&
 		target.is_player &&
@@ -3266,6 +3306,7 @@ function complete_attack(attacker, target, info) {
 				ntarget.last_combo = new Date();
 				ntarget.combo += 1;
 			}
+
 			if (targets.length > 1) {
 				def.stacked = [];
 				targets.forEach(function (t) {
@@ -3323,6 +3364,50 @@ function complete_attack(attacker, target, info) {
 		}
 	}
 
+	if (info.chained) {
+		console.log(
+			"targets",
+			info.targets.map((x) => x.id),
+		);
+
+		// info is the projectile, update next target
+		info.target = info.targets.shift();
+
+		// prevent avoid triggering
+		// TODO: if complete attack executes a "hit" (avoid,miss) earlier this part never executes, the projectile should probably be removed
+		if (info.target) {
+			info.action.x = info.target.x;
+			info.action.y = info.target.y;
+			info.action.m = info.target.m; // the map?, avoid will trigger if on a different map
+		}
+
+		// data to the ui
+		def.next_chain_id = info.target ? info.target.id : undefined;
+		// let the ui clean up after the last projectile
+		def.chained = !!info.target;
+
+		// last chain completed, remove chained so projectile loop cleans up
+		if (!def.chained) {
+			console.log("deleting info.chained");
+			delete info.chained;
+		}
+		console.log("hit", def.id, "next", def.next_chain_id, "chained", def.chained);
+
+		let eta = 0;
+		const gProjectile = G.projectiles[info.def.projectile];
+		if (info.target && gProjectile && !gProjectile.instant) {
+			// get distance to next target
+			// console.log("dist", target.id, info.target.id);
+			const dist = distance(target, info.target);
+
+			eta = (1000 * dist) / gProjectile.speed;
+
+			deleteProjectile = false;
+		}
+
+		info.eta = future_ms(eta);
+	}
+
 	targets.forEach(function (target_def) {
 		delete def.splash;
 		delete def.dreturn;
@@ -3333,6 +3418,7 @@ function complete_attack(attacker, target, info) {
 		if (target_def[1] != "normal") {
 			def.unintentional = true;
 		}
+
 		if (target_def[1] == "splash") {
 			def.splash = true;
 		}
@@ -3551,12 +3637,13 @@ function complete_attack(attacker, target, info) {
 			}
 			change = true;
 		}
+
 		target.hp = min(target.hp - attack, target.max_hp); // both for damage and heal
 		var net = original - max(0, target.hp);
 		if (target.hp <= 0) {
 			def.kill = true;
-			if (G.skills[atype].kill_buff) {
-				add_condition(attacker, G.skills[atype].kill_buff);
+			if (gSkill.kill_buff) {
+				add_condition(attacker, gSkill.kill_buff);
 			}
 		}
 
@@ -3702,6 +3789,20 @@ function complete_attack(attacker, target, info) {
 		}
 	});
 
+	if (info.redirect) {
+		const targetsTarget = get_player(target.target);
+		if (
+			target.is_monster &&
+			target.target &&
+			target.target !== attacker.name &&
+			targetsTarget &&
+			is_same(attacker, targetsTarget, 1) // checks party / account and such
+		) {
+			stop_pursuit(target, { redirect: true, cause: `${atype} redirect` });
+			target_player(target, attacker);
+		}
+	}
+
 	if (attacker.hp <= 0 && !attacker.dead && !attacker.rip) {
 		// dreturn
 		if (attacker.is_monster) {
@@ -3724,6 +3825,8 @@ function complete_attack(attacker, target, info) {
 		attacker.cid++;
 		ccms(attacker);
 	}
+
+	return deleteProjectile;
 }
 
 function target_player(monster, player, no_increase) {
@@ -8250,31 +8353,42 @@ function init_io() {
 			if (gSkill.slot) {
 				let found = false;
 				let noCharge = false;
-				for (const [slotName, itemName] of gSkill.slot) {
+				for (const [slotName, itemNameOrType] of gSkill.slot) {
 					const slotItem = player.slots[slotName];
-					if (!slotItem || slotItem.name !== itemName) {
+
+					if (!slotItem) {
 						continue;
 					}
+
+					const gItem = G.items[slotItem.name];
+					if (slotItem.name !== itemNameOrType && gItem.type !== itemNameOrType) {
+						continue;
+					}
+
 					found = true;
 
-					const gItem = G.items[itemName];
 					if (!gItem.charge) {
 						continue;
 					}
+
 					// This skill requires a charge, check the charge level
 					if ((slotItem.charges || 0) < gItem.charge) {
 						noCharge = true;
 						continue;
 					}
+
 					// Charge is sufficient, use this item for the skill
 					slotItem.charges -= gItem.charge;
 					player.cslots[slotName] = cache_item(slotItem);
 					noCharge = false;
 					break;
 				}
+
 				if (!found) {
+					// TODO: return expected slot / item / type
 					return fail_response("skill_cant_slot", data.name);
 				}
+
 				if (noCharge) {
 					return fail_response("skill_cant_charges", data.name);
 				}
@@ -8313,6 +8427,7 @@ function init_io() {
 				}
 				return false;
 			};
+
 			if (target && isTargetTooFar(target)) {
 				return fail_response("too_far", data.name, { dist: dist, id: target.id });
 			}
@@ -8745,6 +8860,78 @@ function init_io() {
 				} else {
 					resolve = c_resolve;
 				}
+			} else if (data.name == "avengers_shield") {
+				player.halt = true; // TODO: halt should be specified on the skill if it halts / stops you from moving
+				// we have a primary target, should players be able to choose their additional targets? or should the server find them?
+				// TODO: what if we targeted a player? it should only target hostile players
+
+				const chainTargets = [];
+
+				let previousTarget = target;
+				const maxChainRange = gSkill.range / 2;
+				while (chainTargets.length < gSkill.chained.targets) {
+					let closestEntityDistance = Infinity;
+					let closestEntity = undefined;
+					const instanceMonsters = instances[player.in].monsters;
+					for (const monsterId in instanceMonsters) {
+						const monster = instanceMonsters[monsterId];
+
+						if (is_invinc(monster)) {
+							break;
+						}
+
+						if (
+							monster.id === target.id || // don't include initial target
+							monster.id === previousTarget.id || // don't include current previous target
+							chainTargets.includes(monster) // don't include previously added targets
+						) {
+							continue;
+						}
+
+						const dist = distance(previousTarget, monster);
+
+						if (dist > maxChainRange) {
+							continue;
+						}
+
+						if (dist < closestEntityDistance) {
+							closestEntityDistance = dist;
+							closestEntity = monster;
+						}
+					}
+
+					if (!closestEntity) {
+						break;
+					}
+
+					previousTarget = closestEntity;
+					chainTargets.push(previousTarget);
+				}
+
+				let projectileKey = player.slots.offhand.name;
+				if (!G.projectiles[projectileKey]) {
+					// Default projectile
+					projectileKey = "crusader_shield";
+				}
+
+				const attack = commence_attack(player, target, data.name, {
+					chained: true,
+					targets: chainTargets,
+					redirect: true,
+					projectile: projectileKey,
+				});
+
+				if (!attack.failed) {
+					resolve = attack;
+				} else {
+					reject = attack;
+					cool = false;
+				}
+
+				player.halt = false;
+				player.to_resend = "u+cid";
+
+				consume_mp(player, gSkill.mp, target);
 			} else if (data.name == "track") {
 				var list = [];
 				for (var id in instances[player.in].players) {
@@ -13331,13 +13518,16 @@ setInterval(function () {
 }, 4000);
 
 function projectiles_loop() {
-	var now = new Date();
-	for (var id in projectiles) {
+	const now = new Date();
+	for (const id in projectiles) {
 		try {
 			if (projectiles[id].eta <= now) {
-				var projectile = projectiles[id];
-				delete projectiles[id];
-				complete_attack(projectile.attacker, projectile.target, projectile);
+				const projectile = projectiles[id];
+				// TODO: projectile loop triggering every 7 ms might cause the projectile to trigger complete_attack multiple times? unless eta is updated inside it
+
+				if (projectile.target && complete_attack(projectile.attacker, projectile.target, projectile)) {
+					delete projectiles[id];
+				}
 			}
 		} catch (e) {
 			log_trace("#X projectile loop error", e);
