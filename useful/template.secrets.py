@@ -19,3 +19,10 @@ MAC_APPLICATION_LOADER="aaaa-bbbb-cccc-..."
 ssh-keygen -o #Doesn't work
 ssh-keygen -t rsa -b 4096
 """
+
+# Discord
+DISCORD = {
+    "URL": {
+        "WELCOME": "https://discord.gg/44yUVeU"
+    },
+}
