@@ -2024,10 +2024,10 @@ function render_item_info(name,level,data)
 	}
 	else if(G.items[name].upgrade)
 	{
-		for(var i=0;i<=15;i++)
+		for(var i=0;i<=13;i++)
 		{
 			html+="<div style='display: inline-block; margin: 5px'>"+render_item("html",{item:G.items[name],actual:{level:i,name:name},guide:true})+"</div>";
-			if(calculate_item_grade(G.items[name],{level:i})==4) break;
+			//if(calculate_item_grade(G.items[name],{level:i})==4) break;
 		}
 	}
 	else
