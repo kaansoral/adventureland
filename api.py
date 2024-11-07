@@ -1,5 +1,6 @@
 from config import *
 from functions import *
+import environment
 
 def signup_or_login_api(**args):
 	#time.sleep(10)
@@ -1492,9 +1493,25 @@ def reload_server_api(**args):
 
 def create_server_api(**args):
 	self,domain,keyword,port,region,pvp,gameplay,sname=gdmuld(args,"self","domain","keyword","port","region","pvp","gameplay","name")
-	if keyword!=secrets.SERVER_MASTER: jhtml(self,{"failed":1}); return
-	actual_ip=ip=request.remote_addr; server_name="XX"
-	if is_sdk: actual_ip=ip=domain.server_ip
+	
+ 	if keyword!=secrets.SERVER_MASTER: jhtml(self,{"failed":1}); return
+	
+ 	actual_ip=ip=request.remote_addr; server_name="XX"
+ 
+	if is_sdk: 
+		# in sdk mode, HTTPS_MODE = False
+		
+		mappingKey = "%s%s"%(region,sname)
+		ip = "%s"%(environment.CREATE_SERVER_MAPPING.get(mappingKey,ip))
+		
+  		# actual_ip is used by the appserver to send eval requests to the game server
+		# so if the game server is a local one in docker, it needs to be the internal docker ip
+		# TODO: if the game server is hosted externally on another server, it needs to be the ip or hostname that you can talk with over the internet, so using request.remote_addr might not work if it needs to use a hostname
+		actual_ip = request.remote_addr
+  
+		logging.info("create_server_api: sname: %s region:%s %s %s"%(sname,region,ip,actual_ip))
+
+	# TODO: makes an ip like eu1.adventure.land, this is hardcoded and should be changed
 	if domain.https_mode: ip="%s.%s"%(ip_to_subdomain.get(ip,ip),live_domain)
 	lat,lon=(request.headers.get("X-Appengine-Citylatlong")or"0,0").split(",")
 	try: lat,lon=float(lat),float(lon)

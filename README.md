@@ -27,6 +27,7 @@ git clone https://github.com/kaansoral/adventureland-appserver appserver
 Set up secrets files and remember to change secret keys!
 
 ```sh
+cp adventureland/useful/template.environment.py adventureland/environment.py
 cp adventureland/useful/template.secrets.py adventureland/secrets.py
 cp adventureland/useful/template.variables.js adventureland/node/variables.js
 cp adventureland/useful/template.live_variables.js adventureland/node/live_variables.js
