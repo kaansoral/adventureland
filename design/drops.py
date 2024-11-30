@@ -16,25 +16,10 @@ drops={
 		
 		],
 		"global":[
-			#[0.00001,"ornament"],
-			#[0.00003,"mistletoe"],
-			#[0.00001,"candycane"],
-			#[0.000001,"open","xN"],
-			#[0.00006,"ornament"],
-			#[0.00018,"mistletoe"],
-			#[0.00005,"candycane"],
-			#[0.00001,"open","xN"],
-			# server.js handles Halloween drops now
-			#[0.00005,"candy0"], #originally 4X [11/10/19]
-			#[0.00125,"candy1"], #originally 4X [11/10/19]
 			#[0.000015,"goldenegg"], #originally 0.000005
 			#[0.000001,"5bucks"],
 			#[0.0002,"gift0"],
 			#[0.004,"gift1"],
-			#[0.0006,"ornament"],
-			#[0.0018,"mistletoe"],
-			#[0.0005,"candycane"],
-			#[0.0001,"open","xN"],
 			#[0.0004,"redenvelope"],
 			#[0.00005,"goldenegg"],
 			#[0.009,"open","eastereggs"], #originally 0.009

@@ -169,7 +169,7 @@ var mode = {
 };
 var events = {
 	// SEASONS
-	holidayseason: false,
+	holidayseason: true,
 	lunarnewyear: false,
 	valentines: false,
 	pinkgoo: 0, // every N minutes - 60
