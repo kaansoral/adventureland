@@ -1,4 +1,4 @@
-var u_item=null,u_scroll=null,u_offering=null,c_items=e_array(3),c_scroll=null,c_offering=null,c_last=0,e_item=null,p_item=null,l_item=null,cr_items=e_array(9),cr_last=0,ds_item=null;
+var u_item=null,u_scroll=null,u_offering=null,c_items=e_array(3),c_scroll=null,c_offering=null,c_last=0,e_item=null,p_item=null,l_item=null,s_item=null,cr_items=e_array(9),cr_last=0,ds_item=null;
 
 var settings_shown=0;
 function show_settings()
@@ -1131,6 +1131,30 @@ function render_locksmith(mode)
 					//html+="<div class='ering ering4'>";*/
 					html+="<div>";
 						html+=item_container({shade:shade,cid:'litem',s_op:0.4,draggable:false,droppable:true});
+					html+="</div>";
+					//html+="</div>";
+				/*html+="</div>";
+			html+="</div>";
+		html+="</div>";*/
+		html+="<div style='margin-top: 12px'><div class='gamebutton clickable' onclick='"+f+"()'>"+button+"</div></div>";
+	html+="</div>";
+	$("#topleftcornerui").html(html);
+	if(!inventory) render_inventory(),inventory_opened_for=topleft_npc;
+}
+
+function render_scrollsmith()
+{
+	var button="DE-STAT",f="destat_item",shade="shade_chest";
+	reset_inventory(1);
+	topleft_npc="scrollsmith"; rendered_target=topleft_npc;
+	s_item=null;
+	var html="<div style='background-color: black; border: 5px solid gray; padding: 20px; font-size: 24px; display: inline-block; vertical-align: top; text-align: center'>";
+		/*html+="<div class='ering ering1 mb10'>";
+			html+="<div class='ering ering2'>";
+				html+="<div class='ering ering3'>";
+					//html+="<div class='ering ering4'>";*/
+					html+="<div>";
+						html+=item_container({shade:shade,cid:'sitem',s_op:0.4,draggable:false,droppable:true});
 					html+="</div>";
 					//html+="</div>";
 				/*html+="</div>";
@@ -3741,6 +3765,17 @@ function on_rclick(current)
 			$("#citem"+inum).parent().html("");
 			$("#litem").html(html);
 		}
+		else if(topleft_npc=="scrollsmith")
+		{
+			var current=character.items[inum],def=null;
+			if(current) def=G.items[current.name];
+			if(!def) return;
+			if(s_item!==null) return;
+			s_item=inum; cache_i[inum]=-1;
+			var html=$("#citem"+inum).all_html();
+			$("#citem"+inum).parent().html("");
+			$("#sitem").html(html);
+		}
 		else if(topleft_npc=="upgrade")
 		{
 			var current=character.items[inum],def=null;
@@ -4633,6 +4668,11 @@ function render_interaction(type,sub_type,args)
 	{
 		html+="Lock - Prevents anything that can destroy an item, selling, upgrading, you name it! Seal - Locks the item in a way that unlocking it takes two days. Unlock - Frees it. Got it? Good. Cost? 250 big ones.";
 		html+="<span style='float: right; margin-top: 5px'><div class='slimbutton' onclick='render_locksmith(\"lock\")'>LOCK</div> <div class='slimbutton' onclick='render_locksmith(\"seal\")'>SEAL</div> <div class='slimbutton' onclick='render_locksmith(\"unlock\")'>UNLOCK</div></span>";
+	}
+	else if(type=="scrollsmith")
+	{
+		html+="De-stat an item. Give you back the scrolls used on the item, as though the item were level 0. Returns the item back to you along with scrolls. Got it? Good. Cost? Depends on the scroll. 10 times the value of the scrolls that will be returned to you.";
+		html+="<span style='float: right; margin-top: 5px'><div class='slimbutton' onclick='render_scrollsmith()'>DE-STAT</div></span>";
 	}
 	else if(type=="crafting")
 	{
