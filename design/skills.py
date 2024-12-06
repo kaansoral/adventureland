@@ -955,6 +955,23 @@ skills={
 		"procs":True,
 		"pierces_immunity":True,
 	},
+	"avengers_shield":{
+		"type":"skill",
+		"skin":"shield",
+		"class":["paladin"],
+		"slot": [["offhand","shield"]],
+		"name":"Avengers Shield",
+		"explanation":"Hurls your shield at an enemy target, dealing (10% of Attack power) Holy damage, interrupting and silencing the non-Player target for 3 sec, and then jumping to 2 additional nearby enemie", 
+		"attack_multiplier": 0.10, # 10% of Attack power
+		"range":200, # range multiplier of character range?
+		"mp":40,
+		"cooldown":3000,
+		"target":True,
+		"hostile":True,
+		"projectile":"crusader_shield", # would be cool if this could adapt to the equipped shield
+		"pierces_immunity":True,
+		"chained": { "targets": 2 }
+	},
 	"alchemy":{
 		"type":"skill",
 		"skin":"skill_alchemy",
