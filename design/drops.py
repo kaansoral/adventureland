@@ -841,7 +841,6 @@ drops={
 		[1,"cupid"],
 	],
 	"candy0":[
-		[1,"pmaceofthedead"],
 		[0.008,"spookyamulet"],
 		[1,"gold",480000],
 		[0.0005,"cxjar",1,"hat410"],
@@ -957,10 +956,10 @@ drops={
 		[0.5,"empty"],
 	],
 	"weaponofthedead":[
-		[0.85,"bowofthedead"],
-		[0.35,"swordofthedead"],
+		[1,"bowofthedead"],
+		[1,"swordofthedead"],
 		[1,"maceofthedead"],
-		[0.1,"pmaceofthedead"],
+		[1,"pmaceofthedead"],
 		[1,"staffofthedead"],
 		[1,"daggerofthedead"],
 	],
