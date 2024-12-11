@@ -1,0 +1,42 @@
+on:
+  pull_request:
+    # Useful for triaging code review, and generate compliance status check.
+    # Semantic release? Done.
+    # Make a file change in a mono repo. Tag the mono repo getting changed to generate better release!
+    types: [edited]
+
+  pull_request_target:
+    # for OSS with public contributions (forked PR)
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
+    # types: [edited, ready_for_review, converted_to_draft, labeled, unlabeled]
+    types: [edited]
+
+  # issues:
+  # Useful for triaging error!
+  # '- [x] Is this a bug?' = 'bug' label!
+
+  # issue_comment:
+  #   # To pickup comment body in pr or issue and generate a label.
+  #   # Imagine someone comment 'Me too, I get TimeoutException from ...' in comment body.
+  #   # Generate a 'bug/timeout' label for better triaging!
+  #   types: [created]
+
+permissions:
+  # Setting up permissions in the workflow to limit the scope of what it can do. Optional!
+  contents: read # the config file
+  issues: write # for labeling issues (on: issues)
+  pull-requests: write # for labeling pull requests (on: pull_request_target or on: pull_request)
+  statuses: write # to generate status
+  checks: write # to generate status
+
+jobs:
+  pr_edited:
+    name: Labeler PR Edit
+    runs-on: ubuntu-latest
+    steps:
+      # follows semantic versioning. Lock to different version: v1, v1.5, v1.5.0 or use a commit hash.
+      - uses: fuxingloh/multi-labeler@v4 # v4
+        with:
+          # github-token: ${{secrets.GITHUB_TOKEN}} # optional, default to '${{ github.token }}'
+          config-path: .github/pr-edited.yml # optional, default to '.github/labeler.yml'
+          # config-repo: my-org/my-repo # optional, default to '${{ github.repository }}'

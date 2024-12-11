@@ -1,0 +1,8 @@
+version: v1
+
+labels:
+  # Give authors the ability to set the Status: waiting for review status by writing /ready in a comment
+  # I've not found a way to remove Status: waiting for author on this event
+  - label: "Status: waiting for review"
+    matcher:
+      comment: "/ready"
