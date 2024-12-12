@@ -846,6 +846,30 @@ monsters={
 			[10000000,"stat","mp",250],
 		]
 	},
+	"sparkbot":{
+		"name":"Spark Bot","speed":20,"charge":75,"hp":325000,"xp":400000,"attack":754,"damage_type":"magical","respawn":6,"gold":1,"range":185,"frequency":1.56,"aggro":0.1,"reflection":8,"armor":140,"resistance":160,
+		"achievements":[
+			[1,"stat","hp",10],
+			[100,"stat","mp",25],
+			[1000,"stat","rpiercing",5],
+			[10000,"stat","int",1],
+			[100000,"stat","resistance",15],
+			[1000000,"stat","attack",10],
+			[10000000,"stat","reflection",1],
+		]
+	},
+	"targetron":{
+		"name":"Targetron","speed":20,"charge":60,"hp":325000,"xp":400000,"attack":377,"damage_type":"physical","respawn":6,"gold":15,"range":200,"frequency":3.12,"aggro":0.1,"dreturn":2,"armor":160,"resistance":140,"explosion":15,
+		"achievements":[
+			[1,"stat","mp",10],
+			[100,"stat","hp",25],
+			[1000,"stat","dex",1],
+			[10000,"stat","range",0.5],
+			[100000,"stat","armor",15],
+			[1000000,"stat","attack",10],
+			[10000000,"stat","evasion",1.25],
+		]
+	},
 	"icegolem":{
 		"name":"Ice Golem","speed":12,"charge":48,"hp":16000000,"xp":92000000,"attack":2400,"damage_type":"physical","respawn":-1,"gold":1,"range":64,"frequency":1.2,"aggro":0.2,"resistance":800,"armor":800,
 		"announce":True,
