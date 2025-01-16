@@ -247,7 +247,7 @@ maps={
 		"key":"jayson_bank",
 		"key":"jayson_bank0",
 		#"key":"jayson_bank_xmas",
-		"key":"jayson_bank0.Xmas", #xmas
+		#"key":"jayson_bank0.Xmas", #xmas
 		"name":"The Bank",
 		"npcs":[
 			{"id":"goldnpc","position":[1,-416]},
@@ -543,7 +543,7 @@ maps={
 		"key":"jayson_ALMap2_v2",
 		#"key":"jayson_ALMap2_v2.Xmas",
 		#"key":"jayson_ALMap2_v2.CNewYear",
-		"key":"jayson_ALMap2_v2_xmas", #xmas
+		#"key":"jayson_ALMap2_v2_xmas", #xmas
 		#"key":"jayson_ALMap2_v2.lunarNewYear",
 		"name":"Mainland",
 		"npcs":[
@@ -585,7 +585,7 @@ maps={
 			{"id":"pvptokens","position":[159,403]},
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
-			{"id":"newyear_tree","position":[64,-88]}, #xmas
+			#{"id":"newyear_tree","position":[64,-88]}, #xmas
 		],
 		"monsters":[
 			#square
@@ -1035,7 +1035,7 @@ maps={
 			{"id":"citizen1","position":[0,-5]},
 			{"id":"citizen5","position":[0,-5]},
 			{"id":"citizen6","position":[0,-5]},
-			{"id":"mistletoe","position":[94,-181,2]}, #xmas
+			#{"id":"mistletoe","position":[94,-181,2]}, #xmas
 		],
 		"monsters":[
 		],
@@ -1162,8 +1162,8 @@ maps={
 		"npcs":[
 			{"id":"leathermerchant","position":[262,-48.5]},
 			{"id":"transporter","position":[-73,-393]},
-			{"id":"santa","position":[1242,-1631]}, #xmas
-			{"id":"ornaments","position":[-137,-193,1]}, #xmas
+			#{"id":"santa","position":[1242,-1631]}, #xmas
+			#{"id":"ornaments","position":[-137,-193,1]}, #xmas
 			{"id":"guard","position":[1065,-2015]},
 			{"id":"citizen7","position":[-15,5]},
 			{"id":"citizen8","position":[-15,5]},
