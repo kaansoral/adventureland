@@ -5711,7 +5711,7 @@ quest={
 		"g":3000,
 		"e":20,
 		"s":True,
-		"quest":"ornament", #xmas
+		#"quest":"ornament", #xmas
 	},
 	"lostearring":{
 		"type":"earring",
