@@ -1595,7 +1595,9 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"mummy","boundary":[-451.21,-397.41,-240.59,-65.16],"count":3},
+			#{"type":"mummy","boundary":[-451.21,-397.41,-240.59,-65.16],"count":3}, #removed since there is 2 other spawns 11/12/24
+			{"type":"sparkbot","boundary":[-451.21,-397.41,-240.59,-65.16],"count":5,"grow":True}, #added new sparkbot mob 11/12/24
+			{"type":"targetron","boundary":[-451.21,-397.41,-240.59,-65.16],"count":5,"grow":True}, #added new targetron mob 11/12/24
 			{"type":"bbpompom","boundary":[131.97,-368.95,398.99,-56.88],"count":4},
 		],
 		"spawns":[

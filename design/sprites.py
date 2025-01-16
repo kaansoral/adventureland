@@ -912,6 +912,15 @@ sprites={
 			[None,None,None,None],
 		]
 	},
+	"robots1":{
+		"file":"/images/tiles/monsters/robots_walkin_B_1.png",
+		"rows":2,
+		"columns":4,
+		"matrix":[
+			[None,"sparkbot","targetron",None],
+			[None,None,None,None] #"trapchest1","trapchest2"
+		]
+	},
 	"vampires":{
 		"file":"/images/tiles/monsters/vampire2d.png",
 		"rows":2,
