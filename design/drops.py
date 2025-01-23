@@ -506,19 +506,19 @@ drops={
 	],
 	"statamulet":[
 		[1,"intamulet"],
-		[1.2,"stramulet"],
+		[1,"stramulet"],
 		[1,"dexamulet"],
 	],
 	"statbelt":[
 		[1,"intbelt"],
-		[1.05,"strbelt"],
+		[1,"strbelt"],
 		[1,"dexbelt"],
 	],
 	"statring":[
 		[1,"intring"],
 		[1,"vitring"],
 		[1,"dexring"],
-		[1.2,"strring"],
+		[1,"strring"],
 	],
 	"basicelixir":[
 		[1,"elixirvit0"],
