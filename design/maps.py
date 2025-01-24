@@ -676,6 +676,7 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
+			[888,-675,24,32,"gateway",0,19],
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -701,6 +702,7 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
+			[888,-667], #19-gateway
 		],
 		"quirks":[
 			[-236,-189,24,24,"upgrade"],
@@ -1308,12 +1310,14 @@ maps={
 			[784,-1060], #2-spooky
 			[-1071,-1485], #3-level1
 			[1212,101,3], #4-main
+			[-560,-990], #5-jungle
 		],
 		"doors":[
 			#[108,-260,32,32,"spookytown",1,2],
 			[784,-1085,80,40,"spookytown",1,2],
 			[-1071,-1496,40,40,"level1",2,3],
 			[1212,150,200,36,"main",15,4],
+			[-560,-1008,28,32,"jungle",0,0],
 		],
 		"quirks":[
 			[-228,-178,32,40,"log","Locked but there are noises coming from inside"],
@@ -1633,6 +1637,133 @@ maps={
 		"drop_norm":5000,
 		"unlist":True,
 		"lux":0.4,
+	},
+    "gateway":{
+		"key":"jayson_pvpDungeon_gateway",
+		"name":"Underground [Gateway]",
+		"npcs":[
+		],
+		"monsters":[
+		],
+		"spawns":[
+			[0,0], # Main entrance
+			[-320,-102], #Dungeon 1 entrance bottom left
+			[320,-240], #Dungeon 2 entrance top right
+			# [-320,-202], #Spider queen entrance
+			[0,-847], #Top entrance (unused)
+		],
+		"doors":[
+			[0,-47,46,36,"main",19,0], #door to main  
+			[-321,-40,62,60,"dungeon1",1,1], #door to Dungeon 1 
+			[319,-249,62,46,"dungeon2",0,2], #door to Dungeon 2
+			# [-321,-213,68,83,"spidercave",0,3,"key","spiderkey"], #door to spider 
+			# [0,-859,58,44,"TBD",1,4], #door to (To Be Determined) 
+		],
+		"quirks":[
+		],
+		"drop_norm":1000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"ucliffs":{
+		"key":"jayson_pvpDungeon_a1",
+		"name":"Underground [Cliffs]",
+		"npcs":[
+		],
+		"monsters":[
+			# {"type":"TBD","boundary":[586,-844,915,-589],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-455,-1126,-189,-898],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-135,-640,73,-545],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[492,-238,647,-81],"count":6,"grow":True},
+		],
+		"spawns":[
+			[0,0],
+			[256,-905], # Gateway door
+		],
+		"doors":[
+			#[0,80,54,67,"TBD",0,0], #door to (To Be Determined)  
+			[255,-917,62,99,"gateway",1,1], #door to Gateway
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"uhills":{
+		"key":"jayson_pvpDungeon_a2",
+		"name":"Underground [Hills]",
+		"npcs":[
+		],
+		"monsters":[
+			# {"type":"Robot1","boundary":[-734,-394,-416,-157],"count":6,"grow":True},
+			# {"type":"Robot2","boundary":[-672,-394,-416,-120],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[194,-550,648,-407],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-431,-646,-242,-528],"count":6,"grow":True},
+		],
+		"spawns":[
+			[0,0], 
+			[720,-310], # Right door
+			[0,-691], # New Instance?
+		],
+		"doors":[
+			[0,77,56,64,"gateway",0,0], #door to Gateway
+			# [720,-237,55,62,"TBD",1,1], #door to (To Be Determined)
+			# [0,-702,40,61,"TBD",1,1], #door to New Instance?
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"mforest":{
+		"key":"jayson_undergroundjungle",
+		"name":"Mystical Forest",
+		"npcs":[
+		],
+		"monsters":[
+			{"type":"bluefairy","boundary":[-292,-498,-168,-366],"count":1},
+			{"type":"greenfairy","boundary":[-432,317,-342,450],"count":1},
+			{"type":"redfairy","boundary":[313,590,393,848],"count":1},
+			# {"type":"TBD","boundary":[282,-502,524,-192],"count":6,"grow":True}, #dryad?
+			# {"type":"TBD","boundary":[250,228,614,442],"count":6,"grow":True}, #ogre?
+			# {"type":"TBD","boundary":[-99,534,132,856],"count":6,"grow":True}, #dino?
+		],
+		"spawns":[
+			[0,0], 
+		],
+		"doors":[
+			[1,-32,40,49,"halloween",5,0], #door to Halloween
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"spider_instance":{
+		"key":"jayson_pvpDungeon_b1",
+		"name":"The Spider Den",
+		"npcs":[
+		],
+		"monsters":[
+			# {"type":"spiderqueen","boundary":[2243.92,325.27,2689.64,505.06],"count":1},
+			# {"type":"spider","boundary":[2243.92,325.27,2689.64,505.06],"count":1},
+		],
+		"spawns":[
+			[0,10],
+			# [193,-1619],
+			# [-193,-1619],
+		],
+		"on_death":["gateway",3],
+		"on_exit":["gateway",3],
+		"doors":[
+			[0,84,67,63,"gateway",3,0],
+			# [190,-1628,60,85,"gateway",3,0],
+			# [-190,-1628,60,85,"gateway",3,0],
+		],
+		"instance":True,
 	},
 
 }
