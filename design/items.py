@@ -543,6 +543,21 @@ armor={
 		"g":3200000,
 		"a":2,
 	},
+	"spikedhelmet":{
+		"tier":4,
+		"type":"helmet",
+		"skin":"spikedhelmet",
+		"dreturn":3,
+		"scroll":True,
+		"upgrade":{
+			"armor":12,
+			"dreturn":1,
+			"resistance":-7
+		},
+		"name":"Spiked Helmet",
+		"g":3200000,
+		"a":2,
+	},
 	"luckyt":{
 		#"set":"base",
 		"type":"chest",
@@ -1916,7 +1931,7 @@ accessories={
 	},
 	"zapper":{
 		"type":"ring",
-		"skin":"trigger",
+		"skin":"zapper",
 		"rpiercing":10,
 		"int":10,
 		"str":5,
@@ -2672,6 +2687,22 @@ weapons={
 		"a":True,
 		"grades":[0,7],
 	},
+	"pclaw":{
+		"type":"weapon",
+		"wtype":"fist",
+		"tier":2,
+		"skin":"pclaw",
+		"damage_type":"physical",
+		"ability":"poison",
+		"attr0":1.5,
+		"upgrade":{
+			"attr0":0.5,
+		},
+		"name":"Poison Claw",
+		"g":72000,
+		"a":True,
+		"grades":[0,7],
+	},
 	"stinger":{
 		"type":"weapon",
 		"wtype":"dagger",
@@ -2969,7 +3000,7 @@ weapons={
 		"tier":3,
 		"speed":2,
 		"evasion":5,
-		"skin":"t3bow",
+		"skin":"harpybow",
 		"damage_type":"physical",
 		"upgrade":{
 		},
@@ -6730,7 +6761,7 @@ crafting_items={
 	"feather1":{
 		"type":"material",
 		"name":"Harpy Feather",
-		"skin":"feather0",
+		"skin":"feather1",
 		"explanation":"Holding this, you understand how those huge harpies can fly, it's not a normal feather!",
 		"s":True,
 		"g":800,
