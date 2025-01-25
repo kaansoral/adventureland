@@ -6728,7 +6728,7 @@ skill_items={
 crafting_items={
 	"mbones":{
 		"type":"material",
-		"name":"Mummy Bones",
+		"name":"Bones",
 		"skin":"mbones",
 		"explanation":"Scattered, ugly bones.",
 		"s":True,
