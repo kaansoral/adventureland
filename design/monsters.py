@@ -899,6 +899,34 @@ monsters={
 			[10000000,"stat","evasion",1.25],
 		]
 	},
+	"dryad":{
+		"name":"Dryad","speed":24,"charge":48,"hp":80000,"xp":60000,"attack":400,"damage_type":"magical","respawn":2,"gold":1,"range":160,"frequency":1,"aggro":0.1,"armor":65,"resistance":100,
+		"abilities":{
+			"mtangle":{"cooldown":5000}
+		},
+		"achievements":[
+			[1,"stat","mp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","int",1],
+			[10000,"stat","pnresistance",1],
+			[100000,"stat","evasion",15],
+			[1000000,"stat","reflection",0.5],
+			[10000000,"stat","frequency",1],
+		]
+	},
+	"odino":{
+		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":1.2,"aggro":0.2,"armor":135,"resistance":65,"apiercing":100,
+		"crit":12,
+		"achievements":[
+			[1,"stat","hp",10],
+			[100,"stat","speed",1],
+			[1000,"stat","attack",5],
+			[10000,"stat","pnresistance",5],
+			[100000,"stat","pnresistance",1],
+			[1000000,"stat","apiercing",10],
+			[10000000,"stat","crit",0.5],
+		]
+	},
 	"welemental":{"name":"Water Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
 	"felemental":{"name":"Fire Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
 	"nelemental":{"name":"Nature Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
