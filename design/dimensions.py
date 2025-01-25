@@ -203,8 +203,8 @@ positions={
 	#"hhelmet":["pack_1a",9,23], #t3
 	"hhelmet":["",4,0],
 	#"xhelmet":["pack_1a",13,23], #t4
-	"xhelmet":["",12,0],
-	"spikedhelmet":["",5,0],
+	"xhelmet":["",5,0],
+	"spikedhelmet":["",12,0],
 	#"phelmet":["pack_1a",5,116], #pumpkin
 	"phelmet":["",11,29],
 	#"coat":["pack_1a",8,3], #t1
