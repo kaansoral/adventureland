@@ -517,6 +517,33 @@ drops={
 			[1.0/4000,"bronzeingot"],
 			[1.0/400,"bronzenugget"],
 		],
+		"dryad":[
+			[1.0/5000,"pclaw"],
+			[1.0/500,"essenceofnature"],
+			[1.0/550,"gem0"],
+			[1.0/25000,"elixirpnres"],
+		],
+		"odino":[ 
+			[1.0/400,"mbones"],
+			[1.0/10000,"sshield"],
+			[1.0/50000,"tombkey"],
+		],
+		"ggreenpro":[
+			[1.0/25,"spikedhelm"],
+			[1.0/20000,"tombkey"],
+		],
+		"gredpro":[ 
+			[1.0/25,"spikedhelm"],
+			[1.0/20000,"tombkey"],
+		],
+		"gbluepro":[
+			[1.0/25,"spikedhelm"],
+			[1.0/20000,"tombkey"],
+		],
+		"gpurplepro":[ 
+			[1.0/25,"spikedhelm"],
+			[1.0/20000,"tombkey"],
+		],
 	},
 	"konami":[
 		[6.0/10000000,"powerglove"],
