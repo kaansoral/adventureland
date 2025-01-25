@@ -1574,9 +1574,9 @@ maps={
 		],
 		"doors":[
 			[0,-47,46,36,"main",19,0], #door to main  
-			[-321,-40,62,60,"dungeon1",1,1], #door to Dungeon 1 
-			[319,-249,62,46,"dungeon2",0,2], #door to Dungeon 2
-			# [-321,-213,68,83,"spidercave",0,3,"key","spiderkey"], #door to spider 
+			[-321,-40,62,60,"ucliffs",1,1], #door to Underground Cliffs
+			[319,-249,62,46,"uhills",0,2], #door to Underground Hills
+			# [-321,-213,68,83,"spider_instance",0,3,"key","spiderkey"], #door to spider _instance
 			# [0,-859,58,44,"TBD",1,4], #door to (To Be Determined) 
 		],
 		"quirks":[
@@ -1626,7 +1626,7 @@ maps={
 		"spawns":[
 			[0,0], 
 			[720,-310], # Right door
-			[0,-691], # New Instance?
+			[0,-691], # New Future Instance?
 		],
 		"doors":[
 			[0,77,56,64,"gateway",0,0], #door to Gateway
