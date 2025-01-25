@@ -1618,8 +1618,8 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"sparkbot","boundary":[-734,-394,-416,-157],"count":6,"grow":True},
-			{"type":"targetron","boundary":[-672,-394,-416,-120],"count":6,"grow":True},
+			{"type":"sparkbot","boundary":[-734,-394,-416,-157],"count":4,"grow":True},
+			{"type":"targetron","boundary":[-672,-394,-416,-120],"count":4,"grow":True},
 			# {"type":"TBD","boundary":[194,-550,648,-407],"count":6,"grow":True},
 			# {"type":"TBD","boundary":[-431,-646,-242,-528],"count":6,"grow":True},
 		],
