@@ -530,19 +530,19 @@ drops={
 		],
 		"ggreenpro":[
 			[1.0/25,"spikedhelm"],
-			[1.0/20000,"tombkey"],
+			[1.0/10000,"tombkey"],
 		],
 		"gredpro":[ 
 			[1.0/25,"spikedhelm"],
-			[1.0/20000,"tombkey"],
+			[1.0/10000,"tombkey"],
 		],
 		"gbluepro":[
 			[1.0/25,"spikedhelm"],
-			[1.0/20000,"tombkey"],
+			[1.0/10000,"tombkey"],
 		],
 		"gpurplepro":[ 
 			[1.0/25,"spikedhelm"],
-			[1.0/20000,"tombkey"],
+			[1.0/10000,"tombkey"],
 		],
 	},
 	"konami":[
