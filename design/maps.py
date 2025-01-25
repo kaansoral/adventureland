@@ -1679,10 +1679,12 @@ maps={
 		"spawns":[
 			[0,0],
 			[256,-905], # Gateway door
+			[-513,-697], # unused door spawn
 		],
 		"doors":[
-			#[0,80,54,67,"TBD",0,0], #door to (To Be Determined)  
+			# [0,80,54,67,"TBD",0,0], #door to (To Be Determined)  
 			[255,-917,62,99,"gateway",1,1], #door to Gateway
+			# [-513,-626,49,62,"gateway",1,1], #door to (To Be Determined) 
 		],
 		"quirks":[
 		],
@@ -1726,9 +1728,9 @@ maps={
 			{"type":"bluefairy","boundary":[-292,-498,-168,-366],"count":1},
 			{"type":"greenfairy","boundary":[-432,317,-342,450],"count":1},
 			{"type":"redfairy","boundary":[313,590,393,848],"count":1},
-			# {"type":"TBD","boundary":[282,-502,524,-192],"count":6,"grow":True}, #dryad?
-			# {"type":"TBD","boundary":[250,228,614,442],"count":6,"grow":True}, #ogre?
-			# {"type":"TBD","boundary":[-99,534,132,856],"count":6,"grow":True}, #dino?
+			{"type":"dryad","boundary":[282,-502,524,-192],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[250,228,614,442],"count":6,"grow":True}, #ogre? orc? (to be determined)
+			{"type":"odino","boundary":[-99,534,132,856],"count":7,"grow":True},
 		],
 		"spawns":[
 			[0,0], 
@@ -1740,7 +1742,7 @@ maps={
 		],
 		"drop_norm":5000,
 		"unlist":True,
-		"lux":0.4,
+		"lux":0.6,
 	},
 	"spider_instance":{
 		"key":"jayson_pvpDungeon_b1",
