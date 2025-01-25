@@ -959,7 +959,24 @@ sprites={
 		"columns":4,
 		"matrix":[
 			[None,"sparkbot","targetron",None],
-			[None,None,None,None] #"trapchest1","trapchest2"
+			[None,None,None,None]
+		]
+	},
+	"dryad":{
+		"file":"/images/tiles/monsters/dryad_green_1.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[
+			["dryad"],
+		]
+	},
+	"dinos":{
+		"file":"/images/tiles/monsters/mondinos_1.png",
+		"rows":2,
+		"columns":4,
+		"matrix":[
+			["gdino","odino","bdino","wdino"],
+			[None,None,None,None]
 		]
 	},
 	"emblems":{
