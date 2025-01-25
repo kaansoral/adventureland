@@ -2693,13 +2693,13 @@ weapons={
 	"pclaw":{
 		"type":"weapon",
 		"wtype":"fist",
-		"tier":2,
+		"tier":2.4,
 		"skin":"pclaw",
 		"damage_type":"physical",
-		"ability":"poison",
-		"attr0":1.5,
+		#"ability":"poison",
+		#"attr0":1.5,
 		"upgrade":{
-			"attr0":0.5,
+			#"attr0":0.5,
 		},
 		"name":"Poison Claw",
 		"g":72000,
