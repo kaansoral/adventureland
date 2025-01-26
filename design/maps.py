@@ -1670,7 +1670,9 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			{"type":"spiderqueen","boundary":[-45,-1535,43,-1502],"count":1},
+			{"type":"spiderr","boundary":[0,-1515,1,-1516],"count":1},
+			{"type":"spiderbl","boundary":[-192,-1515,-191,-1516],"count":1},
+			{"type":"spiderbr","boundary":[192,-1515,191,-1516],"count":1},
 			{"type":"spider","boundary":[-255,-880,-120,-600],"count":3},
 			{"type":"spider","boundary":[120,-880,255,-600],"count":3},
 		],
