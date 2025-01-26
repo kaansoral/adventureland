@@ -910,7 +910,7 @@ monsters={
 			[1000,"stat","int",1],
 			[10000,"stat","pnresistance",1],
 			[100000,"stat","evasion",15],
-			[1000000,"stat","reflection",0.5],
+			[1000000,"stat","reflection",1],
 			[10000000,"stat","frequency",1],
 		]
 	},
@@ -926,6 +926,21 @@ monsters={
 			[1000000,"stat","apiercing",10],
 			[10000000,"stat","crit",0.5],
 		]
+	},
+	"spiderr":{
+		"name":"Red Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":15,"attack":10000,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":0.4,"aggro":1,"rage":1,
+		"armor":65,"resistance":80,
+		"spawns":[[8000,"spider"]],
+	},
+	"spiderbl":{
+		"name":"Black Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":12,"attack":1200,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":1.1,"aggro":1,"rage":1,
+		"armor":110,"resistance":135,
+		"spawns":[[6000,"spider"]],
+	},
+	"spiderbr":{
+		"name":"Brown Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":10,"attack":840,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":2,"aggro":1,"rage":1,
+		"armor":90,"resistance":115,
+		"spawns":[[5000,"spider"]],
 	},
 	"welemental":{"name":"Water Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
 	"felemental":{"name":"Fire Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
