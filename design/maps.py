@@ -1567,16 +1567,16 @@ maps={
 		],
 		"spawns":[
 			[0,0], # Main entrance
-			[-320,-102], #Dungeon 1 entrance bottom left
-			[320,-240], #Dungeon 2 entrance top right
-			# [-320,-202], #Spider queen entrance
-			[0,-847], #Top entrance (unused)
+			[-320,-102], #Underground Cliffs entrance bottom left
+			[320,-240], #Underground Hills entrance top right
+			# [-320,-202], #Spider Den entrance
+			# [0,-847], #Top entrance (unused)
 		],
 		"doors":[
 			[0,-47,46,36,"main",19,0], #door to main  
 			[-321,-40,62,60,"ucliffs",1,1], #door to Underground Cliffs
 			[319,-249,62,46,"uhills",0,2], #door to Underground Hills
-			# [-321,-213,68,83,"spider_instance",0,3,"key","spiderkey"], #door to spider _instance
+			[-321,-213,68,83,"spider_instance",0,3,"key","spiderkey"], #door to spider _instance
 			# [0,-859,58,44,"TBD",1,4], #door to (To Be Determined) 
 		],
 		"quirks":[
@@ -1670,8 +1670,9 @@ maps={
 		"npcs":[
 		],
 		"monsters":[
-			# {"type":"spiderqueen","boundary":[2243.92,325.27,2689.64,505.06],"count":1},
-			# {"type":"spider","boundary":[2243.92,325.27,2689.64,505.06],"count":1},
+			{"type":"spiderqueen","boundary":[-45,-1535,43,-1502],"count":1},
+			{"type":"spider","boundary":[-255,-880,-120,-600],"count":3},
+			{"type":"spider","boundary":[120,-880,255,-600],"count":3},
 		],
 		"spawns":[
 			[0,10],
