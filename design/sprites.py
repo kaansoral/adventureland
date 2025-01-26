@@ -958,7 +958,7 @@ sprites={
 		"rows":2,
 		"columns":4,
 		"matrix":[
-			[None,"sparkbot","targetron",None],
+			["goldenbot","sparkbot","targetron",None],
 			[None,None,None,None]
 		]
 	},
@@ -977,6 +977,17 @@ sprites={
 		"matrix":[
 			["gdino","odino","bdino","wdino"],
 			[None,None,None,None]
+		]
+	},
+	"spiderqueens":{
+		"file":"/images/tiles/monsters/giantspider_shadow_1.png",
+		"rows":4,
+		"columns":1,
+		"matrix":[
+			["spiderbl"],
+			["spiderbr"],
+			["spiderp"],
+			["spiderr"],
 		]
 	},
 	"emblems":{
