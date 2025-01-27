@@ -2087,10 +2087,10 @@ function event_loop() {
 			spawn_special_monster("goldenbat");
 		}
 
-        if (events.goldenbot && (stats.kills.targetron + stats.kills.sparkbot) > edges.next_goldenbot) {
-            edges.next_goldenbot += parseInt(events.goldenbot * Math.random());
-            spawn_special_monster("goldenbot");
-        }
+		if (events.goldenbot && (stats.kills.targetron + stats.kills.sparkbot) > edges.next_goldenbot) {
+			edges.next_goldenbot += parseInt(events.goldenbot * Math.random());
+			spawn_special_monster("goldenbot");
+		}
 
 		if (events.cutebee && stats.kills.bee > edges.next_cutebee) {
 			edges.next_cutebee += parseInt(events.cutebee * Math.random());
@@ -2231,7 +2231,7 @@ function event_loop() {
 						if (
 							(player.level < 50 && Math.random() > 0.08) ||
 							(G.maps[player.map] &&
-								(G.maps[player.map].safe || G.maps[player.map].instance || G.maps[player.map].irregular))
+							 (G.maps[player.map].safe || G.maps[player.map].instance || G.maps[player.map].irregular))
 						) {
 							player = null;
 						}
