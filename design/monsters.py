@@ -1014,6 +1014,20 @@ monsters={
 			[5000,"stat","gold",5],
 		]
 	},
+	"goldenbot":{
+		"name":"Golden Bot","speed":24,"hp":500000,"xp":420000,"attack":500,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":1,"aggro":0.2,"aa":1,
+		"difficulty":100,
+		"phresistance":75,
+		"explanation":"Spawns in Underground Hills around every 100,000 Sparkbot or Targetron spawns",
+		"achievements":[
+			[1,"stat","gold",1],
+			[10,"stat","luck",1],
+			[100,"stat","gold",1],
+			[1000,"stat","range",1],
+			[2000,"stat","frequency",1],
+			[5000,"stat","gold",5],
+		]
+	},
 	"tinyp":{
 		"name":"Fairy","speed":24,"hp":5600,"xp":12000,"attack":240,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":5,"aggro":0.3,"aa":1,
 		"escapist":True,"roam":True,"cute":True,
