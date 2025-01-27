@@ -517,6 +517,14 @@ drops={
 			[1.0/4000,"bronzeingot"],
 			[1.0/400,"bronzenugget"],
 		],
+		"goldenbot":[ 
+			[1.0/1,"handofmidas"],
+			[1.0/2,"goldenegg"],
+			[1.0/50,"goldring"],
+			[1.0/75,"goldbooster"],
+			[1.0/150,"ukey"],
+			[1.0/1000000,"goldenpowerglove"],
+		],
 		"dryad":[
 			[1.0/5000,"pclaw"],
 			[1.0/500,"essenceofnature"],
