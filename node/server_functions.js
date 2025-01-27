@@ -34,6 +34,7 @@ var stats = {
 var edges = {
 	next_goldenbat: 80000,
 	next_cutebee: 480000,
+	next_goldenbot: 100000,
 };
 var NPC_prefix = "NPC0000000000000000NPC";
 
@@ -1805,6 +1806,20 @@ function spawn_special_monster(type) {
 		new_monster(pack.i, pack);
 		// broadcast("game_event",{name:"goldenbat",map:pack.i});
 	}
+    if (type == "goldenbot") {
+		var packs = [];
+		["uhills"].forEach(function (m) {
+			G.maps[m].monsters.forEach(function (p) {
+				if (!p.boundaries && (p.type === "targetron" || p.type === "sparkbot")) {
+					packs.push({ type: "goldenbot", boundary: p.boundary, count: 1, i: m, roam: true });
+				}
+			});
+		});
+		var pack = packs[floor(Math.random() * packs.length)];
+		pack.gold = D.monster_gold.goldenbot;
+		new_monster(pack.i, pack);
+		// broadcast("game_event",{name:"goldenbot",map:pack.i});
+	}
 	if (type == "cutebee") {
 		var packs = [];
 		["main"].forEach(function (m) {
@@ -2071,6 +2086,11 @@ function event_loop() {
 			edges.next_goldenbat += parseInt(events.goldenbat * Math.random());
 			spawn_special_monster("goldenbat");
 		}
+
+        if (events.goldenbot && (stats.kills.targetron + stats.kills.sparkbot) > edges.next_goldenbot) {
+            edges.next_goldenbot += parseInt(events.goldenbot * Math.random());
+            spawn_special_monster("goldenbot");
+        }
 
 		if (events.cutebee && stats.kills.bee > edges.next_cutebee) {
 			edges.next_cutebee += parseInt(events.cutebee * Math.random());
