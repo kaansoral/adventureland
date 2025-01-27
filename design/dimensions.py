@@ -983,6 +983,7 @@ positions={
 	"cryptkey":["custom",0,3],
 	"tombkey":["custom",1,3],
 	"frozenkey":["custom",2,3],
+	"spiderkey":["community",0,1],
 	"cyber":["custom",3,3],
 	"vattire":["custom",0,4],
 	"vgloves":["custom",1,4],
