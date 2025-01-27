@@ -270,7 +270,7 @@ drops={
 		"pinkgoblin":[
 			[1.0/24000,"bkey"],
 		],
-		"spider":[[0.001,"spidersilk"],[1.0/500000,"offeringp"]],
+		"spider":[[0.001,"spidersilk"],[1.0/500000,"offeringp"],[1.0/75000,"spiderkey"]],
 		"tinyp":[[1.0/1,"offeringp"]],
 		"gscorpion":[[0.002,"quiver"]],
 		"xscorpion":[[0.0024,"quiver"],[0.00024,"vitscroll"],[2.0/1000000,"glitch"],[8.0/100000,"svenom"]],
