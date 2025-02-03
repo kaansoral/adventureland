@@ -544,7 +544,7 @@ maps={
 		#"key":"jayson_ALMap2_v2.Xmas",
 		#"key":"jayson_ALMap2_v2.CNewYear",
 		#"key":"jayson_ALMap2_v2_xmas", #xmas
-		#"key":"jayson_ALMap2_v2.lunarNewYear",
+		"key":"jayson_ALMap2_v2.lunarNewYear",
 		"name":"Mainland",
 		"npcs":[
 			#{"id":"newupgrade","position":[-203,-174]},
