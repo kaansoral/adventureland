@@ -2953,6 +2953,14 @@ function lock_item(num)
 	return push_deferred("locksmith");
 }
 
+function destat_item(num)
+{
+	if(num===undefined) num=s_item;
+	socket.emit("destat",{num:num});
+	return push_deferred("destat");
+}
+
+
 function seal_item(num)
 {
 	if(num===undefined) num=l_item;
@@ -3204,6 +3212,7 @@ function reopen()
 		else if(rendered_target=="dismantler") render_dismantler();
 		else if(rendered_target=="none") render_none_shrine();
 		else if(rendered_target=="locksmith") render_locksmith();
+		else if(rendered_target=="scrollsmith") render_scrollsmith();
 		// else if(rendered_target=="secondhands") render_secondhands(); // Manual resets
 		if(inventory) reset_inventory();
 
@@ -3270,7 +3279,7 @@ function reset_inventory(condition)
 {
 	if(inventory)
 	{
-		if(condition && !in_arr(rendered_target,["upgrade","compound","exchange","npc","merchant","craftsman","dismantler","none","locksmith"])) return;
+		if(condition && !in_arr(rendered_target,["upgrade","compound","exchange","npc","merchant","craftsman","dismantler","none","locksmith","scrollsmith"])) return;
 		render_inventory(true);
 	}
 }
