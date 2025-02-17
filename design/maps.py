@@ -1221,6 +1221,7 @@ maps={
 		"npcs":[
 			{"id":"transporter","position":[-14,-477]},
 			{"id":"locksmith","position":[316,-270]},
+			{"id":"scrollsmith","position":[606,-1590]},
 		],
 		"monsters":[
 			{"type":"plantoid","boundary":[-1013,-472,-575,-130],"count":4,"grow":True}, #added grow 31/1/2024
