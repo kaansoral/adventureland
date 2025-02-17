@@ -27,7 +27,7 @@ drops={
 			#[0.0001,"redenvelopev3"],
 			#[0.00005,"greenenvelope"],
 			#[0.0001,"redenvelopev4"],
-			[0.001,"candypop"],
+			#[0.001,"candypop"],
 		],
 		"main":[
 			[0.0007,"ringsj"],
