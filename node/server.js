@@ -6636,8 +6636,11 @@ function init_io() {
 				new_monster(player.in, { type: def.spawn, stype: "trap", x: player.x, y: player.y, owner: player.name });
 				consume_one(player, data.num);
 			} else if (def.gives) {
-				if (player.last.potion && mssince(player.last.potion) < 0) {
-					return fail_response("not_ready");
+				if (player.last.potion) {
+					const ms = -mssince(player.last.potion);
+					if (ms > 0) {
+						return fail_response("not_ready", { ms: ms });
+					}
 				}
 				if (item.l) {
 					return fail_response("item_locked");
