@@ -2997,6 +2997,13 @@ function commence_attack(attacker, target, atype) {
 	}
 	if (
 		info.procs &&
+		attacker.a.poison &&
+		Math.random() < (attacker.a.poison.attr0 * (G.maps[attacker.map].poison_multiplier || 1)) / 100.0
+	) {
+		info.conditions.push("poisoned");
+	}
+	if (
+		info.procs &&
 		attacker.a.burn &&
 		info.procs &&
 		Math.random() < (attacker.a.burn.attr0 * (G.maps[attacker.map].burn_multiplier || 1)) / 100.0

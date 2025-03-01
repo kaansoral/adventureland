@@ -2721,6 +2721,9 @@ function add_condition(target, condition, args) {
 	if (condition == "frozen") {
 		disappearing_text(target.socket, target, "FREEZE!", { xy: 1, size: "huge", color: "freeze", nv: 1 });
 	}
+	if (condition == "poisoned") {
+		disappearing_text(target.socket, target, "POISON!", { xy: 1, color: "poison", nv: 1 });
+	}
 	if (condition == "burned") {
 		let scale = 1.0 - (target.firesistance || 0) / 100.0;
 		duration = 5000;

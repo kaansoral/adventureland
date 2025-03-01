@@ -3202,6 +3202,11 @@ function render_item(selector,args)
 				html+=bold_prop_line("Ability","Freeze","#2EBCE2");
 				html+="<div style='color: #C3C3C3'>"+"Freezes the opponent with a "+prop.attr0+"% chance.</div>";
 			}
+			else if(item.ability=="poison")
+			{
+				html+=bold_prop_line("Ability","Poison",colors.poison);
+				html+="<div style='color: #C3C3C3'>"+"Poisons the opponent with a "+prop.attr0+"% chance.</div>";
+			}
 			else if(item.ability=="burn")
 			{
 				html+=bold_prop_line("Ability","Burn","#E03D31");

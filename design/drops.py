@@ -17,7 +17,7 @@ drops={
 		],
 		"global":[
 			#[0.000015,"goldenegg"], #originally 0.000005
-			[0.0000001,"5bucks"],
+			#[0.0000001,"5bucks"],
 			#[0.0002,"gift0"],
 			#[0.004,"gift1"],
 			#[0.0004,"redenvelope"],
