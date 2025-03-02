@@ -120,6 +120,7 @@ update_notes=[
 	"Last Update [28th of February]",
 	"Poison passive ability for items",
 	"PR: add cooldown time when failing to equip (use) potion #154",
+	"PR: Showing a skill tooltip now also shows weapon type requirement #121",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
