@@ -953,6 +953,43 @@ sprites={
 			["mrgreen"],
 		]
 	},
+	"robots1":{
+		"file":"/images/tiles/monsters/robots_walkin_B_1.png",
+		"rows":2,
+		"columns":4,
+		"matrix":[
+			["goldenbot","sparkbot","targetron",None],
+			[None,None,None,None]
+		]
+	},
+	"dryad":{
+		"file":"/images/tiles/monsters/dryad_green_1.png",
+		"rows":1,
+		"columns":1,
+		"matrix":[
+			["dryad"],
+		]
+	},
+	"dinos":{
+		"file":"/images/tiles/monsters/mondinos_1.png",
+		"rows":2,
+		"columns":4,
+		"matrix":[
+			["gdino","odino","bdino","wdino"],
+			[None,None,None,None]
+		]
+	},
+	"spiderqueens":{
+		"file":"/images/tiles/monsters/giantspider_shadow_1.png",
+		"rows":4,
+		"columns":1,
+		"matrix":[
+			["spiderbl"],
+			["spiderbr"],
+			["spiderp"],
+			["spiderr"],
+		]
+	},
 	"emblems":{
 		"file":"/images/sprites/emblems/emblems.png?v=6",
 		"type":"emblem",

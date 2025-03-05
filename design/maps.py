@@ -398,87 +398,7 @@ maps={
 			[0.08,-291.85],
 		],
 		"doors":[
-			[-0.15,-299.63,35.39,51.17,"d_g",0,1],
-		],
-		"quirks":[
-		],
-		"world":"dungeon",
-	},
-	"d_g":{
-		"key":"jayson_pvpDungeon_gateway",
-		"name":"Dungeon [Gateway]",
-		"npcs":[
-		],
-		"monsters":[
-			#{"type":"bat","boundary":[-120,-207,108,17],"count":6},
-		],
-		"spawns":[
-			[0.03,1.13,3],
-			[-319.17,-102.09,3],
-		],
-		"doors":[
-			[0.14,47.88,46.19,36.62,"d_e",1,0],
-			[-320.6,-39.93,64.22,59.29,"d_b1",0,1],
-		],
-		"quirks":[
-			[-320.64,-213.45,67.59,82.61,"log","The passage is blocked"],
-		],
-		"world":"dungeon",
-	},
-	"d_b1":{
-		"key":"jayson_pvpDungeon_b1",
-		"name":"Dungeon",
-		"npcs":[
-		],
-		"monsters":[
-		],
-		"spawns":[
-			[-0.28,10.19,3],
-			[-192.16,-1655.63],
-		],
-		"doors":[
-			[0.09,83.59,66.6,63.26,"d_g",1,0],
-			[-192.9,-1666.24,59.7,45.23,"d_a1",0,1],
-		],
-		"quirks":[
-			[190.54,-1628.83,59.88,85.03,"log","The passage is blocked"],
-		],
-		"world":"dungeon",
-		"traps":[
-			{"type":"debuff","polygon":[[-336,-1136],[-192,-1136],[-192,-1160],[-168,-1160],[-168,-1152],[-120,-1152],[-120,-1168],[-112,-1168],[-112,-1240],[-72,-1240],[-72,-1256],[-56,-1256],[-56,-1288],[0,-1288],[0,-1272],[16,-1272],[16,-1208],[88,-1208],[88,-1088],[200,-1088],[200,-1128],[336,-1128],[336,-1368],[240,-1368],[240,-1336],[216,-1336],[216,-1320],[160,-1320],[160,-1400],[128,-1400],[128,-1448],[144,-1448],[144,-1512],[88,-1512],[88,-1496],[64,-1496],[64,-1440],[40,-1440],[40,-1432],[0,-1432],[0,-1464],[-40,-1464],[-40,-1480],[-64,-1480],[-64,-1512],[-144,-1512],[-144,-1560],[-176,-1560],[-176,-1576],[-216,-1576],[-216,-1544],[-264,-1544],[-264,-1480],[-288,-1480],[-288,-1456],[-296,-1456],[-296,-1432],[-328,-1432],[-328,-1152],[-336,-1152]]},
-		]
-	},
-	"d_a1":{
-		"key":"jayson_pvpDungeon_a1",
-		"name":"Dungeon",
-		"npcs":[
-		],
-		"monsters":[
-		],
-		"spawns":[
-			[-2.2,1.48,3],
-			[255.6,-905.1],
-		],
-		"doors":[
-			[0.21,79.75,54.39,66.5,"d_b1",1,0],
-			[254.82,-916.88,61.73,99.0,"d_a2",0,1],
-		],
-		"quirks":[
-		],
-		"world":"dungeon",
-	},
-	"d_a2":{
-		"key":"jayson_pvpDungeon_a2",
-		"name":"Dungeon",
-		"npcs":[
-		],
-		"monsters":[
-		],
-		"spawns":[
-			[-2.12,-0.39,3]
-		],
-		"doors":[
-			[0.6,77.16,56.2,64.21,"d_a1",1,0],
+			# [-0.15,-299.63,35.39,51.17,"d_g",0,1],
 		],
 		"quirks":[
 		],
@@ -676,6 +596,7 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
+			[888,-675,24,32,"gateway",0,19],
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -701,6 +622,7 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
+			[888,-667], #19-gateway
 		],
 		"quirks":[
 			[-236,-189,24,24,"upgrade"],
@@ -1309,12 +1231,14 @@ maps={
 			[784,-1060], #2-spooky
 			[-1071,-1485], #3-level1
 			[1212,101,3], #4-main
+			[-560,-990], #5-mforest
 		],
 		"doors":[
 			#[108,-260,32,32,"spookytown",1,2],
 			[784,-1085,80,40,"spookytown",1,2],
 			[-1071,-1496,40,40,"level1",2,3],
 			[1212,150,200,36,"main",15,4],
+			[-560,-1008,28,32,"mforest",0,0],
 		],
 		"quirks":[
 			[-228,-178,32,40,"log","Locked but there are noises coming from inside"],
@@ -1634,6 +1558,144 @@ maps={
 		"drop_norm":5000,
 		"unlist":True,
 		"lux":0.4,
+	},
+    "gateway":{
+		"key":"jayson_pvpDungeon_gateway",
+		"name":"Underground [Gateway]",
+		"npcs":[
+		],
+		"monsters":[
+		],
+		"spawns":[
+			[0,0], # Main entrance
+			[-320,-102], #Underground Cliffs entrance bottom left
+			[320,-240], #Underground Hills entrance top right
+			# [-320,-202], #Spider Den entrance
+			# [0,-847], #Top entrance (unused)
+		],
+		"doors":[
+			[0,-47,46,36,"main",19,0], #door to main  
+			[-321,-40,62,60,"ucliffs",1,1], #door to Underground Cliffs
+			[319,-249,62,46,"uhills",0,2], #door to Underground Hills
+			[-321,-213,68,83,"spider_instance",0,3,"key","spiderkey"], #door to spider _instance
+			# [0,-859,58,44,"TBD",1,4], #door to (To Be Determined) 
+		],
+		"quirks":[
+		],
+		"drop_norm":1000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"ucliffs":{
+		"key":"jayson_pvpDungeon_a1",
+		"name":"Underground [Cliffs]",
+		"npcs":[
+		],
+		"monsters":[
+			# {"type":"TBD","boundary":[586,-844,915,-589],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-455,-1126,-189,-898],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-135,-640,73,-545],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[492,-238,647,-81],"count":6,"grow":True},
+		],
+		"spawns":[
+			[0,0],
+			[256,-905], # Gateway door
+			[-513,-697], # unused door spawn
+		],
+		"doors":[
+			# [0,80,54,67,"TBD",0,0], #door to (To Be Determined)  
+			[255,-917,62,99,"gateway",1,1], #door to Gateway
+			# [-513,-626,49,62,"gateway",1,1], #door to (To Be Determined) 
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"uhills":{
+		"key":"jayson_pvpDungeon_a2",
+		"name":"Underground [Hills]",
+		"npcs":[
+		],
+		"monsters":[
+			{"type":"sparkbot","boundary":[-734,-394,-416,-157],"count":4,"grow":True},
+			{"type":"targetron","boundary":[-672,-394,-416,-120],"count":4,"grow":True},
+			# {"type":"TBD","boundary":[194,-550,648,-407],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[-431,-646,-242,-528],"count":6,"grow":True},
+		],
+		"spawns":[
+			[0,0], 
+			[720,-310], # Right door
+			[0,-691], # New Future Instance?
+		],
+		"doors":[
+			[0,77,56,64,"gateway",0,0], #door to Gateway
+			# [720,-237,55,62,"TBD",1,1], #door to (To Be Determined)
+			# [0,-702,40,61,"TBD",1,1], #door to New Instance?
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.4,
+	},
+	"mforest":{
+		"key":"jayson_undergroundjungle",
+		"name":"Mystical Forest",
+		"npcs":[
+		],
+		"monsters":[
+			{"type":"bluefairy","boundary":[-292,-498,-168,-366],"count":1},
+			{"type":"greenfairy","boundary":[-432,317,-342,450],"count":1},
+			{"type":"redfairy","boundary":[313,590,393,848],"count":1},
+			{"type":"dryad","boundary":[282,-502,524,-192],"count":6,"grow":True},
+			# {"type":"TBD","boundary":[250,228,614,442],"count":6,"grow":True}, #ogre? orc? (to be determined)
+			{"type":"odino","boundary":[-99,534,132,856],"count":7,"grow":True},
+		],
+		"spawns":[
+			[0,0], 
+		],
+		"doors":[
+			[1,-32,40,49,"halloween",5,0], #door to Halloween
+		],
+		"quirks":[
+		],
+		"drop_norm":5000,
+		"unlist":True,
+		"lux":0.6,
+	},
+	"spider_instance":{
+		"key":"jayson_pvpDungeon_b1",
+		"name":"The Spider Den",
+		"npcs":[
+		],
+		"monsters":[
+			{"type":"spiderr","boundary":[0,-1515,1,-1516],"count":1,"rage":[-320,-1700,320,-1150]},
+			{"type":"spiderbl","boundary":[-192,-1515,-191,-1516],"count":1,"rage":[-320,-1700,320,-1150]},
+			{"type":"spiderbr","boundary":[192,-1515,191,-1516],"count":1,"rage":[-320,-1700,320,-1150]},
+			{"type":"spider","boundary":[-255,-880,-120,-600],"count":3},
+			{"type":"spider","boundary":[120,-880,255,-600],"count":3},
+		],
+		"spawns":[
+			[0,10],
+			# [193,-1619],
+			# [-193,-1619],
+		],
+		"on_death":["gateway",3],
+		"on_exit":["gateway",3],
+		"doors":[
+			[0,84,67,63,"gateway",3,0],
+			# [190,-1628,60,85,"gateway",3,0],
+			# [-190,-1628,60,85,"gateway",3,0],
+		],
+		"quirks":[
+			[190,-1628,60,85,"log","The passage is blocked"],
+		],
+		"traps":[
+			{"type":"debuff","polygon":[[-336,-1136],[-192,-1136],[-192,-1160],[-168,-1160],[-168,-1152],[-120,-1152],[-120,-1168],[-112,-1168],[-112,-1240],[-72,-1240],[-72,-1256],[-56,-1256],[-56,-1288],[0,-1288],[0,-1272],[16,-1272],[16,-1208],[88,-1208],[88,-1088],[200,-1088],[200,-1128],[336,-1128],[336,-1368],[240,-1368],[240,-1336],[216,-1336],[216,-1320],[160,-1320],[160,-1400],[128,-1400],[128,-1448],[144,-1448],[144,-1512],[88,-1512],[88,-1496],[64,-1496],[64,-1440],[40,-1440],[40,-1432],[0,-1432],[0,-1464],[-40,-1464],[-40,-1480],[-64,-1480],[-64,-1512],[-144,-1512],[-144,-1560],[-176,-1560],[-176,-1576],[-216,-1576],[-216,-1544],[-264,-1544],[-264,-1480],[-288,-1480],[-288,-1456],[-296,-1456],[-296,-1432],[-328,-1432],[-328,-1152],[-336,-1152]]},
+		],
+		"instance":True,
 	},
 
 }
