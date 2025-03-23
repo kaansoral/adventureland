@@ -114,11 +114,11 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=798
+game_version=808
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Last Update [April 25th]",
-	"Cost reduction trial"
+	"Valentine's Day Event",
+	"Last Update [3rd of Fabruary]",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",

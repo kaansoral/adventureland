@@ -171,8 +171,8 @@ var events = {
 	// SEASONS
 	holidayseason: false,
 	lunarnewyear: false,
-	valentines: false,
-	pinkgoo: 0, // every N minutes - 60
+	valentines: true,
+	pinkgoo: 60, // every N minutes - 60
 	snowman: 20 * 60, // 1200 normally - 60 - at sprocess_game_data
 	egghunt: 0, // every N minutes - 60
 	halloween: false,
@@ -2034,7 +2034,7 @@ function drop_something(player, monster, share) {
 		// 3) item drops if the calculated falls below the drop rate threshold
 
 		let dropRate = item[0];
-		let rollModifier = share / player.luckm / monster.level / monster_mult;
+		let rollModifier = share * player.luckm * monster.level * monster_mult;
 		let playerRoll = Math.random() / rollModifier;
 
 		return playerRoll < dropRate;
@@ -3011,7 +3011,6 @@ function commence_attack(attacker, target, atype) {
 	}
 
 	var pid = randomStr(6);
-	var eta = 0;
 	info.first_attack = info.attack = attack;
 	info.def = def;
 	def.damage_type = info.damage_type;
@@ -3028,7 +3027,7 @@ function commence_attack(attacker, target, atype) {
 		source: atype,
 		x: target.x,
 		y: target.y,
-		eta: 400,
+		eta: 0,
 		m: target.m,
 		pid: pid,
 	};
@@ -3052,12 +3051,12 @@ function commence_attack(attacker, target, atype) {
 	}
 
 	if (!(G.projectiles[def.projectile] && G.projectiles[def.projectile].instant)) {
-		eta = (1000 * dist) / G.projectiles[def.projectile].speed;
+		action.eta = Math.floor((1000 * dist) / G.projectiles[def.projectile].speed);
 	} else {
 		action.instant = true;
 	}
 
-	info.eta = future_ms(eta);
+	info.eta = future_ms(action.eta);
 
 	if (info.heal) {
 		action.heal = attack;
@@ -3073,7 +3072,7 @@ function commence_attack(attacker, target, atype) {
 	info.action = action;
 	xy_emit(attacker, "action", action, target.id);
 
-	if (!eta) {
+	if (!action.eta) {
 		projectiles_loop();
 	}
 
@@ -5605,6 +5604,48 @@ function init_io() {
 			resend(player, "reopen+nc+inv");
 			success_response({ num: num, cevent: true });
 		});
+
+		socket.on("destat", function (data) {
+			var player = players[socket.id];
+			if (!player || player.user) {
+				return fail_response("cant_in_bank");
+			}
+			if (!player.computer && simple_distance(G.maps.desertland.ref.scrollsmith, player) > B.sell_dist) {
+				return fail_response("distance");
+			}
+			var item = player.items[data.num];
+			if (!item) {
+				return fail_response("no_item");
+			}
+			var def = G.items[item.name];
+			if (item.stat_type == null) {
+				return fail_response("scrollsmith_cant");
+			}
+			var scrolltype = item.stat_type + "scroll";
+			if (scrolltype == "mp_costscroll") {
+				scrolltype = "mpcostscroll";
+			}
+			var scrolldef = G.items[scrolltype];
+			if (!scrolldef) {
+				return fail_response("scrollsmith_cant"); // Just in case there isn't actually an item associated with the scroll... should never happen, though.
+			}
+			var needed = [1, 10, 100, 1000, 9999, 9999, 9999];
+			var ograde = calculate_item_grade(def, { name: item.name, level: 0 });
+			var cost = needed[ograde] * scrolldef.g * 10;
+			if (player.gold < cost) {
+				return fail_response("gold_not_enough");
+			}
+			if (!can_add_items(player, list_to_pseudo_items([[needed[ograde], scrolltype]]))) {
+				return fail_response("inv_size");
+			}
+			player.gold -= cost;
+			add_item(player, scrolltype, { q: needed[ograde] });
+			delete item.stat_type;
+			socket.emit("game_response", { response: "scrollsmith_success", gold: cost });
+			player.citems[data.num] = cache_item(player.items[data.num]);
+			resend(player, "reopen+nc");
+			success_response();
+		});
 		socket.on("locksmith", function (data) {
 			var player = players[socket.id];
 			var item = player.items[data.item_num];
@@ -6595,8 +6636,11 @@ function init_io() {
 				new_monster(player.in, { type: def.spawn, stype: "trap", x: player.x, y: player.y, owner: player.name });
 				consume_one(player, data.num);
 			} else if (def.gives) {
-				if (player.last.potion && mssince(player.last.potion) < 0) {
-					return fail_response("not_ready");
+				if (player.last.potion) {
+					const ms = -mssince(player.last.potion);
+					if (ms > 0) {
+						return fail_response("not_ready", { ms: ms });
+					}
 				}
 				if (item.l) {
 					return fail_response("item_locked");

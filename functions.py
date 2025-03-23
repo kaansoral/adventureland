@@ -761,6 +761,7 @@ def block_account(name,days,reason="",toggle=False):
 	if toggle and gf(owner,"blocked_until") and owner.info.blocked_until>datetime.now(): days=-1
 	if days<=0:
 		owner.info.blocked_until=really_old
+		owner.banned=False
 		owner.put()
 		return "un-blocked %s"%owner.k()
 	else:

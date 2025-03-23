@@ -544,7 +544,7 @@ maps={
 		#"key":"jayson_ALMap2_v2.Xmas",
 		#"key":"jayson_ALMap2_v2.CNewYear",
 		#"key":"jayson_ALMap2_v2_xmas", #xmas
-		#"key":"jayson_ALMap2_v2.lunarNewYear",
+		"key":"jayson_ALMap2_v2.lunarNewYear",
 		"name":"Mainland",
 		"npcs":[
 			#{"id":"newupgrade","position":[-203,-174]},
@@ -1173,7 +1173,7 @@ maps={
 		"monsters":[
 			{"type":"stompy","boundary":[30,-2954,836,-2536],"count":1},
 			{"type":"wolf","boundary":[30,-2954,836,-2536],"count":7,"grow":True}, #added grow 31/1/2024
-			#{"type":"rudolph","boundary":[1065,-1598,1418,-1449],"count":1}, #xmas
+			{"type":"rudolph","boundary":[1065,-1598,1418,-1449],"count":1}, #xmas
 			{"type":"arcticbee","boundary":[682,-967,1482,-779],"count":10,"grow":True},
 			{"type":"wolfie","boundary":[-367,-2234,29,-1819],"count":4,"grow":True}, #added grow 31/1/2024
 			{"type":"wolfie","boundary":[236,-2232,460,-1847],"count":3,"grow":True}, #added grow 31/1/2024
@@ -1221,6 +1221,7 @@ maps={
 		"npcs":[
 			{"id":"transporter","position":[-14,-477]},
 			{"id":"locksmith","position":[316,-270]},
+			{"id":"scrollsmith","position":[606,-1590]},
 		],
 		"monsters":[
 			{"type":"plantoid","boundary":[-1013,-472,-575,-130],"count":4,"grow":True}, #added grow 31/1/2024

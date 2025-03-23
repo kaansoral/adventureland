@@ -16,24 +16,10 @@ drops={
 		
 		],
 		"global":[
-			#[0.00001,"ornament"],
-			#[0.00003,"mistletoe"],
-			#[0.00001,"candycane"],
-			#[0.000001,"open","xN"],
-			#[0.00006,"ornament"],
-			#[0.00018,"mistletoe"],
-			#[0.00005,"candycane"],
-			#[0.00001,"open","xN"],
-			#[0.00005,"candy0"], #originally 4X [11/10/19]
-			#[0.00125,"candy1"], #originally 4X [11/10/19]
 			#[0.000015,"goldenegg"], #originally 0.000005
-			#[0.000001,"5bucks"],
+			[0.0000001,"5bucks"],
 			#[0.0002,"gift0"],
 			#[0.004,"gift1"],
-			#[0.0006,"ornament"],
-			#[0.0018,"mistletoe"],
-			#[0.0005,"candycane"],
-			#[0.0001,"open","xN"],
 			#[0.0004,"redenvelope"],
 			#[0.00005,"goldenegg"],
 			#[0.009,"open","eastereggs"], #originally 0.009
@@ -41,7 +27,7 @@ drops={
 			#[0.0001,"redenvelopev3"],
 			#[0.00005,"greenenvelope"],
 			#[0.0001,"redenvelopev4"],
-			#[0.001,"candypop"],
+			[0.001,"candypop"],
 		],
 		"main":[
 			[0.0007,"ringsj"],
@@ -520,19 +506,19 @@ drops={
 	],
 	"statamulet":[
 		[1,"intamulet"],
-		[1.2,"stramulet"],
+		[1,"stramulet"],
 		[1,"dexamulet"],
 	],
 	"statbelt":[
 		[1,"intbelt"],
-		[1.05,"strbelt"],
+		[1,"strbelt"],
 		[1,"dexbelt"],
 	],
 	"statring":[
 		[1,"intring"],
 		[1,"vitring"],
 		[1,"dexring"],
-		[1.2,"strring"],
+		[1,"strring"],
 	],
 	"basicelixir":[
 		[1,"elixirvit0"],
@@ -718,6 +704,7 @@ drops={
 		[0.3,"lmace",None,None,"lucky"],
 		[1,"oxhelmet",None,None,"lucky"],
 		[0.1,"cdragon",None,None,"lucky"],
+		[0.1,"snakeoil"], #2025
 	],
 	"eastereggs":[
 		[1,"egg0"],
@@ -855,7 +842,6 @@ drops={
 		[1,"cupid"],
 	],
 	"candy0":[
-		[1,"pmaceofthedead"],
 		[0.008,"spookyamulet"],
 		[1,"gold",480000],
 		[0.0005,"cxjar",1,"hat410"],
@@ -971,10 +957,10 @@ drops={
 		[0.5,"empty"],
 	],
 	"weaponofthedead":[
-		[0.85,"bowofthedead"],
-		[0.35,"swordofthedead"],
+		[1,"bowofthedead"],
+		[1,"swordofthedead"],
 		[1,"maceofthedead"],
-		[0.1,"pmaceofthedead"],
+		[1,"pmaceofthedead"],
 		[1,"staffofthedead"],
 		[1,"daggerofthedead"],
 	],
