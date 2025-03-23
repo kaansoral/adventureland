@@ -82,13 +82,13 @@ monsters={
 		"name":"Froggie","speed":10,"hp":600,"xp":7200,"attack":24,"damage_type":"physical","respawn":960,"gold":300,"range":15,"frequency":0.5,"aggro":0,"evasion":99,
 			"difficulty":12,
 		"achievements":[
-			[10,"stat","mp",10],
-			[100,"stat","vit",1],
-			[1000,"stat","int",1],
-			[10000,"stat","evasion",0.5],
-			[100000,"stat","int",3],
-			[1000000,"stat","vit",4],
-			[10000000,"stat","evasion",1],
+			[1,"stat","mp",10],
+			[10,"stat","vit",1],
+			[100,"stat","int",1],
+			[1000,"stat","evasion",0.5],
+			[10000,"stat","int",3],
+			[100000,"stat","vit",4],
+			[1000000,"stat","evasion",1],
 		]
 	},
 	"rat":{
@@ -267,7 +267,7 @@ monsters={
 			[10000,"stat","int",1],
 			[100000,"stat","dex",1],
 			[1000000,"stat","vit",2],
-			[10000000,"stat","attack",20], #follow scorpion pattern 16/9/24
+			[10000000,"stat","attack",10],
 		]
 	},
 	"xscorpion":{
@@ -356,12 +356,12 @@ monsters={
 		"rbuff":"mlifesteal",
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","mp",20],
-			[1000,"stat","attack",5],
-			[10000,"stat","for",1],
-			[100000,"stat","xp",2.5],
-			[1000000,"stat","lifesteal",1],
-			[10000000,"stat","lifesteal",2.5],
+			[10,"stat","mp",20],
+			[100,"stat","attack",5],
+			[1000,"stat","for",1],
+			[10000,"stat","xp",2.5],
+			[100000,"stat","lifesteal",1],
+			[1000000,"stat","lifesteal",2.5],
 		]
 	},
 	"minimush":{
@@ -425,12 +425,12 @@ monsters={
 		"rbuff":"mlifesteal",
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","mp",20],
-			[1000,"stat","attack",5],
+			[10,"stat","mp",20],
+			[100,"stat","attack",5],
+			[1000,"stat","resistance",5],
 			[10000,"stat","resistance",5],
-			[100000,"stat","resistance",5],
-			[1000000,"stat","lifesteal",1],
-			[10000000,"stat","lifesteal",2.5],
+			[100000,"stat","lifesteal",1],
+			[1000000,"stat","lifesteal",2.5],
 		]
 	},
 	"phoenix":{
@@ -440,12 +440,12 @@ monsters={
 		"cooperative":True,
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",20],
-			[1000,"stat","vit",1],
-			[10000,"stat","int",1],
-			[100000,"stat","resistance",5],
-			[1000000,"stat","resistance",10],
-			[10000000,"stat","frequency",1],
+			[10,"stat","hp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","int",1],
+			[10000,"stat","resistance",5],
+			[100000,"stat","resistance",10],
+			[1000000,"stat","frequency",1],
 		]
 	},
 	"cgoo":{
@@ -493,12 +493,12 @@ monsters={
 		"slots":{"mainhand":{"name":"scythe","level":8}},
 		"achievements":[
 			[1,"stat","for",1],
-			[100,"stat","vit",1],
-			[1000,"stat","for",2],
-			[10000,"stat","vit",3],
-			[100000,"stat","crit",0.25],
-			[1000000,"stat","for",10],
-			[10000000,"stat","for",20],
+			[10,"stat","vit",1],
+			[100,"stat","for",2],
+			[1000,"stat","vit",3],
+			[10000,"stat","crit",0.25],
+			[100000,"stat","for",10],
+			[1000000,"stat","for",20],
 		]
 	},
 	"ligerx":{
@@ -539,12 +539,12 @@ monsters={
 		"name":"Stompy","speed":40,"charge":80,"hp":640000,"xp":600000,"attack":3600,"damage_type":"physical","respawn":36*60,"gold":80000,"range":64,"frequency":0.8,"aggro":0.2,
 		"achievements":[
 			[1,"stat","hp",50],
-			[100,"stat","mp",20],
-			[1000,"stat","speed",0.25],
-			[10000,"stat","range",0.5],
-			[100000,"stat","mp",50],
-			[1000000,"stat","frequency",1],
-			[10000000,"stat","attack",200],
+			[10,"stat","mp",20],
+			[100,"stat","speed",0.25],
+			[1000,"stat","range",0.5],
+			[5000,"stat","mp",50],
+			[20000,"stat","frequency",1],
+			[50000,"stat","attack",20],
 		]
 	},
 	"arcticbee":{
@@ -761,8 +761,8 @@ monsters={
 			[100,"stat","vit",1],
 			[1000,"stat","dex",1],
 			[10000,"stat","armor",10],
-			[100000,"stat","rpiercing",10],
-			[1000000,"stat","manasteal",0.32],
+			[50000,"stat","rpiercing",10],
+			[100000,"stat","manasteal",0.32],
 		]
 	},
 	"slenderman":{
@@ -793,8 +793,8 @@ monsters={
 			[100,"stat","vit",1],
 			[1000,"stat","str",1],
 			[10000,"stat","resistance",10],
-			[100000,"stat","apiercing",10],
-			[1000000,"stat","crit",1],
+			[50000,"stat","apiercing",10],
+			[100000,"stat","crit",1],
 		]
 	},
 	"greenjr":{
@@ -808,9 +808,9 @@ monsters={
 			[10,"stat","vit",1],
 			[100,"stat","armor",10],
 			[1000,"stat","resistance",15],
-			[10000,"stat","for",3],
-			[100000,"stat","frequency",1],
-			[1000000,"stat","speed",1],
+			[5000,"stat","for",3],
+			[20000,"stat","frequency",1],
+			[50000,"stat","speed",1],
 		]
 	},
 	"jr":{
@@ -824,9 +824,9 @@ monsters={
 			[10,"stat","vit",1],
 			[100,"stat","resistance",10],
 			[1000,"stat","armor",8],
-			[10000,"stat","attack",20],
-			[100000,"stat","luck",1],
-			[1000000,"stat","speed",1],
+			[5000,"stat","attack",20],
+			[20000,"stat","luck",1],
+			[50000,"stat","speed",1],
 		]
 	},
 
@@ -867,15 +867,15 @@ monsters={
 		},
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",30],
-			[1000,"stat","vit",1],
-			[10000,"stat","for",3],
-			[100000,"stat","resistance",10],
-			[1000000,"stat","attack",25],
-			[10000000,"stat","speed",2],
+			[10,"stat","hp",30],
+			[100,"stat","vit",1],
+			[1000,"stat","for",3],
+			[10000,"stat","resistance",10],
+			[100000,"stat","attack",25],
+			[1000000,"stat","speed",2],
 		]
 	},
-	"sparkbot":{
+  "sparkbot":{
 		"name":"Spark Bot","speed":20,"charge":75,"hp":325000,"xp":400000,"attack":754,"damage_type":"magical","respawn":6,"gold":1,"range":185,"frequency":1.56,"aggro":0.1,"reflection":8,"armor":140,"resistance":160,
 		"achievements":[
 			[1,"stat","hp",10],
@@ -1014,7 +1014,7 @@ monsters={
 			[5000,"stat","gold",5],
 		]
 	},
-	"goldenbot":{
+  "goldenbot":{
 		"name":"Golden Bot","speed":24,"hp":500000,"xp":420000,"attack":500,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":1,"aggro":0.2,"aa":1,
 		"difficulty":100,
 		"phresistance":75,
@@ -1315,12 +1315,12 @@ monsters={
 		"name":"Mech-a Gnome","speed":1,"charge":120,"hp":164000,"xp":80000,"attack":48,"damage_type":"physical","respawn":480,"gold":6000,"range":30,"frequency":4,"aggro":0,"rage":0,"resistance":600,"armor":600,"abilities":{"portal":{"cooldown":0}},
 		"achievements":[
 			[1,"stat","hp",10],
-			[100,"stat","hp",20],
-			[1000,"stat","vit",1],
-			[10000,"stat","dex",1],
-			[100000,"stat","attack",5],
-			[1000000,"stat","vit",5],
-			[10000000,"stat","lifesteal",1.25],
+			[10,"stat","hp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","dex",1],
+			[10000,"stat","attack",5],
+			[100000,"stat","vit",5],
+			[1000000,"stat","lifesteal",1.25],
 		]
 	},
 

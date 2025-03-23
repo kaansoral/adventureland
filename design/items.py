@@ -198,7 +198,7 @@ armor={
 		"set":"fury",
 		"tier":1.5,
 		"type":"helmet",
-		"class":["rogue","warrior"],
+		"class":["rogue","warrior","ranger","paladin"],
 		"skin":"fury",
 		"scroll":True,
 		#"evasion":1,
@@ -2049,7 +2049,7 @@ accessories={
 		"skin":"mearring",
 		"luck":8,
 		"compound":{
-			"luck":1,
+			"luck":4,
 		},
 		"name":"Mistletoe Earring",
 		"g":12000000,
@@ -2244,7 +2244,7 @@ accessories={
 		"skin":"stramulet",
 		"str":4,
 		"compound":{
-			"str":2,
+			"str":3,
 		},
 		"name":"Amulet of Strength",
 		"g":30000,
@@ -2262,7 +2262,7 @@ accessories={
 	"t2stramulet":{
 		"type":"amulet",
 		"skin":"t2stramulet",
-		"str":5,
+		"str":6,
 		"resistance":30,
 		"compound":{
 			"str":3,
@@ -2276,10 +2276,10 @@ accessories={
 	"t2intamulet":{
 		"type":"amulet",
 		"skin":"t2intamulet",
-		"int":5,
+		"int":6,
 		"armor":30,
 		"compound":{
-			"int":2,
+			"int":3,
 			"armor":20,
 		},
 		"name":"Amulet of the Fierce Mage",

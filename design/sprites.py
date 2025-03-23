@@ -372,7 +372,7 @@ sprites={
 		"columns":4,
 		"matrix":[
 			[None,"nexus",None,None],
-			[None,None,None,None],
+			[None,None,"bsoldier",None],
 		]
 	},
 	"military3":{

@@ -464,7 +464,7 @@ maps={
 		#"key":"jayson_ALMap2_v2.Xmas",
 		#"key":"jayson_ALMap2_v2.CNewYear",
 		#"key":"jayson_ALMap2_v2_xmas", #xmas
-		#"key":"jayson_ALMap2_v2.lunarNewYear",
+		"key":"jayson_ALMap2_v2.lunarNewYear",
 		"name":"Mainland",
 		"npcs":[
 			#{"id":"newupgrade","position":[-203,-174]},
@@ -1143,6 +1143,7 @@ maps={
 		"npcs":[
 			{"id":"transporter","position":[-14,-477]},
 			{"id":"locksmith","position":[316,-270]},
+			{"id":"scrollsmith","position":[606,-1590]},
 		],
 		"monsters":[
 			{"type":"plantoid","boundary":[-1013,-472,-575,-130],"count":4,"grow":True}, #added grow 31/1/2024
