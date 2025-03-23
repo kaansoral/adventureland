@@ -1630,7 +1630,7 @@ maps={
 			[0,-691], # New Future Instance?
 		],
 		"doors":[
-			[0,77,56,64,"gateway",0,2], #door to Gateway
+			[0,77,56,64,"gateway",2,0], #door to Gateway
 			# [720,-237,55,62,"TBD",1,1], #door to (To Be Determined)
 			# [0,-702,40,61,"TBD",1,1], #door to New Instance?
 		],
