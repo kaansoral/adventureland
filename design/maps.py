@@ -1570,7 +1570,7 @@ maps={
 			[0,0], # Main entrance
 			[-320,-102], #Underground Cliffs entrance bottom left
 			[320,-240], #Underground Hills entrance top right
-			# [-320,-202], #Spider Den entrance
+			[-320,-202], #Spider Den entrance
 			# [0,-847], #Top entrance (unused)
 		],
 		"doors":[
@@ -1630,7 +1630,7 @@ maps={
 			[0,-691], # New Future Instance?
 		],
 		"doors":[
-			[0,77,56,64,"gateway",0,0], #door to Gateway
+			[0,77,56,64,"gateway",0,2], #door to Gateway
 			# [720,-237,55,62,"TBD",1,1], #door to (To Be Determined)
 			# [0,-702,40,61,"TBD",1,1], #door to New Instance?
 		],
