@@ -114,7 +114,7 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=813
+game_version=814
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Github PR: Content patch 1 #166",

@@ -596,7 +596,7 @@ maps={
 			[312,-335,32,32,"mtunnel",0,16],
 			[967,-584,32,32,"mtunnel",1,17],
 			[1472,-434,32,32,"mtunnel",2,18],
-			[888,-675,24,32,"gateway",0,19],
+			[888,-670,24,32,"gateway",0,19],
 		],
 		"traps":[
 			{"type":"spikes","position":[-472,286]},
@@ -622,7 +622,7 @@ maps={
 			[294,-347,1], #16-mtunnel
 			[968,-577], #17-mtunnel
 			[1471,-424], #18-mtunnel
-			[888,-667], #19-gateway
+			[888,-660], #19-gateway
 		],
 		"quirks":[
 			[-236,-189,24,24,"upgrade"],
@@ -1238,7 +1238,7 @@ maps={
 			[784,-1085,80,40,"spookytown",1,2],
 			[-1071,-1496,40,40,"level1",2,3],
 			[1212,150,200,36,"main",15,4],
-			[-560,-1008,28,32,"mforest",0,0],
+			[-560,-1004,28,32,"mforest",0,0],
 		],
 		"quirks":[
 			[-228,-178,32,40,"log","Locked but there are noises coming from inside"],
@@ -1574,7 +1574,7 @@ maps={
 			# [0,-847], #Top entrance (unused)
 		],
 		"doors":[
-			[0,-47,46,36,"main",19,0], #door to main  
+			[0,47,46,36,"main",19,0], #door to main  
 			[-321,-40,62,60,"ucliffs",1,1], #door to Underground Cliffs
 			[319,-249,62,46,"uhills",0,2], #door to Underground Hills
 			[-321,-213,68,83,"spider_instance",0,3,"key","spiderkey"], #door to spider _instance
