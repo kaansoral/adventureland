@@ -491,6 +491,19 @@ craft={
 		],
 		"cost":24000,
 	},
+    "weaver":{
+		"items":[
+			[1,"bow"],
+			[30,"cocoon"],
+		],
+		"cost":75000,
+	},
+    "cocoon":{
+		"items":[
+			[1000,"spidersilk"],
+		],
+		"cost":2500,
+	},
 	"elixirint1":{"items":[[10,"elixirint0"]],"cost":1000},
 	"elixirdex1":{"items":[[10,"elixirdex0"]],"cost":1000},
 	"elixirvit1":{"items":[[10,"elixirvit0"]],"cost":1000},

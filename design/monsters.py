@@ -875,6 +875,73 @@ monsters={
 			[1000000,"stat","speed",2],
 		]
 	},
+  "sparkbot":{
+		"name":"Spark Bot","speed":20,"charge":75,"hp":325000,"xp":400000,"attack":754,"damage_type":"magical","respawn":6,"gold":1,"range":185,"frequency":1.56,"aggro":0.1,"reflection":8,"armor":140,"resistance":160,
+		"achievements":[
+			[1,"stat","hp",10],
+			[100,"stat","mp",25],
+			[1000,"stat","rpiercing",5],
+			[10000,"stat","int",1],
+			[100000,"stat","resistance",15],
+			[1000000,"stat","attack",10],
+			[10000000,"stat","reflection",1],
+		]
+	},
+	"targetron":{
+		"name":"Targetron","speed":20,"charge":60,"hp":325000,"xp":400000,"attack":377,"damage_type":"physical","respawn":6,"gold":15,"range":200,"frequency":3.12,"aggro":0.1,"dreturn":2,"armor":160,"resistance":140,"explosion":15,
+		"achievements":[
+			[1,"stat","mp",10],
+			[100,"stat","hp",25],
+			[1000,"stat","dex",1],
+			[10000,"stat","range",0.5],
+			[100000,"stat","armor",15],
+			[1000000,"stat","attack",10],
+			[10000000,"stat","evasion",1.25],
+		]
+	},
+	"dryad":{
+		"name":"Dryad","speed":24,"charge":48,"hp":80000,"xp":60000,"attack":400,"damage_type":"magical","respawn":2,"gold":1,"range":160,"frequency":1,"aggro":0.1,"armor":65,"resistance":100,
+		"abilities":{
+			"mtangle":{"cooldown":5000}
+		},
+		"achievements":[
+			[1,"stat","mp",20],
+			[100,"stat","vit",1],
+			[1000,"stat","int",1],
+			[10000,"stat","pnresistance",1],
+			[100000,"stat","evasion",15],
+			[1000000,"stat","reflection",1],
+			[10000000,"stat","frequency",1],
+		]
+	},
+	"odino":{
+		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":1.2,"aggro":0.2,"armor":135,"resistance":65,"apiercing":100,
+		"crit":12,
+		"achievements":[
+			[1,"stat","hp",10],
+			[100,"stat","speed",1],
+			[1000,"stat","attack",5],
+			[10000,"stat","pnresistance",5],
+			[100000,"stat","pnresistance",1],
+			[1000000,"stat","apiercing",10],
+			[10000000,"stat","crit",0.5],
+		]
+	},
+	"spiderr":{
+		"name":"Red Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":15,"attack":10000,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":0.4,"aggro":1,"rage":1,
+		"armor":65,"resistance":80,
+		"spawns":[[8000,"spider"]],
+	},
+	"spiderbl":{
+		"name":"Black Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":12,"attack":1200,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":1.1,"aggro":1,"rage":1,
+		"armor":110,"resistance":135,
+		"spawns":[[6000,"spider"]],
+	},
+	"spiderbr":{
+		"name":"Brown Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":10,"attack":840,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":2,"aggro":1,"rage":1,
+		"armor":90,"resistance":115,
+		"spawns":[[5000,"spider"]],
+	},
 	"welemental":{"name":"Water Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
 	"felemental":{"name":"Fire Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
 	"nelemental":{"name":"Nature Elemental","speed":20,"hp":80000,"xp":10,"attack":1800,"damage_type":"physical","respawn":1,"gold":1,"range":80,"frequency":1.2,"aggro":0.2,"evasion":80},
@@ -938,6 +1005,20 @@ monsters={
 		"difficulty":100,
 		"phresistance":70,
 		"explanation":"Spawns in Cave of Darkness around every 80,000 Bat spawns",
+		"achievements":[
+			[1,"stat","gold",1],
+			[10,"stat","luck",1],
+			[100,"stat","gold",1],
+			[1000,"stat","range",1],
+			[2000,"stat","frequency",1],
+			[5000,"stat","gold",5],
+		]
+	},
+  "goldenbot":{
+		"name":"Golden Bot","speed":24,"hp":500000,"xp":420000,"attack":500,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":1,"aggro":0.2,"aa":1,
+		"difficulty":100,
+		"phresistance":75,
+		"explanation":"Spawns in Underground Hills around every 100,000 Sparkbot or Targetron spawns",
 		"achievements":[
 			[1,"stat","gold",1],
 			[10,"stat","luck",1],
