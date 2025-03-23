@@ -373,13 +373,13 @@ function init_game() {
 					create_instance("mtunnel");
 					create_instance("ship0");
 					create_instance("goobrawl");
-					create_instance("d_e");
-					create_instance("d_g");
-					create_instance("d_b1");
-					create_instance("d_a1");
-					create_instance("d_a2");
+					create_instance("gateway");
+					create_instance("ucliffs");
+					create_instance("uhills");
+					create_instance("mforest");
 					server_bfs("crypt");
 					server_bfs("winter_instance");
+					server_bfs("spider_instance");
 					server_bfs("tomb");
 					server_bfs("dungeon0");
 					server_bfs("cgallery");

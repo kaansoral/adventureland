@@ -302,6 +302,7 @@ function calculate_xvalue(arr, rec, divide, mult) {
 		} else if (drop[1] == "gold") {
 			value += drop[2] * min(1, (drop[0] * mult) / total);
 		} else {
+			//console.log(drop[1]);
 			var def = G.items[drop[1]];
 			var q = drop[2] || 1;
 			var g = def.g;
@@ -2231,7 +2232,7 @@ function event_loop() {
 						if (
 							(player.level < 50 && Math.random() > 0.08) ||
 							(G.maps[player.map] &&
-							 (G.maps[player.map].safe || G.maps[player.map].instance || G.maps[player.map].irregular))
+								(G.maps[player.map].safe || G.maps[player.map].instance || G.maps[player.map].irregular))
 						) {
 							player = null;
 						}

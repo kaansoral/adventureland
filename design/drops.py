@@ -537,19 +537,19 @@ drops={
 			[1.0/50000,"tombkey"],
 		],
 		"ggreenpro":[
-			[1.0/25,"spikedhelm"],
+			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gredpro":[ 
-			[1.0/25,"spikedhelm"],
+			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gbluepro":[
-			[1.0/25,"spikedhelm"],
+			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gpurplepro":[ 
-			[1.0/25,"spikedhelm"],
+			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"spiderr":[ 

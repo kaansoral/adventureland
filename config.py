@@ -117,7 +117,9 @@ if is_production:
 game_version=813
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
+	"Github PR: Content patch 1 #166",
 	"Github PR: Item Changes #165",
+	"Github PR: Adjust achievements #150",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",

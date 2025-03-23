@@ -1150,7 +1150,7 @@ imagesets={
 		"size":20,
 		"rows":9,
 		"columns":7,
-		"file":"/images/tiles/items/community.png",
+		"file":"/images/tiles/items/community.png?v=1",
 		"load":True,
 	},
 }
