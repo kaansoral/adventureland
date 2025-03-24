@@ -270,7 +270,7 @@ drops={
 		"pinkgoblin":[
 			[1.0/24000,"bkey"],
 		],
-		"spider":[[0.001,"spidersilk"],[1.0/500000,"offeringp"],[1.0/25000,"spiderkey"]],
+		"spider":[[0.001,"spidersilk"],[1.0/5000,"offeringp"],[1.0/10000,"spiderkey"]],
 		"tinyp":[[1.0/1,"offeringp"]],
 		"gscorpion":[[0.002,"quiver"]],
 		"xscorpion":[[0.0024,"quiver"],[0.00024,"vitscroll"],[2.0/1000000,"glitch"],[8.0/100000,"svenom"]],
@@ -533,8 +533,8 @@ drops={
 		],
 		"odino":[ 
 			[1.0/400,"mbones"],
-			[1.0/8000,"sshield"],
-			[1.0/15000,"tombkey"],
+			[1.0/6000,"sshield"],
+			[1.0/10000,"tombkey"],
 		],
 		"ggreenpro":[
 			[1.0/25,"spikedhelmet"],
