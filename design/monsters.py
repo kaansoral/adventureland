@@ -915,8 +915,8 @@ monsters={
 		]
 	},
 	"odino":{
-		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":1.2,"aggro":0.2,"armor":135,"resistance":65,"apiercing":100,
-		"crit":12,
+		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":0.9,"aggro":0.2,"armor":135,"resistance":65,"apiercing":25,
+		"crit":5,
 		"achievements":[
 			[1,"stat","hp",10],
 			[100,"stat","speed",1],
