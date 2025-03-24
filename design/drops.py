@@ -346,6 +346,7 @@ drops={
 		],
 		"franky":[
 			[30,"cryptkey"],
+			[30,"tombkey"],
 			[20,"candy0"],
 			[20,"candy0"],
 			[20,"candy0"],
