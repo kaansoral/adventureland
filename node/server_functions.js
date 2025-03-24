@@ -1807,7 +1807,7 @@ function spawn_special_monster(type) {
 		new_monster(pack.i, pack);
 		// broadcast("game_event",{name:"goldenbat",map:pack.i});
 	}
-    if (type == "goldenbot") {
+	if (type == "goldenbot") {
 		var packs = [];
 		["uhills"].forEach(function (m) {
 			G.maps[m].monsters.forEach(function (p) {
@@ -2088,7 +2088,7 @@ function event_loop() {
 			spawn_special_monster("goldenbat");
 		}
 
-		if (events.goldenbot && (stats.kills.targetron + stats.kills.sparkbot) > edges.next_goldenbot) {
+		if (events.goldenbot && stats.kills.targetron + stats.kills.sparkbot > edges.next_goldenbot) {
 			edges.next_goldenbot += parseInt(events.goldenbot * Math.random());
 			spawn_special_monster("goldenbot");
 		}
