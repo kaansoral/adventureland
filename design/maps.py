@@ -1238,7 +1238,7 @@ maps={
 			[784,-1085,80,40,"spookytown",1,2],
 			[-1071,-1496,40,40,"level1",2,3],
 			[1212,150,200,36,"main",15,4],
-			[-560,-1004,28,32,"mforest",0,0],
+			[-560,-1004,28,32,"mforest",0,5],
 		],
 		"quirks":[
 			[-228,-178,32,40,"log","Locked but there are noises coming from inside"],

@@ -915,8 +915,8 @@ monsters={
 		]
 	},
 	"odino":{
-		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":1.2,"aggro":0.2,"armor":135,"resistance":65,"apiercing":100,
-		"crit":12,
+		"name":"Dino","speed":28,"charge":52,"hp":165000,"xp":140000,"attack":550,"damage_type":"physical","respawn":3,"gold":1,"range":50,"frequency":0.9,"aggro":0.2,"armor":135,"resistance":65,"apiercing":25,
+		"crit":5,
 		"achievements":[
 			[1,"stat","hp",10],
 			[100,"stat","speed",1],
@@ -1131,32 +1131,37 @@ monsters={
 			[1000000,"stat","range",1],
 		]
 	},
+	#The Tomb
 	"gredpro":{
-		"name":"Protector of Fire","speed":48,"charge":84,"hp":2400000,"xp":3200000,"attack":120,"damage_type":"magical","hit":"explode_c","respawn":10*60,"gold":10000,"range":948,"frequency":1.2,"aggro":1,"rage":0,
+		"name":"Protector of Fire","speed":24,"charge":84,"hp":2800000,"xp":720000,"attack":1120,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.46,"aggro":1,"rage":0,
 		"slots":{"mainhand":{"name":"firestaff","level":12}},
 		"abilities":{"burn":{"unlimited":True,"attr0":100}},
 	},
 	"ggreenpro":{
-		"name":"Protector of Nature","speed":48,"charge":64,"hp":1600000,"xp":9600000,"attack":1120,"damage_type":"physical","hit":"explode_c","respawn":60*60,"gold":10000,"range":948,"frequency":3,"aggro":1,"rage":0,
+		"name":"Protector of Nature","speed":24,"charge":84,"hp":3200000,"xp":10800000,"attack":1220,"damage_type":"physical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.66,"aggro":1,"rage":0,
 		"slots":{"mainhand":{"name":"woodensword","level":12}},
 		"abilities":{
 			"tangle":{"cooldown":1600},
-			"self_healing":{"heal":48000,"cooldown":2000},
+			"self_healing":{"heal":2400,"cooldown":2000},
 		},
 	},
 	"gbluepro":{
-		"name":"Protector of Frost","speed":48,"charge":84,"hp":3200000,"xp":7200000,"attack":9600,"damage_type":"magical","hit":"explode_c","respawn":5*60,"gold":10000,"range":948,"frequency":1.2,"aggro":1,"rage":0,
-		"cooperative":True,
+		"name":"Protector of Frost","speed":24,"charge":84,"hp":2400000,"xp":3600000,"attack":820,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.26,"aggro":1,"rage":0,
+		#"cooperative":True,
 		"slots":{"mainhand":{"name":"froststaff","level":12}},
 		"abilities":{"multi_freeze":{"cooldown":4000,"damage":800}},
-		"article":"event-mae",
+		#"article":"event-mae",
 	},
 	"gpurplepro":{
-		"name":"Protector of Darkness","speed":48,"charge":84,"hp":4300000,"xp":8200000,"attack":4893,"damage_type":"magical","hit":"explode_c","respawn":7*60,"gold":10000,"range":948,"frequency":2,"aggro":1,"rage":0,
-		"cooperative":True,
+		"name":"Protector of Darkness","speed":48,"charge":84,"hp":3600000,"xp":14400000,"difficulty":25,"attack":5320,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.56,"aggro":1,"rage":0,
+		#"cooperative":True,
 		"slots":{"mainhand":{"name":"oozingterror","level":12}},
-		"abilities":{"putrid":{"curse":True,"poison":True}},
-		"article":"event-mae",
+		#"abilities":{"putrid":{"curse":True,"poison":True}},
+		"abilities":{
+			"anger":{"cooldown":12000,"radius":300},
+			"warpstomp":{"cooldown":8000,"radius":100,"stun":1000},
+		},
+		#"article":"event-mae",
 	},
 	#crypt
 	"a1":{
