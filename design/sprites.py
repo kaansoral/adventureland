@@ -975,8 +975,8 @@ sprites={
 		"rows":2,
 		"columns":4,
 		"matrix":[
+			[None,None,None,None],
 			["gdino","odino","bdino","wdino"],
-			[None,None,None,None]
 		]
 	},
 	"spiderqueens":{
