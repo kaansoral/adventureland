@@ -909,7 +909,7 @@ monsters={
 			[100,"stat","vit",1],
 			[1000,"stat","int",1],
 			[10000,"stat","pnresistance",1],
-			[100000,"stat","evasion",15],
+			[100000,"stat","xp",1],
 			[1000000,"stat","reflection",1],
 			[10000000,"stat","frequency",1],
 		]
@@ -921,7 +921,7 @@ monsters={
 			[1,"stat","hp",10],
 			[100,"stat","speed",1],
 			[1000,"stat","attack",5],
-			[10000,"stat","pnresistance",5],
+			[10000,"stat","phresistance",1],
 			[100000,"stat","pnresistance",1],
 			[1000000,"stat","apiercing",10],
 			[10000000,"stat","crit",0.5],
