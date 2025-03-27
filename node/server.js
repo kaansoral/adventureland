@@ -4934,8 +4934,14 @@ function init_io() {
 					!can_reach &&
 					door[4] == data.to &&
 					s == (door[5] || 0) &&
-					simple_distance(
-						{ map: player.map, x: G.maps[player.map].spawns[door[6]][0], y: G.maps[player.map].spawns[door[6]][1] },
+					distance(
+						{
+							map: player.map,
+							x: G.maps[player.map].spawns[door[6]][0],
+							y: G.maps[player.map].spawns[door[6]][1],
+							width: door[2],
+							height: door[3],
+						},
 						player,
 					) < B.door_dist
 				) {
@@ -5044,7 +5050,7 @@ function init_io() {
 				} else {
 					return fail_response("cant_enter");
 				}
-			} else if (data.place == "crypt" || data.place == "winter_instance") {
+			} else if (data.place == "crypt" || data.place == "winter_instance" || data.place == "spider_instance") {
 				var f = "cave";
 				var ref = G.maps.cave.spawns[2];
 				var item = "cryptkey";
@@ -5052,6 +5058,11 @@ function init_io() {
 					f = "winterland";
 					ref = G.maps.winterland.spawns[5];
 					item = "frozenkey";
+				}
+				if (data.place == "spider_instance") {
+					f = "gateway";
+					ref = G.maps.gateway.spawns[3];
+					item = "spiderkey";
 				}
 				if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
 					return fail_response("transport_cant_reach");
