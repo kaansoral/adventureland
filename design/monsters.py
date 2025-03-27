@@ -928,17 +928,17 @@ monsters={
 		]
 	},
 	"spiderr":{
-		"name":"Red Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":15,"attack":10000,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":0.4,"aggro":1,"rage":1,
+		"name":"Red Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":15,"attack":10000,"damage_type":"physical","stationary":True,"respawn":-1,"gold":1,"range":640,"frequency":0.4,"aggro":1,"rage":1,
 		"armor":65,"resistance":80,
 		"spawns":[[8000,"spider"]],
 	},
 	"spiderbl":{
-		"name":"Black Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":12,"attack":1200,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":1.1,"aggro":1,"rage":1,
+		"name":"Black Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":12,"attack":1200,"damage_type":"physical","stationary":True,"respawn":-1,"gold":1,"range":640,"frequency":1.1,"aggro":1,"rage":1,
 		"armor":110,"resistance":135,
 		"spawns":[[6000,"spider"]],
 	},
 	"spiderbr":{
-		"name":"Brown Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":10,"attack":840,"damage_type":"physical","respawn":-1,"gold":1,"range":640,"frequency":2,"aggro":1,"rage":1,
+		"name":"Brown Spider Queen","speed":0,"charge":0,"hp":4500000,"xp":9000000,"difficulty":10,"attack":840,"damage_type":"physical","stationary":True,"respawn":-1,"gold":1,"range":640,"frequency":2,"aggro":1,"rage":1,
 		"armor":90,"resistance":115,
 		"spawns":[[5000,"spider"]],
 	},
