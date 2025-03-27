@@ -5050,7 +5050,12 @@ function init_io() {
 				} else {
 					return fail_response("cant_enter");
 				}
-			} else if (data.place == "crypt" || data.place == "winter_instance" || data.place == "spider_instance") {
+			} else if (
+				data.place == "crypt" ||
+				data.place == "winter_instance" ||
+				data.place == "spider_instance" ||
+				data.place == "tomb"
+			) {
 				var f = "cave";
 				var ref = G.maps.cave.spawns[2];
 				var item = "cryptkey";
@@ -5063,6 +5068,11 @@ function init_io() {
 					f = "gateway";
 					ref = G.maps.gateway.spawns[3];
 					item = "spiderkey";
+				}
+				if (data.place == "tomb") {
+					f = "mansion";
+					ref = G.maps.mansion.spawns[1];
+					item = "tombkey";
 				}
 				if (simple_distance(player, { in: f, map: f, x: ref[0], y: ref[1] }) > 120) {
 					return fail_response("transport_cant_reach");
