@@ -1418,20 +1418,24 @@ function calculate_player_stats(player) {
 		(player.level > 20 && 0.04) ||
 		0.05;
 
-	var excess = max(
+	player.fear = Math.max(
 		0,
-		max(player.targets_p - player.courage, max(player.targets_m - player.mcourage, player.targets_u - player.pcourage)),
+		player.targets_p - player.courage,
+		player.targets_m - player.mcourage,
+		player.targets_u - player.pcourage,
 	);
-	var sredux = [0, 20, 40, 70, 80, 90, 100];
-	player.speed -= sredux[min(sredux.length - 1, excess)];
-	if (excess > 2) {
-		player.attack = round(player.attack * 0.2);
-	} else if (excess > 1) {
-		player.attack = round(player.attack * 0.4);
-	} else if (excess) {
-		player.attack = round(player.attack * 0.6);
+	const sredux = [0, 20, 40, 70, 80, 90, 100];
+	player.speed -= sredux[Math.min(sredux.length - 1, player.fear)];
+	if (player.fear > 2) {
+		player.attack = Math.round(player.attack * 0.2);
+		player.heal = Math.round(player.heal * 0.2);
+	} else if (player.fear > 1) {
+		player.attack = Math.round(player.attack * 0.4);
+		player.heal = Math.round(player.heal * 0.4);
+	} else if (player.fear) {
+		player.attack = Math.round(player.attack * 0.6);
+		player.heal = Math.round(player.heal * 0.6);
 	}
-	player.fear = excess;
 
 	if (player.map == "winterland") {
 		player.speed *= 0.95;
