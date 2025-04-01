@@ -276,6 +276,11 @@ function sprocess_game_data() {
 		D.drops.maps.global.push([0.0005, "candycane"]);
 		D.drops.maps.global.push([0.0001, "open", "xN"]);
 	}
+
+	if (events.egghunt) {
+		D.drops.maps.global.push([0.000005, "goldenegg"]);
+		D.drops.maps.global.push([0.009, "open", "eastereggs"]);
+	}
 }
 
 function calculate_xvalue(arr, rec, divide, mult) {

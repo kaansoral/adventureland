@@ -954,7 +954,7 @@ sprites={
 		]
 	},
 	"robots1":{
-		"file":"/images/tiles/monsters/robots_walkin_B_1.png",
+		"file":"/images/tiles/monsters/robots_walkin_B_1.png?v=2",
 		"rows":2,
 		"columns":4,
 		"matrix":[
@@ -980,14 +980,12 @@ sprites={
 		]
 	},
 	"spiderqueens":{
-		"file":"/images/tiles/monsters/giantspider_shadow_1.png",
-		"rows":4,
-		"columns":1,
+		"file":"/images/tiles/monsters/giantspider.png",
+		"rows":2,
+		"columns":2,
 		"matrix":[
-			["spiderbl"],
-			["spiderbr"],
-			["spiderp"],
-			["spiderr"],
+			["spiderbl","spiderbr"],
+			["spiderp","spiderr"],
 		]
 	},
 	"emblems":{
