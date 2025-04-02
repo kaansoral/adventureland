@@ -166,6 +166,7 @@ var mode = {
 	all_smart: 1,
 	prevent_external: 0, // for "test" / "hardcore"
 	pvp_level_gap: 0, // have to be within 10 level to attack
+	fear_affects_heal: 1, // when feared heal output is lowered
 };
 var events = {
 	// SEASONS
@@ -1428,13 +1429,19 @@ function calculate_player_stats(player) {
 	player.speed -= sredux[Math.min(sredux.length - 1, player.fear)];
 	if (player.fear > 2) {
 		player.attack = Math.round(player.attack * 0.2);
-		player.heal = Math.round(player.heal * 0.2);
+		if (mode.fear_affects_heal) {
+			player.heal = Math.round(player.heal * 0.2);
+		}
 	} else if (player.fear > 1) {
 		player.attack = Math.round(player.attack * 0.4);
-		player.heal = Math.round(player.heal * 0.4);
+		if (mode.fear_affects_heal) {
+			player.heal = Math.round(player.heal * 0.4);
+		}
 	} else if (player.fear) {
 		player.attack = Math.round(player.attack * 0.6);
-		player.heal = Math.round(player.heal * 0.6);
+		if (mode.fear_affects_heal) {
+			player.heal = Math.round(player.heal * 0.6);
+		}
 	}
 
 	if (player.map == "winterland") {
