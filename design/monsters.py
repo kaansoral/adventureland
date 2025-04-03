@@ -1133,12 +1133,12 @@ monsters={
 	},
 	#The Tomb
 	"gredpro":{
-		"name":"Protector of Fire","speed":24,"charge":84,"hp":2800000,"xp":720000,"attack":1120,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.46,"aggro":1,"rage":0,
+		"name":"Protector of Fire","speed":24,"charge":84,"hp":2800000,"xp":720000,"attack":1120,"damage_type":"magical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.46,"aggro":1,"rage":0,
 		"slots":{"mainhand":{"name":"firestaff","level":12}},
 		"abilities":{"burn":{"unlimited":True,"attr0":100}},
 	},
 	"ggreenpro":{
-		"name":"Protector of Nature","speed":24,"charge":84,"hp":3200000,"xp":10800000,"attack":1220,"damage_type":"physical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.66,"aggro":1,"rage":0,
+		"name":"Protector of Nature","speed":24,"charge":84,"hp":3200000,"xp":10800000,"attack":1220,"damage_type":"physical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.66,"aggro":1,"rage":0,
 		"slots":{"mainhand":{"name":"woodensword","level":12}},
 		"abilities":{
 			"tangle":{"cooldown":1600},
@@ -1146,14 +1146,14 @@ monsters={
 		},
 	},
 	"gbluepro":{
-		"name":"Protector of Frost","speed":24,"charge":84,"hp":2400000,"xp":3600000,"attack":820,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.26,"aggro":1,"rage":0,
+		"name":"Protector of Frost","speed":24,"charge":84,"hp":2400000,"xp":3600000,"attack":820,"damage_type":"magical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.26,"aggro":1,"rage":0,
 		#"cooperative":True,
 		"slots":{"mainhand":{"name":"froststaff","level":12}},
 		"abilities":{"multi_freeze":{"cooldown":4000,"damage":800}},
 		#"article":"event-mae",
 	},
 	"gpurplepro":{
-		"name":"Protector of Darkness","speed":48,"charge":84,"hp":3600000,"xp":14400000,"difficulty":25,"attack":5320,"damage_type":"magical","hit":"explode_c","respawn":0,"gold":10000,"range":948,"frequency":1.56,"aggro":1,"rage":0,
+		"name":"Protector of Darkness","speed":48,"charge":84,"hp":3600000,"xp":14400000,"difficulty":25,"attack":5320,"damage_type":"magical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.56,"aggro":1,"rage":0,
 		#"cooperative":True,
 		"slots":{"mainhand":{"name":"oozingterror","level":12}},
 		#"abilities":{"putrid":{"curse":True,"poison":True}},
