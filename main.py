@@ -236,6 +236,7 @@ def serve_datajs():
 	# The browser should cache this
 	request.response.headers['ETag'] = cached_data_hash
 	request.response.headers['Cache-Control'] = "max-age=31536000" # 1 Year
+	request.response.headers['Content-Type'] = "application/javascript; charset=utf-8"
 
 	request.response.set_data("var G=%s;\n%s"%(cached_data,additional))
 	return request.response
