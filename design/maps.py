@@ -1205,7 +1205,7 @@ maps={
 		],
 		"monsters":[
 			{"type":"osnake","boundary":[-654,-384,-525,-287],"count":2},
-			{"type":"osnake","boundary":[-620,-986,-356,-431],"count":4},
+			{"type":"osnake","boundary":[-620,-821,-398,-431],"count":4},
 			#{"type":"snake","boundary":[-620,-986,-356,-431],"count":9,"grow":True},
 			{"type":"snake","boundary":[-720,-820,-418,-203],"count":9,"grow":True},
 			{"type":"greenjr","boundary":[-720,-820,-418,-203],"count":1},
