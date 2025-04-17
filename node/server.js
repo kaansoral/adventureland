@@ -166,7 +166,7 @@ var mode = {
 	all_smart: 1,
 	prevent_external: 0, // for "test" / "hardcore"
 	pvp_level_gap: 0, // have to be within 10 level to attack
-	fear_affects_heal: 1, // when feared heal output is lowered
+	fear_affects_heal: 0, // when feared heal output is lowered
 };
 var events = {
 	// SEASONS
