@@ -2043,35 +2043,31 @@ function html_escape(html)
 /*"*/
 function he(html){return html_escape(html);}
 
-function future_ms(ms)
-{
-	var c=new Date();
-	c.setUTCMilliseconds(c.getUTCMilliseconds()+ms);
-	return c;
+function future_ms(ms) {
+	return new Date(Date.now() + ms);
 }
-function future_s(s)
-{
-	var c=new Date();
-	c.setUTCSeconds(c.getUTCSeconds()+s);
-	return c;
+function future_s(s) {
+	return future_ms(s * 1000);
 }
-function future_m(m)
-{
-	return future_s(60*m);
+function future_m(m) {
+	return future_ms(m * 60000);
 }
-function future_h(h)
-{
-	return future_m(60*h);
+function future_h(h) {
+	return future_ms(h * 3600000);
 }
 
-function mssince(t,ref)
-{
-	if(!ref) ref=new Date();
-	return ref.getTime() - t.getTime();
+function mssince(t, ref = Date.now()) {
+	return ref instanceof Date ? ref.getTime() - t.getTime() : ref - t.getTime();
 }
-function ssince(t,ref) { return mssince(t,ref)/1000.0; }
-function msince(t,ref) { return mssince(t,ref)/60000.0; }
-function hsince(t,ref) { return mssince(t,ref)/3600000.0; }
+function ssince(t, ref) {
+	return mssince(t, ref) / 1000;
+}
+function msince(t, ref) {
+	return mssince(t, ref) / 60000;
+}
+function hsince(t, ref) {
+	return mssince(t, ref) / 3600000;
+}
 
 function sleep(ms)
 {
