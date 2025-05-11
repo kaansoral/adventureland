@@ -181,6 +181,7 @@ var events = {
 	goblin: false,
 	goldenbat: 160000,
 	cutebee: 960000,
+	goldenbot: 200000,
 	hide_and_seek: 0,
 	// DAILIES
 	goobrawl: false,
