@@ -325,7 +325,35 @@ maps={
 	"bank_u":{
 		"key":"jayson_theBank2",
 		"name":"The Bank [Underground]",
-		"npcs":[
+		"npcs": [
+  			{"id":"items24","position":[-361,-518]},
+  			{"id":"items25","position":[-297,-502]},
+  			{"id":"items26","position":[-232,-502]},
+  			{"id":"items27","position":[-169,-518]},
+  			{"id":"items28","position":[-104,-518]},
+  			{"id":"items29","position":[-41,-502]},
+  			{"id":"items30","position":[23,-502]},
+  			{"id":"items31","position":[87,-518]},
+  
+  			{"id":"items32","position":[-265,-262]},
+  			{"id":"items33","position":[-200,-278]},
+  			{"id":"items34","position":[-137,-262]},
+  			{"id":"items35","position":[-72,-278]},
+  			{"id":"items36","position":[-8,-262]},
+  
+  			{"id":"items37","position":[-409,202]},
+  			{"id":"items38","position":[-345,186]},
+  			{"id":"items39","position":[-345,218]},
+  			{"id":"items40","position":[-281,202]},
+  
+  			{"id":"items41","position":[8,202]},
+  			{"id":"items42","position":[71,186]},
+  			{"id":"items43","position":[71,218]},
+  			{"id":"items44","position":[135,202]},
+  
+  			{"id":"items45","position":[-201,666]},
+  			{"id":"items46","position":[-137,650]},
+  			{"id":"items47","position":[-73,666]}
 		],
 		"monsters":[
 		],
