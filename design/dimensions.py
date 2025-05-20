@@ -839,6 +839,11 @@ positions={
 	"orbofdex":["",1,48],
 	"orbofint":["",2,48],
 	"orbofvit":["",3,48],
+	"orboffire":["community",1,1],
+	"orboffrost":["community",2,1],
+	"orbofplague":["community",3,1],
+	"orbofresolve":["",8,49],
+	"orbofelements":["community",5,1],
 
 	#tshirts
 	"tshirt0":["",2,38],
