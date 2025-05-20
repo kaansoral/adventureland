@@ -21,6 +21,8 @@ drops={
 			#[0.0002,"gift0"],
 			#[0.004,"gift1"],
 			#[0.0004,"redenvelope"],
+			#[0.00005,"goldenegg"],
+			#[0.009,"open","eastereggs"], #originally 0.009
 			#[0.0001,"redenvelopev2"],
 			#[0.0001,"redenvelopev3"],
 			#[0.00005,"greenenvelope"],
@@ -536,18 +538,22 @@ drops={
 			[1.0/10000,"tombkey"],
 		],
 		"ggreenpro":[
+			[1.0/1.0,"orbofplague"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gredpro":[ 
+			[1.0/1.0,"orboffire"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gbluepro":[
+			[1.0/1.0,"orboffrost"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gpurplepro":[ 
+			[1.0/1.0,"orbofresolve"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
