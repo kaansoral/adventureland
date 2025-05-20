@@ -21,8 +21,6 @@ drops={
 			#[0.0002,"gift0"],
 			#[0.004,"gift1"],
 			#[0.0004,"redenvelope"],
-			#[0.00005,"goldenegg"],
-			#[0.009,"open","eastereggs"], #originally 0.009
 			#[0.0001,"redenvelopev2"],
 			#[0.0001,"redenvelopev3"],
 			#[0.00005,"greenenvelope"],
