@@ -368,6 +368,16 @@ craft={
 		"cost":0,
 		"quest":"mcollector",
 	},
+	"orbofelements":{
+		"items":[
+			[1,"orboffire"],
+			[1,"orboffrost"],
+			[1,"orbofplague"],
+			[1,"orbofresolve"],
+		],
+		"cost":0,
+		"quest":"mcollector",
+	},
 	"armorring":{
 		"items":[
 			[1,"snakefang"],
