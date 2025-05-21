@@ -368,7 +368,7 @@ craft={
 		"cost":0,
 		"quest":"mcollector",
 	},
-	"orbofelements":{
+	"orba":{
 		"items":[
 			[1,"orboffire"],
 			[1,"orboffrost"],
