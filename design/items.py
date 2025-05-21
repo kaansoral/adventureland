@@ -6282,9 +6282,9 @@ orbs={
 		"g":240000,
 		"grades":[0,0],
 	},
-	"orbofelements":{
+	"orba":{
 		"type":"orb",
-		"skin":"orbofelements",
+		"skin":"orboa",
 		"firesistance":15,
 		"fzresistance":15,
 		"pnresistance":15,
@@ -6295,7 +6295,7 @@ orbs={
 			"pnresistance":5,
 			"phresistance":5,
 		},
-		"name":"Orb of Elements",
+		"name":"Orb of Adventure",
 		"g":1000000,
 		"grades":[0,2],
 	},
