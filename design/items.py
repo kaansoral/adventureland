@@ -6255,7 +6255,7 @@ orbs={
 		"skin":"orboffire",
 		"firesistance":10,
 		"name":"Orb of Fire",
-		"g":240000,
+		"g":60000,
 		"grades":[0,0],
 	},
 	"orboffrost":{
@@ -6263,7 +6263,7 @@ orbs={
 		"skin":"orboffrost",
 		"fzresistance":10,
 		"name":"Orb of Frost",
-		"g":240000,
+		"g":60000,
 		"grades":[0,0],
 	},
 	"orbofplague":{
@@ -6271,7 +6271,7 @@ orbs={
 		"skin":"orbofplague",
 		"pnresistance":10,
 		"name":"Orb of Plague",
-		"g":240000,
+		"g":60000,
 		"grades":[0,0],
 	},
 	"orbofresolve":{
@@ -6279,12 +6279,12 @@ orbs={
 		"skin":"orbofresolve",
 		"phresistance":5,
 		"name":"Orb of Resolve",
-		"g":240000,
+		"g":60000,
 		"grades":[0,0],
 	},
 	"orba":{
 		"type":"orb",
-		"skin":"orboa",
+		"skin":"orba",
 		"firesistance":15,
 		"fzresistance":15,
 		"pnresistance":15,
@@ -6296,7 +6296,7 @@ orbs={
 			"phresistance":5,
 		},
 		"name":"Orb of Adventure",
-		"g":1000000,
+		"g":240000,
 		"grades":[0,2],
 	},
 	"orbofsc":{
