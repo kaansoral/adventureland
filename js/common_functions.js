@@ -643,47 +643,37 @@ function within_xy_range(observer,entity)
 // 	return simple_distance(a,b);
 // }
 
-function distance(_a, _b, in_check) {
+function distance(a, b) {
 	// https://discord.com/channels/238332476743745536/1025784763958693958
-	if (!_a || !_b) return 99999999;
-	if ("in" in _a && "in" in _b && _a.in != _b.in) return 99999999;
-	if ("map" in _a && "map" in _b && _a.map != _b.map) return 99999999;
+	if (!a || !b) return 99999999;
+	if ("in" in a && "in" in b && a.in != b.in) return 99999999;
+	if ("map" in a && "map" in b && a.map != b.map) return 99999999;
 
-	const a_x = get_x(_a)
-	const a_y = get_y(_a)
-	const b_x = get_x(_b)
-	const b_y = get_y(_b)
-  
-	const a_w2 = get_width(_a) / 2
-	const a_h = get_height(_a)
-	const b_w2 = get_width(_b) / 2
-	const b_h = get_height(_b)
+	const a_x = get_x(a);
+	const a_y = get_y(a);
+	const b_x = get_x(b);
+	const b_y = get_y(b);
 
-	// Check if they're just 2 points
-	if(a_w2 == 0 && a_h == 0 && b_w2 == 0 && b_h == 0) return Math.hypot(a_x - b_x, a_y - b_y)
+	const aHalfWidth = get_width(a) / 2;
+	const aHeight = get_height(a);
+	const bHalfWidth = get_width(b) / 2;
+	const bHeight = get_height(b);
 
-	// Check overlap
-	if ((a_x - a_w2) <= (b_x + b_w2)
-		&& (a_x + a_w2) >= (b_x - b_w2)
-		&& (a_y) >= (b_y - b_h) 
-		&& (a_y - a_h) <= (b_y) ) return 0
+	// Compute bounds of each rectangle
+	const aLeft = a_x - aHalfWidth;
+	const aRight = a_x + aHalfWidth;
+	const aTop = a_y - aHeight;
+	const aBottom = a_y;
 
-	// TODO: If one is just a single point, we're computing 8 needless calculations.
-	// Compare the 4 corners to each other
-	let min = 99999999
-	for(const a_c of [{ x: a_x + a_w2, y: a_y - a_h},
-					  { x: a_x + a_w2, y: a_y},
-					  { x: a_x - a_w2, y: a_y - a_h},
-					  { x: a_x - a_w2, y: a_y}]) {
-	  for(const b_c of [{ x: b_x + b_w2, y: b_y - b_h},
-						{ x: b_x + b_w2, y: b_y},
-						{ x: b_x - b_w2, y: b_y - b_h},
-						{ x: b_x - b_w2, y: b_y}]) {
-		const d = Math.hypot(a_c.x - b_c.x, a_c.y - b_c.y)
-		if(d < min) min = d
-	  }
-	}
-	return min
+	const bLeft = b_x - bHalfWidth;
+	const bRight = b_x + bHalfWidth;
+	const bTop = b_y - bHeight;
+	const bBottom = b_y;
+
+	const dx = Math.max(bLeft - aRight, aLeft - bRight, 0);
+	const dy = Math.max(bTop - aBottom, aTop - bBottom, 0);
+
+	return Math.hypot(dx, dy);
 }
 
 function random_away(x,y,R) // https://stackoverflow.com/a/5838055/914546
