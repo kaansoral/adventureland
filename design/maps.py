@@ -697,7 +697,7 @@ maps={
 			{"type":"gredpro","boundary":[-484.75,-400.63,-165.11,-188.4],"count":1},
 			{"type":"ggreenpro","boundary":[-378.79,44.16,-115.78,308.73],"count":1},
 			{"type":"gbluepro","boundary":[198.5,-402.6,490.12,-43.68],"count":1},
-			{"type":"gpurplepro","boundary":[-137.74,-531.49,235.49,-476.06],"count":1},
+			{"type":"gpurplepro","boundary":[-91,-946,182,-716],"count":1},
 		],
 		"doors":[
 			[0,-68.83,33.4,57.5,"mansion",1,0]
