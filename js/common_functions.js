@@ -615,34 +615,6 @@ function within_xy_range(observer,entity)
 	return false;
 }
 
-// function distance(a,b) // refactored in_check / removed it [07/05/22]
-// {
-// 	if(!a || !b) return 99999999;
-// 	if('in' in a && 'in' in b && a['in']!=b['in']) return 99999999;
-// 	if('map' in a && 'map' in b && a['map']!=b['map']) return 99999999;
-// 	if(get_width(a) && get_width(b))
-// 	{
-// 		var min_d=99999999,a_w=get_width(a),a_h=get_height(a),b_w=get_width(b),b_h=get_height(b),dist;
-// 		// a_h*=0.75; b_h*=0.75; // This seems better, thanks to draw_circle REVISIT!!
-// 		var a_x=get_x(a),a_y=get_y(a),b_x=get_x(b),b_y=get_y(b);
-// 		// [{x:a_x-a_w/2,y:a_y},{x:a_x+a_w/2,y:a_y},{x:a_x+a_w/2,y:a_y-a_h},{x:a_x-a_w/2,y:a_y-a_h}].forEach(function(p1){
-// 		// 	[{x:b_x-b_w/2,y:b_y},{x:b_x+b_w/2,y:b_y},{x:b_x+b_w/2,y:b_y-b_h},{x:b_x-b_w/2,y:b_y-b_h}].forEach(function(p2){
-// 		// 		dist=simple_distance(p1,p2);
-// 		// 		if(dist<min_d) min_d=dist;
-// 		// 	})
-// 		// });
-// 		[{x:a_x-a_w/2,y:a_y-a_h/2},{x:a_x+a_w/2,y:a_y-a_h/2},{x:a_x,y:a_y},{x:a_x,y:a_y-a_h}].forEach(function(p1){
-// 			[{x:b_x-b_w/2,y:b_y-b_h/2},{x:b_x+b_w/2,y:b_y-b_h/2},{x:b_x,y:b_y},{x:b_x,y:b_y-b_h}].forEach(function(p2){
-// 				dist=simple_distance(p1,p2);
-// 				if(dist<min_d) min_d=dist;
-// 			})
-// 		});
-// 		// console.log(min_d);
-// 		return min_d;
-// 	}
-// 	return simple_distance(a,b);
-// }
-
 function distance(a, b) {
 	// https://discord.com/channels/238332476743745536/1025784763958693958
 	if (!a || !b) return 99999999;
