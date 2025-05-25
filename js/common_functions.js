@@ -645,7 +645,7 @@ function distance(a, b) {
 	const dx = Math.max(bLeft - aRight, aLeft - bRight, 0);
 	const dy = Math.max(bTop - aBottom, aTop - bBottom, 0);
 
-	return Math.hypot(dx, dy);
+	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function random_away(x,y,R) // https://stackoverflow.com/a/5838055/914546
