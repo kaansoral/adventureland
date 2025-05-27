@@ -1266,6 +1266,7 @@ monsters={
 		"abilities":{
 			"deepfreeze":{"cooldown":6000,"radius":300},
 		},
+		"humanoid":True,
 	},
 	"xmagefi":{
 		"hide":True,
@@ -1279,6 +1280,7 @@ monsters={
 			"anger":{"cooldown":8000,"radius":300},
 			"multi_burn":{"cooldown":4000,"damage":4000},
 		},
+		"humanoid":True,
 	},
 	"xmagen":{
 		"hide":True,
@@ -1294,7 +1296,7 @@ monsters={
 			"self_healing":{"heal":4800,"cooldown":2000},
 			"mtangle":{"cooldown":3200},
 		},
-
+		"humanoid":True,
 	},
 	"xmagex":{
 		"name":"Dark Mage","speed":24,"charge":84,"hp":7200000,"xp":28800000,"difficulty":64,"attack":10640,"damage_type":"magical","respawn":-1,"gold":120000,"range":135,"frequency":1.56,"aggro":1.8,"rage":1.8,
@@ -1313,7 +1315,8 @@ monsters={
 			[100,"stat","frequency",1],
 			[1000,"stat","xp",2],
 			[10000,"stat","gold",2],
-		]
+		],
+		"humanoid":True,
 	},
 	#cyberland
 	"mechagnome":{
