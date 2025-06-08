@@ -536,18 +536,22 @@ drops={
 			[1.0/10000,"tombkey"],
 		],
 		"ggreenpro":[
+			[1.0/1.0,"orbofplague"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gredpro":[ 
+			[1.0/1.0,"orboffire"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gbluepro":[
+			[1.0/1.0,"orboffrost"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
 		"gpurplepro":[ 
+			[1.0/1.0,"orbofresolve"],
 			[1.0/25,"spikedhelmet"],
 			[1.0/20000,"tombkey"],
 		],
