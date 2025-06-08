@@ -12018,7 +12018,7 @@ function update_instance(instance) {
 							ty: focus.y,
 						});
 					}
-				} else {
+				} else if (!G.monsters[monster.type].stationary) {
 					monster.ogoing_x = monster.going_x;
 					monster.ogoing_y = monster.going_y;
 					monster.going_x = monster.x + (focus.x - monster.x) / 2;
@@ -12047,7 +12047,8 @@ function update_instance(instance) {
 					distance(monster, player, true) > 12 &&
 					!mode.range_test &&
 					!(mode.all_smart && monster.moving) &&
-					!focus
+					!focus &&
+					!G.monsters[monster.type].stationary
 				) {
 					// console.log(monster.height);
 					if (mode.all_smart) {

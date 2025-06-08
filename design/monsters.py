@@ -1339,13 +1339,13 @@ monsters={
 		},
 
 	#targets
-	"target":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":2,"humanoid":True,"phresistance":50,},
-	"target_a500":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"armor":500,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":0,"humanoid":True,"immune":True},
-	"target_a750":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"armor":750,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":0,"humanoid":True,},
-	"target_r500":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"resistance":500,"evasion":50,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":0,"humanoid":True,},
-	"target_r750":{"name":"Target Automatron","speed":36,"hp":50000,"xp":1000,"resistance":750,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":0,"abilities":{"portal":{"cooldown":0}},"humanoid":True,},
+	"target":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"unlist":True,"orientation":2,"humanoid":True,"phresistance":50,},
+	"target_a500":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"armor":500,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":False,"unlist":True,"orientation":0,"humanoid":True,"immune":True},
+	"target_a750":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"armor":750,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":False,"unlist":True,"orientation":0,"humanoid":True,},
+	"target_r500":{"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"resistance":500,"evasion":50,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":False,"unlist":True,"orientation":0,"humanoid":True,},
+	"target_r750":{"name":"Target Automatron","speed":36,"hp":50000,"xp":1000,"resistance":750,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":False,"unlist":True,"orientation":0,"abilities":{"portal":{"cooldown":0}},"humanoid":True,},
 	"target_ar900":{
-		"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"resistance":900,"armor":900,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":0,
+		"name":"Target Automatron","speed":12,"hp":50000,"xp":1000,"resistance":900,"armor":900,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":False,"unlist":True,"orientation":0,
 		"achievements":[
 			[100,"stat","for",1],
 		],
@@ -1355,7 +1355,9 @@ monsters={
 		# 	"deepfreeze":{"cooldown":6000,"radius":300},
 		# },
 	},
-	"target_ar500red":{"name":"Target Automatron","speed":12,"hp":500000,"xp":1000,"resistance":500,"armor":500,"reflection":50,"evasion":50,"dreturn":50,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"orientation":1,"abilities":{"self_healing":{"heal":100000,"cooldown":10000}},"humanoid":True,},
+	"target_ar500red":{"name":"Target Automatron","speed":12,"hp":500000,"xp":1000,"resistance":500,"armor":500,"reflection":50,"evasion":50,"dreturn":50,"attack":0,"damage_type":"physical","respawn":0,"gold":20,"range":1,"frequency":0.1,"aggro":0,"stationary":True,"unlist":True,"orientation":1,"abilities":{"self_healing":{"heal":100000,"cooldown":10000}},"humanoid":True,"achievements":[
+			[10000,"stat","for",1],
+		],},
 
 	#POSITIVE
 

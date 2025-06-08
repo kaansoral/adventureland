@@ -117,8 +117,12 @@ if is_production:
 game_version=822
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Last Update [April 24th]",
-	"New zones, items and monsters from the community!",
+	"Last Update [June 8th]",
+	"Monsters with the stationary flag no longer move",
+	"added the npcs's to the bank_u floor #177",
+	"Resist orbs #178",
+	"moved gpurplepro spawn area #180",
+	"make xmage stages humanoid #182",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
