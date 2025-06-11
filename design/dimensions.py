@@ -843,7 +843,7 @@ positions={
 	"orboffrost":["community",2,1],
 	"orbofplague":["community",3,1],
 	"orbofresolve":["",8,49],
-	"orbofelements":["community",5,1],
+	"orba":["community",4,1],
 
 	#tshirts
 	"tshirt0":["",2,38],
