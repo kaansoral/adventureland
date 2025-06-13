@@ -1,5 +1,6 @@
 from config import *
 from functions import *
+from model_validators import clamp64BitInteger
 
 class User(ndb.Expando):
 	name=ndb.StringProperty()
@@ -51,7 +52,7 @@ class Character(ndb.Expando):
 	type=ndb.StringProperty()
 	level=ndb.IntegerProperty(default=1)
 	worth=ndb.IntegerProperty(default=0) #total gold worth
-	xp=ndb.IntegerProperty(default=0)
+	xp=ndb.IntegerProperty(default=0, validator=clamp64BitInteger)
 	owner=ndb.StringProperty()
 	referrer=ndb.StringProperty()
 	created=ndb.DateTimeProperty(auto_now_add=True)
