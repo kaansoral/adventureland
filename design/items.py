@@ -4736,7 +4736,7 @@ scrolls={
 		"name":"High Compound Scroll",
 		"explanation":"Scroll to combine 3 high grade accessories. If the combination fails, the item is lost.",
 		"s":True,
-		"g":240000,
+		"g":256000,
 	},
 	"cscroll2":{
 		"type":"cscroll",
@@ -4745,7 +4745,7 @@ scrolls={
 		"name":"Rare Compound Scroll",
 		"explanation":"Scroll to combine 3 rare accessories. If the combination fails, the item is lost.",
 		"s":True,
-		"g":9200000,
+		"g":10240000,
 	},
 	"cscroll3":{
 		"type":"cscroll",
@@ -4756,7 +4756,7 @@ scrolls={
 		"a":True,
 		"s":True,
 		"markup":20,
-		"g":1840000000,
+		"g":409600000,
 	},
 	"scroll0":{
 		"type":"uscroll",
@@ -4793,7 +4793,7 @@ scrolls={
 		"explanation":"A mysterious upgrade scroll, you can feel that it's very powerful. If the upgrade fails, the item is lost.",
 		"a":True,
 		"s":True,
-		"g":480000000,
+		"g":64000000,
 		"markup":10,
 	},
 	"scroll4":{
