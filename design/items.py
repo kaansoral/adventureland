@@ -4755,7 +4755,7 @@ scrolls={
 		"explanation":"A mysterious compound scroll, you can feel that it's very powerful. If the combination fails, the item is lost.",
 		"a":True,
 		"s":True,
-		"markup":20,
+		#"markup":20,
 		"g":409600000,
 	},
 	"scroll0":{
@@ -4794,7 +4794,7 @@ scrolls={
 		"a":True,
 		"s":True,
 		"g":64000000,
-		"markup":10,
+		#"markup":10,
 	},
 	"scroll4":{
 		"type":"uscroll",
