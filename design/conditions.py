@@ -28,7 +28,7 @@ conditions={
 		"mp_cost":-200,
 		"buff":True,
 		"ui":True,
-		"explanation": "Increases attack speed and reduces mana cost for a short time."
+		"explanation": "Increases attack speed and reduces mana cost."
 	},
 	"weakness":{
 		"skin":"condition_bad",
@@ -49,7 +49,7 @@ conditions={
 		"mp_cost":-300,
 		"buff":True,
 		"ui":True,
-		"explanation": "Greatly increases attack speed and lowers mana cost for a short duration."
+		"explanation": "Greatly increases attack speed and lowers mana cost."
 	},
 	"stack":{
 		"skin":"skill_stack",
