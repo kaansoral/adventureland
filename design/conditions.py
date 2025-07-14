@@ -4,6 +4,7 @@ conditions={
 	"tangled":{
 		"name":"Tangled",
 		"skin":"condition_bad",
+		"explanation":"Sets maximum speed to 24",
 		"ui":False,
 		"debuff":True,
 		"set_speed":24,
@@ -55,10 +56,10 @@ conditions={
 	"woven":{
 		"skin":"spidersilk",
 		"name":"Woven",
-		"explanation":"Slowed down from all the spider silk sticking around.",
+		"explanation":"Reduces speed by 3 per stack. Stacks up to 20 on monsters, capped at 5 for players",
 		"ui":True,
 		"debuff":True,
-		"speed":-10,
+		"speed":-3,
 		"duration":1000,
 	},
 	"energized":{
@@ -97,6 +98,7 @@ conditions={
 		"name":"Mana Shield",
 		"ui":True,
 		"buff":True,
+		"explanation":"Mana absorbs damage before health.",
 	},
 	"phasedout":{
 		"skin":"skill_phaseout",
@@ -115,6 +117,7 @@ conditions={
 		"set_speed":10,
 		"duration":8000,
 		"buff":True,
+		"explanation":"Sets maximum speed to 10",
 	},
 	"reflection":{
 		"skin":"buff_reflection",
@@ -231,6 +234,8 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"persistent":True,
+		"explanation": "Greatly reduces stats",
+
 	},
 	"penalty_cd":{
 		"skin":"condition_bad",
@@ -250,7 +255,7 @@ conditions={
 	"notverified":{
 		"skin":"notverified",
 		"name":"Not Verified",
-		"explanation":"Reduced luck and gold until the associated email address is verified.",
+		"explanation":"Reduced luck and gold until the associated email address is verified",
 		"luck":-25,
 		"gold":-25,
 		"debuff":True,
@@ -273,7 +278,7 @@ conditions={
 	"hopsickness":{
 		"skin":"condition_bad",
 		"name":"Hop Sickness",
-		"explanation":"You are not in your home server! Go see Bean in Mainland square for a change.",
+		"explanation":"You are not in your home server! Go see Bean in Mainland square for a change",
 		"luck":-80,
 		"gold":-80,
 		"xp":-80,
@@ -309,6 +314,7 @@ conditions={
 		"debuff":True,
 		"defense":"phresistance",
 		"duration":3200,
+		"explanation":"Cannot move, attack, heal, or use skills",
 	},
 	"deepfreezed":{
 		"name":"Deepfreezed",
@@ -318,6 +324,7 @@ conditions={
 		"blocked":True,
 		"debuff":True,
 		"defense":"fzresistance",
+		"explanation":"Cannot move, attack, heal, or use skills",
 	},
 	"invincible":{
 		"name":"Invincible",
@@ -332,7 +339,10 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"duration":5000,
+		"frequencym":0.3,
+		"speed":-40,
 		"defense":"fzresistance",
+		"explanation": "Reduces speed by 40 and frequency by 70%",
 	},
 	"burned":{
 		"name":"Burned",
@@ -341,6 +351,7 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"defense":"firesistance",
+		"explanation": "Burns the target for damage equal to its intensity per second",
 	},
 	"shocked":{
 		"name":"Shocked",
@@ -357,6 +368,7 @@ conditions={
 		"evasion":96,
 		"blocked":True,
 		"debuff":True,
+		"explanation": "Stunned for the duration",
 	},
 	"stoned":{
 		"name":"Stoned",
@@ -365,6 +377,7 @@ conditions={
 		"blocked":True,
 		"debuff":True,
 		# "defense":"bmresistance",
+		"explanation":"Cannot move, attack, heal, or use skills",
 	},
 	"easterluck":{
 		"skin":"easterluck",
@@ -479,11 +492,12 @@ conditions={
 		"name":"Poison",
 		"skin":"poison",
 		"duration":5000,
-		"frequencym":0.8,
+		"frequencym":0.9,
 		"potionsm":0.5,
 		"healm":0.25,
 		"debuff":True,
 		"defense":"pnresistance",
+		"explanation": "Reduces attack speed by 10%. Potions heal 50% less. Healing effects are 75% less effective.",
 	},
 	"cursed":{
 		"name":"Cursed",
@@ -494,6 +508,7 @@ conditions={
 		"duration":5000,
 		"debuff":True,
 		# "defense":"bmresistance",
+		"explanation": "Reduces damage output and speed by 20%, but increases damage taken by 20%.",
 	},
 	"dampened":{
 		"name":"Dampened",
@@ -508,6 +523,7 @@ conditions={
 		"ui":True,
 		"buff":True,
 		"duration":5000,
+		"explanation": "Your attacks apply the Poisoned condition to enemies.",
 	},
 	"invis":{
 		"skin":"skill_invis",
@@ -561,7 +577,7 @@ conditions={
 	"blink":{
 		"name":"Blinking",
 		"skin":"condition_positive",
-		"explanation":"Blink in progress",
+		"explanation": "Teleport to any location on the current map.",
 	},
 	"block":{
 		"name":"PVP Block",
@@ -642,6 +658,3 @@ if 0:
 		if not conditions["tarot_%s"%name].get("minor"):
 			conditions["tarot_%s"%name]["card"]=name.title()
 			conditions["tarot_%s"%name]["major"]=name
-
-
-
