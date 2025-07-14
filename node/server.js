@@ -1470,7 +1470,7 @@ function calculate_common_stats(entity) {
 	}
 	if (entity.s.frozen) {
 		entity.frequency *= 0.3;
-		entity.speed -= 40;
+		//entity.speed -= 40;
 	}
 	if (entity.speed < 1) {
 		entity.speed = 1;
