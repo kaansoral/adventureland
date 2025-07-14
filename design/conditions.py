@@ -605,6 +605,7 @@ conditions={
 	"blink":{
 		"name":"Blinking",
 		"skin":"condition_positive",
+		"explanation":"Blink in progress",
 	},
 	"block":{
 		"name":"PVP Block",
