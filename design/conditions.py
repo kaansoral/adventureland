@@ -439,7 +439,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
-		"explanation": "Feel the festive vibes — luck, gold, and XP boosted!",
+		"explanation": "Feel the festive vibes luck, gold, and XP boosted!",
 	},
 	"halloween0":{
 		"skin":"halloween0",
