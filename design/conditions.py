@@ -63,7 +63,7 @@ conditions={
 		"explanation":"Reduces speed by 3 per stack. Stacks up to 20 on monsters, capped at 5 for players.",
 		"ui":True,
 		"debuff":True,
-		"speed":-3,
+		"speed":-10,
 		"duration":1000,
 	},
 	"energized":{
@@ -184,7 +184,7 @@ conditions={
 	"massproduction":{
 		"skin":"skill_massproduction",
 		"name":"Mass Production",
-		"explanation":"Speeds up the next upgrade or compound 50%.",
+		"explanation": "Reduces the time of your next upgrade or compound by 50%."
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -192,7 +192,7 @@ conditions={
 	"massproductionpp":{
 		"skin":"skill_massproductionpp",
 		"name":"Mass Production++",
-		"explanation":"Speeds up the next upgrade or compound 90%.",
+		"explanation": "Reduces the time of your next upgrade or compound by 90%."
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -523,7 +523,7 @@ conditions={
 		"healm":0.25,
 		"debuff":True,
 		"defense":"pnresistance",
-		"explanation": "Reduces attack speed by 10%. Potions heal 50% less. Healing effects are 75% less effective.",
+		"explanation": "Reduces attack speed by 10%. All potions are 50% less effective. Healing effects are 75% less effective.",
 	},
 	"cursed":{
 		"name":"Cursed",
