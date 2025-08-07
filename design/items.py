@@ -6260,6 +6260,7 @@ orbs={
 		"name":"Orb of Fire",
 		"g":60000,
 		"grades":[0,3],
+		"edge":-2,
 	},
 	"orboffrost":{
 		"type":"orb",
@@ -6271,6 +6272,7 @@ orbs={
 		"name":"Orb of Frost",
 		"g":60000,
 		"grades":[0,3],
+		"edge":-2,
 	},
 	"orbofplague":{
 		"type":"orb",
@@ -6282,6 +6284,7 @@ orbs={
 		"name":"Orb of Plague",
 		"g":60000,
 		"grades":[0,3],
+		"edge":-2,
 	},
 	"orbofresolve":{
 		"type":"orb",
@@ -6293,6 +6296,7 @@ orbs={
 		"name":"Orb of Resolve",
 		"g":60000,
 		"grades":[0,3],
+		"edge":-2,
 	},
 	"orba":{
 		"type":"orb",
@@ -6310,6 +6314,7 @@ orbs={
 		"name":"Orb of Adventures",
 		"g":240000,
 		"grades":[0,2],
+		"edge":-2,
 	},
 	"orbofsc":{
 		"set":"holidays",
