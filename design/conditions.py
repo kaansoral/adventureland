@@ -332,6 +332,8 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"duration":5000,
+		"frequencym":0.3,
+		"speed":-40,
 		"defense":"fzresistance",
 	},
 	"burned":{
@@ -478,7 +480,7 @@ conditions={
 		"name":"Poison",
 		"skin":"poison",
 		"duration":5000,
-		"frequencym":0.8,
+		"frequencym":0.9,
 		"potionsm":0.5,
 		"healm":0.25,
 		"debuff":True,
