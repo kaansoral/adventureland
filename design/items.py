@@ -2217,7 +2217,7 @@ accessories={
 		"dex":5,
 		"int":5,
 		"str":5,
-		"attr0":1,
+		"attr0":2,
 		"hp":1200,
 		"aura":"sanguine",
 		"compound":{

@@ -410,7 +410,6 @@ conditions={
 	},
 	"sanguine":{
 		"skin":"sanguine",
-		"lifesteal":1,
 		"name":"Vampiric Aura",
 		"attr0":"lifesteal",
 		"buff":True,
