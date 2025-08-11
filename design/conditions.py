@@ -545,7 +545,7 @@ conditions={
 		"duration":5000,
 		"debuff":True,
 		# "defense":"bmresistance",
-		"explanation": "Reduces damage output and speed by 20%, but increases damage taken by 20%.",
+		"explanation": "Reduces damage output and speed by 20%. Increases damage taken by 20%.",
 	},
 	"dampened":{
 		"name":"Dampened",
