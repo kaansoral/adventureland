@@ -578,6 +578,7 @@ function player_to_server(player, place) {
 				"width",
 				"height",
 				"u",
+				"user",
 			])
 		) {
 			char[prop] = player[prop];
@@ -6998,6 +6999,37 @@ function init_io() {
 			);
 			success_response({ success: false, in_progress: true });
 		});
+		socket.on("bless_server", function (data) {
+			var player = players[socket.id];
+			if (!player || player.user || gameplay == "hardcore" || gameplay == "test") {
+				return fail_response("cant_in_bank");
+			}
+			var cost = 1200;
+			if (player.blessing) return fail_response("in_progress");
+			player.blessing = true;
+			appengine_call(
+				"bill_user",
+				{ auth: player.auth, amount: cost, reason: "blessing", name: player.name },
+				function (result) {
+					player.blessing = false;
+					server_log("buy_with_cash: " + JSON.stringify(result));
+					if (result.failed || !result.done) {
+						socket.emit("game_log", "Purchase failed");
+						return;
+					}
+					player.cash = result.cash;
+
+					S.blessed_minutes = 60 * 24 * 7;
+					S.blessed_by = player.name;
+
+					socket.emit("game_log", "Spent " + to_pretty_num(cost) + " shells");
+
+					resend(player, "reopen+nc+inv");
+					bless_loop();
+				},
+			);
+			success_response({ success: false, in_progress: true });
+		});
 		socket.on("sbuy", function (data) {
 			var player = players[socket.id];
 			var done = false;
@@ -9833,6 +9865,11 @@ function init_io() {
 						cdata.base_gold = D.base_gold;
 						broadcast_e(true);
 						cdata.s_info = E;
+						if (S.blessed_minutes) {
+							cdata.blessed_by = S.blessed_by;
+							cdata.blessed_minutes = S.blessed_minutes;
+							player.s.patronsgrace = { ms: G.conditions.patronsgrace.duration, f: S.blessed_by };
+						}
 						if (result.code) {
 							cdata.code = result.code;
 							cdata.code_slot = result.code_slot;
@@ -12425,7 +12462,7 @@ function update_instance(instance) {
 								response: "compound_success",
 								stale: ref.stale,
 								level: item.level,
-								num: data.num,
+								num: ref.num,
 								up: item.extra || undefined,
 							},
 						]);
@@ -12449,7 +12486,7 @@ function update_instance(instance) {
 						var def = G.items[item.name];
 						player.hitchhikers.push([
 							"game_response",
-							{ response: "compound_fail", level: item.level, num: data.num, stale: ref.stale },
+							{ response: "compound_fail", level: item.level, num: ref.num, stale: ref.stale },
 						]);
 						if (calculate_item_value(item) + (def.edge || 0) * 2000000 > 920000 && !player.stealth) {
 							broadcast("server_message", {
@@ -13041,6 +13078,20 @@ function npc_loop() {
 	}
 	setTimeout(npc_loop, max(28, min(1000, ms_since * 2 + 2))); // originally 24
 }
+
+function bless_loop() {
+	if (S.blessed_minutes) S.blessed_minutes--;
+	if (!S.blessed_minutes) return;
+	for (var id in players) {
+		var player = players[id],
+			rs = false;
+		if (!player.s.patronsgrace) rs = true;
+		player.s.patronsgrace = { ms: G.conditions.patronsgrace.duration, f: S.blessed_by };
+		if (rs) resend(player, "u+cid");
+	}
+}
+
+setInterval(bless_loop, 60 * 1000);
 
 function game_loop() {
 	// back in the day pretty much everything was in here [11/08/22]

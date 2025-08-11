@@ -3191,7 +3191,8 @@ function xy_upush_logic(element) {
 }
 
 function appengine_call(method, args, on_success, on_error) {
-	var api_path = "/api/" + method;
+	var api_path = "/api/" + method,
+		suffix = "";
 	if (
 		mode.prevent_external &&
 		!in_arr(method, ["create_server", "update_server", "stop_server", "start_character", "send_mail"])
@@ -3222,14 +3223,17 @@ function appengine_call(method, args, on_success, on_error) {
 	}
 	if (args.suffix) {
 		api_path += args.suffix;
+		suffix = args.suffix;
 		delete args.suffix;
 	}
-	data = {
+	var arguments = JSON.stringify(args);
+	var data = {
 		method: method,
-		arguments: JSON.stringify(args),
+		arguments: arguments,
 		server_auth: server_id + "-" + server_auth,
 		auth: args.auth,
 	};
+	if (suffix.includes("unmount")) console.log(arguments.length);
 	try {
 		request.post({ url: base_url + api_path, form: data }, function (err, response, body) {
 			try {

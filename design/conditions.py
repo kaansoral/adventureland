@@ -269,6 +269,18 @@ conditions={
 		"ui":True,
 		"persistent":True,
 	},
+	"patronsgrace":{
+		"skin":"patronsgrace",
+		"name":"Patron's Grace",
+		"explanation":"This server has been graced by a patron's support!",
+		"luck":5,
+		"gold":5,
+		"xp":20,
+		"speed":1,
+		"duration":60*60*1000,
+		"buff":True,
+		"ui":True,
+	},
 	"notverified":{
 		"skin":"notverified",
 		"name":"Not Verified",

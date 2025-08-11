@@ -1389,6 +1389,7 @@ def stop_character_api(**args):
 
 def sync_character_api(**args):
 	self,domain,user,server,id,data,user_data,unmount=gdmuld(args,"self","domain","user","server","character","data","user_data","unmount"); retries=3
+	#logging.info(data.keys())
 	if unmount:
 		logging.info("Unmount mode")
 		retries=16

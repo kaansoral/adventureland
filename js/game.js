@@ -1330,6 +1330,10 @@ function init_socket(args)
 			$(".saferespawn").show();
 		}
 		else add_log("Note: Game dynamics and drops aren't final, they are evolving with every update","gray");
+		if(data.blessed_by)
+		{
+			add_log("This server has been blessed by "+data.blessed_by,"#8F70D8");
+		}
 		// add_log("Warning: A Chrome bug is causing memory leaks, very small but it adds up. They patched the bug, however, that patch didn't make it to our browsers yet","#E08583");
 		$(".charactername").html(character.name);
 		page.title=character.name;
