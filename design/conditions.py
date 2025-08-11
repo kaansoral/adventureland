@@ -4,6 +4,7 @@ conditions={
 	"tangled":{
 		"name":"Tangled",
 		"skin":"condition_bad",
+		"explanation":"Sets maximum speed to 24.",
 		"ui":False,
 		"debuff":True,
 		"set_speed":24,
@@ -17,6 +18,7 @@ conditions={
 		"mp_cost":-200,
 		"buff":True,
 		"ui":True,
+		"explanation": "Greatly increases attack speed and reduces mana cost of attacks."
 	},
 	"power":{
 		"skin":"powerglove",
@@ -26,6 +28,7 @@ conditions={
 		"mp_cost":-200,
 		"buff":True,
 		"ui":True,
+		"explanation": "Increases attack speed and reduces mana cost."
 	},
 	"weakness":{
 		"skin":"condition_bad",
@@ -36,6 +39,7 @@ conditions={
 		"dex":-10,
 		"str":-10,
 		"duration":20000,
+		"explanation": "Reduces speed, dexterity, and strength."
 	},
 	"xpower":{
 		"skin":"goldenpowerglove",
@@ -45,17 +49,18 @@ conditions={
 		"mp_cost":-300,
 		"buff":True,
 		"ui":True,
+		"explanation": "Greatly increases attack speed and lowers mana cost."
 	},
 	"stack":{
 		"skin":"skill_stack",
 		"name":"Pure Damage",
-		"explanation":"Bonus damage for each rogue attack",
+		"explanation":"Bonus damage for each rogue attack.",
 		"debuff":True,
 	},
 	"woven":{
 		"skin":"spidersilk",
 		"name":"Woven",
-		"explanation":"Slowed down from all the spider silk sticking around.",
+		"explanation":"Reduces speed by 3 per stack. Stacks up to 20 on monsters, capped at 5 for players.",
 		"ui":True,
 		"debuff":True,
 		"speed":-10,
@@ -69,6 +74,7 @@ conditions={
 		"duration":800,
 		"buff":True,
 		"ui":True,
+		"explanation": "Gives a brief burst of attack speed."
 	},
 	"mcourage":{
 		"skin":"skill_mcourage",
@@ -81,6 +87,7 @@ conditions={
 		"duration":10000,
 		"ui":True,
 		"buff":True,
+		"explanation": "Increases speed, evasion, and all types of courage."
 	},
 	"mfrenzy":{
 		"skin":"skill_mfrenzy",
@@ -91,12 +98,14 @@ conditions={
 		"output":40,
 		"ui":True,
 		"buff":True,
+		"explanation": "Greatly boosts attack speed and output while lowering mana cost."
 	},
 	"mshield":{
 		"skin":"skill_mshield",
 		"name":"Mana Shield",
 		"ui":True,
 		"buff":True,
+		"explanation":"Mana absorbs damage before health.",
 	},
 	"phasedout":{
 		"skin":"skill_phaseout",
@@ -107,6 +116,7 @@ conditions={
 		"duration":5000,
 		"ui":True,
 		"buff":True,
+		"explanation": "Decreases attack and movement speed but greatly increases evasion."
 	},
 	"hardshell":{
 		"skin":"skill_hardshell",
@@ -115,6 +125,7 @@ conditions={
 		"set_speed":10,
 		"duration":8000,
 		"buff":True,
+		"explanation": "Greatly increases armor but limits maximum speed to 10."
 	},
 	"reflection":{
 		"skin":"buff_reflection",
@@ -124,6 +135,7 @@ conditions={
 		"duration":5000,
 		"ui":True,
 		"buff":True,
+		"explanation": "Increases your chance to reflect attacks."
 	},
 	"eburn":{
 		"skin":"essenceoffire",
@@ -135,6 +147,7 @@ conditions={
 		"speed":5,
 		"ui":True,
 		"debuff":True,
+		"explanation": "Burns the target with fire essence, dealing damage over time."
 	},
 	"newcomersblessing":{
 		"skin":"newcomersblessing",
@@ -146,6 +159,7 @@ conditions={
 		"aura":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "Increases luck, gold gain, and experience earned."
 	},
 	"eheal":{
 		"skin":"essenceoflife",
@@ -155,6 +169,7 @@ conditions={
 		"duration":4*1000,
 		"ui":True,
 		"buff":True,
+		"explanation": "Heals the target over time using life essence."
 	},
 	"rspeed":{
 		"skin":"buff_speed",
@@ -164,11 +179,12 @@ conditions={
 		"duration":45*60*1000,
 		"buff":True,
 		"ui":True,
+		"explanation": "Increases movement speed and attack speed."
 	},
 	"massproduction":{
 		"skin":"skill_massproduction",
 		"name":"Mass Production",
-		"explanation":"Speeds up the next upgrade or compound 50%",
+		"explanation": "Reduces the time of your next upgrade or compound by 50%."
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -176,7 +192,7 @@ conditions={
 	"massproductionpp":{
 		"skin":"skill_massproductionpp",
 		"name":"Mass Production++",
-		"explanation":"Speeds up the next upgrade or compound 90%",
+		"explanation": "Reduces the time of your next upgrade or compound by 90%."
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -188,6 +204,7 @@ conditions={
 		"duration":8*1000,
 		"buff":True,
 		"ui":True,
+		"explanation": "Increases damage output."
 	},
 	"warcry":{
 		"skin":"skill_warcry",
@@ -199,6 +216,7 @@ conditions={
 		"duration":8*1000,
 		"buff":True,
 		"ui":True,
+		"explanation": "Boosts attack speed, movement speed, armor, and resistance."
 	},
 	"purifier":{
 		"skin":"skill_purify",
@@ -209,6 +227,7 @@ conditions={
 		"duration":8*1000,
 		"buff":True,
 		"ui":True,
+		"explanation":"Boosts attack speed, damage output, and strength.",
 	},
 	"mluck":{
 		"skin":"buff_luck",
@@ -218,6 +237,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation":"Lucked!",
 	},
 	"withdrawal":{
 		"skin":"withdrawal",
@@ -231,6 +251,8 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"persistent":True,
+		"explanation": "Reduced stats.",
+
 	},
 	"penalty_cd":{
 		"skin":"condition_bad",
@@ -261,7 +283,7 @@ conditions={
 	"authfail":{
 		"skin":"notverified",
 		"name":"Authorization Failure",
-		"explanation":"Your account has failed an internal authorization routine. This might've happened if you haven't logged on from Steam or Mac App Store since this new system was implemented. So just opening the non-web game client once, starting one character, hanging 1-2 minutes on a server and logging out will be enough to correct this mistake. If it persists unexpectedly email hello@adventure.land",
+		"explanation":"Your account has failed an internal authorization routine. This might've happened if you haven't logged on from Steam or Mac App Store since this new system was implemented. So just opening the non-web game client once, starting one character, hanging 1-2 minutes on a server and logging out will be enough to correct this mistake. If it persists unexpectedly email hello@adventure.land.",
 		"luck":-85,
 		"gold":-85,
 		"xp":-20,
@@ -292,6 +314,7 @@ conditions={
 		"armor":10000,
 		"buff":True,
 		"persistent":True,
+		"explanation": "Providing maximum resistance and armor.",
 	},
 	"fullguardx":{
 		"skin":"fullguard",
@@ -300,6 +323,7 @@ conditions={
 		"avoidance":99,
 		"buff":True,
 		"persistent":True,
+		"explanation": "Increasing avoidance to near perfect.",
 	},
 	"stunned":{
 		"name":"Stunned",
@@ -309,6 +333,7 @@ conditions={
 		"debuff":True,
 		"defense":"phresistance",
 		"duration":3200,
+		"explanation":"Cannot move, attack, heal, or use skills.",
 	},
 	"deepfreezed":{
 		"name":"Deepfreezed",
@@ -318,6 +343,7 @@ conditions={
 		"blocked":True,
 		"debuff":True,
 		"defense":"fzresistance",
+		"explanation":"Cannot move, attack, heal, or use skills.",
 	},
 	"invincible":{
 		"name":"Invincible",
@@ -335,6 +361,7 @@ conditions={
 		"frequencym":0.3,
 		"speed":-40,
 		"defense":"fzresistance",
+		"explanation": "Reduces speed by 40 and frequency by 70%.",
 	},
 	"burned":{
 		"name":"Burned",
@@ -343,11 +370,12 @@ conditions={
 		"ui":True,
 		"debuff":True,
 		"defense":"firesistance",
+		"explanation": "Burns the target for damage equal to its intensity per second.",
 	},
 	"shocked":{
 		"name":"Shocked",
 		"skin":"essenceofthunder",
-		"explanation":"Imminent magical damage",
+		"explanation":"Imminent magical damage.",
 		"duration":1600,
 		"ui":True,
 		"debuff":True,
@@ -359,6 +387,7 @@ conditions={
 		"evasion":96,
 		"blocked":True,
 		"debuff":True,
+		"explanation": "Stunned for the duration.",
 	},
 	"stoned":{
 		"name":"Stoned",
@@ -367,6 +396,7 @@ conditions={
 		"blocked":True,
 		"debuff":True,
 		# "defense":"bmresistance",
+		"explanation":"Cannot move, attack, heal, or use skills.",
 	},
 	"easterluck":{
 		"skin":"easterluck",
@@ -376,6 +406,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "Luck is greatly increased.",
 	},
 	"sanguine":{
 		"skin":"sanguine",
@@ -385,6 +416,7 @@ conditions={
 		"ui":True,
 		"aura":True,
 		"duration":30*1000,
+		"explanation": "Bite back with every hit.",
 	},
 	"mlifesteal":{
 		"skin":"lifestealscroll",
@@ -393,6 +425,7 @@ conditions={
 		"duration":60*60*1000,
 		"buff":True,
 		"ui":True,
+		"explanation": "Fresh from vampire slaying.",
 	},
 	"holidayspirit":{
 		"skin":"holidayspirit",
@@ -405,6 +438,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "Feel the festive vibes luck, gold, and XP boosted!",
 	},
 	"halloween0":{
 		"skin":"halloween0",
@@ -416,6 +450,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "A full-on Halloween blast with tons of XP to haunt your day.",
 	},
 	"halloween1":{
 		"skin":"halloween1",
@@ -428,6 +463,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "A nice spooky boost to luck and XP.",
 	},
 	"halloween2":{
 		"skin":"halloween2",
@@ -440,6 +476,7 @@ conditions={
 		"buff":True,
 		"ui":True,
 		"persistent":True,
+		"explanation": "A quick touch of Halloween magic to boost luck and gold.",
 	},
 	# "xmas":{
 	# 	"skin":"xmas",
@@ -485,6 +522,7 @@ conditions={
 		"healm":0.25,
 		"debuff":True,
 		"defense":"pnresistance",
+		"explanation": "Reduces attack speed by 10%. All potions are 50% less effective. Healing effects are 75% less effective.",
 	},
 	"cursed":{
 		"name":"Cursed",
@@ -495,11 +533,12 @@ conditions={
 		"duration":5000,
 		"debuff":True,
 		# "defense":"bmresistance",
+		"explanation": "Reduces damage output and speed by 20%, but increases damage taken by 20%.",
 	},
 	"dampened":{
 		"name":"Dampened",
 		"skin":"dampened",
-		"explanation":"Can't blink or teleport",
+		"explanation":"Can't blink or teleport.",
 		"duration":300,
 		"debuff":True,
 	},
@@ -509,24 +548,25 @@ conditions={
 		"ui":True,
 		"buff":True,
 		"duration":5000,
+		"explanation": "Your attacks apply Poison.",
 	},
 	"invis":{
 		"skin":"skill_invis",
 		"name":"Invisible",
-		"explanation":"Hidden from everyone else until you attack",
+		"explanation":"Hidden from everyone else until you attack.",
 		"buff":True,
 	},
 	"licenced":{
 		"skin":"licence",
 		"name":"Licenced to Kill",
-		"explanation":"A special, temporary immunity",
+		"explanation":"A special, temporary immunity.",
 		"ui":True,
 		"buff":True,
 	},
 	"charmed":{
 		"skin":"charmer",
 		"name":"Charmed",
-		"explanation":"Mellow like a warm kitty",
+		"explanation":"Mellow like a warm kitty.",
 		"ui":True,
 		"duration":30000,
 		"debuff":True,
@@ -537,6 +577,7 @@ conditions={
 		"ui":True,
 		"duration":1800000,
 		"persistent":True,
+		"explanation": "Tracking a target.",
 	},
 	"marked":{
 		"skin":"skill_huntersmark",
@@ -552,6 +593,7 @@ conditions={
 		"skin":"condition_positive",
 		"speed":30,
 		"duration":3200,
+		"explanation": "A short burst of speed."
 	},
 	"dash":{
 		"name":"Dashing",
@@ -574,7 +616,7 @@ conditions={
 	"town":{
 		"name":"Town",
 		"skin":"condition_positive",
-		"explanation":"Town in progress",
+		"explanation":"Town in progress.",
 		"channel":True,
 		"can_move":True,
 		"duration":3000,
@@ -582,7 +624,7 @@ conditions={
 	"fishing":{
 		"name":"Fishing",
 		"skin":"skill_fishing",
-		"explanation":"Fishing in progress",
+		"explanation":"Fishing in progress.",
 		"channel":True,
 		"duration_min":5000,
 		"duration":15000,
@@ -590,7 +632,7 @@ conditions={
 	"mining":{
 		"name":"Mining",
 		"skin":"skill_mining",
-		"explanation":"Mining in progress",
+		"explanation":"Mining in progress.",
 		"channel":True,
 		"duration_min":5000,
 		"duration":15000,
@@ -598,7 +640,7 @@ conditions={
 	"pickpocket":{
 		"name":"Pickpocket",
 		"skin":"skill_pickpocket",
-		"explanation":"Pickpocket in progress",
+		"explanation":"Pickpocket in progress.",
 		"channel":True,
 		"duration_min":200,
 		"duration":2200,
@@ -643,6 +685,3 @@ if 0:
 		if not conditions["tarot_%s"%name].get("minor"):
 			conditions["tarot_%s"%name]["card"]=name.title()
 			conditions["tarot_%s"%name]["major"]=name
-
-
-
