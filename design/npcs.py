@@ -83,6 +83,15 @@ npcs={
 		"says":"Hi!",
 		"color":"#B4FAA0",
 	},
+	"favors":{
+		"role":"monstertokens",
+		"token":"monstertoken",
+		"name":"Favoré",
+		"skin":"favor",
+		"type":"fullstatic",
+		"says":"Hi!",
+		"color":"#D382B5",
+	},
 	"mcollector":{
 		"role":"mcollector",
 		"quest":"mcollector",

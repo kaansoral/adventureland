@@ -534,6 +534,7 @@ maps={
 			{"id":"monsterhunter","position":[126,-413]},
 			{"id":"mcollector","position":[81,-283,1]},
 			#{"id":"newyear_tree","position":[64,-88]}, #xmas
+			{"id":"favor","position":[20,20]},
 		],
 		"monsters":[
 			#square

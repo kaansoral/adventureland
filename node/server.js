@@ -7019,7 +7019,7 @@ function init_io() {
 					}
 					player.cash = result.cash;
 
-					S.blessed_minutes = 60 * 24 * 7;
+					S.blessed_minutes = 60 * 24 * 3;
 					S.blessed_by = player.name;
 
 					socket.emit("game_log", "Spent " + to_pretty_num(cost) + " shells");
@@ -7371,7 +7371,7 @@ function init_io() {
 					add = "+u+cid";
 					player.s.invis = { ms: 99999 };
 				}
-				if (G.items[item.name].upgrade && Math.random() < 1.0 / ((gameplay == "hardcore" && 10000) || 1000000)) {
+				if (G.items[item.name].upgrade && Math.random() < 1.0 / ((gameplay == "hardcore" && 10000) || 10000000)) {
 					add = "+u+cid";
 					item.level = 13;
 					player.items[data.num] = item;
