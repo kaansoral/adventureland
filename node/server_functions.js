@@ -3540,32 +3540,32 @@ function exchange(player, name, args) {
 }
 
 function chest_exchange(chest, name) {
-	var done = false;
-	var total = 0;
-	var current = 0;
-	D.drops[name].forEach(function (drop) {
-		total += drop[0];
-	});
-	result = Math.random() * total;
-	D.drops[name].forEach(function (drop) {
-		if (done) {
-			return;
-		}
-		current += drop[0];
-		if (result <= current) {
-			done = true;
-			if (drop[1] == "gold") {
-				chest.gold += drop[2];
-			} else if (drop[1] == "shells") {
-				chest.cash += drop[2];
-			} else if (drop[1] == "empty") {
-			} else if (drop[1] == "open") {
-				chest_exchange(chest, drop[2]);
-			} else {
-				chest.items.push(create_new_item(drop[1]));
-			}
-		}
-	});
+    var done = false;
+    var total = 0;
+    var current = 0;
+    D.drops[name].forEach(function (drop) {
+        total += drop[0];
+    });
+    result = Math.random() * total;
+    D.drops[name].forEach(function (drop) {
+        if (done) {
+            return;
+        }
+        current += drop[0];
+        if (result <= current) {
+            done = true;
+            if (drop[1] == "gold") {
+                chest.gold += drop[2];
+            } else if (drop[1] == "shells") {
+                chest.cash += drop[2];
+            } else if (drop[1] == "empty") {
+            } else if (drop[1] == "open") {
+                chest_exchange(chest, drop[2]);
+            } else {
+                chest.items.push(create_new_item(drop[1], drop[2]));
+            }
+        }
+    });
 }
 
 var item_p_ignore = {
