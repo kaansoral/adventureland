@@ -2070,6 +2070,15 @@ function drop_something(player, monster, share) {
 			}
 		});
 	}
+    // Home-server monster-specific drops
+	if (player.p.home && player.p.home === region + server_name && D.drops.monsters_home_server[monster.type] && player.tskin != "konami") {
+		D.drops.monsters_home_server[monster.type].forEach(function (item) {
+			let itemShouldDrop = shouldItemDrop(item);
+			if (itemShouldDrop || mode.drop_all) {
+				drop_item_logic(drop, item, is_in_pvp(player, 1));
+			}
+		});
+	}
 	if (player.tskin == "konami") {
 		D.drops.konami.forEach(function (item) {
 			if (Math.random() / share / player.luckm / monster.level < item[0] || mode.drop_all) {
