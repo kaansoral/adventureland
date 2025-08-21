@@ -4672,6 +4672,7 @@ function init_io() {
 				maps: D.drops.maps,
 				tables: {},
 				max: player.max_stats,
+				monsters_home: D.drops.monsters_home_server || {}, //add this
 			}; // ,computer:false
 			function register_table(table) {
 				if (table) {
@@ -4686,11 +4687,16 @@ function init_io() {
 			if (player.computer || 1) {
 				// data.computer=true;
 				data.drops = D.drops.monsters;
+				data.drops_home = D.drops.monsters_home_server || {}; //mirror monsters_home
 			} else {
 				data.drops = {};
+				data.drops_home = {};
 				for (var name in data.monsters) {
 					if (data.monsters[name] >= 100 && D.drops.monsters[name]) {
 						data.drops[name] = D.drops.monsters[name];
+					}
+					if (data.monsters[name] >= 100 && D.drops.monsters_home_server[name]) {
+						data.drops_home[name] = D.drops.monsters_home_server[name];
 					}
 				}
 			}
@@ -4704,6 +4710,9 @@ function init_io() {
 			}
 			for (var name in data.drops) {
 				register_table(data.drops[name]);
+			}
+			for (var name in data.drops_home) { //include home tables
+				register_table(data.drops_home[name]);
 			}
 			for (var name in data.maps) {
 				register_table(data.maps[name]);
