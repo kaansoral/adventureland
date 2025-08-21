@@ -1902,7 +1902,7 @@ function drop_item_logic(drop, def, pvp) {
 	} else if (def[1] == "open") {
 		chest_exchange(drop, def[2]);
 	} else {
-		var item = create_new_item(def[1]);
+		var item = create_new_item(def[1], def[2]);
 		if (pvp) {
 			item.v = new Date();
 		}
