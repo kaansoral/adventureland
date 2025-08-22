@@ -549,11 +549,79 @@ function render_monster(monster)
 			html+=info_line({name:def.abilities[id].aura&&"AURA"||"ABILITY",color:"#FC5F39",value:G.skills[id].name.toUpperCase(),onclick:"dialogs_target=xtarget||ctarget; render_skill('#topleftcornerdialog','"+id+"')"});
 		}
 	}
-	if(def.spawns)
-	{
-		def.spawns.forEach(function(s){
-			html+=info_line({name:"SPAWNS",color:"#237B2A",value:G.monsters[s[1]].name.toUpperCase(),onclick:"render_monster_info('"+s[1]+"')"});
-		})
+	if (def.spawns) {
+		// Header
+		html += info_line({ line: "SPAWNS", color: "#AEAEAE" });
+
+		// Collect info
+		const spawnInfo = {};
+
+		def.spawns.forEach(function (s) {
+			const condition = s[0];
+			const name = s[1];
+			const count = s[2] || 1;
+
+			if (!spawnInfo[name]) {
+				spawnInfo[name] = { timers: [], thresholds: [] };
+			}
+
+			if (typeof condition === "number") {
+				spawnInfo[name].timers.push({ interval: condition, count });
+			} else if (typeof condition === "string" && condition.startsWith("hp:")) {
+				const threshold = parseFloat(condition.split(":")[1]);
+				spawnInfo[name].thresholds.push({ threshold, count });
+			}
+		});
+
+		// Build lines
+		Object.keys(spawnInfo).forEach((name) => {
+			const info = spawnInfo[name];
+			let lines = [];
+
+			// Timers
+			info.timers.forEach(t => {
+				lines.push(`${t.count} ${G.monsters[name].name}${t.count > 1 ? "s" : ""} every ${t.interval}ms`);
+			});
+
+			// HP thresholds
+			if (info.thresholds.length === 1) {
+				const t = info.thresholds[0];
+				lines.push(`${t.count} ${G.monsters[name].name}${t.count > 1 ? "s" : ""} at ${t.threshold * 100}% hp`);
+			} else if (info.thresholds.length > 1) {
+				// Sort thresholds high → low
+				info.thresholds.sort((a, b) => b.threshold - a.threshold);
+
+				const percents = info.thresholds.map(t => t.threshold * 100);
+				const counts = [...new Set(info.thresholds.map(t => t.count))];
+
+				if (counts.length === 1) {
+					// Check if evenly spaced
+					const diffs = percents.map((p, i) => i > 0 ? percents[i - 1] - p : null).slice(1);
+					const allEqual = diffs.every(d => d === diffs[0]);
+
+					if (allEqual) {
+						// Summarized
+						lines.push(`${counts[0]} ${G.monsters[name].name}${counts[0] > 1 ? "s" : ""} every ${diffs[0]}% hp`);
+					} else {
+						// Generic
+						lines.push(`Spawns ${G.monsters[name].name} at hp thresholds`);
+					}
+				} else {
+					// Generic if counts differ
+					lines.push(`Spawns ${G.monsters[name].name} at hp thresholds`);
+				}
+			}
+
+			// Add to tooltip
+			lines.forEach(line => {
+				html += info_line({
+					name: "SPAWNS",
+					color: "#237B2A",
+					value: line,
+					onclick: "render_monster_info('" + name + "')"
+				});
+			});
+		});
 	}
 	if(monster.target) html+=info_line({name:"TRG",color:"orange",value:monster.target});
 	if(monster.pet)
