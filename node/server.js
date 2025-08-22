@@ -1908,7 +1908,7 @@ function drop_item_logic(drop, def, pvp) {
 		}
 		for (var i = 0; i < drop.items.length; i++) {
 			if (can_stack(drop.items[i], item)) {
-				drop.items[i].q += 1;
+				drop.items[i].q += def[2] ?? 1;
 				added = true;
 				break;
 			}
