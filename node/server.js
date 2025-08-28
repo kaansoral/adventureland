@@ -4672,7 +4672,7 @@ function init_io() {
 				maps: D.drops.maps,
 				tables: {},
 				max: player.max_stats,
-				monsters_home: D.drops.monsters_home_server || {}, //add this
+				monsters_home_server: D.drops.monsters_home_server || {}, //add this
 			}; // ,computer:false
 			function register_table(table) {
 				if (table) {
