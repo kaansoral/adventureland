@@ -540,7 +540,7 @@ function render_monster(monster)
 	if(def.immune) html+=info_line({line:"IMMUNE",color:"#AEAEAE"});
 	if(def.peaceful) html+=info_line({line:"PEACEFUL",color:"#54B25F"});
 	if(def.supporter) html+=info_line({line:"SUPPORTER",color:"#CA5931"});
-	if(def.spawns) html+=info_line({line:"SPAWNS",color:"#AEAEAE"});
+	//if (def.spawns) html += info_line({ line: "SPAWNS", color: "#AEAEAE" });  this is  just adding an extra line to the mob UI
 	if(def.abilities)
 	{
 		for(var id in def.abilities)
@@ -550,9 +550,6 @@ function render_monster(monster)
 		}
 	}
 	if (def.spawns) {
-		// Header
-		html += info_line({ line: "SPAWNS", color: "#AEAEAE" });
-
 		// Collect info
 		const spawnInfo = {};
 
