@@ -297,8 +297,8 @@ drops={
 			[1.0/1000,"orbofint"],
 			[1.0/1000,"orbofvit"],
 		],
-		"mrpumpkin":[[100,"candy0"],[100,"candy1"],[100,"candy1"],[10,"phelmet"],[10.0/100000,"cxjar",1,"gcandle"],[10.0/100000,"cxjar",1,"breyes"],],
-		"mrgreen":[[100,"candy0"],[100,"candy1"],[100,"candy1"],[10,"gphelmet"],[15.0/100000,"cxjar",1,"bathat"],[1.0/100,"hdagger"]],
+		"mrpumpkin":[[100,"candy0",5],[100,"candy1",10],[100,"candy1"],[10,"phelmet"],[10.0/100000,"cxjar",1,"gcandle"],[10.0/100000,"cxjar",1,"breyes"],],
+		"mrgreen":[[100,"candy0",5],[100,"candy1",10],[100,"candy1"],[10,"gphelmet"],[15.0/100000,"cxjar",1,"bathat"],[1.0/100,"hdagger"]],
 		"jr":[
 			#[1,"swirlipop"],
 			[0.1,"candy0"],[0.1,"candy1"], #[1,"candy1v2"],[1,"candy1v2"],[1,"candy1v2"],[1,"candy1v2"],
@@ -575,6 +575,26 @@ drops={
 			[1.0/1.0,"spidersilk"],
 			[1.0/1.0,"poison"],
 			[1.0/3.0,"troll"],
+		],
+	},
+	"monsters_home_server":{
+		"mrgreen": [
+			[0.001, "fallen"],
+			[1.0,"candy0", 7],
+			[1.0,"candy1", 14],
+			[0.342857, "candy0", 6],
+			[0.342857, "candy1", 12],
+			#[0.045714,"candy0", 15]
+			#[0.085714, "candy1", 55] "jackpot" chance?
+		],
+		"mrpumpkin": [
+			[0.001, "fallen"],
+			[1.0,"candy0", 6],
+			[1.0,"candy1", 12],
+			[0.285714,"candy0", 4],
+			[0.285714,"candy1", 8],
+			#[0.045714,"candy", 15]
+			#[0.045714,"candy1", 45] "jackpot" chance?
 		],
 	},
 	"konami":[
