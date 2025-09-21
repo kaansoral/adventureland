@@ -2248,6 +2248,14 @@ function init_socket(args)
 				ui_log("Spent 250,000 gold","gray");
 				ui_log("Sealed the item","gray");
 			}
+			else if(response=="blessed")
+			{
+				render_interaction({auto:true,skin:"favore",message:"Thank you! The server has been blessed."});
+			}
+			else if(response=="blessed_fail")
+			{
+				render_interaction({auto:true,skin:"favore",message:"Ooops! It failed."});
+			}
 			else if(response=="monsterhunt_started" || response=="monsterhunt_already")
 			{
 				if(!character.s.monsterhunt) return;
@@ -3285,6 +3293,10 @@ function npc_right_click(event){
 		{
 			render_interaction({auto:true,skin:"lionsuit",message:"This is your home server. Make sure to follow daily and nightly server events! Just click the time icon in the bottom left corner for the schedule!"})
 		}
+	}
+	if(this.role=="favors")
+	{
+		render_interaction({auto:true,skin:"favore",message:"Would you like to bless the entire server for 3 days?",button:"Yes! [1,200 Shells]",onclick:function(){ socket.emit('bless_server'); }});
 	}
 	if(this.role=="mcollector")
 	{

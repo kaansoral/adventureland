@@ -133,7 +133,7 @@ sprites={
 		"rows":2,
 		"columns":4,
 		"matrix":[
-			[None,"greengreen",None,"favor"],
+			[None,"greengreen",None,"favore"],
 			[None,None,None,None],
 		]
 	},

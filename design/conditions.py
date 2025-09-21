@@ -18,7 +18,7 @@ conditions={
 		"mp_cost":-200,
 		"buff":True,
 		"ui":True,
-		"explanation": "Greatly increases attack speed and reduces mana cost of attacks."
+		"explanation": "Greatly increases attack speed and reduces mana cost of attacks.",
 	},
 	"power":{
 		"skin":"powerglove",
@@ -28,7 +28,7 @@ conditions={
 		"mp_cost":-200,
 		"buff":True,
 		"ui":True,
-		"explanation": "Increases attack speed and reduces mana cost."
+		"explanation": "Increases attack speed and reduces mana cost.",
 	},
 	"weakness":{
 		"skin":"condition_bad",
@@ -39,7 +39,7 @@ conditions={
 		"dex":-10,
 		"str":-10,
 		"duration":20000,
-		"explanation": "Reduces speed, dexterity, and strength."
+		"explanation": "Reduces speed, dexterity, and strength.",
 	},
 	"xpower":{
 		"skin":"goldenpowerglove",
@@ -49,7 +49,7 @@ conditions={
 		"mp_cost":-300,
 		"buff":True,
 		"ui":True,
-		"explanation": "Greatly increases attack speed and lowers mana cost."
+		"explanation": "Greatly increases attack speed and lowers mana cost.",
 	},
 	"stack":{
 		"skin":"skill_stack",
@@ -74,7 +74,7 @@ conditions={
 		"duration":800,
 		"buff":True,
 		"ui":True,
-		"explanation": "Gives a brief burst of attack speed."
+		"explanation": "Gives a brief burst of attack speed.",
 	},
 	"mcourage":{
 		"skin":"skill_mcourage",
@@ -87,7 +87,7 @@ conditions={
 		"duration":10000,
 		"ui":True,
 		"buff":True,
-		"explanation": "Increases speed, evasion, and all types of courage."
+		"explanation": "Increases speed, evasion, and all types of courage.",
 	},
 	"mfrenzy":{
 		"skin":"skill_mfrenzy",
@@ -98,7 +98,7 @@ conditions={
 		"output":40,
 		"ui":True,
 		"buff":True,
-		"explanation": "Greatly boosts attack speed and output while lowering mana cost."
+		"explanation": "Greatly boosts attack speed and output while lowering mana cost.",
 	},
 	"mshield":{
 		"skin":"skill_mshield",
@@ -116,7 +116,7 @@ conditions={
 		"duration":5000,
 		"ui":True,
 		"buff":True,
-		"explanation": "Decreases attack and movement speed but greatly increases evasion."
+		"explanation": "Decreases attack and movement speed but greatly increases evasion.",
 	},
 	"hardshell":{
 		"skin":"skill_hardshell",
@@ -125,7 +125,7 @@ conditions={
 		"set_speed":10,
 		"duration":8000,
 		"buff":True,
-		"explanation": "Greatly increases armor but limits maximum speed to 10."
+		"explanation": "Greatly increases armor but limits maximum speed to 10.",
 	},
 	"reflection":{
 		"skin":"buff_reflection",
@@ -135,7 +135,7 @@ conditions={
 		"duration":5000,
 		"ui":True,
 		"buff":True,
-		"explanation": "Increases your chance to reflect attacks."
+		"explanation": "Increases your chance to reflect attacks.",
 	},
 	"eburn":{
 		"skin":"essenceoffire",
@@ -147,7 +147,7 @@ conditions={
 		"speed":5,
 		"ui":True,
 		"debuff":True,
-		"explanation": "Burns the target with fire essence, dealing damage over time."
+		"explanation": "Burns the target with fire essence, dealing damage over time.",
 	},
 	"newcomersblessing":{
 		"skin":"newcomersblessing",
@@ -159,7 +159,7 @@ conditions={
 		"aura":True,
 		"ui":True,
 		"persistent":True,
-		"explanation": "Increases luck, gold gain, and experience earned."
+		"explanation": "Increases luck, gold gain, and experience earned.",
 	},
 	"eheal":{
 		"skin":"essenceoflife",
@@ -169,7 +169,7 @@ conditions={
 		"duration":4*1000,
 		"ui":True,
 		"buff":True,
-		"explanation": "Heals the target over time using life essence."
+		"explanation": "Heals the target over time using life essence.",
 	},
 	"rspeed":{
 		"skin":"buff_speed",
@@ -184,7 +184,7 @@ conditions={
 	"massproduction":{
 		"skin":"skill_massproduction",
 		"name":"Mass Production",
-		"explanation": "Reduces the time of your next upgrade or compound by 50%."
+		"explanation": "Reduces the time of your next upgrade or compound by 50%.",
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -192,7 +192,7 @@ conditions={
 	"massproductionpp":{
 		"skin":"skill_massproductionpp",
 		"name":"Mass Production++",
-		"explanation": "Reduces the time of your next upgrade or compound by 90%."
+		"explanation": "Reduces the time of your next upgrade or compound by 90%.",
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -277,7 +277,7 @@ conditions={
 		"gold":20,
 		"xp":25,
 		"speed":1,
-		"duration":60*60*1000,
+		"duration":2*60*1000,
 		"buff":True,
 		"ui":True,
 	},
@@ -605,7 +605,7 @@ conditions={
 		"skin":"condition_positive",
 		"speed":30,
 		"duration":3200,
-		"explanation": "A short burst of speed."
+		"explanation": "A short burst of speed.",
 	},
 	"dash":{
 		"name":"Dashing",

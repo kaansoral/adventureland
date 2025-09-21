@@ -84,10 +84,9 @@ npcs={
 		"color":"#B4FAA0",
 	},
 	"favors":{
-		"role":"monstertokens",
-		"token":"monstertoken",
+		"role":"favors",
 		"name":"Favoré",
-		"skin":"favor",
+		"skin":"favore",
 		"type":"fullstatic",
 		"says":"Hi!",
 		"color":"#D382B5",

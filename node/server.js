@@ -7015,6 +7015,7 @@ function init_io() {
 					server_log("buy_with_cash: " + JSON.stringify(result));
 					if (result.failed || !result.done) {
 						socket.emit("game_log", "Purchase failed");
+						socket.emit("game_response", "blessed_fail");
 						return;
 					}
 					player.cash = result.cash;
@@ -7023,9 +7024,12 @@ function init_io() {
 					S.blessed_by = player.name;
 
 					socket.emit("game_log", "Spent " + to_pretty_num(cost) + " shells");
+					socket.emit("game_response", "blessed");
 
 					resend(player, "reopen+nc+inv");
 					bless_loop();
+
+					discord_call(player.name + " blessed " + region + " " + server_name);
 				},
 			);
 			success_response({ success: false, in_progress: true });
@@ -7366,12 +7370,16 @@ function init_io() {
 				consume(player, data.num, data.q);
 				//player.items[data.num]=player.citems[data.num]=null;
 			}
-			if (data.statue) {
+			if (data.statue && distance(player, G.maps.spookytown.ref.poof) < B.sell_dist) {
+				var grade = (calculate_item_grade(G.items[name]) || 0) + 1;
 				if (item.name == "shadowstone") {
 					add = "+u+cid";
 					player.s.invis = { ms: 99999 };
 				}
-				if (G.items[item.name].upgrade && Math.random() < 1.0 / ((gameplay == "hardcore" && 10000) || 10000000)) {
+				if (
+					G.items[item.name].upgrade &&
+					Math.random() < 1.0 / ((gameplay == "hardcore" && 10000) || 3000013 * grade * grade)
+				) {
 					add = "+u+cid";
 					item.level = 13;
 					player.items[data.num] = item;
@@ -13081,7 +13089,13 @@ function npc_loop() {
 
 function bless_loop() {
 	if (S.blessed_minutes) S.blessed_minutes--;
-	if (!S.blessed_minutes) return;
+	if (!S.blessed_minutes) {
+		delete E.blessed_minutes;
+		delete E.blessed_by;
+		return;
+	}
+	E.blessed_minutes = S.blessed_minutes;
+	E.blessed_by = S.blessed_by;
 	for (var id in players) {
 		var player = players[id],
 			rs = false;

@@ -1015,4 +1015,5 @@ positions={
 	#"claw":["",13,42],
 	
 	"friendtoken":["",15,33],
+	"patronsgrace":["custom",5,0],
 }

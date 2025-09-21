@@ -118,6 +118,8 @@ game_version=822
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Last Update [August 7th]",
+	"PR: improve date functions #176",
+	"PR: simplify distance calculation #179",
 	"PR: Fix display of Orb of Adventures #183",
 	"PR: Fix Sanguine Amulet #185",
 	"PR: Fix display of Frozen to correctly show speed reduction, fix value in G.conditions.poisoned to reflect actual frequency multiplier #188",
