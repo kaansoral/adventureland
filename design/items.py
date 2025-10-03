@@ -2183,6 +2183,13 @@ accessories={
 		"xp":2,
 		"gold":2,
 		"luck":2,
+		"compound":{
+			"reflection":0.25,
+			"evasion":0.625,
+			"xp":0.25,
+			"gold":0.25,
+			"luck":0.25,
+		},
 		"g":320000,
 		"a":True,
 	},
