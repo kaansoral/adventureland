@@ -2190,6 +2190,7 @@ accessories={
 			"gold":0.25,
 			"luck":0.25,
 		},
+		"grades":[0,3],
 		"g":320000,
 		"a":True,
 	},
