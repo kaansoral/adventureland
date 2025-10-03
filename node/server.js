@@ -12012,35 +12012,67 @@ function update_instance(instance) {
 				set_ghash(aggressives, monster, 32);
 			}
 		}
-		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
-			monster.spawns.forEach(function (spi) {
-				var interval = spi[0];
-				var name = spi[1];
-				if (!monster.last[name] || mssince(monster.last[name]) > interval) {
-					var pname = random_one(Object.keys(monster.points));
-					var player = get_player(pname);
-					if (!player || player.npc || distance(monster, player) > 400) {
-						return;
-					}
-					if (!is_same(player, get_player(monster.target), true)) {
-						return;
-					}
-					monster.last[name] = new Date();
-					var spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-					if (!spot) {
-						return;
-					}
-					new_monster(instance.name, {
-						type: name,
-						stype: "spawn",
-						x: spot.x,
-						y: spot.y,
-						target: player.name,
-						master: monster.id,
-					});
-				}
-			});
-		}
+        if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
+            monster.spawns.forEach((spi) => {
+                const condition = spi[0];      // interval or "hp:0.75"
+                const name = spi[1];           // monster type
+                const count = spi[2] || 1;     // default to 1
+
+                // --- Timed spawns (existing) ---
+                if (typeof condition === "number") {
+                    if (!monster.last[name] || mssince(monster.last[name]) > condition) {
+                        for (let i = 0; i < count; i++) {
+                            const pname = random_one(Object.keys(monster.points));
+                            const player = get_player(pname);
+                            if (!player || player.npc || distance(monster, player) > 400) return;
+                            if (!is_same(player, get_player(monster.target), true)) return;
+
+                            monster.last[name] = new Date();
+                            const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+                            if (!spot) return;
+
+                            new_monster(instance.name, {
+                                type: name,
+                                stype: "spawn",
+                                x: spot.x,
+                                y: spot.y,
+                                target: player.name,
+                                master: monster.id,
+                            });
+                        }
+                    }
+                }
+
+                // --- HP threshold spawns (new) ---
+                if (typeof condition === "string" && condition.startsWith("hp:")) {
+                    const threshold = parseFloat(condition.split(":")[1]); // e.g. 0.75
+                    const currentHpRatio = monster.hp / monster.max_hp;
+                    const key = name + "_hp_" + threshold;
+
+                    if (currentHpRatio <= threshold && !monster.last[key]) {  // trigger once per fight
+                        for (let i = 0; i < count; i++) {
+                            const pname = random_one(Object.keys(monster.points));
+                            const player = get_player(pname);
+                            if (!player || player.npc || distance(monster, player) > 400) return;
+                            if (!is_same(player, get_player(monster.target), true)) return;
+
+                            const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+                            if (!spot) return;
+
+                            new_monster(instance.name, {
+                                type: name,
+                                stype: "spawn",
+                                x: spot.x,
+                                y: spot.y,
+                                target: player.name,
+                                master: monster.id,
+                            });
+                        }
+                        monster.last[key] = true; // mark this threshold as triggered
+                    }
+                }
+            });
+        }
 		function attack_target_or_move() {
 			var player = players[name_to_id[monster.target]];
 			if (player && ssince(monster.last.attacked) > 20 && Math.random() > monster.rage * 0.99) {
