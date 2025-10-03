@@ -2147,6 +2147,14 @@ function render_monster_info(name)
 			html+=render_drop(drop,1,"#858B8E");
 		});
 	}
+    // Add display section for home server drops
+    var MRH = Object.keys(tracker).length && tracker && tracker.drops_home || RF.monsters_home_server;
+	if (MRH && MRH[name] && MRH[name].length) {
+		html += "<div style='margin-top:6px;margin-bottom:3px;color:#FF9933'>Home Server Drops:</div>";
+		MRH[name].forEach(function (drop) {
+			html += render_drop(drop, 1, "#858B8E");
+		});
+	}
 	object_sort(G.maps).forEach(function(io){
 		var map=io[1],mname=io[0];
 		if(map.ignore || !(RF.maps&&RF.maps[mname]||[]).length) return;
