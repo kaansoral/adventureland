@@ -751,9 +751,11 @@ monsters={
 	},
 	"mrgreen":{
 		"name":"Mr. Green","speed":40,"charge":90,"hp":36000000,"xp":48000000,"attack":1200,"damage_type":"physical",
-		"respawn":94*60,
+		"respawn":94*60,"phresistance":100,
 		"gold":16000,"range":620,"frequency":1.6,"aggro":1,"rage":1,"apiercing":320,"resistance":900,"cooperative":True,"announce":"#256943",
 		"cbuff":[[60,"halloween0"],[70,"halloween1"],[200,"halloween2"]],
+		"spawns":[["hp:0.75", "greenjr", 5],["hp:0.50", "greenjr", 5],["hp:0.25", "greenjr", 5]],
+		# "spawns":[[threshold, monster type, count]]
 		"slots":{"mainhand":{"name":"gbow","level":10}},
 		"achievements":[
 			[1,"stat","hp",10],
@@ -783,9 +785,11 @@ monsters={
 	"mrpumpkin":{
 		"name":"Mr. Pumpkin","speed":40,"hp":36000000,"xp":48000000,"attack":1200,"damage_type":"magical",
 		"respawn":54*60,
-		"phresistance":30,
+		"phresistance":100,
 		"gold":16000,"range":520,"frequency":1,"aggro":0.05,"hit":"explode_c","cooperative":True,"announce":"#FD8940",
 		"cbuff":[[60,"halloween0"],[70,"halloween1"],[200,"halloween2"]],
+		"spawns":[["hp:0.75", "jr", 5],["hp:0.50", "jr", 5],["hp:0.25", "jr", 5]],
+		# "spawns":[[threshold, monster type, count]]
 		"slots":{"mainhand":{"name":"oozingterror","level":8}},
 		"achievements":[
 			[1,"stat","hp",10],
@@ -802,7 +806,7 @@ monsters={
 		"cbuff":[[60,"halloween0"],[70,"halloween1"],[200,"halloween2"]],
 		"respawn":480 and 12*72*60, #sprocess_game_data
 		"gold":16000,"range":80,"frequency":20,"aggro":1,"rage":1,"rpiercing":420,"resistance":400,"evasion":40,"reflection":4,
-		"difficulty":2,
+		"difficulty":2,"cooperative":True,
 		"achievements":[
 			[1,"stat","mp",10],
 			[10,"stat","vit",1],
@@ -818,7 +822,7 @@ monsters={
 		"cbuff":[[60,"halloween0"],[70,"halloween1"],[200,"halloween2"]],
 		"respawn":480 and 6*72*60, #sprocess_game_data
 		"gold":6000,"range":30,"frequency":20,"aggro":1,"rage":1,"resistance":400,"evasion":80,
-		"difficulty":2,
+		"difficulty":2,"cooperative":True,
 		"achievements":[
 			[1,"stat","mp",10],
 			[10,"stat","vit",1],
