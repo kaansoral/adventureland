@@ -1903,13 +1903,13 @@ function drop_item_logic(drop, def, pvp) {
 	} else if (def[1] == "open") {
 		chest_exchange(drop, def[2]);
 	} else {
-		var item = create_new_item(def[1]);
+		var item = create_new_item(def[1], def[2]);
 		if (pvp) {
 			item.v = new Date();
 		}
 		for (var i = 0; i < drop.items.length; i++) {
 			if (can_stack(drop.items[i], item)) {
-				drop.items[i].q += 1;
+				drop.items[i].q += def[2] ?? 1;
 				added = true;
 				break;
 			}

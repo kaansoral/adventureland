@@ -3566,7 +3566,7 @@ function chest_exchange(chest, name) {
 			} else if (drop[1] == "open") {
 				chest_exchange(chest, drop[2]);
 			} else {
-				chest.items.push(create_new_item(drop[1]));
+				chest.items.push(create_new_item(drop[1], drop[2]));
 			}
 		}
 	});
