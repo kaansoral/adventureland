@@ -114,10 +114,14 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=822
+game_version=825
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Last Update [August 7th]",
+	"Halloween Event!",
+	"20% more shells with purchases during the spooky season!",
+	"New server blessing system to generate income",
+	"PR: Make slenderman warp more often #160",
 	"PR: improve date functions #176",
 	"PR: simplify distance calculation #179",
 	"PR: Fix display of Orb of Adventures #183",
@@ -125,6 +129,13 @@ update_notes=[
 	"PR: Fix display of Frozen to correctly show speed reduction, fix value in G.conditions.poisoned to reflect actual frequency multiplier #188",
 	"PR: Explanations for all conditions #189",
 	"PR: Stop orbs from spamming game events #190",
+	"PR: New 'spawns' mechanic #192",
+	"PR: Allow a quantity of items to drop from chests #193",
+	"PR: Home server specific drops #194",
+	"PR: Hallo-ween boss incentives #195",
+	"PR: Compoundable spooky amulet #196",
+	"PR: Amulet of Spooks Fix #197",
+	"PR: Fix for new spawn mechanic #198"
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",

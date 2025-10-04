@@ -1905,34 +1905,38 @@ function event_loop() {
 		if (events.halloween) {
 			var s = get_monster("slenderman");
 			if (s) {
-				var p = false;
+				var should_warp = false;
 				for (var id in projectiles) {
 					if (projectiles[id].target == s) {
-						p = true;
+						should_warp = true;
 					}
 				}
 				if (!s.last_jump || msince(s.last_jump) > 2) {
-					p = true;
+					should_warp = true;
 				}
-				for (var name in instances[s.in].players) {
-					var player = instances[s.in].players[name];
-					if (p || (!player.s.invis && distance(player, s) < 600)) {
-						xy_emit(s, "disappear", { id: s.id });
-						delete instances[s.in].monsters[s.id];
-						s.oin = s.in = s.map = random_one(["spookytown", "halloween", "cave"]);
-						instances[s.in].monsters[s.id] = s;
-						var p = random_place(s.map);
-						s.moving = false;
-						s.abs = true;
-						s.map_def.boundary = [p.x, p.y, p.x, p.y];
-						s.map_def.i = s.map;
-						s.x = p.x;
-						s.y = p.y;
-						s.u = true;
-						s.cid++;
-						s.last_jump = new Date();
-						break;
+				if (!should_warp)
+					for (var name in instances[s.in].players) {
+						var player = instances[s.in].players[name];
+						if (p || (!player.s.invis && distance(player, s) < 600)) {
+							should_warp = true;
+							break;
+						}
 					}
+				if (should_warp) {
+					xy_emit(s, "disappear", { id: s.id });
+					delete instances[s.in].monsters[s.id];
+					s.oin = s.in = s.map = random_one(["spookytown", "halloween", "cave"]);
+					instances[s.in].monsters[s.id] = s;
+					var pl = random_place(s.map);
+					s.moving = false;
+					s.abs = true;
+					s.map_def.boundary = [pl.x, pl.y, pl.x, pl.y];
+					s.map_def.i = s.map;
+					s.x = pl.x;
+					s.y = pl.y;
+					s.u = true;
+					s.cid++;
+					s.last_jump = new Date();
 				}
 			}
 		}

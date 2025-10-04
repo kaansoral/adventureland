@@ -2203,7 +2203,7 @@ function render_tracker()
 	html+="</div>";
 	html+="<div class='trackers trackerm'>";
 	object_sort(G.monsters,"hpsort").forEach(function(e){
-		if((e[1].stationary || e[1].cute) && !e[1].achievements || e[1].unlist) return;
+		if((e[1].unlist || e[1].cute) && !e[1].achievements || e[1].unlist) return;
 		var count=(tracker.monsters[e[0]]||0)+(tracker.monsters_diff[e[0]]||0),color="#50ADDD";
 		if(tracker.max.monsters[e[0]] && tracker.max.monsters[e[0]][0]>count)
 		{

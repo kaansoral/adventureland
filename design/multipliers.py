@@ -1,4 +1,4 @@
-extra_shells=0
+extra_shells=20
 multipliers={
 	"extra_shells":extra_shells,
 	"shells_to_gold":32000,

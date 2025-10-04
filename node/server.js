@@ -176,7 +176,7 @@ var events = {
 	pinkgoo: 0, // every N minutes - 60
 	snowman: 20 * 60, // 1200 normally - 60 - at sprocess_game_data
 	egghunt: 0, // every N minutes - 60
-	halloween: false,
+	halloween: true,
 	// RANDOM
 	goblin: false,
 	goldenbat: 160000,
@@ -2071,8 +2071,13 @@ function drop_something(player, monster, share) {
 			}
 		});
 	}
-    // Home-server monster-specific drops
-	if (player.p.home && player.p.home === region + server_name && D.drops.monsters_home_server[monster.type] && player.tskin != "konami") {
+	// Home-server monster-specific drops
+	if (
+		player.p.home &&
+		player.p.home === region + server_name &&
+		D.drops.monsters_home_server[monster.type] &&
+		player.tskin != "konami"
+	) {
 		D.drops.monsters_home_server[monster.type].forEach(function (item) {
 			let itemShouldDrop = shouldItemDrop(item);
 			if (itemShouldDrop || mode.drop_all) {
@@ -4712,7 +4717,8 @@ function init_io() {
 			for (var name in data.drops) {
 				register_table(data.drops[name]);
 			}
-			for (var name in data.drops_home) { //include home tables
+			for (var name in data.drops_home) {
+				//include home tables
 				register_table(data.drops_home[name]);
 			}
 			for (var name in data.maps) {
@@ -7048,6 +7054,11 @@ function init_io() {
 					bless_loop();
 
 					discord_call(player.name + " blessed " + region + " " + server_name);
+
+					realm_broadcast("server_message", {
+						message: player.name + " blessed " + region + " " + server_name,
+						color: "#8F70D8",
+					});
 				},
 			);
 			success_response({ success: false, in_progress: true });
@@ -12030,36 +12041,40 @@ function update_instance(instance) {
 				set_ghash(aggressives, monster, 32);
 			}
 		}
-        if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
-            monster.spawns.forEach((spi) => {
-                const condition = spi[0];      // interval or "hp:0.75"
-                const name = spi[1];           // monster type
-                const count = spi[2] || 1;     // default to 1
+		if (monster.target && monster.spawns && get_player(monster.target) && !is_disabled(monster)) {
+			monster.spawns.forEach((spi) => {
+				const condition = spi[0]; // interval or "hp:0.75"
+				const name = spi[1]; // monster type
+				const count = spi[2] || 1; // default to 1
 
-                // --- Timed spawns (existing) ---
-                if (typeof condition === "number") {
-                    if (!monster.last[name] || mssince(monster.last[name]) > condition) {
-                        for (let i = 0; i < count; i++) {
-                            const pname = random_one(Object.keys(monster.points));
-                            const player = get_player(pname);
-                            if (!player || player.npc || distance(monster, player) > 400) return;
-                            if (!is_same(player, get_player(monster.target), true)) return;
+				// --- Timed spawns (existing) ---
+				if (typeof condition === "number") {
+					if (!monster.last[name] || mssince(monster.last[name]) > condition) {
+						for (let i = 0; i < count; i++) {
+							const pname = random_one(Object.keys(monster.points));
+							const player = get_player(pname);
+							if (!player || player.npc || distance(monster, player) > 400) return;
+							if (!is_same(player, get_player(monster.target), true)) return;
 
-                            monster.last[name] = new Date();
-                            const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-                            if (!spot) return;
+							monster.last[name] = new Date();
+							const spot = safe_xy_nearby(
+								player.map,
+								player.x + Math.random() * 20 - 10,
+								player.y + Math.random() * 20 - 10,
+							);
+							if (!spot) return;
 
-                            new_monster(instance.name, {
-                                type: name,
-                                stype: "spawn",
-                                x: spot.x,
-                                y: spot.y,
-                                target: player.name,
-                                master: monster.id,
-                            });
-                        }
-                    }
-                }
+							new_monster(instance.name, {
+								type: name,
+								stype: "spawn",
+								x: spot.x,
+								y: spot.y,
+								target: player.name,
+								master: monster.id,
+							});
+						}
+					}
+				}
 
 				// --- HP threshold spawns (new) ---
 				if (typeof condition === "string" && condition.startsWith("hp:")) {
@@ -12072,7 +12087,11 @@ function update_instance(instance) {
 						const player = get_player(pname);
 						if (player && !player.npc && distance(monster, player) < 400) {
 							if (is_same(player, get_player(monster.target), true)) {
-								const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+								const spot = safe_xy_nearby(
+									player.map,
+									player.x + Math.random() * 20 - 10,
+									player.y + Math.random() * 20 - 10,
+								);
 								if (spot) {
 									new_monster(instance.name, {
 										type: name,
