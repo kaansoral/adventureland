@@ -1141,7 +1141,7 @@ imagesets={
 		"size":20,
 		"rows":9,
 		"columns":7,
-		"file":"/images/tiles/items/custom.png?v=9",
+		"file":"/images/tiles/items/custom.png?v=10",
 		"load":True,
 	},
 	"community":{
@@ -1155,7 +1155,7 @@ imagesets={
 tilesets={
 	"castle":{"file":"/images/tiles/map/castle.png?v=2"},
 	"custom2":{"file":"/images/tiles/map/custom2.png?v=14"},
-	"custom":{"file":"/images/tiles/map/custom.png?v=13"},
+	"custom":{"file":"/images/tiles/map/custom.png?v=14"},
 	"custom_a":{"frames":3,"frame_width":16,"file":"/images/tiles/map/custom_a.png?v=5"},
 	"doors":{"file":"/images/tiles/map/doors.png"},
 	"dungeon":{"file":"/images/tiles/map/dungeon.png?v=5"},

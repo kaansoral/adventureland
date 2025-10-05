@@ -114,7 +114,11 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
+<<<<<<< HEAD
 game_version=825
+=======
+game_version=827
+>>>>>>> 01a2112 (Pre pull)
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Last Update [August 7th]",
