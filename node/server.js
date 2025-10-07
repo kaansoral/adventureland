@@ -12061,36 +12061,34 @@ function update_instance(instance) {
                     }
                 }
 
-                // --- HP threshold spawns (new) ---
-                if (typeof condition === "string" && condition.startsWith("hp:")) {
-                    const threshold = parseFloat(condition.split(":")[1]); // e.g. 0.75
-                    const currentHpRatio = monster.hp / monster.max_hp;
-                    const key = name + "_hp_" + threshold;
+				// --- HP threshold spawns (new) ---
+				if (typeof condition === "string" && condition.startsWith("hp:")) {
+					const threshold = parseFloat(condition.split(":")[1]); // e.g. 0.75
+					const currentHpRatio = monster.hp / monster.max_hp;
+					const key = name + "_hp_" + threshold;
 
-                    if (currentHpRatio <= threshold && !monster.last[key]) {  // trigger once per fight
-                        for (let i = 0; i < count; i++) {
-                            const pname = random_one(Object.keys(monster.points));
-                            const player = get_player(pname);
-                            if (!player || player.npc || distance(monster, player) > 400) return;
-                            if (!is_same(player, get_player(monster.target), true)) return;
-
-                            const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
-                            if (!spot) return;
-
-                            new_monster(instance.name, {
-                                type: name,
-                                stype: "spawn",
-                                x: spot.x,
-                                y: spot.y,
-                                target: player.name,
-                                master: monster.id,
-                            });
-                        }
-                        monster.last[key] = true; // mark this threshold as triggered
-                    }
-                }
-            });
-        }
+					if (currentHpRatio <= threshold && (monster.last[key] == undefined || monster.last[key] < count)) {
+						const pname = random_one(Object.keys(monster.points));
+						const player = get_player(pname);
+						if (player && !player.npc && distance(monster, player) < 400) {
+							if (is_same(player, get_player(monster.target), true)) {
+								const spot = safe_xy_nearby(player.map, player.x + Math.random() * 20 - 10, player.y + Math.random() * 20 - 10);
+								if (spot) {
+									new_monster(instance.name, {
+										type: name,
+										stype: "spawn",
+										x: spot.x,
+										target: player.name,
+										master: monster.id,
+									});
+									monster.last[key] = 1 + (monster.last[key] || 0);
+								}
+							}
+						}
+					}
+				}
+			});
+		}
 		function attack_target_or_move() {
 			var player = players[name_to_id[monster.target]];
 			if (player && ssince(monster.last.attacked) > 20 && Math.random() > monster.rage * 0.99) {
