@@ -579,7 +579,7 @@ drops={
 	},
 	"monsters_home_server":{
 		"mrgreen": [
-			[0.001, "fallen"],
+			[0.01, "fallen"],
 			[1.0,"candy0", 7],
 			[1.0,"candy1", 14],
 			[0.342857, "candy0", 6],
@@ -588,7 +588,7 @@ drops={
 			#[0.085714, "candy1", 55] "jackpot" chance?
 		],
 		"mrpumpkin": [
-			[0.001, "fallen"],
+			[0.01, "fallen"],
 			[1.0,"candy0", 6],
 			[1.0,"candy1", 12],
 			[0.285714,"candy0", 4],
