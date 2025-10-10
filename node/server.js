@@ -12983,9 +12983,18 @@ function npc_loop() {
 		for (var id in npcs) {
 			var npc = npcs[id];
 			var delay = -npc.delay * npc.d_multiplier;
-			if (npc.rip) {
+			if (npc.rip && Math.random() < 0.0005) {
+				delete npc.s.block;
+				npc.hp = npc.max_hp;
+				npc.mp = npc.max_mp;
+				npc.rip = false;
+
+				transport_player_to(npc, npc.map, 0, 1);
+
+				resend(npc, "u+cid");
 				continue;
 			}
+			if (npc.rip) continue;
 			var def = G.npcs[npc.ntype] || {};
 			if (
 				def &&
