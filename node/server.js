@@ -12097,6 +12097,7 @@ function update_instance(instance) {
 										type: name,
 										stype: "spawn",
 										x: spot.x,
+										y: spot.y,
 										target: player.name,
 										master: monster.id,
 									});
