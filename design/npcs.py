@@ -533,6 +533,7 @@ npcs={
 		"hp":120000,
 		"delay":12000,
 		"level":120,
+		"avoidance":100,
 		"interaction":["Guard.    Village.    Protect.    Innocents.","Brothers.     Rest.     Here.    Protect.    Over.    Their.    Graves.","Remember.    The.    Fallen.    Never.    Forget.  Their.    Sacrifices.","Heal.    The.    Fallen."],
 	},
 	"citizen12":{
@@ -601,6 +602,7 @@ npcs={
 		"hp":12000,
 		"delay":1000,
 		"level":72,
+		"avoidance":100,
 		"interaction":["What? What? WHAT?!","I don't really have much tolerance for anyone.","I follow only the most badass!"],
 	},
 	"holo0":{
