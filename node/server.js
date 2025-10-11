@@ -7488,21 +7488,18 @@ function init_io() {
 			success_response({});
 		});
 		socket.on("trade_wishlist", function (data) {
-			var player = players[socket.id];
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
 			data.q = min(9999, max(1, parseInt(data.q || 1) || 1));
-			if (!in_arr(data.slot, trade_slots) || !G.items[data.name] || data.name == "placeholder") {
+			if (!G.items[data.name] || data.name == "placeholder" || !get_trade_slots(player).includes(data.slot)) {
 				return fail_response("invalid");
 			}
 			if (player.slots[data.slot] && !player.slots[data.slot].b) {
 				return fail_response("slot_occuppied");
 			}
-			if (!get_trade_slots(player).includes(data.slot)) {
-				return fail_response("invalid");
-			}
-			var item = {
+			const item = {
 				name: data.name,
 				rid: randomStr(4),
 				price: round(min(99999999999, max(parseInt(data.price) || 1, 1))),
