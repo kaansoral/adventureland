@@ -3649,14 +3649,14 @@ function cache_item(current, trade, override) {
 
 function get_trade_slots(player) {
 	if (player.p.stand) {
-		var num = 16;
-		var slots = [];
+		let num = 16;
+		const slots = [];
 		if (player.type == "merchant" && player.level >= 80) {
 			num = 30;
 		} else if (player.type == "merchant" && (player.level >= 70 || player.p.stand == "cstand")) {
 			num = 24;
 		}
-		for (var i = 1; i <= num; i++) {
+		for (let i = 1; i <= num; i++) {
 			slots.push("trade" + i);
 		}
 		return slots;
