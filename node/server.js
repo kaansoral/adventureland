@@ -7492,7 +7492,6 @@ function init_io() {
 			if (!player) {
 				return;
 			}
-			data.q = min(9999, max(1, parseInt(data.q || 1) || 1));
 			if (!G.items[data.name] || data.name == "placeholder" || !get_trade_slots(player).includes(data.slot)) {
 				return fail_response("invalid");
 			}
@@ -7502,17 +7501,16 @@ function init_io() {
 			const item = {
 				name: data.name,
 				rid: randomStr(4),
-				price: round(min(99999999999, max(parseInt(data.price) || 1, 1))),
+				price: clampInt(parseInt(data.price) || 1, 1, 99999999999),
+				q: clampInt(parseInt(data.q) || 1, 1, 9999),
 				b: true,
 			};
 			if (G.items[data.name].upgrade || G.items[data.name].compound) {
-				item.q = min(99, data.q);
-				item.level = round(min(12, max(parseInt(data.level) || 0, 0)));
-			} else {
-				item.q = data.q;
+				item.q = Math.min(99, item.q);
+				item.level = clampInt(parseInt(data.level) || 0, 0, 12);
 			}
 			player.slots[data.slot] = item;
-			player.cslots[data.slot] = cache_item(player.slots[data.slot], true);
+			player.cslots[data.slot] = cache_item(item, true);
 			resend(player, "reopen+u+cid+nc");
 			success_response({});
 		});

@@ -1909,6 +1909,19 @@ function abs(n)
 	return Math.abs(n);
 }
 
+/**
+ * https://en.wikipedia.org/wiki/Clamp_(function)
+ */
+function clamp(num, lower, upper)
+{
+	return Math.min(Math.max(num, lower), upper);
+}
+
+function clampInt(num, lower, upper)
+{
+	return Math.floor(clamp(num, lower, upper))
+}
+
 function min(a,b)
 {
 	return Math.min(a,b);
