@@ -7126,53 +7126,54 @@ function init_io() {
 			}
 		});
 		socket.on("buy", function (data) {
-			var player = players[socket.id];
-			var can_reach = false;
+			const player = players[socket.id];
 			if (!player || player.user) {
 				return fail_response("cant_in_bank");
 			}
-			var name = data.name;
-			var quantity = min(max(parseInt(data.quantity) || 0, 1), (G.items[name] && G.items[name].s) || 9999);
-			var cost = 0;
-			var added = false;
-			var done = false;
+
+			const name = data.name;
 			if (!can_buy[name] && gameplay != "test") {
 				return fail_response("buy_cant_npc");
 			}
-			if (!can_add_item(player, create_new_item(name, quantity))) {
+			// NOTE: because `can_buy` was checked, it's guaranteed to be in G.items
+
+			const quantity = clampInt(parseInt(data.quantity) || 0, 1, G.items[name]?.s || 9999);
+			const newItem = create_new_item(name, quantity);
+			if (!can_add_item(player, newItem)) {
 				return fail_response("buy_cant_space");
 			}
-			(G.maps[player.map].items[name] || []).forEach(function (l) {
+
+			let canReach = false;
+			for (const l of G.maps[player.map].items[name] || []) {
 				if (simple_distance(player, l) < B.sell_dist) {
-					can_reach = l;
+					canReach = l;
+					break;
 				}
-			});
-			if (player.computer && !can_reach) {
-				can_reach = G.maps.main.merchants[0];
 			}
-			if (!can_reach) {
-				return fail_response("distance");
+			if (!canReach) {
+				if (player.computer) {
+					canReach = G.maps.main.merchants[0];
+				} else {
+					return fail_response("distance");
+				}
 			}
-			can_reach.name = player.name;
-			var def = G.items[name];
-			if (!def.s) {
-				quantity = 1;
-			}
-			cost = quantity * G.items[name].g;
+			canReach.name = player.name;
+
+			let cost = quantity * G.items[name].g;
 			if (G.items[name].p2w) {
 				cost *= G.inflation;
 			}
 			if (player.gold < cost) {
 				return fail_response("buy_cost");
 			}
-			var new_item = create_new_item(name, quantity);
+
 			player.gold -= cost;
-			var num = add_item(player, new_item, { announce: false });
-			xy_emit(can_reach, "ui", {
+			const num = add_item(player, newItem, { announce: false });
+			xy_emit(canReach, "ui", {
 				type: "+$",
-				id: can_reach.id,
+				id: canReach.id,
 				name: player.name,
-				item: cache_item(new_item),
+				item: cache_item(newItem),
 				event: "buy",
 			});
 
