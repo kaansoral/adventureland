@@ -5823,7 +5823,7 @@ function init_io() {
 				if (grade == 4) {
 					return socket.emit("game_response", {
 						response: "max_level",
-						level: item.level,
+						level: (item.level || 0),
 						place: "compound",
 						failed: true,
 					});
@@ -5867,8 +5867,8 @@ function init_io() {
 				var igrade = def.igrade;
 				var high = false;
 				var grace_bonus = 0;
-				if (item0.level >= 3) {
-					igrade = calculate_item_grade(def, { name: item0.name, level: item0.level - 2 });
+				if ((item0.level || 0) >= 3) {
+					igrade = calculate_item_grade(def, { name: item0.name, level: (item0.level || 0) - 2 });
 				}
 
 				delete player.p.c_item;
@@ -5906,10 +5906,10 @@ function init_io() {
 					} else if (offering_def.grade == grade) {
 						probability = probability * 1.36 + min(30 * 0.027, grace);
 					} else if (offering_def.grade == grade - 1) {
-						probability = probability * 1.15 + min(25 * 0.019, grace) / max(item0.level - 2, 1);
+						probability = probability * 1.15 + min(25 * 0.019, grace) / max((item0.level || 0) - 2, 1);
 						increase = 0.2;
 					} else {
-						probability = probability * 1.08 + min(15 * 0.015, grace) / max(item0.level - 1, 1);
+						probability = probability * 1.08 + min(15 * 0.015, grace) / max((item0.level || 0) - 1, 1);
 						increase = 0.1;
 					}
 
@@ -5920,7 +5920,7 @@ function init_io() {
 					server_log("offering " + result + " < " + probability);
 				} else {
 					grace = 0.007 * ((item0.grace || 0) + (item1.grace || 0) + (item2.grace || 0) + player.p.ograce);
-					probability = probability + min(25 * 0.007, grace) / max(item0.level - 1, 1);
+					probability = probability + min(25 * 0.007, grace) / max((item0.level || 0) - 1, 1);
 					if (!data.calculate) {
 						item0.grace = max(max(item0.grace || 0, item1.grace || 0), item2.grace || 0);
 					}
@@ -5978,7 +5978,7 @@ function init_io() {
 					p: {
 						chance: probability,
 						name: item0.name,
-						level: item0.level,
+						level: (item0.level || 0),
 						scroll: scroll.name,
 						offering: offering && offering.name,
 						nums: [],
@@ -6012,7 +6012,7 @@ function init_io() {
 					if (item1.v || item2.v) {
 						item0.v = item1.v || item2.v;
 					}
-					if (item0.name == "ctristone" && item0.level == 1 && Math.random() < 0.012) {
+					if (item0.name == "ctristone" && (item0.level || 0) == 1 && Math.random() < 0.012) {
 						item0.name = "cdarktristone";
 					}
 					if (def.type == "booster") {
