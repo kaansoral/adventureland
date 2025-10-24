@@ -1,16 +1,7 @@
-var is_game = 0;
-var is_server = 0;
-var is_code = 0;
 var variables = require("./variables");
-var is_sdk = variables.is_sdk;
 var fs = require("fs");
-var precomputed = null;
 eval("" + fs.readFileSync(variables.cfunctions_path));
 eval("" + fs.readFileSync(variables.functions_path));
-var mode = {};
-var server_id = "precompute";
-var server_auth = "123456";
-var base_url = variables.base_url;
 
 appengine_call("reload_server", { keyword: variables.keyword }, function (result) {
 	if (result.failed) {
