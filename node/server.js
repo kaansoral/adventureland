@@ -2379,49 +2379,61 @@ function calculate_monster_score(player, monster, share) {
 }
 
 function issue_monster_awards(monster) {
-	var total = 0.1;
-	for (var name in monster.points) {
-		var current = players[name_to_id[name]];
+	let total = 0.1;
+
+	for (const [name, points] of Object.entries(monster.points)) {
+		const current = players[name_to_id[name]];
 		if (current) {
-			//  && current.map==monster.map
-			total += max(0, monster.points[name]);
+			total += Math.max(0, points);
 		}
 	}
-	for (var name in monster.points) {
-		var current = players[name_to_id[name]];
-		var share = max(0, monster.points[name]) / total;
-		if (current && share > 0.0025) {
-			//  && current.map==monster.map
-			if (monster.rbuff && G.conditions[monster.rbuff]) {
-				current.s[monster.rbuff] = { ms: G.conditions[monster.rbuff].duration };
-			}
-			if (monster.cbuff) {
-				for (var i = 0; i < monster.cbuff.length; i++) {
-					if (current.level <= monster.cbuff[i][0] && G.conditions[monster.cbuff[i][1]]) {
-						current.s[monster.cbuff[i][1]] = { ms: G.conditions[monster.cbuff[i][1]].duration };
-						break;
-					}
+
+	for (const [name, points] of Object.entries(monster.points)) {
+		const current = players[name_to_id[name]];
+		if (!current) continue;
+
+		let share = Math.max(0, points) / total;
+
+		if (share < 0.0025) continue;
+
+		if (!G.monsters[monster.type]["1hp"]) {
+			share = Math.min(1, (share - 0.0025) / 0.0275);
+		}
+
+		if (monster.rbuff && G.conditions[monster.rbuff]) {
+			current.s[monster.rbuff] = { ms: G.conditions[monster.rbuff].duration };
+		}
+
+		if (monster.cbuff) {
+			for (const [levelThreshold, condition] of monster.cbuff) {
+				if (current.level <= levelThreshold && G.conditions[condition]) {
+					current.s[condition] = { ms: G.conditions[condition].duration };
+					break;
 				}
 			}
-			if (G.monsters[monster.type]["1hp"]) {
-				drop_something(current, monster);
-			} else {
-				drop_something(current, monster, share);
-			}
-			var score = calculate_monster_score(current, monster, share);
-			current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
-			current.p.stats.monsters_diff[monster.type] = (current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
-			monster_hunt_logic(current, monster, share);
-			if (current.type == "merchant") {
-				continue;
-			}
-			current.xp += round(monster.xp * share * current.xpm);
-			if (current.t) {
-				current.t.xp += round(monster.xp * share * current.xpm);
-			}
-			delete current.s.coop;
-			resend(current, "u+cid");
 		}
+
+		if (G.monsters[monster.type]["1hp"]) {
+			drop_something(current, monster);
+		} else {
+			drop_something(current, monster, share);
+		}
+
+		const score = calculate_monster_score(current, monster, share);
+		current.p.stats.monsters[monster.type] = (current.p.stats.monsters[monster.type] || 0) + 1;
+		current.p.stats.monsters_diff[monster.type] =
+			(current.p.stats.monsters_diff[monster.type] || 0) + (score - 1);
+
+		monster_hunt_logic(current, monster, share);
+
+		if (current.type !== "merchant") {
+			const xpGain = Math.round(monster.xp * share * current.xpm);
+			current.xp += xpGain;
+			if (current.t) current.t.xp += xpGain;
+		}
+
+		delete current.s.coop;
+		resend(current, "u+cid");
 	}
 }
 
