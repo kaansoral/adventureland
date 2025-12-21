@@ -504,6 +504,7 @@ positions={
 	"xmasshoes":["",10,29],
 	"mittens":["",8,29],
 	"goldglove":["",10,2],
+	"orboftemporal":["custom",6,0],
 
 	#materials
 	"essenceoffrost":["",10,34],

@@ -65,6 +65,7 @@ var total_merchants = 0;
 var csold = [];
 var cfound = []; // cache of S.sold + S.found
 var monster_c = {}; // monster counts
+var monster_respawns = []; // [target,ms] array so they can be hastened [20/12/25]
 var pwns = [];
 var pend = 0;
 var tavern = {};
@@ -170,7 +171,7 @@ var mode = {
 };
 var events = {
 	// SEASONS
-	holidayseason: false,
+	holidayseason: true,
 	lunarnewyear: false,
 	valentines: false,
 	pinkgoo: 0, // every N minutes - 60
@@ -5823,7 +5824,7 @@ function init_io() {
 				if (grade == 4) {
 					return socket.emit("game_response", {
 						response: "max_level",
-						level: (item.level || 0),
+						level: item.level || 0,
 						place: "compound",
 						failed: true,
 					});
@@ -5978,7 +5979,7 @@ function init_io() {
 					p: {
 						chance: probability,
 						name: item0.name,
-						level: (item0.level || 0),
+						level: item0.level || 0,
 						scroll: scroll.name,
 						offering: offering && offering.name,
 						nums: [],
@@ -9271,6 +9272,24 @@ function init_io() {
 				player.gold += gold * rate;
 				resend(player, "reopen");
 				socket.emit("game_response", { response: "gold_received", gold: gold * rate });
+			} else if (data.name == "temporalsurge") {
+				var count = 0,
+					times = [];
+				for (var i = 0; i < monster_respawns.length; i++) {
+					if (distance(monster_respawns[i][0], player) < 160) {
+						monster_respawns[i][1] *= 0.85;
+						monster_respawns[i][1] -= 1000;
+						times.push(monster_respawns[i][1]);
+						xy_emit(
+							{ map: player.map, in: player.in, x: monster_respawns[i][0].x, y: monster_respawns[i][0].y },
+							"eval",
+							"assassin_smoke(" + monster_respawns[i][0].x + "," + monster_respawns[i][0].y + ",'icecrack');",
+						);
+						count++;
+					}
+				}
+				if (!count) socket.emit("game_response", "temporalsurge_none");
+				else socket.emit("game_response", { response: "temporalsurge", count: count, times: times });
 			}
 
 			if (cool) {
@@ -11128,15 +11147,17 @@ function remove_monster(target, args) {
 		if (target.map_def.grow && (target.map_def.live || 0) <= (target.map_def.count * 2) / 3) {
 			setTimeout(new_monster_f(target.oin, target.map_def, { before_respawn: target }), 25);
 		} else if (G.monsters[target.type].respawn > 200) {
-			setTimeout(
-				new_monster_f(target.oin, target.map_def, { before_respawn: target }),
-				round(G.monsters[target.type].respawn * (720 + Math.random() * 480)),
-			);
+			monster_respawns.push([target, round(G.monsters[target.type].respawn * (720 + Math.random() * 480))]);
+			//setTimeout(
+			//	new_monster_f(target.oin, target.map_def, { before_respawn: target }),
+			//	round(G.monsters[target.type].respawn * (720 + Math.random() * 480)),
+			//);
 		} else {
-			setTimeout(
-				new_monster_f(target.oin, target.map_def, { before_respawn: target }),
-				round(G.monsters[target.type].respawn * 1000 + Math.random() * 900),
-			);
+			monster_respawns.push([target, round(G.monsters[target.type].respawn * 1000 + Math.random() * 900)]);
+			//setTimeout(
+			//	new_monster_f(target.oin, target.map_def, { before_respawn: target }),
+			//	round(G.monsters[target.type].respawn * 1000 + Math.random() * 900),
+			//);
 		} // previously Math.random()*2000
 	}
 	var luckm = undefined;
@@ -13613,6 +13634,21 @@ setInterval(function () {
 		log_trace("#X mlevel loop error", e);
 	}
 }, 16000 / accel);
+
+setInterval(function () {
+	try {
+		for (var i = monster_respawns.length - 1; i >= 0; i--) {
+			monster_respawns[i][1] -= 10;
+			if (monster_respawns[i][1] < 0) {
+				var target = monster_respawns[i][0];
+				new_monster(target.oin, target.map_def, { before_respawn: target });
+				monster_respawns.splice(i, 1);
+			}
+		}
+	} catch (e) {
+		log_trace("#X monster respawn loop error", e);
+	}
+}, 10);
 
 setInterval(function () {
 	try {

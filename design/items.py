@@ -5453,7 +5453,7 @@ gems={
 		"a":True,
 		"s":True,
 		#"event":True,
-		#"quest":"mistletoe", #xmas
+		"quest":"mistletoe", #xmas
 	},
 	"candycane":{
 		"type":"gem",
@@ -5465,7 +5465,7 @@ gems={
 		"s":True,
 		"a":True,
 		#"event":True,
-		#"quest":"candycane", #xmas
+		"quest":"candycane", #xmas
 	},
 	"gift0":{
 		"type":"gem",
@@ -5794,7 +5794,7 @@ quest={
 		"g":3000,
 		"e":20,
 		"s":True,
-		#"quest":"ornament", #xmas
+		"quest":"ornament", #xmas
 	},
 	"lostearring":{
 		"type":"earring",
@@ -6323,6 +6323,20 @@ orbs={
 		"g":240000,
 		"grades":[0,2],
 		"edge":-2,
+	},
+	"orboftemporal":{
+		"set":"holidays",
+		"type":"orb",
+		"skin":"orboftemporal",
+		"ability":"temporalsurge",
+		"evasion":5,
+		"compound":{
+			"evasion":4,
+		},
+		"name":"Orb of Temporal Forces",
+		"g":1200000,
+		"grades":[0,0],
+		"a":True,
 	},
 	"orbofsc":{
 		"set":"holidays",
@@ -7016,7 +7030,7 @@ sets={
 	},
 	"holidays":{
 		"name":"Holiday Spirit",
-		"items":["xmashat","xmassweater","xmasshoes","xmaspants","mittens","supermittens","santasbelt","ornamentstaff","candycanesword","merry","orbofsc","mearring","xmace","ringhs","sweaterhs","wbookhs"],
+		"items":["xmashat","xmassweater","xmasshoes","xmaspants","mittens","supermittens","santasbelt","ornamentstaff","candycanesword","merry","orbofsc","mearring","xmace","ringhs","sweaterhs","wbookhs","orboftemporal"],
 		"explanation":"Every month is December with this set!",
 		"1":{
 		},

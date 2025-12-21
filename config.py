@@ -114,12 +114,13 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=829
+game_version=831
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Last Update [November 7th]",
-	"PR: Fix compounding of old items that are missing a .level attribute #205",
-]
+	"Happy Holidays!",
+	"Last Update [21st of December]",
+	"New Item: Orb of Temporal Forces",
+	]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
 	"35.246.244.105":"eu1",

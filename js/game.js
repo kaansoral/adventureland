@@ -1322,7 +1322,7 @@ function init_socket(args)
 		}
 		if(character.ctype=="merchant" || recording_mode || 1) options.show_names=true;
 		clear_game_logs(); add_log("Connected!");
-		// add_holiday_log();
+		if(S.holidayseason) add_holiday_log();
 		// add_greenlight_log();
 		if(gameplay=="hardcore")
 		{
@@ -2141,6 +2141,8 @@ function init_socket(args)
 			else if(response=="gold_use") ui_log("Used "+to_pretty_num(data.gold)+" gold","gray");
 			else if(response=="slots_success") ui_log("Machine went crazy","#9733FF");
 			else if(response=="slots_fail") ui_log("Machine got stuck","gray");
+			else if(response=="temporalsurge_none") ui_log("Temporal surge failed","gray");
+			else if(response=="temporalsurge") ui_log("Temporal surge hastened respawns!","gray");
 			else if(response=="craft")
 			{
 				var def=G.craft[data.name];

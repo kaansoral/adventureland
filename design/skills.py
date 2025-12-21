@@ -195,6 +195,15 @@ skills={
 		"mp":40,
 		"cooldown":200,
 	},
+	"temporalsurge":{
+		"type":"skill",
+		"skin":"orboftemporal",
+		"slot":[["orb","orboftemporal"]],
+		"name":"Temporal Surge",
+		"explanation":"Hasten nearby spawns 15% by tapping into temporal forces!",
+		"mp":1000,
+		"cooldown":60*1000,
+	},
 	"zapperzap":{
 		"type":"skill",
 		"skin":"trigger",

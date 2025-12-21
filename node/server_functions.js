@@ -275,6 +275,7 @@ function sprocess_game_data() {
 		D.drops.maps.global.push([0.0018, "mistletoe"]);
 		D.drops.maps.global.push([0.0005, "candycane"]);
 		D.drops.maps.global.push([0.0001, "open", "xN"]);
+		D.drops.maps.global.push([0.00000001, "orbofsc"]);
 	}
 
 	if (events.egghunt) {
