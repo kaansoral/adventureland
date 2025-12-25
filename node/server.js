@@ -11844,7 +11844,7 @@ function update_instance(instance) {
 					var hp = monster.hp;
 					var heal = monster.a.self_healing.heal;
 					if (monster.s.poisoned) {
-						heal /= 2;
+						heal = round(heal / 4);
 					}
 					monster.hp = min(monster.max_hp, monster.hp + heal);
 					if (hp != monster.hp) {
@@ -11859,7 +11859,7 @@ function update_instance(instance) {
 					var hp = target.hp;
 					var heal = monster.a.healing.heal;
 					if (target.s.poisoned) {
-						heal /= 2;
+						heal = round(heal / 4);
 					}
 					target.hp = min(target.max_hp, target.hp + heal);
 					if (hp != target.hp) {
