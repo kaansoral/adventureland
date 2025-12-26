@@ -9273,6 +9273,7 @@ function init_io() {
 				resend(player, "reopen");
 				socket.emit("game_response", { response: "gold_received", gold: gold * rate });
 			} else if (data.name == "temporalsurge") {
+				consume_mp(player, gSkill.mp);
 				var count = 0,
 					times = [];
 				for (var i = 0; i < monster_respawns.length; i++) {
