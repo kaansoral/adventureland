@@ -299,7 +299,7 @@ def disable_email(email,logging=None):
 	user.put()
 	logging.info("Disabled emails for %s"%user)
 
-def get_user(request=None,domain=None,email=None,phrase_check=False,api_override=None):
+def get_user(request=None,domain=None,email=None,phrase_check=False,api_override=None,auth=None):
 	if email:
 		try:
 			email=purify_email(email)
@@ -312,7 +312,7 @@ def get_user(request=None,domain=None,email=None,phrase_check=False,api_override
 		except:
 			logTrace()
 	elif request:
-		auth=get_cookie(request,"auth") or request.values.get("auth")
+		auth=get_cookie(request,"auth") or request.values.get("auth") or auth
 		if auth:
 			id,auth=auth.replace('"',"").split("-")
 			get_user_data(id,_async=True) #trigger the get

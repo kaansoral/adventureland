@@ -1,4 +1,4 @@
-runtime: python313
+runtime: python312
 app_engine_apis: true
 builtins:
 - deferred: on

@@ -3196,7 +3196,7 @@ function xy_upush_logic(element) {
 }
 
 function appengine_call(method, args, on_success, on_error) {
-	var api_path = "/api/" + method,
+	var api_path = "/json_api/" + method,
 		suffix = "";
 	if (
 		mode.prevent_external &&
@@ -3231,16 +3231,16 @@ function appengine_call(method, args, on_success, on_error) {
 		suffix = args.suffix;
 		delete args.suffix;
 	}
-	var arguments = JSON.stringify(args);
+	// var arguments = JSON.stringify(args);
 	var data = {
 		method: method,
-		arguments: arguments,
+		args: args,
 		server_auth: server_id + "-" + server_auth,
 		auth: args.auth,
 	};
-	if (suffix.includes("unmount")) console.log(arguments.length);
+	// if (suffix.includes("unmount")) console.log(arguments.length);
 	try {
-		request.post({ url: base_url + api_path, form: data }, function (err, response, body) {
+		request.post({ url: base_url + api_path, json: data }, function (err, response, body) {
 			try {
 				if (err || !response || response.statusCode != 200) {
 					// node.request sends an undefined response when there is an issue ...
@@ -3279,9 +3279,9 @@ function appengine_call(method, args, on_success, on_error) {
 						on_error("" + err + " " + (response && response.statusCode));
 					}
 				} else {
-					ct = JSON.parse(body);
+					if (typeof body === "string") body = JSON.parse(body);
 					if (on_success) {
-						on_success.apply(this, [ct]);
+						on_success.apply(this, [body]);
 					}
 				}
 			} catch (e) {

@@ -1689,8 +1689,9 @@ def delete_map_api(**args):
 	jhtml(self,[{"type":"success","message":"Done!"},selection_info(self,user,domain)])
 
 def test_api(**args):
-	self,user,server,domain=gdmuld(args,"self","user","server","domain")
+	self,user,server,domain,a=gdmuld(args,"self","user","server","domain","a")
 	logging.info("test")
+	logging.info(a)
 	jfunc(self,"alert",["lol"])
 	jhtmls(self,"test")
 
@@ -1718,15 +1719,15 @@ def server_api(name="",extra="",extra2=""):
 	domain=gdi(self)
 	server=get_server(self,domain)
 	args,method=gdmul(self,"arguments","method")
-	if security_threat(self,domain): return "security_threat"
+	if security_threat(self,domain): return jhtml(self,{"failed":1,"reason":"security_threat"})
 	user=get_user(self,domain,api_override=(server and method and method!="start_character")) # only "start_character" has an auth check, the rest doesn't re-check user auths #IMPORTANT! [09/08/20]
 	method="%s_api"%method
 	if args: args=json.loads(args)
 	if not args: args={}
 	logging.info("\n\nAPI Method Called: %s Arguments: %s\n"%(method,simplify_args_for_logging(args)))
 	if not user and method not in ["log_error_api","signup_or_login_api","load_article_api","get_server_api","test_api","create_server_api","stop_server_api","update_server_api","reload_server_api","set_friends_api","not_friends_api","password_reminder_api","server_event_api","reset_password_api","ban_user_api","send_mail_api","log_chat_api","take_item_from_mail_api","broadcast_api"]:
-		if self.values.get("server_auth"): jhtml(self,{"failed":1,"reason":"nouser"}); return "nouser"
-		jhtml(self,[{"type":"func","func":"add_log","args":["Not logged in."]}]); return "notloggedin"
+		if self.values.get("server_auth"): return jhtml(self,{"failed":1,"reason":"nouser"})
+		return jhtml(self,[{"type":"func","func":"add_log","args":["Not logged in."]}])
 	function=globals().get(method)
 	args["domain"]=domain
 	args["user"]=user
@@ -1739,4 +1740,46 @@ def server_api(name="",extra="",extra2=""):
 		else: logging.error("no function")
 	safe_commit(user); safe_commit(server); domain_routine(domain)
 	return request.response
+
+@app.route('/json_api', methods=['POST'])
+@app.route('/json_api/<name>', methods=['POST'])
+@app.route('/json_api/<name>/<extra>', methods=['POST'])
+@app.route('/json_api/<name>/<extra>/<extra2>', methods=['POST'])
+@ndb.toplevel
+def json_server_api(name="",extra="",extra2=""):
+	json_data = json.loads(request.data.decode('utf-8'))
+	args=json_data["args"]
+	method=json_data["method"]
+	self=request # [26/01/24] easier for now
+	domain=gdi(self)
+	server=None
+	if json_data.get("server_auth"):
+		#logging.info("here")
+		id,auth=json_data.get("server_auth").split("-")
+		s=get_by_iid("server|%s"%id)
+		if s and gf(s,"auth")==auth:
+			server=s
+		#logging.info(server)
+	if security_threat(self,domain): return jhtml(self,{"failed":1,"reason":"security_threat"})
+	user=get_user(self,domain,api_override=(server and method and method!="start_character"),auth=json_data.get("auth"))
+	# only "start_character" has an auth check, the rest doesn't re-check user auths #IMPORTANT! [09/08/20]
+	method="%s_api"%method
+	if not args: args={}
+	logging.info("\n\nAPI Method Called: %s Arguments: %s\n"%(method,simplify_args_for_logging(args)))
+	if not user and method not in ["log_error_api","signup_or_login_api","load_article_api","get_server_api","test_api","create_server_api","stop_server_api","update_server_api","reload_server_api","set_friends_api","not_friends_api","password_reminder_api","server_event_api","reset_password_api","ban_user_api","send_mail_api","log_chat_api","take_item_from_mail_api","broadcast_api"]:
+		if json_data.get("server_auth"): return jhtml(self,{"failed":1,"reason":"nouser"})
+		return jhtml(self,[{"type":"func","func":"add_log","args":["Not logged in."]}])
+	function=globals().get(method)
+	args["domain"]=domain
+	args["user"]=user
+	args["server"]=server
+	args["self"]=self
+	if user and not server and gf(user,"blocked_until",really_old)>datetime.now() and method not in ["logout_api_X"]: return jhtml(self,[{"type":"func","func":"add_log","args":["Blocked"]}])
+	if function: function(**args)
+	else:
+		if args.get("dataType")=="json": jhtml(self,[{"type":"ui_log","message":"Invalid method"}])
+		else: logging.error("no function")
+	safe_commit(user); safe_commit(server); domain_routine(domain)
+	return request.response
+
 

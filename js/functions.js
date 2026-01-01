@@ -5424,12 +5424,13 @@ function d_text(message,x,y,args)
 function api_call(method,args,r_args)
 {
 	if(!args) args={}; if(!r_args) r_args={};
-	var api_path="/api/"+method,disable=r_args.disable;
+	var api_path="/json_api/"+method,disable=r_args.disable;
 	if(args.ui_loader) { r_args.r_id=randomStr(10); delete args.ui_loader; }
 	if(args.callback) { r_args.callback=args.callback; delete args.callback; }
 	if(disable) disable.addClass("disable");
 	if(window.is_electron) args.epl=electron_data.platform;
-	data={ 'method':method, 'arguments':JSON.stringify(args) };
+	// data={ 'method':method, 'arguments':JSON.stringify(args) };
+	data={ 'method':method, 'args':args };
 	function on_success(r_args,disable) {
 		return function(ct) {
 			if(r_args.r_id) hide_loader(r_args.r_id);
@@ -5453,7 +5454,7 @@ function api_call(method,args,r_args)
 		}
 	}
 	if(r_args.r_id) show_loader(r_args.r_id);
-	call_args={type:'POST',dataType:"json",url:window.location.origin+api_path,data:data,success:on_success(r_args,disable),error:on_error(r_args,disable)}
+	call_args={type:'POST',dataType:"json",contentType: "application/json; charset=utf-8", url:window.location.origin+api_path,data:JSON.stringify(data),success:on_success(r_args,disable),error:on_error(r_args,disable)}
 	$.ajax(call_args);
 	if(r_args.promise)
 	{
