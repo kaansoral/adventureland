@@ -121,7 +121,7 @@ update_notes=[
 	"Last Update [1st of January]",
 	"New Item: Orb of Temporal Forces",
 	"New JSON API to save bandwidth (Internal)",
-	"(Slight change something might break)"
+	"(Slight chance something might break)"
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
