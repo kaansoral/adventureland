@@ -2686,57 +2686,40 @@ function add_item_property(item, prop) {
 	item.p = prop;
 }
 
-function add_condition(target, condition, args) {
-	var def = G.conditions[condition];
+function add_condition(target, condition, args = {}) {
+	const def = G.conditions[condition];
 	if (!def) {
 		return;
 	}
-	if (!args) {
-		args = {};
-	}
-	var response = { response: "condition", name: condition, cevent: true };
-	var duration = args.duration || args.ms || def.duration;
+
+	let duration = args.duration || args.ms || def.duration || 1000;
+
 	if (def.defense) {
-		if (Math.random() < (target[def.defense] || 0) / 100.0) {
-			return xy_emit(target, "ui", { type: condition + "_resist", id: target.id });
+		const defAttr = target[def.defense] || 0;
+		if (defAttr > 0) {
+			// Chance to resist the condition altogether
+			if (Math.random() < defAttr / 100.0) {
+				return xy_emit(target, "ui", { type: condition + "_resist", id: target.id });
+			}
+
+			// Reduce duration by the amount of defense we have
+			duration *= (100 - defAttr) / 100.0;
 		}
 	}
-	// if (def.tag === "stun") {
-	// 	if (Math.random() < (target.phresistance || 0) / 100.0) {
-	// 	}
-	// } else if (def.tag === "burn") {
-	// 	if (Math.random() < (target.firesistance || 0) / 100.0) {
-	// 		return xy_emit(target, "ui", { type: "fire_resist", id: target.id });
-	// 	}
-	// } else if (def.tag === "poison") {
-	// 	if (Math.random() < (target.pnresistance || 0) / 100.0) {
-	// 		return xy_emit(target, "ui", { type: "poison_resist", id: target.id });
-	// 	}
-	// } else if (def.tag === "freeze") {
-	// 	if (Math.random() < (target.fzresistance || 0) / 100.0) {
-	// 		return xy_emit(target, "ui", { type: "freeze_resist", id: target.id });
-	// 	}
-	// }
-	if (duration == undefined) {
-		duration = 1000;
-	}
-	var C = { ms: duration };
-	if (condition == "poisoned" && target.pnresistance) {
-		duration *= (100 - target.pnresistance) / 100.0;
-	}
-	if (condition == "stunned") {
+
+	/** The condition object that will be placed on target.s */
+	const C = {};
+
+	if (condition === "stunned") {
 		target.abs = true;
 		target.moving = false;
 		disappearing_text(target.socket, target, "STUN!", { xy: 1, size: "huge", color: "stun", nv: 1 });
-	}
-	if (condition == "frozen") {
+	} else if (condition === "frozen") {
 		disappearing_text(target.socket, target, "FREEZE!", { xy: 1, size: "huge", color: "freeze", nv: 1 });
-	}
-	if (condition == "poisoned") {
+	} else if (condition === "poisoned") {
 		disappearing_text(target.socket, target, "POISON!", { xy: 1, color: "poison", nv: 1 });
-	}
-	if (condition == "burned") {
-		let scale = 1.0 - (target.firesistance || 0) / 100.0;
+	} else if (condition === "burned") {
+		const scale = 1.0 - (target.firesistance || 0) / 100.0;
 		duration = 5000;
 		if (!args.attack) {
 			args.attack = 1000;
@@ -2755,18 +2738,23 @@ function add_condition(target, condition, args) {
 			parseInt((scale * ((target.s.burned && target.s.burned.intensity) || 0)) / (args.divider || 3) + args.attack),
 		);
 		C.fid = args.fid;
-		disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 }); //target.is_player&&"huge"||undefined
-	}
-	if (condition == "woven") {
+		disappearing_text({}, target, "BURN!", { xy: 1, size: "huge", color: "burn", nv: 1 });
+	} else if (condition === "woven") {
 		C.s = min((target.is_monster && 20) || 5, (target.s.woven && target.s.woven.s + 1) || 1);
 		C.speed = -3 * C.s;
 	}
-	duration = max((target.s[condition] && target.s[condition].ms) || 0, duration);
+
 	if (target.stresistance && def && def.debuff) {
+		// stresistance reduces the duration of all debuffs
 		duration *= (100 - target.stresistance) / 100.0;
 	}
-	target.s[condition] = C;
-	C.ms = response.duration = duration;
+
+	// If the character currently has the condition for longer than we want to set a new one for, keep its current duration
+	duration = max((target.s[condition] && target.s[condition].ms) || 0, duration);
+
+	const response = { response: "condition", name: condition, cevent: true };
+
+	C.ms = duration;
 	server_log(C);
 	if (args.from) {
 		C.f = args.from.name;
@@ -2777,6 +2765,8 @@ function add_condition(target, condition, args) {
 	if (C.f) {
 		response.from = C.f;
 	}
+
+	target.s[condition] = C;
 	target.cid++;
 	target.u = true;
 	if (target.socket) {
