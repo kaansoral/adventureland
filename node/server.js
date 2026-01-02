@@ -2736,6 +2736,7 @@ function commence_attack(attacker, target, atype) {
 	var mp_cost = 0;
 	var info = {
 		apiercing: 0,
+		rpiercing: 0,
 		damage_type: attacker.damage_type,
 		heal: false,
 		lines: true,
@@ -3142,10 +3143,15 @@ function complete_attack(attacker, target, info) {
 		defense = "none_existent";
 		pierce = "non_existent";
 		info.apiercing = 0;
+		info.rpiercing = 0;
 	} else if (info.damage_type == "magical") {
 		defense = "resistance";
 		pierce = "rpiercing";
 		info.apiercing = 0;
+	} else if(info.damage_type == "physical") {
+		defense = "armor";
+		pierce = "apiercing";
+		info.rpiercing = 0;
 	} else {
 		info.damage_type = "physical";
 	}
@@ -3437,7 +3443,7 @@ function complete_attack(attacker, target, info) {
 				i_attack = attack = ceil(combo_m * attack * (0.9 + ((attack && Math.random() * 0.2) || 0)));
 				attack =
 					ceil(
-						attack * dmg_mult * damage_multiplier((target[defense] || 0) - (attacker[pierce] || 0) - info.apiercing),
+						attack * dmg_mult * damage_multiplier((target[defense] || 0) - (attacker[pierce] || 0) - info[pierce]),
 					) || 0;
 
 				if (target.incdmgamp) {
