@@ -1177,6 +1177,7 @@ monsters={
 		"spawns":[[200,"nerfedbat"]],
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","vit",2],
 			[100000,"stat","courage",1],
 		],
@@ -1191,6 +1192,7 @@ monsters={
 		},
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","evasion",1]
 		],
 		"poisonous":True,
@@ -1207,6 +1209,7 @@ monsters={
 		},
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","vit",2],
 		],
 		"humanoid":True,
@@ -1220,6 +1223,7 @@ monsters={
 		"spawns":[[1600,"zapper0"]],
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","reflection",1],
 		],
 	},
@@ -1235,6 +1239,7 @@ monsters={
 		"supporter":True,
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","vit",2],
 		],
 	},
@@ -1253,6 +1258,7 @@ monsters={
 		},
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","speed",1],
 		],
 		"humanoid":True,
@@ -1268,6 +1274,7 @@ monsters={
 		},
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","vit",2],
 		],
 		"humanoid":True,
@@ -1282,6 +1289,7 @@ monsters={
 		},
 		"achievements":[
 			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
 			[1000,"stat","output",1],
 		],
 		"humanoid":True,
