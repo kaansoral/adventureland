@@ -8657,7 +8657,9 @@ function init_io() {
 				data.name == "mcourage" ||
 				data.name == "mfrenzy" ||
 				data.name == "massproduction" ||
-				data.name == "massproductionpp"
+				data.name == "massproductionpp" ||
+				data.name == "massexchange" ||
+				data.name == "massexchangepp"
 			) {
 				consume_mp(player, gSkill.mp);
 				player.s[gSkill.condition] = { ms: G.conditions[gSkill.condition].duration };
