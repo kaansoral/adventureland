@@ -380,7 +380,7 @@ skills={
 		"class":["merchant"],
 		"name":"Mass Exchange",
 		"explanation":"Adds a 1-time use buff that speeds up the next exchange by 50%. The buff expires in 10 seconds if not used.",
-		"level":70,
+		"level":40,
 		"mp":30,
 		"cooldown":50,
 	},
