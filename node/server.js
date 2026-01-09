@@ -7402,11 +7402,14 @@ function init_io() {
 			if (item.b) {
 				return fail_response("item_blocked", { num: data.num });
 			}
+			if (data.statue && !player.computer && simple_distance(player, G.maps.spookytown.ref.poof) > B.sell_dist) {
+				return fail_response("distance");
+			}
 			if (item.level != 13) {
 				consume(player, data.num, data.q);
 				//player.items[data.num]=player.citems[data.num]=null;
 			}
-			if (data.statue && distance(player, G.maps.spookytown.ref.poof) < B.sell_dist) {
+			if (data.statue) {
 				var grade = (calculate_item_grade(G.items[name]) || 0) + 1;
 				if (item.name == "shadowstone") {
 					add = "+u+cid";
