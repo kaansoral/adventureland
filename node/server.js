@@ -5602,7 +5602,17 @@ function init_io() {
 			player.p.stats.exchanges[dropId] = (player.p.stats.exchanges[dropId] || 0) + 1;
 			consume(player, data.item_num, def.e);
 			const num = add_item(player, "placeholder");
-			const ms = gameplay === "hardcore" ? 400 : 3000 + Math.floor(Math.random() * 3000);
+			let ms = gameplay === "hardcore" ? 400 : 3000 + Math.floor(Math.random() * 3000);
+			if (player.s.massexchange) {
+				ms /= 2;
+				delete player.s.massexchange;
+				ex = "+u+cid";
+			}
+			if (player.s.massexchangepp) {
+				ms /= 10;
+				delete player.s.massexchangepp;
+				ex = "+u+cid";
+			}
 			player.q.exchange = { ms: ms, len: ms, name: item.name, id: dropId, q: def.e, num: num };
 			if (suffix) {
 				player.q.exchange.s = suffix;
