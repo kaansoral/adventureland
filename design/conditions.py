@@ -197,6 +197,22 @@ conditions={
 		"buff":True,
 		"ui":True,
 	},
+	"massexchange":{
+		"skin":"skill_massexchange",
+		"name":"Mass exchange",
+		"explanation": "Reduces the time of your next exchange or compound by 50%.",
+		"duration":10*1000,
+		"buff":True,
+		"ui":True,
+	},
+	"massexchangepp":{
+		"skin":"skill_massexchangepp",
+		"name":"Mass exchange++",
+		"explanation": "Reduces the time of your next exchange or compound by 90%.",
+		"duration":10*1000,
+		"buff":True,
+		"ui":True,
+	},
 	"darkblessing":{
 		"skin":"skill_dbuff",
 		"name":"Dark Blessing",
