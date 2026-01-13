@@ -2392,6 +2392,9 @@ function issue_monster_awards(monster) {
 		var current = players[name_to_id[name]];
 		var share = max(0, monster.points[name]) / total;
 		if (current && share > 0.0025) {
+			current.socket.emit("kill_credit", {
+				mtype: monster.type,
+			});
 			//  && current.map==monster.map
 			if (monster.rbuff && G.conditions[monster.rbuff]) {
 				current.s[monster.rbuff] = { ms: G.conditions[monster.rbuff].duration };
@@ -2438,6 +2441,10 @@ function issue_monster_award(monster) {
 	stats.kills[monster.type]++;
 	drop_something(player, monster);
 	if (!player.party) {
+		player.socket.emit("kill_credit", {
+			mtype: monster.type,
+		});
+
 		if (monster.rbuff && G.conditions[monster.rbuff]) {
 			player.s[monster.rbuff] = { ms: G.conditions[monster.rbuff].duration };
 		}
@@ -2470,6 +2477,10 @@ function issue_monster_award(monster) {
 		// xp=round(xp);
 		parties[player.party].forEach(function (name) {
 			var current = players[name_to_id[name]];
+			if (!current) return;
+			current.socket.emit("kill_credit", {
+				mtype: monster.type,
+			});
 			var cxp = round(xp * current.xpm * current.share);
 			if (monster.rbuff && G.conditions[monster.rbuff]) {
 				current.s[monster.rbuff] = { ms: G.conditions[monster.rbuff].duration };
