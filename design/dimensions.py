@@ -472,6 +472,8 @@ positions={
 	"skill_throw":["skills",1,5],
 	"skill_massproduction":["skills",2,5],
 	"skill_massproductionpp":["skills",3,5],
+	"skill_massexchange":["skills",4,5],
+	"skill_massexchangepp":["skills",5,5],
 
 	#paladin
 	"skill_mshield":["skills",0,11],
