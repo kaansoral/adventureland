@@ -1140,6 +1140,12 @@ monsters={
 		"name":"Protector of Fire","speed":24,"charge":84,"hp":2800000,"xp":720000,"attack":1120,"damage_type":"magical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.46,"aggro":1,"rage":0,
 		"slots":{"mainhand":{"name":"firestaff","level":12}},
 		"abilities":{"burn":{"unlimited":True,"attr0":100}},
+		"achievements":[
+			[1,"stat","fireresistance",1],
+			[10,"stat","fireresistance",1],
+			[100,"stat","fireresistance",1],
+			[1000,"stat","fireresistance",2],
+		],
 	},
 	"ggreenpro":{
 		"name":"Protector of Nature","speed":24,"charge":84,"hp":3200000,"xp":10800000,"attack":1220,"damage_type":"physical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.66,"aggro":1,"rage":0,
@@ -1148,12 +1154,24 @@ monsters={
 			"tangle":{"cooldown":1600},
 			"self_healing":{"heal":2400,"cooldown":2000},
 		},
+		"achievements":[
+			[1,"stat","pnresistance",1],
+			[10,"stat","pnresistance",1],
+			[100,"stat","pnresistance",1],
+			[1000,"stat","pnresistance",2],
+		],
 	},
 	"gbluepro":{
 		"name":"Protector of Frost","speed":24,"charge":84,"hp":2400000,"xp":3600000,"attack":820,"damage_type":"magical","hit":"explode_c","respawn":-1,"gold":10000,"range":948,"frequency":1.26,"aggro":1,"rage":0,
 		#"cooperative":True,
 		"slots":{"mainhand":{"name":"froststaff","level":12}},
 		"abilities":{"multi_freeze":{"cooldown":4000,"damage":800}},
+		"achievements":[
+			[1,"stat","fzresistance",1],
+			[10,"stat","fzresistance",1],
+			[100,"stat","fzresistance",1],
+			[1000,"stat","fzresistance",2],
+		],
 		#"article":"event-mae",
 	},
 	"gpurplepro":{
@@ -1165,6 +1183,12 @@ monsters={
 			"anger":{"cooldown":12000,"radius":300},
 			"warpstomp":{"cooldown":8000,"radius":100,"stun":1000},
 		},
+		"achievements":[
+			[1,"stat","phresistance",1],
+			[10,"stat","phresistance",1],
+			[100,"stat","phresistance",1],
+			[1000,"stat","phresistance",2],
+		],
 		#"article":"event-mae",
 	},
 	#crypt
