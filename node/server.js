@@ -2893,7 +2893,7 @@ function commence_attack(attacker, target, atype) {
 		mp_cost = parseInt(attacker.mp_cost * mp_mult);
 		attack = attacker.attack * att_mult;
 	} else if (atype == "piercingshot") {
-		info.apiercing = 500;
+		info.apiercing = 250;
 		attack = attacker.attack * 0.75;
 	} else if (atype == "partyheal") {
 		if (attacker.level >= 80) {
@@ -3396,7 +3396,7 @@ function complete_attack(attacker, target, info) {
 					B.heal_multiplier *
 						attack *
 						(0.9 + Math.random() * 0.2) *
-						damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
+						damage_multiplier(((target[defense] || 0) - 2 * (info[pierce] || 0)) / 2.0),
 				);
 				if (target.s.poisoned) {
 					attack = round(attack * 0.25);
@@ -3454,7 +3454,7 @@ function complete_attack(attacker, target, info) {
 				i_attack = attack = ceil(combo_m * attack * (0.9 + ((attack && Math.random() * 0.2) || 0)));
 				attack =
 					ceil(
-						attack * dmg_mult * damage_multiplier((target[defense] || 0) - (attacker[pierce] || 0) - info[pierce]),
+						attack * dmg_mult * damage_multiplier((target[defense] || 0) - 2 * (info[pierce] || 0)),
 					) || 0;
 
 				if (target.incdmgamp) {
