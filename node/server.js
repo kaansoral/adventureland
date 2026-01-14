@@ -3235,7 +3235,7 @@ function complete_attack(attacker, target, info) {
 	} else if (
 		target.dc ||
 		target.dead ||
-		(attacker.miss && Math.random() * 100 < attacker.miss) ||
+		(info.miss && Math.random() * 100 < info.miss) ||
 		(target.avoidance && Math.random() * 100 < target.avoidance)
 	) {
 		return xy_emit(
