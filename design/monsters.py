@@ -1199,6 +1199,13 @@ monsters={
 		"slots":{"mainhand":{"name":"vstaff","level":10}},
 		"humanoid":True,
 		"spawns":[[200,"nerfedbat"]],
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","vit",2],
+			[5000,"stat","gold",0.25],
+			[100000,"stat","courage",1],
+		],
 	},
 	"a2":{
 		"name":"Bill","speed":32,"charge":96,"hp":420000,"xp":1200000,"difficulty":8,"attack":2240,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":1.4,"aggro":1,"rage":1,"roam":True,
@@ -1208,6 +1215,12 @@ monsters={
 		"abilities":{
 			"anger":{"cooldown":8000,"radius":300},
 		},
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","evasion",1],
+			[5000,"stat","gold",0.25],
+		],
 		"poisonous":True,
 		"humanoid":True,
 	},
@@ -1220,6 +1233,12 @@ monsters={
 		"abilities":{
 			"anger":{"cooldown":8000,"radius":300}
 		},
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","vit",2],
+			[5000,"stat","gold",0.25],
+		],
 		"humanoid":True,
 	},
 	"a4":{
@@ -1229,6 +1248,12 @@ monsters={
 		"slots":{"mainhand":{"name":"scythe","level":9}},
 		"humanoid":True,
 		"spawns":[[1600,"zapper0"]],
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","reflection",1],
+			[5000,"stat","gold",0.25],
+		],
 	},
 	"a5":{
 		"name":"Elena","speed":32,"charge":76,"hp":230000,"xp":1200000,"difficulty":8,"attack":240,"damage_type":"magical","respawn":-1,"gold":120000,"range":135,"frequency":0.3,"aggro":1,"rage":1,"roam":True,
@@ -1240,6 +1265,12 @@ monsters={
 		"slots":{"mainhand":{"name":"lmace","level":10}},
 		"humanoid":True,
 		"supporter":True,
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","vit",2],
+			[5000,"stat","gold",0.25],
+		],
 	},
 	"a6":{
 		"name":"Marceline","speed":32,"charge":86,"hp":320000,"xp":880000,"difficulty":8,"attack":8960,"damage_type":"physical","respawn":-1,"gold":120000,"range":35,"frequency":2,"aggro":1,"rage":1,"roam":True,
@@ -1254,6 +1285,12 @@ monsters={
 				"cooldown":4000,
 			}
 		},
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","speed",1],
+			[5000,"stat","gold",0.25],
+		],
 		"humanoid":True,
 	},
 	"a7":{
@@ -1265,6 +1302,12 @@ monsters={
 			"dampening_aura":{"radius":300,"cooldown":180,"aura":True,"condition":"dampened"},
 			"mlight":{"cooldown":3000},
 		},
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","vit",2],
+			[5000,"stat","gold",0.25],
+		],
 		"humanoid":True,
 	},
 	"a8":{
@@ -1275,6 +1318,12 @@ monsters={
 		"abilities":{
 			"curse_aura":{"radius":300,"cooldown":4000,"aura":True,"condition":"cursed"},
 		},
+		"achievements":[
+			[10,"stat","hp",50],
+			[100,"stat","lifesteal",0.125],
+			[1000,"stat","output",1],
+			[5000,"stat","gold",0.25],
+		],
 		"humanoid":True,
 	},
 	"vbat":{
