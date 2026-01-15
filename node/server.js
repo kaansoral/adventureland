@@ -8570,7 +8570,7 @@ function init_io() {
 				xy_emit(player, "disappear", { id: player.id, invis: true, reason: "invis" });
 				player.to_resend = " ";
 			} else if (data.name == "pickpocket") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				player.c[data.name] = {
 					ms: gSkill.duration_min + Math.random() * (gSkill.duration_max - gSkill.duration_min),
 					target: target.name,
@@ -8989,12 +8989,12 @@ function init_io() {
 			} else if (data.name == "absorb") {
 				var ids = [];
 				if (is_same(player, target, 1)) {
-					consume_mp(player, gSkill.mp);
+					consume_mp(player, gSkill.mp, target);
 				} else {
 					if (player.mp < gSkill.mp * 6 || player.level < 75) {
 						return socket.emit("game_response", { response: "non_friendly_target", place: data.name, failed: true });
 					}
-					consume_mp(player, gSkill.mp * 6);
+					consume_mp(player, gSkill.mp * 6, target);
 					if (Math.random() < 0.95) {
 						consume_skill(player, data.name);
 						resend(player, "u+cid");
@@ -9084,7 +9084,7 @@ function init_io() {
 				xy_emit(player, "ui", { type: "huntersmark", name: player.name, id: target.id });
 				player.to_resend = "u+cid";
 			} else if (data.name == "charm") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				if (Math.random() > player.a.charm.attr0 / 100) {
 					socket.emit("game_response", "charm_failed");
 					xy_emit(player, "ui", { type: "charm", name: player.name, id: target.id, fail: true });
@@ -9220,7 +9220,7 @@ function init_io() {
 				player.to_resend = "u+cid";
 				// #TODO: Appear animation for non-self's [21/05/18]
 			} else if (data.name == "mluck") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				if (
 					!target.s[gSkill.condition] ||
 					!target.s[gSkill.condition].strong ||
@@ -9235,7 +9235,7 @@ function init_io() {
 				resend(target, "u+cid");
 				resend(player, "u+cid");
 			} else if (data.name == "rspeed") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				target.s[gSkill.condition] = { ms: G.conditions.rspeed.duration, f: player.name };
 				xy_emit(player, "ui", { type: "rspeed", from: player.name, to: target.name });
 				resend(target, "u+cid");
@@ -9244,7 +9244,7 @@ function init_io() {
 					add_pdps(player, target, 2000);
 				}
 			} else if (data.name == "reflection") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				target.s[gSkill.condition] = { ms: G.conditions.reflection.duration, f: player.name };
 				xy_emit(player, "ui", { type: "reflection", from: player.name, to: target.name });
 				resend(target, "u+cid");
