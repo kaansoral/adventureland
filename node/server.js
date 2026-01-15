@@ -9149,7 +9149,7 @@ function init_io() {
 					resolve = c_resolve;
 				}
 			} else if (data.name == "magiport") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, target);
 				if (!is_pvp && mode.pve_safe_magiports) {
 					if (!magiportations[player.name]) {
 						magiportations[player.name] = {};
