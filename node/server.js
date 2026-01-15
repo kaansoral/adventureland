@@ -171,7 +171,7 @@ var mode = {
 };
 var events = {
 	// SEASONS
-	holidayseason: true,
+	holidayseason: false,
 	lunarnewyear: false,
 	valentines: false,
 	pinkgoo: 0, // every N minutes - 60
@@ -3159,7 +3159,7 @@ function complete_attack(attacker, target, info) {
 		defense = "resistance";
 		pierce = "rpiercing";
 		info.apiercing = 0;
-	} else if(info.damage_type == "physical") {
+	} else if (info.damage_type == "physical") {
 		defense = "armor";
 		pierce = "apiercing";
 		info.rpiercing = 0;

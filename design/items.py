@@ -5453,7 +5453,7 @@ gems={
 		"a":True,
 		"s":True,
 		#"event":True,
-		"quest":"mistletoe", #xmas
+		#"quest":"mistletoe", #xmas
 	},
 	"candycane":{
 		"type":"gem",
@@ -5465,7 +5465,7 @@ gems={
 		"s":True,
 		"a":True,
 		#"event":True,
-		"quest":"candycane", #xmas
+		#"quest":"candycane", #xmas
 	},
 	"gift0":{
 		"type":"gem",
@@ -5794,7 +5794,7 @@ quest={
 		"g":3000,
 		"e":20,
 		"s":True,
-		"quest":"ornament", #xmas
+		#"quest":"ornament", #xmas
 	},
 	"lostearring":{
 		"type":"earring",
