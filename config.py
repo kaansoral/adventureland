@@ -114,14 +114,15 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=833
+game_version=834
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Happy Holidays!",
-	"Last Update [1st of January]",
-	"New Item: Orb of Temporal Forces",
-	"New JSON API to save bandwidth (Internal)",
-	"(Slight chance something might break)"
+	"Last Update [15th of January]",
+	"PR: Bring resistance piercing to parity with armor piercing #204",
+	"PR: Mass exchange #216",
+	"PR: add achievements to protectors #213",
+	"PR: New kill_credit emit #215",
+	"PR: add crypt monster achievements #214",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
