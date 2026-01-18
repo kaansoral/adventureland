@@ -156,6 +156,7 @@ skills={
 		"projectile":"snowball",
 		"target":True,
 		"merchant_use":True,
+		"damage_type":"pure",
 	},
 	"scare":{
 		"type":"skill",
