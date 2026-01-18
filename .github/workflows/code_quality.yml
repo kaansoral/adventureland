@@ -1,17 +1,12 @@
 name: Code Quality
-
-on:
-  - pull_request
-  - push
+on: [push, pull_request]
 
 jobs:
-  eslint:
+  prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
         working-directory: node
-      - name: Run ESLint
-        run: npm run lint
+      - run: npx prettier --check .
         working-directory: node
