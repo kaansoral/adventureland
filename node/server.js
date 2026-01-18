@@ -11260,6 +11260,12 @@ function new_monster(instance, map_def, args) {
 	if (G.dimensions[name]) {
 		monster.width = G.dimensions[name][0];
 		monster.height = G.dimensions[name][1];
+	} else {
+		monster.width = monster.height = 24;
+	}
+	if (G.monsters[monster.type].size) {
+		monster.width = Math.round(monster.width * G.monsters[monster.type].size);
+		monster.height = Math.round(monster.height * G.monsters[monster.type].size);
 	}
 	set_base(monster);
 
@@ -11358,7 +11364,6 @@ function new_monster(instance, map_def, args) {
 	if (mode.range_test) {
 		monster.range = 2000;
 	}
-	monster.width = monster.height = 24;
 	if (args.temp) {
 		monster.temp = 1;
 	}
