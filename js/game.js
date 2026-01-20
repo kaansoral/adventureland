@@ -3096,13 +3096,13 @@ function init_socket(args)
 	});
 	socket.on('death',function(data){
 		// unused now
-		if(data.place) reject_deferred(data.place,{reason:data.reason||"not_found"});
+		if(data.place) reject_deferred(data.place,{place:data.place,reason:data.reason||"not_found"});
 		call_code_function("trigger_event","death",data);
 		data.death=true;
 		on_disappear(data);
 	});
 	socket.on("disappear",function(data){
-		if(data.place) reject_deferred(data.place,{reason:data.reason||"not_found"});
+		if(data.place) reject_deferred(data.place,{place:data.place,reason:data.reason||"not_found"});
 		on_disappear(data);
 	});
 	socket.on('entities',function(data){
