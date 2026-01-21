@@ -564,10 +564,10 @@ function http_handler(request, response) {
 }
 
 function player_to_server(player, place) {
-	var char = {};
-	for (prop in player) {
+	const char = {};
+	for (const prop in player) {
 		if (
-			!in_arr(prop, [
+			![
 				"auth",
 				"last_sync",
 				"socket",
@@ -580,7 +580,7 @@ function player_to_server(player, place) {
 				"height",
 				"u",
 				"user",
-			])
+			].includes(prop)
 		) {
 			char[prop] = player[prop];
 		}
@@ -1551,7 +1551,7 @@ function can_equip_item(player, item, slot) {
 		return slot;
 	}
 	if (
-		!in_arr(item.type, [
+		![
 			"helmet",
 			"pants",
 			"chest",
@@ -1569,14 +1569,14 @@ function can_equip_item(player, item, slot) {
 			"cape",
 			"misc_offhand",
 			"tool",
-		])
+		].includes(item.type)
 	) {
 		return "no";
 	}
-	if (slot != item.type && in_arr(item.type, ["shield", "source", "quiver", "misc_offhand"]) && slot != "offhand") {
+	if (slot != item.type && ["shield", "source", "quiver", "misc_offhand"].includes(item.type) && slot != "offhand") {
 		return "no";
 	}
-	if (in_arr(slot, ["weapon", "mainhand", "offhand", "tool"])) {
+	if (["weapon", "mainhand", "offhand", "tool"].includes(slot)) {
 		if (
 			slot == "weapon" &&
 			player.slots.mainhand &&
@@ -1594,6 +1594,7 @@ function can_equip_item(player, item, slot) {
 			slot = "offhand";
 		} else if (slot == "weapon" || slot == "mainhand") {
 			if (class_def.doublehand[item.wtype] && !player.slots.offhand) {
+				// Doublehand, with nothing equipped offhand, is valid
 			} else if (!class_def.mainhand[item.wtype]) {
 				return "no";
 			}
@@ -1630,6 +1631,7 @@ function can_equip_item(player, item, slot) {
 		}
 	} else if (item.type == "ring") {
 		if (slot == "ring1" || slot == "ring2") {
+			// Valid ring slot
 		} else if (!player.slots["ring1"]) {
 			slot = "ring1";
 		} else {
@@ -1637,6 +1639,7 @@ function can_equip_item(player, item, slot) {
 		}
 	} else if (item.type == "earring") {
 		if (slot == "earring1" || slot == "earring2") {
+			// Valid earring slot
 		} else if (!player.slots["earring1"]) {
 			slot = "earring1";
 		} else {
@@ -3847,13 +3850,13 @@ function resend(player, events) {
 		player.gold = 0;
 		server_log("#X - GOLD BUG resend", 1);
 	}
-	events = (events && events.split && events.split("+")) || [];
+	events = events?.split("+") || [];
 	delete player.to_resend;
-	if (in_arr("u", events)) {
+	if (events.includes("u")) {
 		add_call_cost(call_modifier);
 		player.u = true;
 	}
-	if (in_arr("cid", events)) {
+	if (events.includes("cid")) {
 		player.cid++;
 	}
 	// if(in_arr("inv",events)) no longer needed as both add_item and consume has .esize updates [18/10/18]
@@ -3862,7 +3865,7 @@ function resend(player, events) {
 	// 	for(var i=0;i<player.items.length;i++) if(!player.items[i]) player.esize++;
 	// 	player.esize+=player.isize-player.items.length;
 	// }
-	if (!in_arr("nc", events)) {
+	if (events.includes("nc")) {
 		add_call_cost(call_modifier);
 		calculate_player_stats(player);
 	}
@@ -3871,7 +3874,7 @@ function resend(player, events) {
 		data.hitchhikers = player.hitchhikers;
 		player.hitchhikers = [];
 	}
-	if (in_arr("reopen", events) || player.to_reopen) {
+	if (events.includes("reopen") || player.to_reopen) {
 		if (current_socket != player.socket) {
 			add_call_cost(call_modifier * 4);
 		}
@@ -5169,7 +5172,7 @@ function init_io() {
 					if (current.skip || current.rskip) {
 						continue;
 					}
-					if (!in_arr(current.type, ["body", "head", "hair", "s_wings", "hat"])) {
+					if (!["body", "head", "hair", "s_wings", "hat"].includes(current.type)) {
 						continue;
 					}
 					for (var i = 0; i < matrix.length; i++) {
@@ -5753,7 +5756,7 @@ function init_io() {
 				return fail_response("no_item");
 			}
 			var def = G.items[item.name];
-			if (in_arr(def.type, ["uscroll", "cscroll", "pscroll", "offering", "tome"])) {
+			if (["uscroll", "cscroll", "pscroll", "offering", "tome"].includes(def.type)) {
 				return fail_response("locksmith_cant");
 			}
 			if (data.operation == "unlock") {
@@ -6128,7 +6131,7 @@ function init_io() {
 				}
 				if (
 					scroll &&
-					(!in_arr(scroll_def.type, ["uscroll", "pscroll"]) ||
+					(!["uscroll", "pscroll"].includes(scroll_def.type) ||
 						(scroll_def.type == "uscroll" && !item_def.upgrade) ||
 						(scroll_def.type == "pscroll" && !item_def.stat) ||
 						grade > scroll_def.grade)
@@ -6836,8 +6839,7 @@ function init_io() {
 				return fail_response("cant");
 			}
 			var item = player.slots[data.slot];
-			var done = false;
-			if (in_arr(data.slot, trade_slots) && item.giveaway !== undefined) {
+			if (item.giveaway !== undefined && trade_slots.includes(data.slot)) {
 				return fail_response("giveaway");
 			}
 			// an oversight allowed .giveaway items to be equipped, so now they can be unequipped from regular slots [04/11/21]
@@ -7057,7 +7059,9 @@ function init_io() {
 				return fail_response("cant_in_bank");
 			}
 			var cost = 1200;
-			if (player.blessing) return fail_response("in_progress");
+			if (player.blessing) {
+				return fail_response("in_progress");
+			}
 			player.blessing = true;
 			appengine_call(
 				"bill_user",
@@ -7150,53 +7154,54 @@ function init_io() {
 			}
 		});
 		socket.on("buy", function (data) {
-			var player = players[socket.id];
-			var can_reach = false;
+			const player = players[socket.id];
 			if (!player || player.user) {
 				return fail_response("cant_in_bank");
 			}
-			var name = data.name;
-			var quantity = min(max(parseInt(data.quantity) || 0, 1), (G.items[name] && G.items[name].s) || 9999);
-			var cost = 0;
-			var added = false;
-			var done = false;
+
+			const name = data.name;
 			if (!can_buy[name] && gameplay != "test") {
 				return fail_response("buy_cant_npc");
 			}
-			if (!can_add_item(player, create_new_item(name, quantity))) {
+			// NOTE: because `can_buy` was checked, it's guaranteed to be in G.items
+
+			const quantity = clampInt(parseInt(data.quantity) || 0, 1, G.items[name]?.s || 9999);
+			const newItem = create_new_item(name, quantity);
+			if (!can_add_item(player, newItem)) {
 				return fail_response("buy_cant_space");
 			}
-			(G.maps[player.map].items[name] || []).forEach(function (l) {
+
+			let canReach = false;
+			for (const l of G.maps[player.map].items[name] || []) {
 				if (simple_distance(player, l) < B.sell_dist) {
-					can_reach = l;
+					canReach = l;
+					break;
 				}
-			});
-			if (player.computer && !can_reach) {
-				can_reach = G.maps.main.merchants[0];
 			}
-			if (!can_reach) {
-				return fail_response("distance");
+			if (!canReach) {
+				if (player.computer) {
+					canReach = G.maps.main.merchants[0];
+				} else {
+					return fail_response("distance");
+				}
 			}
-			can_reach.name = player.name;
-			var def = G.items[name];
-			if (!def.s) {
-				quantity = 1;
-			}
-			cost = quantity * G.items[name].g;
+			canReach.name = player.name;
+
+			let cost = quantity * G.items[name].g;
 			if (G.items[name].p2w) {
 				cost *= G.inflation;
 			}
 			if (player.gold < cost) {
 				return fail_response("buy_cost");
 			}
-			var new_item = create_new_item(name, quantity);
+
 			player.gold -= cost;
-			var num = add_item(player, new_item, { announce: false });
-			xy_emit(can_reach, "ui", {
+			const num = add_item(player, newItem, { announce: false });
+			xy_emit(canReach, "ui", {
 				type: "+$",
-				id: can_reach.id,
+				id: canReach.id,
 				name: player.name,
-				item: cache_item(new_item),
+				item: cache_item(newItem),
 				event: "buy",
 			});
 
@@ -7460,13 +7465,12 @@ function init_io() {
 			success_response("destroyed", { name: name, num: data.num, cevent: "destroy" });
 		});
 		socket.on("join_giveaway", function (data) {
-			var player = players[socket.id];
-			var seller = players[id_to_id[data.id]];
-			var num;
+			const player = players[socket.id];
+			const seller = players[id_to_id[data.id]];
 			if (!player || player.user) {
 				return fail_response("cant_in_bank");
 			}
-			if (!in_arr(data.slot, trade_slots)) {
+			if (!trade_slots.includes(data.slot)) {
 				return fail_response("invalid");
 			}
 			if (!seller || seller.npc || is_invis(seller)) {
@@ -7481,7 +7485,7 @@ function init_io() {
 			if (seller.id == player.id) {
 				return fail_response("hmm");
 			}
-			var item = seller.slots[data.slot];
+			const item = seller.slots[data.slot];
 			if (!item || (data.rid && item.rid != data.rid)) {
 				return fail_response("item_gone");
 			}
@@ -7513,34 +7517,29 @@ function init_io() {
 			success_response({});
 		});
 		socket.on("trade_wishlist", function (data) {
-			var player = players[socket.id];
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
-			data.q = min(9999, max(1, parseInt(data.q || 1) || 1));
-			if (!in_arr(data.slot, trade_slots) || !G.items[data.name] || data.name == "placeholder") {
+			if (!G.items[data.name] || data.name == "placeholder" || !get_trade_slots(player).includes(data.slot)) {
 				return fail_response("invalid");
 			}
 			if (player.slots[data.slot] && !player.slots[data.slot].b) {
 				return fail_response("slot_occuppied");
 			}
-			if (!get_trade_slots(player).includes(data.slot)) {
-				return fail_response("invalid");
-			}
-			var item = {
+			const item = {
 				name: data.name,
 				rid: randomStr(4),
-				price: round(min(99999999999, max(parseInt(data.price) || 1, 1))),
+				price: clampInt(parseInt(data.price) || 1, 1, 99999999999),
+				q: clampInt(parseInt(data.q) || 1, 1, 9999),
 				b: true,
 			};
 			if (G.items[data.name].upgrade || G.items[data.name].compound) {
-				item.q = min(99, data.q);
-				item.level = round(min(12, max(parseInt(data.level) || 0, 0)));
-			} else {
-				item.q = data.q;
+				item.q = Math.min(99, item.q);
+				item.level = clampInt(parseInt(data.level) || 0, 0, 12);
 			}
 			player.slots[data.slot] = item;
-			player.cslots[data.slot] = cache_item(player.slots[data.slot], true);
+			player.cslots[data.slot] = cache_item(item, true);
 			resend(player, "reopen+u+cid+nc");
 			success_response({});
 		});
@@ -12109,8 +12108,12 @@ function update_instance(instance) {
 						for (let i = 0; i < count; i++) {
 							const pname = random_one(Object.keys(monster.points));
 							const player = get_player(pname);
-							if (!player || player.npc || distance(monster, player) > 400) return;
-							if (!is_same(player, get_player(monster.target), true)) return;
+							if (!player || player.npc || distance(monster, player) > 400) {
+								return;
+							}
+							if (!is_same(player, get_player(monster.target), true)) {
+								return;
+							}
 
 							monster.last[name] = new Date();
 							const spot = safe_xy_nearby(
@@ -12118,7 +12121,9 @@ function update_instance(instance) {
 								player.x + Math.random() * 20 - 10,
 								player.y + Math.random() * 20 - 10,
 							);
-							if (!spot) return;
+							if (!spot) {
+								return;
+							}
 
 							new_monster(instance.name, {
 								type: name,
@@ -13050,7 +13055,9 @@ function npc_loop() {
 				resend(npc, "u+cid");
 				continue;
 			}
-			if (npc.rip) continue;
+			if (npc.rip) {
+				continue;
+			}
 			var def = G.npcs[npc.ntype] || {};
 			if (
 				def &&
@@ -13221,7 +13228,9 @@ function npc_loop() {
 }
 
 function bless_loop() {
-	if (S.blessed_minutes) S.blessed_minutes--;
+	if (S.blessed_minutes) {
+		S.blessed_minutes--;
+	}
 	if (!S.blessed_minutes) {
 		delete E.blessed_minutes;
 		delete E.blessed_by;
@@ -13230,11 +13239,15 @@ function bless_loop() {
 	E.blessed_minutes = S.blessed_minutes;
 	E.blessed_by = S.blessed_by;
 	for (var id in players) {
-		var player = players[id],
-			rs = false;
-		if (!player.s.patronsgrace) rs = true;
+		var player = players[id];
+		var rs = false;
+		if (!player.s.patronsgrace) {
+			rs = true;
+		}
 		player.s.patronsgrace = { ms: G.conditions.patronsgrace.duration, f: S.blessed_by };
-		if (rs) resend(player, "u+cid");
+		if (rs) {
+			resend(player, "u+cid");
+		}
 	}
 }
 

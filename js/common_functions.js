@@ -1909,6 +1909,19 @@ function abs(n)
 	return Math.abs(n);
 }
 
+/**
+ * https://en.wikipedia.org/wiki/Clamp_(function)
+ */
+function clamp(num, lower, upper)
+{
+	return Math.min(Math.max(num, lower), upper);
+}
+
+function clampInt(num, lower, upper)
+{
+	return Math.floor(clamp(num, lower, upper))
+}
+
 function min(a,b)
 {
 	return Math.min(a,b);
@@ -1961,20 +1974,10 @@ function random_binaries()
 }
 
 function randomStr(len) {
-	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz",schars="ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-	var str = '';
-	for (var i=0; i<len; i++) {
-		if(i==0)
-		{
-			var rnum = Math.floor(Math.random() * schars.length);
-			str += schars.substring(rnum,rnum+1);
-		}
-		else
-		{
-			var rnum = Math.floor(Math.random() * chars.length);
-			str += chars.substring(rnum,rnum+1);
-		}
-	}
+	const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+	const schars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+	let str = schars[Math.floor(Math.random() * schars.length)];
+	for (let i = 1; i < len; i++) str += chars[Math.floor(Math.random() * chars.length)];
 	return str;
 }
 
