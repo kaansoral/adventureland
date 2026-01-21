@@ -732,22 +732,9 @@ function calculate_item_value(item,m)
 
 var prop_cache={}; // reset at reload_server
 
-function damage_multiplier(defense) // [10/12/17]
+function damage_multiplier(defense) // [24/6/25]
 {
-	return	min(1.32,max(0.05,1-(max(0,min(100,defense))*0.00100+
-			max(0,min(100,defense-100))*0.00100+
-			max(0,min(100,defense-200))*0.00095+
-			max(0,min(100,defense-300))*0.00090+
-			max(0,min(100,defense-400))*0.00082+
-			max(0,min(100,defense-500))*0.00070+
-			max(0,min(100,defense-600))*0.00060+
-			max(0,min(100,defense-700))*0.00050+
-			max(0,defense-800)*0.00040)+
-			max(0,min(50,0-defense))*0.00100+ // Negative's / Armor Piercing
-			max(0,min(50,-50-defense))*0.00075+
-			max(0,min(50,-100-defense))*0.00050+
-			max(0,-150-defense)*0.00025
-			));
+    return 1 - 0.95 * Math.tanh(defense / 1000);
 }
 
 function dps_multiplier(defense) // [10/12/17]
