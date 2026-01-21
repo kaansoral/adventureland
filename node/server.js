@@ -2324,59 +2324,52 @@ function monster_hunt_logic(player, monster) {
 	}
 }
 
-function calculate_monster_score(player, monster, share) {
-	var score = min(1, monster.mult * 2.2);
-	var divider = 1;
-	if (!share) {
-		share = 0;
-	}
-	if (monster.cooperative) {
-		divider = 2;
-	}
-	for (var id in players) {
-		var current = players[id];
-		if (current.id == player.id) {
-			continue;
+function calculate_monster_score(player, monster, coopShare = 0) {
+	// NOTE: `.mult` is usually 1, but will be set on server shutdown to the ratio of remaining HP.
+	//       See: shutdown_routine()
+	let score = Math.min(1, monster.mult * 2.2);
+	const divisor = monster.cooperative ? 2 : 1;
+
+	for (const id in players) {
+		const p = players[id];
+		if (p.id === player.id) {
+			continue; // Skip ourself
 		}
-		if (current.owner == player.owner && current.type == "merchant" && simple_distance(current, player) < 600) {
-			score -= 0.2 / divider;
+
+		const sameOwner = p.owner === player.owner;
+		const sameParty = p.party && p.party === player.party;
+		if (!sameOwner && !sameParty) {
+			continue; // Not our character, and in a different party
 		}
-		if (
-			current.party &&
-			current.party == player.party &&
-			current.type == "merchant" &&
-			simple_distance(current, player) < 600
-		) {
-			score -= 0.1 / divider;
-		} else if (
-			current.owner == player.owner &&
-			current.party == player.party &&
-			simple_distance(current, player) < 600 &&
-			current.type != "merchant"
-		) {
-			score += 0.3 / divider;
-		} else if (
-			current.owner == player.owner &&
-			current.party &&
-			current.party == player.party &&
-			current.type != "merchant"
-		) {
-			score += 0.3 / divider;
-		} // originally 0.25
+
+		const isMerchant = p.type === "merchant";
+		if (sameOwner && sameParty && !isMerchant) {
+			score += 0.3 / divisor; // +0.3 points for each additional non-merchant character of ours in our party (even if they are far away)
+		}
+
+		if (isMerchant && simple_distance(p, player) <= 600) {
+			// Nearby merchants reduce the points
+			if (sameOwner) {
+				score -= 0.2 / divisor; // Deduct points if our merchant is nearby
+			}
+			if (sameParty) {
+				score -= 0.1 / divisor; // Deduct points if a merchant in our party is nearby
+			}
+		}
 	}
-	if (simple_distance(player, monster) > 600 && share < 0.01) {
-		score -= 0.3 / divider;
+
+	if (simple_distance(player, monster) > 600 && coopShare < 0.01) {
+		score -= 0.3 / divisor; // Deduct points if we were far away from the kill, unless it was a coop monster and we contributed
 	}
 	if (player.type == "merchant" && player.party) {
-		score /= 2;
-	}
-	if (score < 0) {
-		score = 0;
+		// TODO: What if the merchant killed the monster with a golden gun? Should it not get full points then?
+		score /= 2; // Half points if we're a merchant in a party
 	}
 	if (gameplay == "hardcore") {
 		score *= 10000;
 	}
-	return score;
+
+	return Math.max(0, score);
 }
 
 function issue_monster_awards(monster) {
