@@ -200,7 +200,7 @@ conditions={
 	"massexchange":{
 		"skin":"skill_massexchange",
 		"name":"Mass exchange",
-		"explanation": "Reduces the time of your next exchange or compound by 50%.",
+		"explanation": "Reduces the time of your next exchange by 50%.",
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
@@ -208,7 +208,7 @@ conditions={
 	"massexchangepp":{
 		"skin":"skill_massexchangepp",
 		"name":"Mass exchange++",
-		"explanation": "Reduces the time of your next exchange or compound by 90%.",
+		"explanation": "Reduces the time of your next exchange by 90%.",
 		"duration":10*1000,
 		"buff":True,
 		"ui":True,
