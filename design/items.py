@@ -5542,6 +5542,17 @@ gems={
 		"a":True,
 		"event":True,
 	},
+	"brownenvelope":{
+		"type":"gem",
+		"skin":"brownenvelope",
+		"name":"Brown Envelope",
+		"explanation":"Congratulations and prosperity",
+		"g":24000,
+		"e":1,
+		"s":True,
+		"a":True,
+		"event":True,
+	},
 	# "greenenvelopev2":{
 	# 	"type":"gem",
 	# 	"skin":"greenenvelope",

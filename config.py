@@ -114,23 +114,21 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=834
+game_version=835
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
-	"Last Update [15th of January]",
-	"PR: Bring resistance piercing to parity with armor piercing #204",
-	"PR: Mass exchange #216",
-	"PR: add achievements to protectors #213",
-	"PR: New kill_credit emit #215",
-	"PR: add crypt monster achievements #214",
-]
-next_notes=[
+	"Valentine's Day Event!",
+	"Lunar New Year Event!",
+	"Last Update [2nd of February]",
 	"PR: fix monster dimensions #211",
 	"PR: Fix miss so that it uses the value from the attack, instead of the attacker #220",
 	"PR: Update reject_deferred calls to include place for death and disappear events #227",
 	"PR: Update the two scaling healing skills to accurately reflect their output #223",
 	"PR: Add flag for implicit targets, and the implicit targets functionality #225",
 	"PR: Pass the target parameter to consume_mp for more skills #222",
+]
+next_notes=[
+	
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",

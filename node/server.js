@@ -173,8 +173,8 @@ var mode = {
 var events = {
 	// SEASONS
 	holidayseason: false,
-	lunarnewyear: false,
-	valentines: false,
+	lunarnewyear: true,
+	valentines: true,
 	pinkgoo: 0, // every N minutes - 60
 	snowman: 20 * 60, // 1200 normally - 60 - at sprocess_game_data
 	egghunt: 0, // every N minutes - 60
@@ -8780,7 +8780,7 @@ function init_io() {
 				if (!target.rip) {
 					return fail_response("target_alive", data.name);
 				}
-				
+
 				consume_mp(player, gSkill.mp, target);
 				if (target.hp != target.max_hp) {
 					reject = { response: "data", place: data.name, reason: "hp" };

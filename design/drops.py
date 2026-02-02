@@ -805,6 +805,16 @@ drops={
 		[0.1,"cdragon",None,None,"lucky"],
 		[0.1,"snakeoil"], #2025
 	],
+	"brownenvelope":[
+		[2000,"gold",50000],
+		[1,"gold",10000000],
+		[300,"firecrackers"],
+		[0.1,"dragondagger",None,None,"lucky"],
+		[0.3,"lmace",None,None,"lucky"],
+		[1,"oxhelmet",None,None,"lucky"],
+		[0.1,"cdragon",None,None,"lucky"],
+		[0.1,"snakeoil"], #2025
+	],
 	"eastereggs":[
 		[1,"egg0"],
 		[1,"egg1"],
