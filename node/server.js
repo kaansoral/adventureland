@@ -168,6 +168,7 @@ var mode = {
 	prevent_external: 0, // for "test" / "hardcore"
 	pvp_level_gap: 0, // have to be within 10 level to attack
 	fear_affects_heal: 0, // when feared heal output is lowered
+	implicit_targets: 0, // Do skills that don't have an explicit target, such as self-buffing skills, trigger mana restoring effects with increased chances?
 };
 var events = {
 	// SEASONS
@@ -8651,13 +8652,13 @@ function init_io() {
 					}
 				}
 			} else if (data.name == "hardshell" || data.name == "power" || data.name == "xpower") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				player.s[gSkill.condition] = {
 					ms: gSkill.duration || G.conditions[gSkill.condition].duration,
 				};
 				player.to_resend = "u+cid";
 			} else if (data.name == "mshield") {
-				consume_mp(player, gSkill.mp);
+				// consume_mp(player, gSkill.mp);
 				if (player.s[gSkill.condition]) {
 					delete player.s[gSkill.condition];
 				} else {
@@ -8672,7 +8673,7 @@ function init_io() {
 				data.name == "massexchange" ||
 				data.name == "massexchangepp"
 			) {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				player.s[gSkill.condition] = { ms: G.conditions[gSkill.condition].duration };
 				xy_emit(player, "ui", { type: data.name, name: player.name });
 				player.to_resend = "u+cid";
@@ -8729,10 +8730,10 @@ function init_io() {
 					target.cid++;
 				}
 			} else if (data.name == "phaseout") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				player.s.phasedout = { ms: G.conditions.phasedout.duration };
 			} else if (data.name == "pcoat") {
-				consume_mp(player, gSkill.mp);
+				consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				player.s.poisonous = { ms: G.conditions.poisonous.duration };
 			} else if (data.name == "curse") {
 				//#TODO: last_curse variable + check for multiple curses
@@ -8779,7 +8780,8 @@ function init_io() {
 				if (!target.rip) {
 					return fail_response("target_alive", data.name);
 				}
-
+				
+				consume_mp(player, gSkill.mp, target);
 				if (target.hp != target.max_hp) {
 					reject = { response: "data", place: data.name, reason: "hp" };
 					player.socket.emit("game_response", { response: "revive_failed", id: data.id });
@@ -9184,7 +9186,7 @@ function init_io() {
 					player.s.blink.d = data.direction;
 				}
 				if (player.role != "gm") {
-					consume_mp(player, gSkill.mp);
+					consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				}
 				// xy_emit(player,"ui",{type:"blinking",name:player.name});
 				resend(player, "u+cid");
@@ -9214,7 +9216,7 @@ function init_io() {
 					player.s.blink.d = data.direction;
 				}
 				if (player.role != "gm") {
-					consume_mp(player, gSkill.mp);
+					consume_mp(player, gSkill.mp, mode.implicit_targets && player);
 				}
 				// xy_emit(player,"ui",{type:"blinking",name:player.name});
 				player.to_resend = "u+cid";
