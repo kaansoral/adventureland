@@ -124,6 +124,14 @@ update_notes=[
 	"PR: New kill_credit emit #215",
 	"PR: add crypt monster achievements #214",
 ]
+next_notes=[
+	"PR: fix monster dimensions #211",
+	"PR: Fix miss so that it uses the value from the attack, instead of the attacker #220",
+	"PR: Update reject_deferred calls to include place for death and disappear events #227",
+	"PR: Update the two scaling healing skills to accurately reflect their output #223",
+	"PR: Add flag for implicit targets, and the implicit targets functionality #225",
+	"PR: Pass the target parameter to consume_mp for more skills #222",
+]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
 	"35.246.244.105":"eu1",
