@@ -7854,13 +7854,13 @@ function init_io() {
 				var amount = max(0, min(parseInt(data.amount) || 0, player.user.gold));
 				player.user.gold -= amount;
 				player.gold += amount;
-				success = { response: "bank_withdraw", gold: amount, cevent: true };
+				success = { operation: "withdraw", gold: amount, cevent: true };
 			}
 			if (data.operation == "deposit") {
 				var amount = max(0, min(parseInt(data.amount) || 0, player.gold));
 				player.user.gold += amount;
 				player.gold -= amount;
-				success = { response: "bank_store", gold: amount, cevent: true };
+				success = { operation: "deposit", gold: amount, cevent: true };
 			}
 			if (data.operation == "unlock") {
 				if (!bank_packs[data.pack]) {
