@@ -2,6 +2,9 @@
   "name": "adventureland-server",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": ">=16"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
