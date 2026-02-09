@@ -1922,7 +1922,7 @@ function event_loop() {
 				if (!s.last_jump || msince(s.last_jump) > 2) {
 					should_warp = true;
 				}
-				if (!should_warp)
+				if (!should_warp) {
 					for (var name in instances[s.in].players) {
 						var player = instances[s.in].players[name];
 						if (p || (!player.s.invis && distance(player, s) < 600)) {
@@ -1930,6 +1930,7 @@ function event_loop() {
 							break;
 						}
 					}
+				}
 				if (should_warp) {
 					xy_emit(s, "disappear", { id: s.id });
 					delete instances[s.in].monsters[s.id];
@@ -3203,8 +3204,8 @@ function xy_upush_logic(element) {
 }
 
 function appengine_call(method, args, on_success, on_error) {
-	var api_path = "/json_api/" + method,
-		suffix = "";
+	var api_path = "/json_api/" + method;
+	var suffix = "";
 	if (
 		mode.prevent_external &&
 		!in_arr(method, ["create_server", "update_server", "stop_server", "start_character", "send_mail"])
@@ -3286,7 +3287,9 @@ function appengine_call(method, args, on_success, on_error) {
 						on_error("" + err + " " + (response && response.statusCode));
 					}
 				} else {
-					if (typeof body === "string") body = JSON.parse(body);
+					if (typeof body === "string") {
+						body = JSON.parse(body);
+					}
 					if (on_success) {
 						on_success.apply(this, [body]);
 					}
