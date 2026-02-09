@@ -5,6 +5,7 @@ const url = require("url");
 const { Worker, SHARE_ENV } = require("worker_threads");
 
 const variables = require("./variables");
+require("./server_functions_2");
 
 var is_game = 0;
 var is_server = 1;
@@ -4130,7 +4131,7 @@ function init_io() {
 		var original_on = socket.on;
 		socket.on = function (method, f) {
 			// takes the "f" function, the function thats sent to socket.on, wraps it into a "g" function
-			var g = function (data) {
+			var g = function (data, callback) {
 				ls_method = method;
 				if (mode.log_all) {
 					console.log("'" + method + "': " + JSON.stringify(data));
@@ -4190,7 +4191,7 @@ function init_io() {
 						socket.emit("disconnect_reason", "limitdc");
 						socket.disconnect();
 					} else {
-						f(data);
+						f(data, callback);
 					}
 				} catch (e) {
 					try {
@@ -8307,22 +8308,25 @@ function init_io() {
 			player.citems[data.num] = cache_item(player.items[data.num]);
 			resend(player, "reopen+cid");
 		});
-		socket.on("emotion", function (data) {
-			var player = players[socket.id];
+		socket.on("emotion", function (data, callback) {
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
-			if (!data.name) {
-				data.name = random_one(Object.keys(player.p.emx));
+
+			if (mssince(player.last.emotion ?? 0) < 2000) {
+				return fail_response_2({ response: "emotion_cooldown", callback });
 			}
-			if (player.last.emotion && mssince(player.last.emotion) < 2000) {
-				return socket.emit("game_response", "emotion_cooldown");
-			}
-			player.last.emotion = new Date();
+
+			data.name ??= random_one(Object.keys(player.p.emx)); // Random emotion if one isn't specified
+
 			if (!G.emotions[data.name] || !player.p.emx[data.name]) {
-				return socket.emit("game_response", "emotion_cant");
+				return fail_response_2({ response: "emotion_cant", callback });
 			}
+
+			player.last.emotion = Date.now();
 			xy_emit(player, "emotion", { name: data.name, player: player.name });
+			return success_response_2({ extra: { name: data.name }, callback });
 		});
 		socket.on("skill", function (data) {
 			const player = players[socket.id];
