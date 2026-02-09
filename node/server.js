@@ -1,3 +1,11 @@
+const fs = require("fs");
+const http = require("http");
+const socket_io = require("socket.io");
+const url = require("url");
+const { Worker, SHARE_ENV } = require("worker_threads");
+
+const variables = require("./variables");
+
 var is_game = 0;
 var is_server = 1;
 var is_code = 0;
@@ -10,11 +18,10 @@ var server = {
 	stopped: false, // shutdown end
 	s: {},
 };
-var variables = require("./variables");
 var is_sdk = variables.is_sdk;
-var app = require("http").createServer(http_handler);
+var app = http.createServer(http_handler);
 //var io=require('socket.io')(app,{pingInterval:2400,pingTimeout:6000});
-var io = require("socket.io")(app, {
+var io = socket_io(app, {
 	pingInterval: 4000,
 	pingTimeout: 12000,
 	cors: {
@@ -23,9 +30,7 @@ var io = require("socket.io")(app, {
 		credentials: true,
 	},
 }); // default is 25000 to 60000
-var fs = require("fs");
-var url = require("url");
-var { Worker, SHARE_ENV } = require("worker_threads");
+
 var workers = [];
 var wlast = 0;
 eval("" + fs.readFileSync(variables.cfunctions_path));

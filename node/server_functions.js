@@ -1,8 +1,9 @@
-var request = require("request");
-var crypto = require("crypto");
-var range_check = require("range_check");
-var protobuf = require("protobufjs");
-var ByteBuffer = require("bytebuffer"); // Steam decryption
+const ByteBuffer = require("bytebuffer"); // Steam decryption
+const crypto = require("crypto");
+const protobuf = require("protobufjs");
+const range_check = require("range_check");
+const request = require("request");
+
 var false_socket = {
 	emit: function (a, b) {
 		if (is_sdk && !server.shutdown) {
