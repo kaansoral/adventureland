@@ -1467,7 +1467,7 @@ function calculate_player_stats(player) {
 
 function calculate_common_stats(entity) {
 	if (entity.s.poisoned) {
-		entity.frequency *= 0.9;
+		entity.frequency *= G.conditions.poisoned.frequencym;
 	}
 	if (entity.s.frozen) {
 		entity.frequency *= 0.3;
@@ -3381,7 +3381,7 @@ function complete_attack(attacker, target, info) {
 						damage_multiplier(((target[defense] || 0) - (attacker[pierce] || 0)) / 2.0),
 				);
 				if (target.s.poisoned) {
-					attack = round(attack * 0.25);
+					attack = round(attack * G.conditions.poisoned.healm);
 				}
 			} else {
 				attack = o_attack;
@@ -6716,7 +6716,7 @@ function init_io() {
 				(def.gives || []).forEach(function (p) {
 					var amount = p[1];
 					if (player.s.poisoned) {
-						amount = round(amount / 2);
+						amount = round(amount * G.conditions.poisoned.potionsm);
 					}
 					player[p[0]] = (player[p[0]] || 0) + amount;
 					player[p[0]] = max(1, player[p[0]]);
@@ -11823,7 +11823,7 @@ function update_instance(instance) {
 					var hp = monster.hp;
 					var heal = monster.a.self_healing.heal;
 					if (monster.s.poisoned) {
-						heal = round(heal / 4);
+						heal = round(heal G.conditions.poisoned.healm);
 					}
 					monster.hp = min(monster.max_hp, monster.hp + heal);
 					if (hp != monster.hp) {
