@@ -111,6 +111,7 @@ var B = {
 	free_last_hits: false,
 	pause_instances: true,
 	global_drops: true,
+	drop_table_multiplier: 1, // 2 means drop tables extended by their original selves, not %'s multiplied
 };
 var CC = {
 	auth: 2,
@@ -2060,7 +2061,7 @@ function drop_something(player, monster, share) {
 			let itemShouldDrop = shouldItemDrop(item);
 			if (itemShouldDrop || mode.drop_all) {
 				// /hp_mult - removed [13/07/18]
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				for (var d = 0; d < B.drop_table_multiplier; d++) drop_item_logic(drop, item, is_in_pvp(player, 1));
 			}
 		});
 	}
@@ -2381,14 +2382,18 @@ function calculate_monster_score(player, monster, share) {
 }
 
 function issue_monster_awards(monster) {
-	var total = 0.1;
+	var total = 0.1,
+		total_characters = 0;
 	for (var name in monster.points) {
 		var current = players[name_to_id[name]];
 		if (current) {
 			//  && current.map==monster.map
 			total += max(0, monster.points[name]);
 		}
+		var share = max(0, monster.points[name]) / total;
+		if (share > 0.0008) total_characters += 1;
 	}
+	B.drop_table_multiplier = parseInt(1 + Math.floor(total_characters / 10));
 	for (var name in monster.points) {
 		var current = players[name_to_id[name]];
 		var share = max(0, monster.points[name]) / total;
@@ -2428,6 +2433,7 @@ function issue_monster_awards(monster) {
 			resend(current, "u+cid");
 		}
 	}
+	B.drop_table_multiplier = 1;
 }
 
 function issue_monster_award(monster) {
