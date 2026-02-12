@@ -198,14 +198,6 @@ function write_file(path,content)
 	fs.writeFileSync(path,content);
 }
 
-function mssince(t,ref)
-{
-	if(!ref) ref=new Date();
-	return ref.getTime() - t.getTime();
-}
-function ssince(t,ref) { return mssince(t,ref)/1000.0; }
-function msince(t,ref) { return mssince(t,ref)/60000.0; }
-function hsince(t,ref) { return mssince(t,ref)/3600000.0; }
 
 module.exports={
 	util:util, format:util.format,
@@ -224,7 +216,6 @@ module.exports={
 	fetch:fetch,
 	in_between_from_file:in_between_from_file,
 	lib_version:lib_version,
-	mssince:mssince,ssince:ssince,msince:msince,hsince:hsince,
 	add_log:add_log,report_logs:report_logs,
 	really_old:really_old,
 	download:download,
