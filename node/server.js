@@ -5,7 +5,7 @@ const url = require("url");
 const { Worker, SHARE_ENV } = require("worker_threads");
 
 const variables = require("./variables");
-require("./server_functions_2");
+const { fail_response_2, success_response_2 } = require("./server_functions_2.js");
 
 var is_game = 0;
 var is_server = 1;
@@ -8315,18 +8315,18 @@ function init_io() {
 			}
 
 			if (mssince(player.last.emotion ?? 0) < 2000) {
-				return fail_response_2({ response: "emotion_cooldown", callback });
+				return fail_response_2(current_socket, { place: "emotion", response: "emotion_cooldown", callback });
 			}
 
 			data.name ??= random_one(Object.keys(player.p.emx)); // Random emotion if one isn't specified
 
 			if (!G.emotions[data.name] || !player.p.emx[data.name]) {
-				return fail_response_2({ response: "emotion_cant", callback });
+				return fail_response_2(current_socket, { place: "emotion", response: "emotion_cant", callback });
 			}
 
 			player.last.emotion = Date.now();
 			xy_emit(player, "emotion", { name: data.name, player: player.name });
-			return success_response_2({ extra: { name: data.name }, callback });
+			return success_response_2(current_socket, { place: "emotion", extra: { name: data.name }, callback });
 		});
 		socket.on("skill", function (data) {
 			const player = players[socket.id];
