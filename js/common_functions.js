@@ -2018,8 +2018,13 @@ function future_h(h) {
 	return future_ms(h * 3600000);
 }
 
+/**
+ * @param {Date|number} t Time
+ * @param {Date|number} [ref=Date.now()] Reference (defaults to current time)
+ * @returns ms since `t`
+ */
 function mssince(t, ref = Date.now()) {
-	return ref instanceof Date ? ref.getTime() - t.getTime() : ref - t.getTime();
+	return (ref instanceof Date ? ref.getTime() : ref) - (t instanceof Date ? t.getTime() : t);
 }
 function ssince(t, ref) {
 	return mssince(t, ref) / 1000;
