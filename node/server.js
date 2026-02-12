@@ -2392,8 +2392,11 @@ function issue_monster_awards(monster) {
 		}
 	}
 	for (var name in monster.points) {
-		var share = Math.pow(max(0, monster.points[name]), 0.65) / total;
-		if (share > 0.0008) total_characters += 1;
+		var current = players[name_to_id[name]];
+		if (current) {
+			var share = Math.pow(max(0, monster.points[name]), 0.65) / total;
+			if (share > 0.0008) total_characters += 1;
+		}
 	}
 	B.drop_table_multiplier = parseInt(1 + Math.floor(total_characters / 10));
 	for (var name in monster.points) {
