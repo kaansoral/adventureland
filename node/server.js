@@ -2388,15 +2388,17 @@ function issue_monster_awards(monster) {
 		var current = players[name_to_id[name]];
 		if (current) {
 			//  && current.map==monster.map
-			total += max(0, monster.points[name]);
+			total += Math.pow(max(0, monster.points[name]), 0.65); // An attempt to soften the gap between strong and weak players [12/02/26]
 		}
-		var share = max(0, monster.points[name]) / total;
+	}
+	for (var name in monster.points) {
+		var share = Math.pow(max(0, monster.points[name]), 0.65) / total;
 		if (share > 0.0008) total_characters += 1;
 	}
 	B.drop_table_multiplier = parseInt(1 + Math.floor(total_characters / 10));
 	for (var name in monster.points) {
 		var current = players[name_to_id[name]];
-		var share = max(0, monster.points[name]) / total;
+		var share = Math.pow(max(0, monster.points[name]), 0.65) / total;
 		if (current && share > 0.0025) {
 			current.socket.emit("kill_credit", {
 				mtype: monster.type,
