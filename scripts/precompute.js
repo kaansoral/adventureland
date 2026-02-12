@@ -14,4 +14,4 @@ data.forEach(function(file){
 
 // console.log(images);
 
-f.write_file("~/thegame/design/precomputed.py","# "+(new Date())+"\nimages="+JSON.stringify(images)+"\n");
+f.write_file("~/thegame/design/precomputed.py","# "+((new Date()).toISOString())+"\nimages="+JSON.stringify(images)+"\n");

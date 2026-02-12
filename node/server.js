@@ -2478,7 +2478,9 @@ function issue_monster_award(monster) {
 		// xp=round(xp);
 		parties[player.party].forEach(function (name) {
 			var current = players[name_to_id[name]];
-			if (!current) return;
+			if (!current) {
+				return;
+			}
 			current.socket.emit("kill_credit", {
 				mtype: monster.type,
 			});
@@ -7058,7 +7060,9 @@ function init_io() {
 				return fail_response("cant_in_bank");
 			}
 			var cost = 1200;
-			if (player.blessing) return fail_response("in_progress");
+			if (player.blessing) {
+				return fail_response("in_progress");
+			}
 			player.blessing = true;
 			appengine_call(
 				"bill_user",
@@ -9305,8 +9309,8 @@ function init_io() {
 				socket.emit("game_response", { response: "gold_received", gold: gold * rate });
 			} else if (data.name == "temporalsurge") {
 				consume_mp(player, gSkill.mp);
-				var count = 0,
-					times = [];
+				var count = 0;
+				var times = [];
 				for (var i = 0; i < monster_respawns.length; i++) {
 					if (distance(monster_respawns[i][0], player) < 160) {
 						monster_respawns[i][1] *= 0.85;
@@ -9320,8 +9324,11 @@ function init_io() {
 						count++;
 					}
 				}
-				if (!count) socket.emit("game_response", "temporalsurge_none");
-				else socket.emit("game_response", { response: "temporalsurge", count: count, times: times });
+				if (!count) {
+					socket.emit("game_response", "temporalsurge_none");
+				} else {
+					socket.emit("game_response", { response: "temporalsurge", count: count, times: times });
+				}
 			}
 
 			if (cool) {
@@ -11122,6 +11129,10 @@ function add_coop_points(m, attacker, mnet) {
 	if (attacker.s.hopsickness) {
 		mnet /= 4;
 	}
+	if (attacker.p && attacker.p.home == region + server_name) {
+		// Favoring home server characters [12/02/26]
+		mnet *= 5;
+	}
 	m.points[attacker.name] = (m.points[attacker.name] || 0) + mnet;
 	attacker.s.coop = { ms: 12 * 60 * 1000, id: m.id, p: m.points[attacker.name] };
 }
@@ -12111,8 +12122,12 @@ function update_instance(instance) {
 						for (let i = 0; i < count; i++) {
 							const pname = random_one(Object.keys(monster.points));
 							const player = get_player(pname);
-							if (!player || player.npc || distance(monster, player) > 400) return;
-							if (!is_same(player, get_player(monster.target), true)) return;
+							if (!player || player.npc || distance(monster, player) > 400) {
+								return;
+							}
+							if (!is_same(player, get_player(monster.target), true)) {
+								return;
+							}
 
 							monster.last[name] = new Date();
 							const spot = safe_xy_nearby(
@@ -12120,7 +12135,9 @@ function update_instance(instance) {
 								player.x + Math.random() * 20 - 10,
 								player.y + Math.random() * 20 - 10,
 							);
-							if (!spot) return;
+							if (!spot) {
+								return;
+							}
 
 							new_monster(instance.name, {
 								type: name,
@@ -13052,7 +13069,9 @@ function npc_loop() {
 				resend(npc, "u+cid");
 				continue;
 			}
-			if (npc.rip) continue;
+			if (npc.rip) {
+				continue;
+			}
 			var def = G.npcs[npc.ntype] || {};
 			if (
 				def &&
@@ -13223,7 +13242,9 @@ function npc_loop() {
 }
 
 function bless_loop() {
-	if (S.blessed_minutes) S.blessed_minutes--;
+	if (S.blessed_minutes) {
+		S.blessed_minutes--;
+	}
 	if (!S.blessed_minutes) {
 		delete E.blessed_minutes;
 		delete E.blessed_by;
@@ -13232,11 +13253,15 @@ function bless_loop() {
 	E.blessed_minutes = S.blessed_minutes;
 	E.blessed_by = S.blessed_by;
 	for (var id in players) {
-		var player = players[id],
-			rs = false;
-		if (!player.s.patronsgrace) rs = true;
+		var player = players[id];
+		var rs = false;
+		if (!player.s.patronsgrace) {
+			rs = true;
+		}
 		player.s.patronsgrace = { ms: G.conditions.patronsgrace.duration, f: S.blessed_by };
-		if (rs) resend(player, "u+cid");
+		if (rs) {
+			resend(player, "u+cid");
+		}
 	}
 }
 

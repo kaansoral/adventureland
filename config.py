@@ -128,7 +128,7 @@ update_notes=[
 	"PR: Pass the target parameter to consume_mp for more skills #222",
 ]
 next_notes=[
-	
+	"5X Co-op contribution points for home server characters",
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
