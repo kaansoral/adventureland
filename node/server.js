@@ -2059,10 +2059,10 @@ function drop_something(player, monster, share) {
 	// if(player.level<50 && monster.type=="goo" && mode.low49_200xgoo) monster_mult=200;
 	if (D.drops.monsters[monster.type] && player.tskin != "konami") {
 		D.drops.monsters[monster.type].forEach(function (item) {
-			let itemShouldDrop = shouldItemDrop(item);
-			if (itemShouldDrop || mode.drop_all) {
-				// /hp_mult - removed [13/07/18]
-				for (var d = 0; d < B.drop_table_multiplier; d++) {
+			for (let d = 0; d < B.drop_table_multiplier; d++) {
+				let itemShouldDrop = shouldItemDrop(item);
+				if (itemShouldDrop || mode.drop_all) {
+					// /hp_mult - removed [13/07/18]
 					drop_item_logic(drop, item, is_pvp);
 				}
 			}
