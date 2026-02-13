@@ -1961,6 +1961,7 @@ function drop_something(player, monster, share) {
 	achievement_logic_monster_kill(player, monster);
 	share = (share === undefined && 1) || share || 0;
 	// console.log("share: "+share);
+	const is_pvp = is_in_pvp(player, 1);
 	var drop_id = randomStr(30);
 	var drop;
 	var chest = "chest3";
@@ -2014,21 +2015,21 @@ function drop_something(player, monster, share) {
 	if (D.drops.maps.global_static && player.tskin != "konami" && B.global_drops) {
 		D.drops.maps.global_static.forEach(function (item) {
 			if (Math.random() / share / player.luckm / monster.luckx / global_mult < item[0] || mode.drop_all) {
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
 	if (D.drops.maps.global && player.tskin != "konami" && B.global_drops) {
 		D.drops.maps.global.forEach(function (item) {
 			if (Math.random() / share / player.luckm / hp_mult / monster.luckx / global_mult < item[0] || mode.drop_all) {
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
 	if (D.drops.maps[monster.map] && player.tskin != "konami") {
 		D.drops.maps[monster.map].forEach(function (item) {
 			if (Math.random() / share / player.luckm / hp_mult / monster.luckx < item[0] || mode.drop_all) {
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
@@ -2061,7 +2062,9 @@ function drop_something(player, monster, share) {
 			let itemShouldDrop = shouldItemDrop(item);
 			if (itemShouldDrop || mode.drop_all) {
 				// /hp_mult - removed [13/07/18]
-				for (var d = 0; d < B.drop_table_multiplier; d++) drop_item_logic(drop, item, is_in_pvp(player, 1));
+				for (var d = 0; d < B.drop_table_multiplier; d++) {
+					drop_item_logic(drop, item, is_pvp);
+				}
 			}
 		});
 	}
@@ -2070,7 +2073,7 @@ function drop_something(player, monster, share) {
 			let itemShouldDrop = shouldItemDrop(item);
 			if (itemShouldDrop || mode.drop_all) {
 				// /hp_mult - removed [13/07/18]
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
@@ -2084,14 +2087,14 @@ function drop_something(player, monster, share) {
 		D.drops.monsters_home_server[monster.type].forEach(function (item) {
 			let itemShouldDrop = shouldItemDrop(item);
 			if (itemShouldDrop || mode.drop_all) {
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
 	if (player.tskin == "konami") {
 		D.drops.konami.forEach(function (item) {
 			if (Math.random() / share / player.luckm / monster.level < item[0] || mode.drop_all) {
-				drop_item_logic(drop, item, is_in_pvp(player, 1));
+				drop_item_logic(drop, item, is_pvp);
 			}
 		});
 	}
@@ -2382,8 +2385,8 @@ function calculate_monster_score(player, monster, share) {
 }
 
 function issue_monster_awards(monster) {
-	var total = 0.1,
-		total_characters = 0;
+	var total = 0.1;
+	var total_characters = 0;
 	for (var name in monster.points) {
 		var current = players[name_to_id[name]];
 		if (current) {
@@ -2393,7 +2396,9 @@ function issue_monster_awards(monster) {
 	}
 	for (var name in monster.points) {
 		var share = Math.pow(max(0, monster.points[name]), 0.65) / total;
-		if (share > 0.0008) total_characters += 1;
+		if (share > 0.0008) {
+			total_characters += 1;
+		}
 	}
 	B.drop_table_multiplier = parseInt(1 + Math.floor(total_characters / 10));
 	for (var name in monster.points) {
