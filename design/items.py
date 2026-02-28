@@ -1009,7 +1009,7 @@ armor={
 		"set":"fury",
 		"tier":1.5,
 		"type":"pants",
-		"class":["rogue","warrior"],
+		"class":["rogue","warrior","ranger","paladin"],
 		"skin":"fallen",
 		"scroll":True,
 		"dex":4,
