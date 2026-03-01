@@ -1,13 +1,19 @@
 // Mappings: config.py + Cloudflare
 machines={
-	"eud1":{
-		"key":"~/thegame/design/docs/id_rsa.pem",
-		"ip":"195.201.181.245",
+	// "eud1":{
+	// 	"key":"~/thegame/design/docs/id_rsa.pem",
+	// 	"ip":"195.201.181.245",
+	// 	"user":"root",
+	// 	"map":"eud1",
+	// },
+	"euw1":{
+		"key":"~/server_admin/keys/hetzner_dedicated",
+		"ip":"195.201.105.60",
 		"user":"root",
-		"map":"eud1",
+		"map":"euw1",
 	},
 	"usd1":{
-		"key":"~/thegame/design/docs/id_rsa.pem",
+		"key":"~/server_admin/keys/usd1_dedicated",
 		"ip":"158.69.23.127",
 		"user":"ubuntu",
 		"map":"usd1",
@@ -68,19 +74,19 @@ servers=[
 		"region":"EU",
 		"name":"I",
 		"port":2053,
-		"machine":"eud1",
+		"machine":"euw1",
 	},
 	{
 		"region":"EU",
 		"name":"II",
 		"port":2083,
-		"machine":"eud1",
+		"machine":"euw1",
 	},
 	{
 		"region":"EU",
 		"name":"PVP",
 		"port":2087,
-		"machine":"eud1",
+		"machine":"euw1",
 	},
 	// {
 	// 	"region":"EU",
@@ -92,7 +98,7 @@ servers=[
 		"region":"ASIA",
 		"name":"I",
 		"port":8443,
-		"machine":"eud1",
+		"machine":"euw1",
 	},
 	{
 		"region":"US",

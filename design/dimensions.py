@@ -756,6 +756,11 @@ positions={
 
 	"greenenvelopev2":["custom",5,3],
 
+	#chinese new year 2026
+	"brownenvelope":["custom",4,6],
+	"horsecapeg":["custom",6,6],
+	"horsecape":["custom",5,6],
+
 	#valentines
 	"solitaire":["",5,16],
 

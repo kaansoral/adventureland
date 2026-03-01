@@ -114,22 +114,19 @@ if is_production:
 	#maps["desertland"]["key"]="jayson_desertland_copy"
 	pass
 
-game_version=835
+game_version=837
 SALES=4+5+388+5101+125/20 #donation+manual+macos+steam+sales
 update_notes=[
 	"Valentine's Day Event!",
 	"Lunar New Year Event!",
-	"Last Update [2nd of February]",
-	"PR: fix monster dimensions #211",
-	"PR: Fix miss so that it uses the value from the attack, instead of the attacker #220",
-	"PR: Update reject_deferred calls to include place for death and disappear events #227",
-	"PR: Update the two scaling healing skills to accurately reflect their output #223",
-	"PR: Add flag for implicit targets, and the implicit targets functionality #225",
-	"PR: Pass the target parameter to consume_mp for more skills #222",
-]
-next_notes=[
+	"Last Update [12th of February]",
 	"5X Co-op contribution points for home server characters",
 	"Overdrop logic for co-op events",
+	"Smoothed coop contributions",
+	"Event update, new drops!",
+]
+next_notes=[
+
 ]
 ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudflare.com/b6f5a13bded5fdd273e4a1cd3777162d/adventure.land/page-rules - uss1 / eus1 was best
 	"35.187.255.184":"asia1",
@@ -142,6 +139,7 @@ ip_to_subdomain={ #IMPORTANT: SPECIAL PAGE RULES ARE NEEDED: https://dash.cloudf
 	"34.67.187.11":"uspvp",
 	"195.201.181.245":"eud1",
 	"158.69.23.127":"usd1",
+	"195.201.105.60":"euw1",
 }
 HTTPS_MODE=True #IMPORTANT: converts server IP's to subdomain urls at create_server_api [17/11/18]
 always_amazon_ses=True

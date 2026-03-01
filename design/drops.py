@@ -267,6 +267,7 @@ drops={
 		],
 		"pinkgoblin":[
 			[1.0/24000,"bkey"],
+			[1.0/10,"horsecape"],
 		],
 		"spider":[[0.001,"spidersilk"],[1.0/5000,"offeringp"],[1.0/10000,"spiderkey"]],
 		"tinyp":[[1.0/1,"offeringp"]],
@@ -372,6 +373,7 @@ drops={
 			[0.5,"lmace"],
 			[2.0/4/1000/1000,"cxjar",1,"hat400"],
 			[2.0/6/1000/1000,"chrysalis0"],
+			[1,"horsecapeg"],
 		],
 		"ent":[
 			[1,"essenceofnature"],
@@ -814,6 +816,7 @@ drops={
 		[1,"oxhelmet",None,None,"lucky"],
 		[0.1,"cdragon",None,None,"lucky"],
 		[0.1,"snakeoil"], #2025
+		[0.3,"horsecapeg"],
 	],
 	"eastereggs":[
 		[1,"egg0"],

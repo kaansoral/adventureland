@@ -12,10 +12,10 @@ setInterval(function(){
 			servers.forEach(function(server){
 				if(server.machine!=id) return;
 				var name=server.region+" "+server.name+" "+server.port;
-				if(output.indexOf("node server/server.js "+server.region+" "+server.name+" "+server.port)==-1)
+				if(output.indexOf("node adventureland/server.js "+server.region+" "+server.name+" "+server.port)==-1)
 				{
 					console.log("Server not running: "+name);
-					var command="ssh -i "+machine.key+" "+machine.user+"@"+machine.ip+" \"nohup node server/server.js "+server.region+" "+server.name+" "+server.port+" > s"+server.port+".out 2> s"+server.port+".err < /dev/null &\"";
+					var command="ssh -i "+machine.key+" "+machine.user+"@"+machine.ip+" \"nohup node adventureland/server.js "+server.region+" "+server.name+" "+server.port+" > s"+server.port+".out 2> s"+server.port+".err < /dev/null &\"";
 					console.log(command);
 					f.execso(command);
 				}

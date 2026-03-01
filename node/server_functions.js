@@ -279,7 +279,7 @@ function sprocess_game_data() {
 	}
 
 	if (events.lunarnewyear) {
-		D.drops.maps.global.push([0.00005, "greenenvelope"]);
+		D.drops.maps.global.push([0.00005, "brownenvelope"]);
 		D.drops.maps.global.push([0.000000005, "5bucks"]);
 	}
 	if (events.valentines) {

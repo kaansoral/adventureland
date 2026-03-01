@@ -330,7 +330,7 @@ function render_server()
 	if(S.lunarnewyear)
 	{
 		html+=" <div class='gamebutton' style='padding: 6px 8px 6px 8px; font-size: 24px; line-height: 18px' onclick='pcs(event); open_guide(\"event-lunarnewyear\",\"/docs/ref/lunarnewyear\")'>";
-		html+="<div style='margin-top: -1px; margin-left: -3px; margin-right: -3px'>"+item_container({skin:"greenenvelope",bcolor:"black"})+"</div>";
+		html+="<div style='margin-top: -1px; margin-left: -3px; margin-right: -3px'>"+item_container({skin:"brownenvelope",bcolor:"black"})+"</div>";
 		html+="<div style='color:#CFD1D1; margin-top: 1px'>INFO</div>";
 		html+="</div>";
 		content=true;

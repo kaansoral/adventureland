@@ -8,7 +8,7 @@ for(var id in machines)
 {
 	var machine=machines[id];
 	// var command="scp -qv -r -i "+machine.key+" ~/deploy/server "+machine.user+"@"+machine.ip+":./ 2>&1 | grep -e 'Sending file modes' -e 'Exit status'";
-	var command="rsync -ru --exclude='node_modules/' ~/deploy/server -i "+machine.key+" "+machine.user+"@"+machine.ip+":./";
+	var command="rsync -rui --exclude='node_modules/' --exclude='package-lock.json' -e 'ssh -i "+machine.key+"' ~/deploy/server/ "+machine.user+"@"+machine.ip+":./adventureland/";
 	//var command="rsync -ru ~/deploy/server -e \"ssh -i "+machine.key+"\" "+machine.user+"@"+machine.ip+":./";
 	// Spent 50 minutes on perfecting the scp output, bastards didn't provide a non-interactive output argument ... [05/08/18]
 	// command+=" > /tmp/scp.log 2>&1";

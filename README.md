@@ -1,3 +1,10 @@
+# Notice: Moved Out of Cloud
+
+New Live Project At: https://github.com/kaansoral/adventureland_mongodb
+
+Google Cloud became a joke with constant 500 errors that are not even propagated to the services - likely by design as reporting these issues result in "won't fix" responses. Performance was abysmal, costs were astronomical. The time to free Adventure Land was long overdue. With the switch to MongoDB, Adventure Land is free from any external service, no more random disconnects due to Cloudflare fluctuations or instance restarts either. Just snappy gameplay in an environment that can be managed eternally.
+
+
 # Adventure Land - The Open Source CODE MMORPG
 
 https://adventure.land

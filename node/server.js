@@ -33,7 +33,7 @@ eval("" + fs.readFileSync(variables.functions_path));
 eval("" + fs.readFileSync(variables.data_path));
 var base_url = variables.base_url;
 var server_id = "1";
-var server_auth = "123456";
+var server_auth = require("crypto").randomBytes(32).toString("hex");
 var server_name = "";
 var players = {};
 var dc_players = {};

@@ -7,6 +7,6 @@ servers.forEach(function(server){
 	console.log(command);
 	command="["+server.machine+" logs] scp -i "+machine.key+" "+machine.user+"@"+machine.ip+":s"+server.port+".out .";
 	console.log(command);
-	command="["+server.machine+" run] ssh -i "+machine.key+" "+machine.user+"@"+machine.ip+" \"nohup node server/server.js "+server.region+" "+server.name+" "+server.port+" > s"+server.port+".out 2> s"+server.port+".err < /dev/null &\"";
+	command="["+server.machine+" run] ssh -i "+machine.key+" "+machine.user+"@"+machine.ip+" \"nohup node adventureland/server.js "+server.region+" "+server.name+" "+server.port+" > s"+server.port+".out 2> s"+server.port+".err < /dev/null &\"";
 	console.log(command);
 });
