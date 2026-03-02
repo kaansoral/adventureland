@@ -617,7 +617,7 @@ skills={
 		"name":"Piercing Shot",
 		"explanation":"Fire heavy, armor piercing arrows at your opponent. They deal 75% of the damage but pierce through 500 armor.",
 		"wtype":["bow","crossbow"],
-		"apiercing":500,
+		"apiercing":250,
 		"damage_multiplier":0.75,
 		"mp":64,
 		"level":72,
