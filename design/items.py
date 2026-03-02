@@ -2245,7 +2245,7 @@ accessories={
 		"dex":2,
 		"armor":20,
 		"compound":{
-			"str":2,
+			"str":3,
 			"dex":1,
 			"armor":5,
 		},
