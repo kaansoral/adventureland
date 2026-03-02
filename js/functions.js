@@ -1082,7 +1082,7 @@ function on_skill(key,event)
 	}
 	else if(name=="emotion")
 	{
-		socket.emit('emotion',{name:skill.emotion});
+		socket.emit('emotion', { name: skill.emotion }, handle_game_response);
 	}
 	else if(name=="eval" || name=="pure_eval")
 	{

@@ -1,3 +1,12 @@
+const fs = require("fs");
+const http = require("http");
+const socket_io = require("socket.io");
+const url = require("url");
+const { Worker, SHARE_ENV } = require("worker_threads");
+
+const variables = require("./variables");
+const { fail_response_2, success_response_2 } = require("./server_functions_2.js");
+
 var is_game = 0;
 var is_server = 1;
 var is_code = 0;
@@ -10,11 +19,10 @@ var server = {
 	stopped: false, // shutdown end
 	s: {},
 };
-var variables = require("./variables");
 var is_sdk = variables.is_sdk;
-var app = require("http").createServer(http_handler);
+var app = http.createServer(http_handler);
 //var io=require('socket.io')(app,{pingInterval:2400,pingTimeout:6000});
-var io = require("socket.io")(app, {
+var io = socket_io(app, {
 	pingInterval: 4000,
 	pingTimeout: 12000,
 	cors: {
@@ -23,9 +31,7 @@ var io = require("socket.io")(app, {
 		credentials: true,
 	},
 }); // default is 25000 to 60000
-var fs = require("fs");
-var url = require("url");
-var { Worker, SHARE_ENV } = require("worker_threads");
+
 var workers = [];
 var wlast = 0;
 eval("" + fs.readFileSync(variables.cfunctions_path));
@@ -4138,7 +4144,7 @@ function init_io() {
 		var original_on = socket.on;
 		socket.on = function (method, f) {
 			// takes the "f" function, the function thats sent to socket.on, wraps it into a "g" function
-			var g = function (data) {
+			var g = function (data, callback) {
 				ls_method = method;
 				if (mode.log_all) {
 					console.log("'" + method + "': " + JSON.stringify(data));
@@ -4198,7 +4204,7 @@ function init_io() {
 						socket.emit("disconnect_reason", "limitdc");
 						socket.disconnect();
 					} else {
-						f(data);
+						f(data, callback);
 					}
 				} catch (e) {
 					try {
@@ -8315,22 +8321,25 @@ function init_io() {
 			player.citems[data.num] = cache_item(player.items[data.num]);
 			resend(player, "reopen+cid");
 		});
-		socket.on("emotion", function (data) {
-			var player = players[socket.id];
+		socket.on("emotion", function (data, callback) {
+			const player = players[socket.id];
 			if (!player) {
 				return;
 			}
-			if (!data.name) {
-				data.name = random_one(Object.keys(player.p.emx));
+
+			if (mssince(player.last.emotion ?? 0) < 2000) {
+				return fail_response_2(current_socket, { place: "emotion", response: "emotion_cooldown", callback });
 			}
-			if (player.last.emotion && mssince(player.last.emotion) < 2000) {
-				return socket.emit("game_response", "emotion_cooldown");
-			}
-			player.last.emotion = new Date();
+
+			data.name ??= random_one(Object.keys(player.p.emx)); // Random emotion if one isn't specified
+
 			if (!G.emotions[data.name] || !player.p.emx[data.name]) {
-				return socket.emit("game_response", "emotion_cant");
+				return fail_response_2(current_socket, { place: "emotion", response: "emotion_cant", callback });
 			}
+
+			player.last.emotion = Date.now();
 			xy_emit(player, "emotion", { name: data.name, player: player.name });
+			return success_response_2(current_socket, { place: "emotion", extra: { name: data.name }, callback });
 		});
 		socket.on("skill", function (data) {
 			const player = players[socket.id];
