@@ -9984,6 +9984,7 @@ function init_io() {
 							cdata.code_version = result.code_version;
 						}
 						cdata.entities = send_all_xy(player, { raw: true });
+						cdata.boss_state = compute_boss_state();
 						socket.emit("start", cdata);
 						total_players++;
 					}
@@ -11200,21 +11201,36 @@ function remove_monster(target, args) {
 		!args.nospawn &&
 		!target.temp
 	) {
+		var respawn_ms = 0;
 		if (target.map_def.grow && (target.map_def.live || 0) <= (target.map_def.count * 2) / 3) {
 			setTimeout(new_monster_f(target.oin, target.map_def, { before_respawn: target }), 25);
+			respawn_ms = 25;
 		} else if (G.monsters[target.type].respawn > 200) {
-			monster_respawns.push([target, round(G.monsters[target.type].respawn * (720 + Math.random() * 480))]);
+			respawn_ms = round(G.monsters[target.type].respawn * (720 + Math.random() * 480));
+			monster_respawns.push([target, respawn_ms]);
 			//setTimeout(
 			//	new_monster_f(target.oin, target.map_def, { before_respawn: target }),
 			//	round(G.monsters[target.type].respawn * (720 + Math.random() * 480)),
 			//);
 		} else {
-			monster_respawns.push([target, round(G.monsters[target.type].respawn * 1000 + Math.random() * 900)]);
+			respawn_ms = round(G.monsters[target.type].respawn * 1000 + Math.random() * 900);
+			monster_respawns.push([target, respawn_ms]);
 			//setTimeout(
 			//	new_monster_f(target.oin, target.map_def, { before_respawn: target }),
 			//	round(G.monsters[target.type].respawn * 1000 + Math.random() * 900),
 			//);
 		} // previously Math.random()*2000
+		target.map_def.next_respawn = Date.now() + respawn_ms;
+		args.mtype = target.type;
+		args.respawn = respawn_ms;
+		if (is_boss_type(target.type)) {
+			broadcast("boss", {
+				mtype: target.type,
+				map: target.map,
+				alive: false,
+				next_respawn: Date.now() + respawn_ms,
+			});
+		}
 	}
 	var luckm = undefined;
 	if (target.target) {
@@ -11231,6 +11247,8 @@ function remove_monster(target, args) {
 			id: target.id,
 			luckm: luckm || 1,
 			points: (target.cooperative && target.points) || undefined,
+			mtype: args.mtype,
+			respawn: args.respawn,
 		});
 	}
 	delete instances[target.in].monsters[target.id];
@@ -13710,6 +13728,31 @@ setInterval(function () {
 	}
 }, 16000 / accel);
 
+function is_boss_type(mtype) {
+	var m = mtype && G.monsters[mtype];
+	return !!(m && (m.respawn > 200 || m.cooperative));
+}
+
+function compute_boss_state() {
+	var state = {};
+	for (var iid in instances) {
+		var monsters = instances[iid].monsters || {};
+		for (var mid in monsters) {
+			var m = monsters[mid];
+			if (!m || m.dead || !is_boss_type(m.type)) continue;
+			state[m.type] = { map: m.map, alive: true, next_respawn: null };
+		}
+	}
+	for (var i = 0; i < monster_respawns.length; i++) {
+		var t = monster_respawns[i][0];
+		var ms = monster_respawns[i][1];
+		if (!t || !is_boss_type(t.type)) continue;
+		if (state[t.type] && state[t.type].alive) continue;
+		state[t.type] = { map: t.map, alive: false, next_respawn: Date.now() + ms };
+	}
+	return state;
+}
+
 setInterval(function () {
 	try {
 		for (var i = monster_respawns.length - 1; i >= 0; i--) {
@@ -13717,6 +13760,9 @@ setInterval(function () {
 			if (monster_respawns[i][1] < 0) {
 				var target = monster_respawns[i][0];
 				new_monster(target.oin, target.map_def, { before_respawn: target });
+				if (is_boss_type(target.type)) {
+					broadcast("boss", { mtype: target.type, map: target.map, alive: true, next_respawn: null });
+				}
 				monster_respawns.splice(i, 1);
 			}
 		}

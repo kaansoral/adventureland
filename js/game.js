@@ -457,11 +457,18 @@ function handle_entities(data,args)
 	{
 		future_entities.players[data.players[i].id]=data.players[i];
 	}
+	var seen_types={};
 	for(var i=0;i<data.monsters.length;i++)
 	{
 		var old_events=future_entities.players[data.monsters[i].id] && future_entities.players[data.monsters[i].id].events;
 		future_entities.monsters[data.monsters[i].id]=data.monsters[i];
 		if(old_events) future_entities.monsters[data.monsters[i].id].events=old_events+future_entities.monsters[data.monsters[i].id].events;
+		if(data.monsters[i].type) seen_types[data.monsters[i].type]=true;
+	}
+	if(character && G.maps[character.map] && G.maps[character.map].monsters){
+		G.maps[character.map].monsters.forEach(function(pack){
+			if(seen_types[pack.type]){ pack.alive=true; pack.next_respawn=null; }
+		});
 	}
 }
 
@@ -1304,6 +1311,19 @@ function init_socket(args)
 		// console.log(code); console.log(code_version); console.log(scode_slot);
 		var m_info=data.info; delete data.info; delete data.s_info;
 		var d_entities=data.entities; delete data.entities;
+		if(data.boss_state){
+			for(var bmtype in data.boss_state){
+				var bs=data.boss_state[bmtype];
+				if(!bs || !bs.map || !G.maps[bs.map] || !G.maps[bs.map].monsters) continue;
+				G.maps[bs.map].monsters.forEach(function(pack){
+					if(pack.type==bmtype){
+						pack.alive=bs.alive;
+						pack.next_respawn=bs.next_respawn?new Date(bs.next_respawn):null;
+					}
+				});
+			}
+			delete data.boss_state;
+		}
 		G.base_gold=data.base_gold; delete data.base_gold;
 		character=add_character(data,1);
 		character.ping=min(320,mssince(window.auth_sent));
@@ -3094,9 +3114,24 @@ function init_socket(args)
 			else d_text(data.message,data.x,data.y,data.args);
 		});
 	});
+	socket.on('boss',function(data){
+		if(!data || !data.mtype || !data.map || !G.maps[data.map] || !G.maps[data.map].monsters) return;
+		G.maps[data.map].monsters.forEach(function(pack){
+			if(pack.type!=data.mtype) return;
+			if(data.alive!=null) pack.alive=data.alive;
+			if(data.next_respawn!=null) pack.next_respawn=new Date(data.next_respawn);
+			else if(data.alive) pack.next_respawn=null;
+		});
+	});
 	socket.on('death',function(data){
 		// unused now
 		if(data.place) reject_deferred(data.place,{place:data.place,reason:data.reason||"not_found"});
+		if(data.mtype && data.respawn!=null && character && G.maps[character.map] && G.maps[character.map].monsters){
+			var next=new Date(Date.now()+data.respawn);
+			G.maps[character.map].monsters.forEach(function(pack){
+				if(pack.type==data.mtype){ pack.next_respawn=next; pack.alive=false; }
+			});
+		}
 		call_code_function("trigger_event","death",data);
 		data.death=true;
 		on_disappear(data);
